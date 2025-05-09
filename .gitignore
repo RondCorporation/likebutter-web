@@ -114,3 +114,8 @@ next-env.d.ts
 !.vscode/*.code-snippets
 .history/
 .ionide
+
+
+# For dev
+code.sh
+response.txt

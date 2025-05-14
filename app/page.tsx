@@ -1,96 +1,174 @@
-import Image from 'next/image';
-import styles from './page.module.css';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import Typewriter from '@/components/Typewriter';
+import LazyYoutube from '@/components/LazyYoutube';
 
-export default function Home() {
-  let t = 'sdf';
+const TITLE = 'MIASIC-STUDIO';
+const DESC = `당신만의 BTS, 당신만의 콘텐츠
+팬과 함께 만들어가는 AI 기반의 새로운 디지털 굿즈 플랫폼`;
+
+export const dynamic = 'force-static';
+
+export default function Landing() {
+  const titleSpeed = 50;
+  const descSpeed = 80;
+  const titleDur = TITLE.length * titleSpeed + 400;
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="h-screen snap-y snap-mandatory overflow-y-scroll scroll-smooth">
+      <Header />
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {/* ──────────────────── About ──────────────────── */}
+      <section
+        id="about"
+        className="relative grid h-screen snap-start items-center
+             px-8 md:px-24 bg-black
+             md:grid-cols-[minmax(0,1fr)_640px]"
+      >
+        {/* ─── 왼쪽 타이틀 ─── */}
+        <div>
+          <h2 className="mb-4 whitespace-pre-line text-4xl md:text-7xl font-bold text-white">
+            <Typewriter text={TITLE.replace(' ', '\n')} speed={titleSpeed} />
+          </h2>
+
+          <p className="max-w-sm whitespace-pre-line text-lg md:text-xl text-slate-300">
+            <Typewriter
+              text={DESC}
+              speed={descSpeed}
+              startDelay={titleDur}
+              keepCursor
             />
-            Deploy now
-          </a>
+          </p>
+
           <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
+            href="/studio"
+            className="mt-8 inline-block rounded-md bg-white px-6 py-3 text-sm font-semibold text-black transition hover:brightness-90"
           >
-            Read our docs
+            AI 콘텐츠 체험해보기
           </a>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* ─── 오른쪽 영상 ─── */}
+        <div className="hidden md:flex justify-center">
+          <LazyYoutube
+            videoId="mPVDGOVjRQ0"
+            className="w-full max-w-[800px] md:max-w-[960px] rounded-lg shadow-lg"
           />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+
+        {/* 파도 애니메이션 */}
+        <svg
+          className="wave-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 24 150 28"
+          preserveAspectRatio="none"
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          <defs>
+            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#6a11cb" />
+              <stop offset="50%" stopColor="#2575fc" />
+              <stop offset="100%" stopColor="#6a11cb" />
+            </linearGradient>
+
+            <path
+              id="wave"
+              d="M-160 44c30 0 58-18 88-18s58 18 88 18
+                 58-18 88-18 58 18 88 18 v44h-352z"
+            />
+          </defs>
+
+          {[
+            { cls: 'animate-wave-fast opacity-70', fill: 'gradient' },
+            { cls: 'animate-wave-mid  opacity-50', fill: 'gradient' },
+            { cls: 'animate-wave-slow opacity-30', fill: 'gradient' },
+            { cls: 'animate-wave-mid  opacity-50', fill: 'white' },
+            { cls: 'animate-wave-slow opacity-40', fill: 'white' },
+          ].map(({ cls, fill }, idx) => (
+            <g key={idx} className={cls}>
+              <use
+                xlinkHref="#wave"
+                fill={fill === 'gradient' ? 'url(#waveGradient)' : '#fff'}
+              />
+              <use
+                xlinkHref="#wave"
+                x="150"
+                fill={fill === 'gradient' ? 'url(#waveGradient)' : '#fff'}
+              />
+            </g>
+          ))}
+        </svg>
+      </section>
+
+      {/* ──────────────────── Features ──────────────────── */}
+      <section
+        id="features"
+        className="flex h-screen snap-start items-center justify-center bg-gradient-to-b from-black via-[#0b0b1c] to-[#15152d]"
+      >
+        <div className="max-w-2xl text-center text-white">
+          <h2 className="mb-6 text-3xl font-semibold">Features</h2>
+          <p className="mb-8 text-slate-300">
+            AI 자동 믹싱 · 실시간 음성 합성 · 팬덤 전용 NFT 민팅 · 커뮤니티 위젯
+            …
+          </p>
+        </div>
+      </section>
+
+      {/* ──────────────────── Demo ──────────────────── */}
+      <section
+        id="demo"
+        className="flex h-screen snap-start items-center justify-center bg-[#0e0e20]"
+      >
+        <div className="text-center">
+          <h2 className="mb-4 text-3xl font-semibold text-white">Demo</h2>
+          <div className="h-64 w-80 rounded-lg border border-white/20 bg-white/5 backdrop-blur" />
+        </div>
+      </section>
+
+      {/* ──────────────────── Pricing ──────────────────── */}
+      <section
+        id="pricing"
+        className="flex h-screen snap-start items-center justify-center bg-[#15152d] text-white"
+      >
+        <div className="grid gap-8 md:grid-cols-3">
+          {['Free', 'Pro', 'Enterprise'].map((tier, i) => (
+            <div
+              key={tier}
+              className="rounded-xl border border-white/20 p-8 backdrop-blur"
+            >
+              <h3 className="mb-2 text-xl font-semibold">{tier}</h3>
+              <p className="mb-6 text-sm text-slate-300">더미 설명 {i + 1}</p>
+              <button className="w-full rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:brightness-90">
+                시작하기
+              </button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ──────────────────── Contact ──────────────────── */}
+      <section
+        id="contact"
+        className="flex h-screen snap-start items-center justify-center bg-black"
+      >
+        <form className="w-full max-w-md space-y-4">
+          <h2 className="text-3xl font-semibold text-white">Contact Us</h2>
+          <input
+            placeholder="Email"
+            className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none"
           />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+          <textarea
+            placeholder="Message"
+            rows={4}
+            className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none"
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <button className="w-full rounded-md bg-white py-2 text-sm font-medium text-black hover:brightness-90">
+            Send
+          </button>
+        </form>
+      </section>
+
+      {/* ──────────────────── Footer ──────────────────── */}
+      <Footer />
+    </main>
   );
 }

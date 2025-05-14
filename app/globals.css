@@ -22,7 +22,7 @@
     animation: cursor-blink 0.8s steps(2) infinite;
   }
   .wave-svg {
-    @apply absolute bottom-0 w-full h-28;
+    @apply absolute bottom-0 w-full h-20;
   }
 }
 
@@ -62,4 +62,8 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }

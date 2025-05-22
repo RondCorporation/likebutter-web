@@ -5,6 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Duck‑tory accent (duck bill yellow) */
+  --accent: #ffd93b;
 }
 
 @layer utilities {

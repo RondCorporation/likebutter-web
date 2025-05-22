@@ -4,8 +4,14 @@ export default {
   content: ['./app/**/*.{ts,tsx,js,jsx}', './components/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
+      colors: {
+        accent: 'var(--accent)',
+      },
       keyframes: {
-        blink: { '0%,60%': { opacity: '1' }, '60%,100%': { opacity: '0' } },
+        blink: {
+          '0%,60%': { opacity: '1' },
+          '60%,100%': { opacity: '0' },
+        },
         wave: {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-50%)' },

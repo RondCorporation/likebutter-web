@@ -11,6 +11,7 @@ export default function LazyYoutube({
 }) {
   const [play, setPlay] = useState(false);
   const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
 
   return (
     <div
@@ -20,7 +21,7 @@ export default function LazyYoutube({
       {play ? (
         <iframe
           className="absolute inset-0 h-full w-full"
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+          src={videoSrc}
           title="YouTube video player"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
@@ -31,10 +32,20 @@ export default function LazyYoutube({
             src={thumb}
             alt="video thumbnail"
             className="absolute inset-0 h-full w-full object-cover"
+            onError={(e) =>
+              (e.currentTarget.src =
+                'https://via.placeholder.com/640x360.png?text=Video')
+            }
           />
-          <span className="absolute inset-0 flex items-center justify-center text-white text-5xl">
-            ▶
-          </span>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <svg
+              className="h-16 w-16 text-white opacity-80 transition-opacity hover:opacity-100"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
         </>
       )}
     </div>

@@ -70,3 +70,7 @@ a {
 html {
   scroll-behavior: smooth;
 }
+
+.btn-social {
+  @apply w-full py-2 rounded-md font-medium flex items-center justify-center;
+}

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { apiFetch, ApiResponse } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 
 interface User {
   accountId: number;
@@ -35,31 +35,33 @@ export const useAuthStore = create<AuthState>()(
       fetchMe: async () => {
         if (!get().token) return;
         try {
+          console.log('Fetching user data...');
           const { data } = await apiFetch<User>('/users/me');
           set({ user: data });
+          console.log('User data fetched:', data?.name);
         } catch (e: any) {
           console.error('Failed to fetch user:', e.message);
-          // If fetchMe fails, apiFetch handles refresh/logout.
-          // We might clear state here as a fallback.
-          if (!e.message.includes('Retrying')) {
-            get().logout();
-          }
         }
       },
+
       logout: () => {
+        console.log('Clearing token and user from store and localStorage.');
         localStorage.removeItem('accessToken');
         set({ token: null, user: null });
-        // Redirect is usually handled by useAuth or components
       },
     }),
     { name: 'auth' }
   )
 );
 
-// Initial check when the app loads (client-side only)
 if (typeof window !== 'undefined') {
   const token = localStorage.getItem('accessToken');
-  if (token && !useAuthStore.getState().token) {
+  const currentToken = useAuthStore.getState().token;
+  if (token && !currentToken) {
+    console.log('Hydrating auth store from localStorage.');
     useAuthStore.getState().setToken(token);
+  } else if (!token && currentToken) {
+    console.log('Token removed elsewhere, clearing store.');
+    useAuthStore.getState().logout();
   }
 }

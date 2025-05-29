@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState, useCallback } from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import UserDropdown from './UserDropdown';
 
 const NAV = [
   { id: 'about', label: 'About' },
@@ -14,8 +16,12 @@ const NAV = [
 export default function Header() {
   const [active, setActive] = useState('about');
   const handleClick = useCallback((id: string) => setActive(id), []);
+  const { token } = useAuthStore();
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    setIsClient(true);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -37,13 +43,15 @@ export default function Header() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-4 backdrop-blur-md">
-      <h1 className="text-lg font-bold text-accent">LikeButter</h1>
+      <Link href="/" className="text-lg font-bold text-accent">
+        LikeButter
+      </Link>
 
       <nav className="hidden gap-6 md:flex">
         {NAV.map(({ id, label }) => (
           <Link
             key={id}
-            href={`#${id}`}
+            href={`/#${id}`}
             onClick={() => handleClick(id)}
             className={`relative transition-all ${
               active === id
@@ -59,12 +67,20 @@ export default function Header() {
         ))}
       </nav>
 
-      <Link
-        href="/login"
-        className="rounded-md border border-accent/40 px-4 py-1 text-sm text-accent transition hover:bg-accent/10"
-      >
-        Login
-      </Link>
+      {isClient &&
+        (token ? (
+          <UserDropdown />
+        ) : (
+          <Link
+            href="/login"
+            className="rounded-md border border-accent/40 px-4 py-1 text-sm text-accent transition hover:bg-accent/10"
+          >
+            Login
+          </Link>
+        ))}
+      {!isClient && (
+        <div className="w-20 h-7 rounded-md border border-accent/40 bg-accent/5 animate-pulse" />
+      )}
     </header>
   );
 }

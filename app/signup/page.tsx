@@ -37,7 +37,6 @@ export default function Signup() {
         );
         if (res.data) {
           setCountries(res.data);
-          // Optionally set a default based on location or just keep KR
         }
       } catch (e: any) {
         setErr('Failed to load countries: ' + e.message);
@@ -69,7 +68,7 @@ export default function Signup() {
 
     try {
       await apiFetch(
-        '/auth/sign-up', // Updated endpoint
+        '/auth/sign-up',
         {
           method: 'POST',
           body: JSON.stringify({
@@ -78,7 +77,7 @@ export default function Signup() {
             name: form.name,
             gender: form.gender,
             countryCode: form.countryCode,
-            phoneNumber: form.phone || undefined, // Send undefined if empty
+            phoneNumber: form.phone || undefined,
           }),
         },
         false

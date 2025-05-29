@@ -3,9 +3,8 @@ import Footer from '@/components/Footer';
 import Typewriter from '@/components/Typewriter';
 import LazyYoutube from '@/components/LazyYoutube';
 
-const TITLE = 'MIASIC-STUDIO';
-const DESC = `당신만의 BTS, 당신만의 콘텐츠
-팬과 함께 만들어가는 AI 기반의 새로운 디지털 굿즈 플랫폼`;
+const TITLE = 'LikeButter Studio';
+const DESC = `덕질을 위한, 오리를 품은 AI 콘텐츠 플랫폼\n귀엽고 아기자기하지만, 여전히 세련되게`;
 
 export const dynamic = 'force-static';
 
@@ -21,13 +20,11 @@ export default function Landing() {
       {/* ──────────────────── About ──────────────────── */}
       <section
         id="about"
-        className="relative grid h-screen snap-start items-center
-             px-8 md:px-24 bg-black
-             md:grid-cols-[minmax(0,1fr)_640px]"
+        className="relative grid h-screen snap-start items-center px-8 md:px-24 bg-black md:grid-cols-[minmax(0,1fr)_640px]"
       >
         {/* ─── 왼쪽 타이틀 ─── */}
         <div>
-          <h2 className="mb-4 whitespace-pre-line text-4xl md:text-7xl font-bold text-white">
+          <h2 className="mb-4 whitespace-pre-line text-4xl md:text-7xl font-bold text-accent">
             <Typewriter text={TITLE.replace(' ', '\n')} speed={titleSpeed} />
           </h2>
 
@@ -42,9 +39,9 @@ export default function Landing() {
 
           <a
             href="/studio"
-            className="mt-8 inline-block rounded-md bg-white px-6 py-3 text-sm font-semibold text-black transition hover:brightness-90"
+            className="mt-8 inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition hover:brightness-90"
           >
-            AI 콘텐츠 체험해보기
+            LikeButter Studio 체험하기
           </a>
         </div>
 
@@ -65,15 +62,14 @@ export default function Landing() {
         >
           <defs>
             <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#6a11cb" />
-              <stop offset="50%" stopColor="#2575fc" />
-              <stop offset="100%" stopColor="#6a11cb" />
+              <stop offset="0%" stopColor="var(--accent)" />
+              <stop offset="50%" stopColor="var(--accent)" />
+              <stop offset="100%" stopColor="var(--accent)" />
             </linearGradient>
 
             <path
               id="wave"
-              d="M-160 44c30 0 58-18 88-18s58 18 88 18
-                 58-18 88-18 58 18 88 18 v44h-352z"
+              d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
             />
           </defs>
 
@@ -102,10 +98,10 @@ export default function Landing() {
       {/* ──────────────────── Features ──────────────────── */}
       <section
         id="features"
-        className="flex h-screen snap-start items-center justify-center bg-gradient-to-b from-black via-[#0b0b1c] to-[#15152d]"
+        className="flex h-screen snap-start items-center justify-center bg-gradient-to-b from-black via-neutral-900 to-neutral-800"
       >
         <div className="max-w-2xl text-center text-white">
-          <h2 className="mb-6 text-3xl font-semibold">Features</h2>
+          <h2 className="mb-6 text-3xl font-semibold text-accent">Features</h2>
           <p className="mb-8 text-slate-300">
             AI 자동 믹싱 · 실시간 음성 합성 · 팬덤 전용 NFT 민팅 · 커뮤니티 위젯
             …
@@ -116,10 +112,10 @@ export default function Landing() {
       {/* ──────────────────── Demo ──────────────────── */}
       <section
         id="demo"
-        className="flex h-screen snap-start items-center justify-center bg-[#0e0e20]"
+        className="flex h-screen snap-start items-center justify-center bg-black"
       >
         <div className="text-center">
-          <h2 className="mb-4 text-3xl font-semibold text-white">Demo</h2>
+          <h2 className="mb-4 text-3xl font-semibold text-accent">Demo</h2>
           <div className="h-64 w-80 rounded-lg border border-white/20 bg-white/5 backdrop-blur" />
         </div>
       </section>
@@ -127,7 +123,7 @@ export default function Landing() {
       {/* ──────────────────── Pricing ──────────────────── */}
       <section
         id="pricing"
-        className="flex h-screen snap-start items-center justify-center bg-[#15152d] text-white"
+        className="flex h-screen snap-start items-center justify-center bg-neutral-900 text-white"
       >
         <div className="grid gap-8 md:grid-cols-3">
           {['Free', 'Pro', 'Enterprise'].map((tier, i) => (
@@ -135,9 +131,9 @@ export default function Landing() {
               key={tier}
               className="rounded-xl border border-white/20 p-8 backdrop-blur"
             >
-              <h3 className="mb-2 text-xl font-semibold">{tier}</h3>
+              <h3 className="mb-2 text-xl font-semibold text-accent">{tier}</h3>
               <p className="mb-6 text-sm text-slate-300">더미 설명 {i + 1}</p>
-              <button className="w-full rounded-md bg-white px-4 py-2 text-sm font-medium text-black hover:brightness-90">
+              <button className="w-full rounded-md bg-accent px-4 py-2 text-sm font-medium text-black hover:brightness-90">
                 시작하기
               </button>
             </div>
@@ -151,7 +147,7 @@ export default function Landing() {
         className="flex h-screen snap-start items-center justify-center bg-black"
       >
         <form className="w-full max-w-md space-y-4">
-          <h2 className="text-3xl font-semibold text-white">Contact Us</h2>
+          <h2 className="text-3xl font-semibold text-accent">Contact Us</h2>
           <input
             placeholder="Email"
             className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none"
@@ -161,7 +157,7 @@ export default function Landing() {
             rows={4}
             className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none"
           />
-          <button className="w-full rounded-md bg-white py-2 text-sm font-medium text-black hover:brightness-90">
+          <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90">
             Send
           </button>
         </form>

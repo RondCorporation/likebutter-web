@@ -5,6 +5,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Duck‑tory accent (duck bill yellow) */
+  --accent: #ffd93b;
 }
 
 @layer utilities {
@@ -66,4 +69,8 @@ a {
 
 html {
   scroll-behavior: smooth;
+}
+
+.btn-social {
+  @apply w-full py-2 rounded-md font-medium flex items-center justify-center;
 }

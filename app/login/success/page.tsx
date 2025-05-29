@@ -11,13 +11,19 @@ export default function OauthSuccess() {
 
   useEffect(() => {
     if (token) {
+      console.log('OAuth Success: Received token, setting...');
       localStorage.setItem('accessToken', token);
-      setToken(token);
+      setToken(token); // Sets token and triggers fetchMe
       router.replace('/studio');
     } else {
+      console.error('OAuth Success: No token received. Redirecting to login.');
       router.replace('/login');
     }
   }, [token, setToken, router]);
 
-  return <p className="p-8 text-white">Redirecting…</p>;
+  return (
+    <p className="p-8 text-white bg-black h-screen flex items-center justify-center">
+      Redirecting…
+    </p>
+  );
 }

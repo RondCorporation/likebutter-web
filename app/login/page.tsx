@@ -1,9 +1,14 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiFetch } from '@/lib/api';
+import { apiFetch, ApiResponse } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
+
+interface LoginResponse {
+  accessToken: { value: string };
+  refreshToken: { value: string };
+}
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -14,8 +19,9 @@ export default function Login() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    setErr('');
     try {
-      const { data } = await apiFetch<{ accessToken: string }>(
+      const res = await apiFetch<LoginResponse>(
         '/auth/login',
         {
           method: 'POST',
@@ -23,9 +29,15 @@ export default function Login() {
         },
         false
       );
-      localStorage.setItem('accessToken', data.accessToken);
-      setToken(data.accessToken);
-      router.replace('/studio');
+
+      if (res.data?.accessToken?.value) {
+        const accessToken = res.data.accessToken.value;
+        localStorage.setItem('accessToken', accessToken);
+        setToken(accessToken);
+        router.replace('/studio');
+      } else {
+        throw new Error(res.msg || 'Login failed: Access token not received.');
+      }
     } catch (e: any) {
       setErr(e.message);
     }
@@ -40,6 +52,7 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
+          required
         />
         <input
           type="password"
@@ -47,13 +60,14 @@ export default function Login() {
           onChange={(e) => setPw(e.target.value)}
           placeholder="Password"
           className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
+          required
         />
         {err && <p className="text-sm text-red-400">{err}</p>}
         <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90">
           Login
         </button>
         <p className="text-sm text-center text-slate-400">
-          Don't have an account?
+          Don't have an account?{' '}
           <span
             onClick={() => router.push('/signup')}
             className="cursor-pointer text-accent hover:underline"

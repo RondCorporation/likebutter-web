@@ -6,12 +6,24 @@ export interface ApiResponse<T> {
   msg?: string;
 }
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE;
+const BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080';
 
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
 const getAuthStore = () => useAuthStore.getState();
+
+const forceLogout = () => {
+  getAuthStore().logout();
+  if (
+    typeof window !== 'undefined' &&
+    !window.location.pathname.startsWith('/login')
+  ) {
+    console.warn('Forcing logout due to API/Refresh failure.');
+    // alert('Your session has expired. Please log in again.');
+    window.location.href = '/login';
+  }
+};
 
 async function refreshToken(): Promise<string | null> {
   console.log('Attempting to refresh token...');
@@ -21,11 +33,24 @@ async function refreshToken(): Promise<string | null> {
       credentials: 'include',
     });
 
+    if (!res.ok) {
+      let errorMsg = 'Token refresh failed';
+      try {
+        const errorJson = await res.json();
+        errorMsg = errorJson.msg || `Token refresh failed (${res.status})`;
+      } catch (e) {
+        /* ignore */
+      }
+      throw new Error(errorMsg);
+    }
+
     const json: ApiResponse<{ accessToken: { value: string } }> =
       await res.json();
 
-    if (!res.ok || !json.data?.accessToken?.value) {
-      throw new Error(json.msg || 'Token refresh failed');
+    if (!json.data?.accessToken?.value) {
+      throw new Error(
+        json.msg || 'Token refresh failed: No new token received'
+      );
     }
 
     const newAccessToken = json.data.accessToken.value;
@@ -35,11 +60,7 @@ async function refreshToken(): Promise<string | null> {
     return newAccessToken;
   } catch (error) {
     console.error('Token refresh failed:', error);
-    getAuthStore().logout();
-    if (typeof window !== 'undefined') {
-      alert('Session expired. Please log in again.');
-      window.location.href = '/login';
-    }
+    forceLogout();
     return null;
   }
 }
@@ -62,18 +83,20 @@ export async function apiFetch<T>(
       ...opts.headers,
     };
 
-    if (url === '/auth/reissue') {
+    if (opts.method === 'DELETE' && url === '/auth/logout') {
       delete (headers as any)['Content-Type'];
-      opts.method = 'POST';
       opts.body = undefined;
+    } else if (opts.body === undefined || opts.body === null) {
+      delete (headers as any)['Content-Type'];
     }
 
     if (
       url === '/auth/sign-up' ||
       url === '/countries' ||
-      url === '/auth/login'
+      url === '/auth/login' ||
+      url === '/auth/reissue'
     ) {
-      withAuth = false; // These don't need auth header initially
+      withAuth = false;
       delete (headers as any)['Authorization'];
     }
 
@@ -84,13 +107,27 @@ export async function apiFetch<T>(
     });
 
     const text = await res.text();
-    const json: ApiResponse<T> = text
-      ? JSON.parse(text)
-      : { status: res.status };
+    let json: ApiResponse<T>;
+
+    try {
+      json = text
+        ? JSON.parse(text)
+        : { status: res.status, msg: res.statusText };
+    } catch (e) {
+      console.error('Failed to parse API response:', text, 'URL:', url);
+      throw new Error(`Failed to parse server response. Status: ${res.status}`);
+    }
 
     if (!res.ok) {
-      if (res.status === 401 && withAuth && url !== '/auth/reissue') {
-        if (!isRefreshing) {
+      if (
+        res.status === 401 &&
+        withAuth &&
+        url !== '/auth/reissue' &&
+        !isRefreshing
+      ) {
+        console.log(`Received 401 for ${url}. Attempting token refresh...`);
+
+        if (!refreshPromise) {
           isRefreshing = true;
           refreshPromise = refreshToken();
         }
@@ -100,12 +137,18 @@ export async function apiFetch<T>(
         refreshPromise = null;
 
         if (newToken) {
-          console.log('Retrying original request with new token...');
+          console.log(`Retrying ${url} with new token...`);
           return makeRequest(newToken);
         } else {
           throw new Error(json.msg || 'Session expired or refresh failed.');
         }
+      } else if (res.status === 401) {
+        console.error(`401 Error for ${url} (cannot refresh). Logging out.`);
+        forceLogout();
+        throw new Error(json.msg || 'Authentication failed.');
       }
+
+      console.error(`API Error for ${url}:`, json.msg || res.statusText);
       throw new Error(
         json.msg ?? `Request failed: ${res.statusText} (${res.status})`
       );

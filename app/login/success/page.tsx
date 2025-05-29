@@ -13,7 +13,7 @@ export default function OauthSuccess() {
     if (token) {
       console.log('OAuth Success: Received token, setting...');
       localStorage.setItem('accessToken', token);
-      setToken(token); // Sets token and triggers fetchMe
+      setToken(token);
       router.replace('/studio');
     } else {
       console.error('OAuth Success: No token received. Redirecting to login.');

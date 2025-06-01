@@ -1,9 +1,10 @@
 'use client';
-import { useEffect } from 'react';
+
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 
-export default function OauthSuccess() {
+function SuccessHandler() {
   const params = useSearchParams();
   const token = params.get('accessToken');
   const setToken = useAuthStore((s) => s.setToken);
@@ -25,5 +26,19 @@ export default function OauthSuccess() {
     <p className="p-8 text-white bg-black h-screen flex items-center justify-center">
       Redirecting…
     </p>
+  );
+}
+
+export default function OauthSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <p className="p-8 text-white bg-black h-screen flex items-center justify-center">
+          Loading...
+        </p>
+      }
+    >
+      <SuccessHandler />
+    </Suspense>
   );
 }

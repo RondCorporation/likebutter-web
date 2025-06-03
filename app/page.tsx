@@ -4,7 +4,7 @@ import Typewriter from '@/components/Typewriter';
 import LazyYoutube from '@/components/LazyYoutube';
 
 const TITLE = 'LikeButter Studio';
-const DESC = `덕질을 위한, 오리를 품은 AI 콘텐츠 플랫폼\n귀엽고 아기자기하지만, 여전히 세련되게`;
+const DESC = `Everything Melts with Butter \n 팬심을 기록하고 창작하는 새로운 방식`;
 
 export const dynamic = 'force-static';
 

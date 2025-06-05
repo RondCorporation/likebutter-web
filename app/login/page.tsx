@@ -52,7 +52,7 @@ export default function Login() {
   }
 
   return (
-    <main className="flex h-screen items-center justify-center bg-black px-4">
+    <main className="flex h-screen items-center justify-center bg-black px-4 pt-24 md:pt-28">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4">
         <h2 className="text-2xl font-semibold text-accent">Login</h2>
         <input

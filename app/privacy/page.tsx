@@ -779,7 +779,7 @@ export default function PrivacyPage() {
   );
 
   return (
-    <div className="container mx-auto p-4 md:p-8 bg-black text-white min-h-screen">
+    <div className="container mx-auto p-4 md:p-8 bg-black text-white min-h-screen pt-24 md:pt-28">
       <h1 className="text-3xl md:text-4xl font-bold text-accent text-center mb-8 md:mb-12">
         Privacy Policy / 개인정보처리방침
       </h1>

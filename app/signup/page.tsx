@@ -1,3 +1,4 @@
+// app/signup/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -128,7 +129,9 @@ export default function Signup() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8">
+    <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8 pt-24 md:pt-28">
+      {' '}
+      {/* pt-24 md:pt-28 추가 */}
       <form onSubmit={submit} className="grid w-full max-w-md gap-3">
         <h2 className="mb-2 text-2xl font-semibold text-accent">Sign up</h2>
 

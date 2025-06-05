@@ -1,4 +1,3 @@
-// app/studio/video/page.tsx
 export default function VideoPage() {
   return (
     <div>

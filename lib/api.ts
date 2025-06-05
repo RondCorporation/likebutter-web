@@ -6,7 +6,7 @@ export interface ApiResponse<T> {
   msg?: string;
 }
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8080';
+const BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
@@ -20,7 +20,6 @@ const forceLogout = () => {
     !window.location.pathname.startsWith('/login')
   ) {
     console.warn('Forcing logout due to API/Refresh failure.');
-    // alert('Your session has expired. Please log in again.');
     window.location.href = '/login';
   }
 };

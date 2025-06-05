@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import UserDropdown from './UserDropdown';
-import Logo from './Logo'; // Logo 컴포넌트 임포트
+import Logo from './Logo';
 
 const NAV_ITEMS = [
   { id: 'about', label: 'About' },
@@ -24,7 +24,6 @@ export default function Header() {
   const handleNavClick = useCallback(
     (id: string) => {
       setActiveSection(id);
-      // For scrolling to section if on homepage
       if (pathname === '/') {
         const element = document.getElementById(id);
         if (element) {
@@ -59,13 +58,12 @@ export default function Header() {
     }
   }, [pathname]);
 
-  // 현재 경로에 따른 UI 조건부 렌더링 로직
   const showNav = pathname === '/';
   const showAuthControls = !['/login', '/signup'].includes(pathname);
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-black/30">
-      <Logo /> {/* Logo 컴포넌트 사용 */}
+      <Logo />
       {showNav && (
         <nav className="hidden gap-6 md:flex">
           {NAV_ITEMS.map(({ id, label }) => (
@@ -87,6 +85,7 @@ export default function Header() {
           ))}
         </nav>
       )}
+
       {/* 로그인 또는 사용자 메뉴 버튼 */}
       {isClient &&
         showAuthControls &&

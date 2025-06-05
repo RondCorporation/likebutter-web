@@ -151,7 +151,6 @@ export default function PrivacyPage() {
             <li>
               {trusteeName2}: {entrustedTask2}
             </li>
-            {/* Add more trustees if necessary */}
           </ul>
         </>
       ) : (
@@ -539,7 +538,6 @@ export default function PrivacyPage() {
             <li>
               {trusteeName2}: {entrustedTask2}
             </li>
-            {/* 필요시 위탁 업체 추가 */}
           </ul>
         </>
       ) : (

@@ -8,6 +8,7 @@ import { Home, Clock, Plus, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAssets } from '@/hooks/useAssets';
 import AuthGuard from '@/components/AuthGuard';
 import UserDropdown from '@/components/UserDropdown';
+import Logo from '@/components/Logo';
 
 const FIXED = [
   { href: '/studio', label: 'Home', icon: Home },
@@ -48,6 +49,11 @@ export default function StudioLayout({ children }: { children: ReactNode }) {
       <div className="flex h-screen bg-black text-white">
         {/* ───────────── Left panel ───────────── */}
         <aside className="flex w-60 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
+          {/* 루트 경로로 돌아가는 로고 버튼 */}
+          <div className="mb-4 px-1 py-1">
+            <Logo className="text-xl" />
+          </div>
+
           {/* Fixed Links */}
           {FIXED.map(({ href, label, icon: Icon }) => (
             <Link

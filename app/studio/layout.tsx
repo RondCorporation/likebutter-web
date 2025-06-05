@@ -4,129 +4,138 @@ import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Home, Clock, Plus, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  Home,
+  Clock,
+  Plus,
+  ChevronDown,
+  ChevronUp,
+  Music,
+  Brush,
+  Clapperboard,
+  MessageCircle,
+} from 'lucide-react';
 import { useAssets } from '@/hooks/useAssets';
 import AuthGuard from '@/components/AuthGuard';
 import UserDropdown from '@/components/UserDropdown';
 import Logo from '@/components/Logo';
 
-const FIXED = [
+const FIXED_LINKS = [
   { href: '/studio', label: 'Home', icon: Home },
   { href: '/studio/history', label: 'History', icon: Clock },
 ];
 
-const TOOLS = [
-  { href: '/studio/ai-cover', label: 'AI Cover' },
-  { href: '/studio/fan-art', label: 'AI Fan Art' },
-  { href: '/studio/video', label: 'AI Video' },
-  { href: '/studio/virtual-talk', label: 'Virtual Talk' },
+const BUTTER_TOOLS = [
+  { href: '/studio/butter-talks', label: 'ButterTalks', icon: MessageCircle },
+  { href: '/studio/butter-art', label: 'ButterBrush', icon: Brush },
+  { href: '/studio/butter-cover', label: 'ButterBeats', icon: Music },
+  { href: '/studio/butter-cuts', label: 'ButterCuts', icon: Clapperboard },
 ];
 
 const PAGE_TITLES: { [key: string]: string } = {
   '/studio': 'Studio Home',
-  '/studio/history': 'History',
-  '/studio/ai-cover': 'AI Cover',
-  '/studio/fan-art': 'AI Fan Art',
-  '/studio/video': 'AI Video',
-  '/studio/virtual-talk': 'Virtual Talk',
+  '/studio/history': 'My History',
+  '/studio/butter-cover': 'ButterBeats',
+  '/studio/butter-art': 'ButterBrush',
+  '/studio/butter-cuts': 'ButterCuts',
+  '/studio/butter-talks': 'ButterTalks',
 };
 
 export default function StudioLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const [showMore, setShowMore] = useState(false);
-  const { data: assets = ['Favorite', 'Private', 'Test'] } = useAssets();
 
-  const displayed = showMore ? assets.slice(0, 5) : assets.slice(0, 2);
+  const [showVault, setShowVault] = useState(false);
+  const { data: vaultItems = ['Favorite', 'Private', 'Test'] } = useAssets();
+
+  const displayedVaultItems = showVault ? vaultItems : vaultItems.slice(0, 2);
 
   let currentPageTitle = PAGE_TITLES[pathname] || 'Studio';
   if (pathname.startsWith('/studio/asset/')) {
     const assetName = pathname.split('/').pop();
-    currentPageTitle = `Asset: ${assetName ? assetName.charAt(0).toUpperCase() + assetName.slice(1) : 'View'}`;
+    currentPageTitle = `Vault: ${assetName ? assetName.charAt(0).toUpperCase() + assetName.slice(1) : 'View'}`;
   }
 
   return (
     <AuthGuard>
       <div className="flex h-screen bg-black text-white">
-        {/* ───────────── Left panel ───────────── */}
-        <aside className="flex w-60 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
-          {/* 루트 경로로 돌아가는 로고 버튼 */}
-          <div className="mb-4 px-1 py-1">
-            <Logo className="text-xl" />
+        <aside className="flex w-64 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
+          <div className="mb-4 px-2 py-1">
+            <Logo className="text-2xl" href="/studio" />
           </div>
 
-          {/* Fixed Links */}
-          {FIXED.map(({ href, label, icon: Icon }) => (
+          {FIXED_LINKS.map(({ href, label, icon: Icon }) => (
             <Link
               href={href}
               key={href}
-              className={`flex items-center gap-2 rounded-md px-3 py-2 hover:bg-white/10 ${
-                pathname === href ? 'bg-white/10 font-medium' : ''
+              className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors hover:bg-white/10 ${
+                pathname === href
+                  ? 'bg-white/10 font-semibold text-white'
+                  : 'text-slate-300'
               }`}
             >
-              <Icon size={16} />
+              <Icon size={18} />
               {label}
             </Link>
           ))}
-          {/* Assets */}
-          <div className="mt-6 flex items-center justify-between text-xs uppercase tracking-wide text-slate-400 px-3">
-            <span>Assets</span>
-            <button className="hover:text-white">
-              <Plus size={14} />
+
+          <div className="mt-8 flex items-center justify-between px-4 text-sm font-medium uppercase tracking-wider text-slate-400">
+            <span>ButterVault</span>
+            <button className="rounded-full p-1 transition-colors hover:bg-white/10 hover:text-white">
+              <Plus size={16} />
             </button>
           </div>
-          {displayed.map((a) => (
+          {displayedVaultItems.map((item) => (
             <Link
-              key={a}
-              href={`/studio/asset/${encodeURIComponent(a.toLowerCase())}`}
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-white/10 text-slate-300"
+              key={item}
+              href={`/studio/asset/${encodeURIComponent(item.toLowerCase())}`}
+              className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
             >
-              <div className="w-4 h-4 rounded bg-slate-600" /> {a}
+              <div className="h-2 w-2 rounded-full bg-slate-500" /> {item}
             </Link>
           ))}
-          {assets.length > 2 && (
+          {vaultItems.length > 2 && (
             <button
-              className="flex items-center gap-1 px-3 py-1 text-xs text-slate-400 hover:text-white"
-              onClick={() => setShowMore((p) => !p)}
+              className="flex items-center gap-2 px-4 py-1.5 text-xs text-slate-400 transition-colors hover:text-white"
+              onClick={() => setShowVault((p) => !p)}
             >
-              {showMore ? (
+              {showVault ? (
                 <>
-                  <ChevronUp size={12} /> Less
+                  <ChevronUp size={14} /> Show Less
                 </>
               ) : (
                 <>
-                  <ChevronDown size={12} /> More ({assets.length - 2})
+                  <ChevronDown size={14} /> Show More ({vaultItems.length - 2})
                 </>
               )}
             </button>
           )}
-          {/* Tools */}
-          <div className="mt-6 text-xs uppercase tracking-wide text-slate-400 px-3">
+
+          <div className="mt-8 px-4 text-sm font-medium uppercase tracking-wider text-slate-400">
             Tools
           </div>
-          {TOOLS.map(({ href, label }) => (
+          {BUTTER_TOOLS.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-white/10 ${
+              className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors hover:bg-white/10 ${
                 pathname === href
-                  ? 'bg-white/10 font-medium text-white'
+                  ? 'bg-white/10 font-semibold text-white'
                   : 'text-slate-300'
               }`}
             >
+              <Icon size={18} />
               {label}
             </Link>
           ))}
         </aside>
 
-        {/* ───────────── Right panel ───────────── */}
-        <section className="flex-1 overflow-hidden flex flex-col">
-          {/* Header */}
-          <header className="p-6 border-b border-white/10 flex justify-between items-center flex-shrink-0 h-[73px]">
+        <section className="flex flex-1 flex-col overflow-hidden">
+          <header className="flex h-[73px] flex-shrink-0 items-center justify-between border-b border-white/10 p-6">
             <h2 className="text-2xl font-semibold">{currentPageTitle}</h2>
             <UserDropdown />
           </header>
-          {/* Content Area */}
-          <div className="flex-1 overflow-hidden">
+
+          <main className="flex-1 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={pathname}
@@ -139,7 +148,7 @@ export default function StudioLayout({ children }: { children: ReactNode }) {
                 {children}
               </motion.div>
             </AnimatePresence>
-          </div>
+          </main>
         </section>
       </div>
     </AuthGuard>

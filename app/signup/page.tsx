@@ -1,4 +1,3 @@
-// app/signup/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -33,6 +32,7 @@ export default function Signup() {
   const [err, setErr] = useState<string>('');
   const [countries, setCountries] = useState<Country[]>([]);
   const router = useRouter();
+  const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchCountries() {
@@ -59,6 +59,13 @@ export default function Signup() {
       }
     }
     fetchCountries();
+
+    const lastProvider = localStorage.getItem('lastUsedSocialLogin');
+    if (lastProvider) {
+      setLastUsedProvider(
+        lastProvider.charAt(0).toUpperCase() + lastProvider.slice(1)
+      );
+    }
   }, []);
 
   function onChange(
@@ -130,8 +137,6 @@ export default function Signup() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8 pt-24 md:pt-28">
-      {' '}
-      {/* pt-24 md:pt-28 추가 */}
       <form onSubmit={submit} className="grid w-full max-w-md gap-3">
         <h2 className="mb-2 text-2xl font-semibold text-accent">Sign up</h2>
 
@@ -248,6 +253,24 @@ export default function Signup() {
         </p>
 
         <div className="mt-10 w-full max-w-md">
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-white/20" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-black px-2 text-slate-400">
+                Or sign up with
+              </span>
+            </div>
+          </div>
+          {lastUsedProvider && (
+            <p className="mb-3 text-center text-xs text-slate-400">
+              Recently used:{' '}
+              <strong className="font-semibold text-accent">
+                {lastUsedProvider}
+              </strong>
+            </p>
+          )}
           <SocialButtons variant="signup" />
         </div>
       </form>

@@ -6,6 +6,11 @@ export default function SocialButtons({
 }: {
   variant?: 'login' | 'signup';
 }) {
+  const handleAppleLogin = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    alert('Apple login is currently unavailable. Please try another method.');
+  };
+
   return (
     <div className="space-y-2">
       <a href={OAUTH_GOOGLE} className="btn-social bg-white text-black">
@@ -13,6 +18,7 @@ export default function SocialButtons({
       </a>
       <a
         href={OAUTH_APPLE}
+        onClick={handleAppleLogin} // Prevent default for Apple login
         className="btn-social bg-black text-white border border-white"
       >
         Continue with Apple

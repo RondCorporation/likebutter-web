@@ -10,6 +10,8 @@ interface LoginResponse {
   refreshToken: { value: string };
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
@@ -20,6 +22,12 @@ export default function Login() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr('');
+
+    if (!EMAIL_REGEX.test(email)) {
+      setErr('Invalid email format.');
+      return;
+    }
+
     try {
       const res = await apiFetch<LoginResponse>(
         '/auth/login',
@@ -36,21 +44,22 @@ export default function Login() {
         setToken(accessToken);
         router.replace('/studio');
       } else {
-        throw new Error(res.msg || 'Login failed: Access token not received.');
+        setErr('Invalid email or password.');
       }
     } catch (e: any) {
-      setErr(e.message);
+      setErr('Invalid email or password.');
     }
   }
 
   return (
-    <main className="flex h-screen items-center justify-center bg-black px-4">
+    <main className="flex h-screen items-center justify-center bg-black px-4 pt-24 md:pt-28">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4">
         <h2 className="text-2xl font-semibold text-accent">Login</h2>
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          type="email"
           className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
           required
         />

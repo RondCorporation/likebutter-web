@@ -1,11 +1,18 @@
+// app/signup/page.tsx
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import SocialButtons from '@/components/SocialButtons';
 import { apiFetch, ApiResponse } from '@/lib/api';
+import PhoneInput, {
+  isValidPhoneNumber,
+  parsePhoneNumber,
+} from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const PW_REGEX =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface Country {
   code: string;
@@ -20,9 +27,9 @@ export default function Signup() {
     pw2: '',
     name: '',
     gender: 'MALE',
-    countryCode: '+82',
-    phone: '',
+    nationalityIsoCode: '',
   });
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
   const [err, setErr] = useState<string>('');
   const [countries, setCountries] = useState<Country[]>([]);
   const router = useRouter();
@@ -37,9 +44,18 @@ export default function Signup() {
         );
         if (res.data) {
           setCountries(res.data);
+          const defaultCountry = res.data.find((c) => c.isoCode === 'KR');
+          if (defaultCountry) {
+            setForm((prevForm) => ({
+              ...prevForm,
+              nationalityIsoCode: defaultCountry.isoCode,
+            }));
+          }
+        } else {
+          setErr(res.msg || 'Failed to load country list.');
         }
       } catch (e: any) {
-        setErr('Failed to load countries: ' + e.message);
+        setErr('Failed to load country list. Please try again later.');
       }
     }
     fetchCountries();
@@ -55,6 +71,10 @@ export default function Signup() {
     e.preventDefault();
     setErr('');
 
+    if (!EMAIL_REGEX.test(form.email)) {
+      setErr('Invalid email format.');
+      return;
+    }
     if (!PW_REGEX.test(form.pw)) {
       setErr(
         'Password must include uppercase, lowercase, number, special character (#?!@$%^&*-) and be at least 8 characters.'
@@ -64,6 +84,22 @@ export default function Signup() {
     if (form.pw !== form.pw2) {
       setErr('Passwords do not match.');
       return;
+    }
+    if (!form.nationalityIsoCode) {
+      setErr('Please select your nationality.');
+      return;
+    }
+
+    let formattedPhoneNumber: string | undefined = undefined;
+    if (phoneNumber) {
+      if (!isValidPhoneNumber(phoneNumber)) {
+        setErr('Invalid phone number format.');
+        return;
+      }
+      const parsed = parsePhoneNumber(phoneNumber);
+      if (parsed) {
+        formattedPhoneNumber = parsed.format('E.164');
+      }
     }
 
     try {
@@ -76,8 +112,8 @@ export default function Signup() {
             password: form.pw,
             name: form.name,
             gender: form.gender,
-            countryCode: form.countryCode,
-            phoneNumber: form.phone || undefined,
+            countryCode: form.nationalityIsoCode,
+            phoneNumber: formattedPhoneNumber,
           }),
         },
         false
@@ -85,12 +121,17 @@ export default function Signup() {
       alert('Sign up successful! Please log in.');
       router.replace('/login');
     } catch (e: any) {
-      setErr(e.message);
+      setErr(
+        e.message ||
+          'Sign up failed. Please check your information and try again.'
+      );
     }
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8">
+    <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8 pt-24 md:pt-28">
+      {' '}
+      {/* pt-24 md:pt-28 추가 */}
       <form onSubmit={submit} className="grid w-full max-w-md gap-3">
         <h2 className="mb-2 text-2xl font-semibold text-accent">Sign up</h2>
 
@@ -148,29 +189,37 @@ export default function Signup() {
           </option>
         </select>
 
-        <div className="flex gap-2">
-          <select
-            name="countryCode"
-            value={form.countryCode}
-            onChange={onChange}
-            className="rounded-md bg-white/10 p-3 text-sm text-white w-1/3 appearance-none"
-          >
-            {countries.length === 0 && <option value="">Loading...</option>}
-            {countries.map((c) => (
-              <option key={c.isoCode} value={c.code} className="bg-black">
-                {c.isoCode} ({c.code})
-              </option>
-            ))}
-          </select>
-          <input
-            name="phone"
-            type="tel"
-            placeholder="Phone (Optional)"
-            value={form.phone}
-            onChange={onChange}
-            className="rounded-md bg-white/10 p-3 text-sm text-white w-2/3"
-          />
-        </div>
+        <select
+          name="nationalityIsoCode"
+          value={form.nationalityIsoCode}
+          onChange={onChange}
+          required
+          className="rounded-md bg-white/10 p-3 text-sm text-white appearance-none"
+        >
+          <option value="" className="bg-black" disabled>
+            Select Nationality
+          </option>
+          {countries.length === 0 && (
+            <option value="" disabled className="bg-black">
+              Loading nationalities...
+            </option>
+          )}
+          {countries.map((c) => (
+            <option key={c.isoCode} value={c.isoCode} className="bg-black">
+              {c.countryEn} ({c.isoCode})
+            </option>
+          ))}
+        </select>
+
+        <PhoneInput
+          placeholder="Phone (Optional)"
+          value={phoneNumber}
+          onChange={setPhoneNumber}
+          international
+          smartCaret={false}
+          defaultCountry={form.nationalityIsoCode as any}
+          className="phone-input-custom-signup"
+        />
 
         {err && <p className="text-xs text-red-400">{err}</p>}
 

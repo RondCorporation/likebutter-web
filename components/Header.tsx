@@ -59,7 +59,8 @@ export default function Header() {
   }, [pathname]);
 
   const showNav = pathname === '/';
-  const showAuthControls = !['/login', '/signup'].includes(pathname);
+  const showAuthControls =
+    !pathname.startsWith('/login') && !pathname.startsWith('/signup');
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-black/30">

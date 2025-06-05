@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiFetch, ApiResponse } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
@@ -18,6 +18,16 @@ export default function Login() {
   const [err, setErr] = useState('');
   const router = useRouter();
   const setToken = useAuthStore((s) => s.setToken);
+  const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
+
+  useEffect(() => {
+    const lastProvider = localStorage.getItem('lastUsedSocialLogin');
+    if (lastProvider) {
+      setLastUsedProvider(
+        lastProvider.charAt(0).toUpperCase() + lastProvider.slice(1)
+      );
+    }
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -86,6 +96,24 @@ export default function Login() {
         </p>
 
         <div className="mt-6 w-full max-w-sm">
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-white/20" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-black px-2 text-slate-400">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          {lastUsedProvider && (
+            <p className="mb-3 text-center text-xs text-slate-400">
+              Recently used:{' '}
+              <strong className="font-semibold text-accent">
+                {lastUsedProvider}
+              </strong>
+            </p>
+          )}
           <SocialButtons />
         </div>
       </form>

@@ -2,6 +2,7 @@ import Footer from '@/components/Footer';
 import Typewriter from '@/components/Typewriter';
 import LazyYoutube from '@/components/LazyYoutube';
 import { Bot, Clapperboard, Mic, Music, Palette } from 'lucide-react';
+import { useLang } from '@/hooks/useLang';
 
 const TITLE = 'LikeButter';
 const DESC = `Everything Melts with Butter.\n팬심이 녹아들어 특별한 콘텐츠가 되는 공간.`;
@@ -32,6 +33,7 @@ const FEATURES = [
 export const dynamic = 'force-static';
 
 export default function Landing() {
+  const { t } = useLang();
   const titleSpeed = 50;
   const descSpeed = 30;
   const titleDur = TITLE.length * titleSpeed + 400;
@@ -59,7 +61,7 @@ export default function Landing() {
             href="/studio"
             className="mt-8 inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition hover:brightness-90"
           >
-            Butter Studio 시작하기
+            {t.startStudio}
           </a>
         </div>
 
@@ -170,7 +172,7 @@ export default function Landing() {
             href="/pricing"
             className="rounded-md bg-accent px-8 py-3 text-base font-semibold text-black transition hover:brightness-90"
           >
-            자세한 요금제 보기
+            {t.viewPlans}
           </a>
         </div>
       </section>
@@ -192,7 +194,7 @@ export default function Landing() {
             className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black transition hover:brightness-90">
-            Send Message
+            {t.sendMessage}
           </button>
         </form>
       </section>

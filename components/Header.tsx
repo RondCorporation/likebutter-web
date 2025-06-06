@@ -6,20 +6,19 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import UserDropdown from './UserDropdown';
 import Logo from './Logo';
+import { useLang } from '@/hooks/useLang';
+import LanguageSwitcher from './LanguageSwitcher';
 
-const NAV_ITEMS = [
-  { id: 'about', label: 'About' },
-  { id: 'features', label: 'Features' },
-  { id: 'demo', label: 'Demo' },
-  { id: 'pricing', label: 'Pricing' },
-  { id: 'contact', label: 'Contact' },
-];
+const NAV_IDS = ['about', 'features', 'demo', 'pricing', 'contact'];
 
 export default function Header() {
   const [activeSection, setActiveSection] = useState('about');
   const { token } = useAuthStore();
   const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
+  const { t } = useLang();
+
+  const NAV_ITEMS = NAV_IDS.map((id) => ({ id, label: t.nav[id as keyof typeof t.nav] }));
 
   const handleNavClick = useCallback(
     (id: string) => {
@@ -50,7 +49,7 @@ export default function Header() {
         }
       );
 
-      NAV_ITEMS.forEach(({ id }) => {
+      NAV_IDS.forEach((id) => {
         const el = document.getElementById(id);
         if (el) observer.observe(el);
       });
@@ -85,6 +84,9 @@ export default function Header() {
           ))}
         </nav>
       )}
+      <div className="ml-auto mr-4">
+        <LanguageSwitcher />
+      </div>
 
       {/* 로그인 또는 사용자 메뉴 버튼 */}
       {isClient &&
@@ -96,7 +98,7 @@ export default function Header() {
             href="/login"
             className="rounded-md border border-accent/40 px-4 py-1 text-sm text-accent transition hover:bg-accent/10"
           >
-            Login
+            {t.login}
           </Link>
         ))}
       {!isClient && showAuthControls && (

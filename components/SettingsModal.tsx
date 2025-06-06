@@ -12,13 +12,10 @@ import {
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useLogout';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLang } from '@/hooks/useLang';
 
-const TABS = [
-  { id: 'general', label: 'General', icon: SettingsIcon },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'account', label: 'Account', icon: User },
-  { id: 'subscription', label: 'Subscription', icon: CreditCard },
-];
+const TAB_IDS = ['general', 'notifications', 'account', 'subscription'] as const;
 
 function AccountSettings() {
   const { user } = useAuthStore();
@@ -69,6 +66,18 @@ export default function SettingsModal() {
   const { isSettingsOpen, closeSettings } = useUIStore();
   const [activeTab, setActiveTab] = useState('account');
   const router = useRouter();
+  const { t } = useLang();
+  const TABS = TAB_IDS.map((id) => ({
+    id,
+    label: t[id as keyof typeof t],
+    icon: id === 'general'
+      ? SettingsIcon
+      : id === 'notifications'
+      ? Bell
+      : id === 'account'
+      ? User
+      : CreditCard,
+  }));
 
   if (!isSettingsOpen) return null;
 
@@ -88,7 +97,7 @@ export default function SettingsModal() {
         </button>
 
         <aside className="w-56 border-r border-white/10 p-6 pt-8 space-y-1 flex-shrink-0">
-          <h2 className="text-lg font-semibold mb-6 px-3">Settings</h2>
+          <h2 className="text-lg font-semibold mb-6 px-3">{t.settings}</h2>
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -108,7 +117,10 @@ export default function SettingsModal() {
         <section className="flex-1 p-8 overflow-y-auto">
           {activeTab === 'account' && <AccountSettings />}
           {activeTab === 'general' && (
-            <p className="text-slate-400">General settings coming soon.</p>
+            <div className="space-y-4 text-sm">
+              <label className="block text-slate-400">{t.selectLang}</label>
+              <LanguageSwitcher />
+            </div>
           )}
           {activeTab === 'notifications' && (
             <p className="text-slate-400">Notification settings coming soon.</p>

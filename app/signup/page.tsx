@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import SocialButtons from '@/components/SocialButtons';
 import { apiFetch, ApiResponse } from '@/lib/api';
+import { useLang } from '@/hooks/useLang';
 import PhoneInput, {
   isValidPhoneNumber,
   parsePhoneNumber,
@@ -33,6 +34,7 @@ export default function Signup() {
   const [countries, setCountries] = useState<Country[]>([]);
   const router = useRouter();
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
+  const { t } = useLang();
 
   useEffect(() => {
     async function fetchCountries() {
@@ -138,7 +140,7 @@ export default function Signup() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-black px-4 py-8 pt-24 md:pt-28">
       <form onSubmit={submit} className="grid w-full max-w-md gap-3">
-        <h2 className="mb-2 text-2xl font-semibold text-accent">Sign up</h2>
+        <h2 className="mb-2 text-2xl font-semibold text-accent">{t.signup}</h2>
 
         <input
           name="email"
@@ -240,7 +242,7 @@ export default function Signup() {
           promotional e-mails
         </label>
         <button className="mt-2 rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90">
-          Create account
+          {t.signup}
         </button>
         <p className="text-sm text-center text-slate-400">
           You already have an account?{' '}
@@ -248,7 +250,7 @@ export default function Signup() {
             onClick={() => router.push('/login')}
             className="cursor-pointer text-accent hover:underline"
           >
-            Login
+            {t.login}
           </span>
         </p>
 

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { apiFetch, ApiResponse } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
+import { useLang } from '@/hooks/useLang';
 
 interface LoginResponse {
   accessToken: { value: string };
@@ -19,6 +20,7 @@ export default function Login() {
   const router = useRouter();
   const setToken = useAuthStore((s) => s.setToken);
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
+  const { t } = useLang();
 
   useEffect(() => {
     const lastProvider = localStorage.getItem('lastUsedSocialLogin');
@@ -64,7 +66,7 @@ export default function Login() {
   return (
     <main className="flex h-screen items-center justify-center bg-black px-4 pt-24 md:pt-28">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4">
-        <h2 className="text-2xl font-semibold text-accent">Login</h2>
+        <h2 className="text-2xl font-semibold text-accent">{t.login}</h2>
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -83,7 +85,7 @@ export default function Login() {
         />
         {err && <p className="text-sm text-red-400">{err}</p>}
         <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90">
-          Login
+          {t.login}
         </button>
         <p className="text-sm text-center text-slate-400">
           Don't have an account?{' '}
@@ -91,7 +93,7 @@ export default function Login() {
             onClick={() => router.push('/signup')}
             className="cursor-pointer text-accent hover:underline"
           >
-            Sign up
+            {t.signup}
           </span>
         </p>
 

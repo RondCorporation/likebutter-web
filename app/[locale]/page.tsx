@@ -2,39 +2,42 @@ import Footer from '@/components/Footer';
 import Typewriter from '@/components/Typewriter';
 import LazyYoutube from '@/components/LazyYoutube';
 import { Bot, Clapperboard, Mic, Music, Palette } from 'lucide-react';
-
-const TITLE = 'LikeButter';
-const DESC = `Everything Melts with Butter.\n팬심이 녹아들어 특별한 콘텐츠가 되는 공간.`;
-
-const FEATURES = [
-  {
-    icon: Bot,
-    title: 'ButterTalks',
-    desc: '최애와 나누고 싶은 이야기를 AI와 함께 나눠보세요. 감정을 쏟아내는 것만으로 시작돼요.',
-  },
-  {
-    icon: Music,
-    title: 'ButterBeats & Cover',
-    desc: '나의 감정을 담아 세상에 하나뿐인 팬송을 만들거나, 최애의 목소리로 커버곡을 만들어보세요.',
-  },
-  {
-    icon: Palette,
-    title: 'ButterBrush',
-    desc: '마음속에 떠오른 이미지를 텍스트로 입력하거나 그림을 업로드하여 AI 팬아트를 완성할 수 있어요.',
-  },
-  {
-    icon: Clapperboard,
-    title: 'ButterCuts',
-    desc: '생성된 이미지와 음악, 나의 영상들을 조합하여 감각적인 팬메이드 비디오를 손쉽게 편집해보세요.',
-  },
-];
+import { getTranslations } from 'next-intl/server';
 
 export const dynamic = 'force-static';
 
-export default function Landing() {
+export default async function Landing({ params }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale: params.locale, namespace: 'LandingPage' });
+
+  const translatedTITLE = t('Title');
+  const translatedDESC = t('Description');
+
   const titleSpeed = 50;
   const descSpeed = 30;
-  const titleDur = TITLE.length * titleSpeed + 400;
+  const titleDur = translatedTITLE.length * titleSpeed + 400;
+
+  const FEATURES = [
+    {
+      icon: Bot,
+      title: t('FeatureButterTalksTitle'),
+      desc: t('FeatureButterTalksDescription'),
+    },
+    {
+      icon: Music,
+      title: t('FeatureButterBeatsTitle'),
+      desc: t('FeatureButterBeatsDescription'),
+    },
+    {
+      icon: Palette,
+      title: t('FeatureButterBrushTitle'),
+      desc: t('FeatureButterBrushDescription'),
+    },
+    {
+      icon: Clapperboard,
+      title: t('FeatureButterCutsTitle'),
+      desc: t('FeatureButterCutsDescription'),
+    },
+  ];
 
   return (
     <main className="h-screen snap-y snap-mandatory overflow-y-scroll scroll-smooth">
@@ -45,21 +48,21 @@ export default function Landing() {
       >
         <div className="z-10">
           <h2 className="mb-4 whitespace-pre-line text-4xl font-bold text-accent md:text-7xl">
-            <Typewriter text={TITLE} speed={titleSpeed} />
+            <Typewriter text={translatedTITLE} speed={titleSpeed} />
           </h2>
           <p className="max-w-sm whitespace-pre-line text-lg text-slate-300 md:text-xl">
             <Typewriter
-              text={DESC}
+              text={translatedDESC}
               speed={descSpeed}
               startDelay={titleDur}
               keepCursor
             />
           </p>
           <a
-            href="/studio"
+            href="/studio" // Middleware will handle locale redirection
             className="mt-8 inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition hover:brightness-90"
           >
-            Butter Studio 시작하기
+            {t('StartButton')}
           </a>
         </div>
 
@@ -114,11 +117,10 @@ export default function Landing() {
       >
         <div className="container mx-auto max-w-5xl px-8 text-center">
           <h2 className="mb-4 text-3xl font-semibold text-accent">
-            당신의 모든 감정이 작품이 되는 곳
+            {t('FeaturesTitle')}
           </h2>
           <p className="mb-12 text-slate-300">
-            LikeButter의 AI 요정 '버터'가 당신의 팬심을 다채로운 콘텐츠로 녹여낼
-            수 있도록 안내할게요.
+            {t('FeaturesDescription')}
           </p>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {FEATURES.map((f, i) => (
@@ -144,10 +146,10 @@ export default function Landing() {
       >
         <div className="text-center">
           <h2 className="mb-4 text-3xl font-semibold text-accent">
-            How it Works
+            {t('HowItWorksTitle')}
           </h2>
           <p className="mb-8 text-slate-300">
-            단 몇 번의 클릭으로 당신의 아이디어가 실현되는 과정을 확인하세요.
+            {t('HowItWorksDescription')}
           </p>
           <div className="h-72 w-[500px] max-w-[90vw] rounded-lg border border-white/20 bg-white/5 backdrop-blur" />
         </div>
@@ -160,17 +162,16 @@ export default function Landing() {
       >
         <div className="text-center">
           <h2 className="mb-4 text-3xl font-semibold text-accent">
-            Unlock Your Creativity
+            {t('UnlockCreativityTitle')}
           </h2>
           <p className="mb-8 max-w-xl text-slate-300">
-            무료로 시작하고, 더 전문적인 창작 활동이 필요할 때 Pro 플랜으로
-            업그레이드하세요.
+            {t('UnlockCreativityDescription')}
           </p>
           <a
-            href="/pricing"
+            href="/pricing" // Middleware will handle locale redirection
             className="rounded-md bg-accent px-8 py-3 text-base font-semibold text-black transition hover:brightness-90"
           >
-            자세한 요금제 보기
+            {t('ViewPricingButton')}
           </a>
         </div>
       </section>
@@ -181,18 +182,18 @@ export default function Landing() {
         className="flex h-screen snap-start items-center justify-center bg-black"
       >
         <form className="w-full max-w-md space-y-4 px-4">
-          <h2 className="text-3xl font-semibold text-accent">Contact Us</h2>
+          <h2 className="text-3xl font-semibold text-accent">{t('ContactUsTitle')}</h2>
           <input
-            placeholder="Email"
+            placeholder={t('EmailPlaceholder')}
             className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <textarea
-            placeholder="Message"
+            placeholder={t('MessagePlaceholder')}
             rows={4}
             className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black transition hover:brightness-90">
-            Send Message
+            {t('SendMessageButton')}
           </button>
         </form>
       </section>

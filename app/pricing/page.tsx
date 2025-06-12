@@ -186,7 +186,6 @@ export default function PricingPage() {
 
   const getFeatureValue = (value: string | boolean) => {
     if (typeof value === 'boolean') {
-      // For 'Watermark on Exports' feature, `true` means watermark exists (bad), so show X.
       return value ? (
         <X className="h-5 w-5 text-slate-500 mx-auto" />
       ) : (

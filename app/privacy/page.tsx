@@ -28,14 +28,12 @@ export default function PrivacyPage() {
     const fetchAndProcessMarkdown = async () => {
       setIsLoading(true);
       try {
-        // public 폴더에 있는 마크다운 파일을 fetch 합니다.
         const response = await fetch(`/policies/privacy_${language}.md`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         let text = await response.text();
 
-        // 변수들을 실제 값으로 치환합니다.
         for (const [key, value] of Object.entries(variables)) {
           text = text.replace(new RegExp(key, 'g'), value);
         }
@@ -52,7 +50,7 @@ export default function PrivacyPage() {
     };
 
     fetchAndProcessMarkdown();
-  }, [language]); // 언어가 변경될 때마다 이 effect를 다시 실행합니다.
+  }, [language]);
 
   return (
     <div className="container mx-auto p-4 md:p-8 bg-black text-white min-h-screen pt-24 md:pt-28">

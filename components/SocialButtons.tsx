@@ -1,4 +1,5 @@
 'use client';
+import { useSearchParams } from 'next/navigation';
 import { OAUTH_GOOGLE, OAUTH_FACEBOOK, OAUTH_X } from '@/lib/constants';
 
 const IconGoogle = () => (
@@ -57,11 +58,20 @@ export default function SocialButtons({
 }: {
   variant?: 'login' | 'signup';
 }) {
+  const searchParams = useSearchParams();
+
   const handleSocialClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     provider: 'Google' | 'Facebook' | 'X'
   ) => {
     localStorage.setItem('lastUsedSocialLogin', provider.toLowerCase());
+
+    const returnTo = searchParams.get('returnTo');
+    if (returnTo) {
+      localStorage.setItem('oauthReturnTo', returnTo);
+    } else {
+      localStorage.removeItem('oauthReturnTo');
+    }
 
     if (provider === 'Facebook' || provider === 'X') {
       e.preventDefault();

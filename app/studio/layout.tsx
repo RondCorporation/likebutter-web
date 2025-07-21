@@ -14,6 +14,8 @@ import {
   Brush,
   Clapperboard,
   MessageCircle,
+  UsersRound,
+  TestTube,
 } from 'lucide-react';
 import { useAssets } from '@/hooks/useAssets';
 import AuthGuard from '@/components/AuthGuard';
@@ -26,6 +28,8 @@ const FIXED_LINKS = [
 ];
 
 const BUTTER_TOOLS = [
+  { href: '/studio/butter-gen', label: 'ButterGen', icon: UsersRound },
+  { href: '/studio/butter-test', label: 'ButterTest', icon: TestTube },
   { href: '/studio/butter-talks', label: 'ButterTalks', icon: MessageCircle },
   { href: '/studio/butter-art', label: 'ButterBrush', icon: Brush },
   { href: '/studio/butter-cover', label: 'ButterBeats', icon: Music },
@@ -35,6 +39,8 @@ const BUTTER_TOOLS = [
 const PAGE_TITLES: { [key: string]: string } = {
   '/studio': 'Studio Home',
   '/studio/history': 'My History',
+  '/studio/butter-gen': 'ButterGen',
+  '/studio/butter-test': 'ButterTest',
   '/studio/butter-cover': 'ButterBeats',
   '/studio/butter-art': 'ButterBrush',
   '/studio/butter-cuts': 'ButterCuts',

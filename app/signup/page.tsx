@@ -30,6 +30,7 @@ export default function Signup() {
   });
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
   const [err, setErr] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [countries, setCountries] = useState<Country[]>([]);
   const router = useRouter();
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
@@ -55,7 +56,9 @@ export default function Signup() {
           setErr(res.msg || 'Failed to load country list.');
         }
       } catch (e: any) {
-        setErr('Failed to load country list. Please try again later.');
+        setErr(
+          e.message || 'Failed to load country list. Please try again later.'
+        );
       }
     }
     fetchCountries();
@@ -77,23 +80,28 @@ export default function Signup() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr('');
+    setIsSubmitting(true);
 
     if (!EMAIL_REGEX.test(form.email)) {
       setErr('Invalid email format.');
+      setIsSubmitting(false);
       return;
     }
     if (!PW_REGEX.test(form.pw)) {
       setErr(
         'Password must include uppercase, lowercase, number, special character (#?!@$%^&*-) and be at least 8 characters.'
       );
+      setIsSubmitting(false);
       return;
     }
     if (form.pw !== form.pw2) {
       setErr('Passwords do not match.');
+      setIsSubmitting(false);
       return;
     }
     if (!form.nationalityIsoCode) {
       setErr('Please select your nationality.');
+      setIsSubmitting(false);
       return;
     }
 
@@ -101,6 +109,7 @@ export default function Signup() {
     if (phoneNumber) {
       if (!isValidPhoneNumber(phoneNumber)) {
         setErr('Invalid phone number format.');
+        setIsSubmitting(false);
         return;
       }
       const parsed = parsePhoneNumber(phoneNumber);
@@ -128,10 +137,9 @@ export default function Signup() {
       alert('Sign up successful! Please log in.');
       router.replace('/login');
     } catch (e: any) {
-      setErr(
-        e.message ||
-          'Sign up failed. Please check your information and try again.'
-      );
+      setErr(e.message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -204,7 +212,7 @@ export default function Signup() {
           <option value="" className="bg-black" disabled>
             Select Nationality
           </option>
-          {countries.length === 0 && (
+          {countries.length === 0 && !err && (
             <option value="" disabled className="bg-black">
               Loading nationalities...
             </option>
@@ -239,8 +247,12 @@ export default function Signup() {
           <input type="checkbox" className="accent-accent" /> I agree to receive
           promotional e-mails
         </label>
-        <button className="mt-2 rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90">
-          Create account
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-2 rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90 disabled:opacity-70 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? 'Creating account...' : 'Create account'}
         </button>
         <p className="text-sm text-center text-slate-400">
           You already have an account?{' '}

@@ -9,9 +9,12 @@ export function useLogout() {
   const logout = async () => {
     try {
       await apiFetch('/auth/logout', { method: 'DELETE' }, true);
-      console.log('Logout API call successful.');
+      console.log('Server logout successful.');
     } catch (error) {
-      console.error('Logout API call failed:', error);
+      console.error(
+        'Server logout failed, proceeding with client-side logout:',
+        error
+      );
     } finally {
       logoutStore();
       router.replace('/login');

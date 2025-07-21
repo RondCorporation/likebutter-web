@@ -1,4 +1,10 @@
 import { useAuthStore } from '@/stores/authStore';
+import {
+  Page,
+  Task,
+  TaskImageUrlResponse,
+  TaskStatusResponse,
+} from '@/types/task';
 
 export interface ApiResponse<T> {
   status: number;
@@ -8,153 +14,151 @@ export interface ApiResponse<T> {
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE;
 
-let isRefreshing = false;
 let refreshPromise: Promise<string | null> | null = null;
 
-const getAuthStore = () => useAuthStore.getState();
-
-const forceLogout = () => {
-  getAuthStore().logout();
-  if (
-    typeof window !== 'undefined' &&
-    !window.location.pathname.startsWith('/login')
-  ) {
-    console.warn('Forcing logout due to API/Refresh failure.');
-    window.location.href = '/login';
+const handleLogout = () => {
+  useAuthStore.getState().logout();
+  if (typeof window !== 'undefined') {
+    window.location.href = '/login?reason=session_expired';
   }
 };
 
 async function refreshToken(): Promise<string | null> {
+  if (refreshPromise) return refreshPromise;
+
   console.log('Attempting to refresh token...');
-  try {
-    const res = await fetch(`${BASE}/auth/reissue`, {
-      method: 'POST',
-      credentials: 'include',
-    });
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch(`${BASE}/auth/reissue`, {
+        method: 'POST',
+        credentials: 'include',
+      });
 
-    if (!res.ok) {
-      let errorMsg = 'Token refresh failed';
-      try {
-        const errorJson = await res.json();
-        errorMsg = errorJson.msg || `Token refresh failed (${res.status})`;
-      } catch (e) {
-        /* ignore */
+      if (!res.ok) {
+        throw new Error(`Token refresh failed with status ${res.status}`);
       }
-      throw new Error(errorMsg);
+
+      const json: ApiResponse<{ accessToken: { value: string } }> =
+        await res.json();
+
+      if (!json.data?.accessToken?.value) {
+        throw new Error(
+          json.msg || 'Token refresh failed: No new token received'
+        );
+      }
+
+      const newAccessToken = json.data.accessToken.value;
+      console.log('Token refreshed successfully.');
+      useAuthStore.getState().setToken(newAccessToken);
+      return newAccessToken;
+    } catch (error) {
+      console.error('Token refresh failed, logging out:', error);
+      handleLogout();
+      return null;
+    } finally {
+      refreshPromise = null;
     }
+  })();
 
-    const json: ApiResponse<{ accessToken: { value: string } }> =
-      await res.json();
-
-    if (!json.data?.accessToken?.value) {
-      throw new Error(
-        json.msg || 'Token refresh failed: No new token received'
-      );
-    }
-
-    const newAccessToken = json.data.accessToken.value;
-    console.log('Token refreshed successfully.');
-    localStorage.setItem('accessToken', newAccessToken);
-    getAuthStore().setToken(newAccessToken);
-    return newAccessToken;
-  } catch (error) {
-    console.error('Token refresh failed:', error);
-    forceLogout();
-    return null;
-  }
+  return refreshPromise;
 }
 
 export async function apiFetch<T>(
   url: string,
-  opts: RequestInit = {},
+  opts: Omit<RequestInit, 'body'> & { body?: any } = {},
   withAuth = true
 ): Promise<ApiResponse<T>> {
-  let token = getAuthStore().token;
+  const makeRequest = async (token: string | null): Promise<ApiResponse<T>> => {
+    const isMultipart = opts.body instanceof FormData;
 
-  const makeRequest = async (
-    currentToken: string | null
-  ): Promise<ApiResponse<T>> => {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...(withAuth && currentToken
-        ? { Authorization: `Bearer ${currentToken}` }
-        : {}),
-      ...opts.headers,
-    };
+    const headers: HeadersInit = isMultipart
+      ? {}
+      : { 'Content-Type': 'application/json' };
 
-    if (opts.method === 'DELETE' && url === '/auth/logout') {
-      delete (headers as any)['Content-Type'];
-      opts.body = undefined;
-    } else if (opts.body === undefined || opts.body === null) {
-      delete (headers as any)['Content-Type'];
+    if (withAuth && token) {
+      headers.Authorization = `Bearer ${token}`;
     }
 
-    if (
-      url === '/auth/sign-up' ||
-      url === '/countries' ||
-      url === '/auth/login' ||
-      url === '/auth/reissue'
-    ) {
-      withAuth = false;
-      delete (headers as any)['Authorization'];
-    }
+    Object.assign(headers, opts.headers);
 
-    const res = await fetch(`${BASE}${url}`, {
+    const config: RequestInit = {
       credentials: 'include',
       ...opts,
       headers,
-    });
+    };
 
-    const text = await res.text();
-    let json: ApiResponse<T>;
-
-    try {
-      json = text
-        ? JSON.parse(text)
-        : { status: res.status, msg: res.statusText };
-    } catch (e) {
-      console.error('Failed to parse API response:', text, 'URL:', url);
-      throw new Error(`Failed to parse server response. Status: ${res.status}`);
+    if (opts.body && !isMultipart) {
+      config.body = JSON.stringify(opts.body);
     }
 
-    if (!res.ok) {
-      if (
-        res.status === 401 &&
-        withAuth &&
-        url !== '/auth/reissue' &&
-        !isRefreshing
-      ) {
-        console.log(`Received 401 for ${url}. Attempting token refresh...`);
+    try {
+      const res = await fetch(`${BASE}${url}`, config);
 
-        if (!refreshPromise) {
-          isRefreshing = true;
-          refreshPromise = refreshToken();
-        }
-
-        const newToken = await refreshPromise;
-        isRefreshing = false;
-        refreshPromise = null;
-
+      if (res.status === 401 && withAuth) {
+        console.log(`Received 401 for ${url}. Attempting to refresh token.`);
+        const newToken = await refreshToken();
         if (newToken) {
           console.log(`Retrying ${url} with new token...`);
           return makeRequest(newToken);
         } else {
-          throw new Error(json.msg || 'Session expired or refresh failed.');
+          throw new Error('Your session has expired. Please log in again.');
         }
-      } else if (res.status === 401) {
-        console.error(`401 Error for ${url} (cannot refresh). Logging out.`);
-        forceLogout();
-        throw new Error(json.msg || 'Authentication failed.');
       }
 
-      console.error(`API Error for ${url}:`, json.msg || res.statusText);
-      throw new Error(
-        json.msg ?? `Request failed: ${res.statusText} (${res.status})`
-      );
-    }
+      const text = await res.text();
+      let json: ApiResponse<T>;
+      try {
+        json = text
+          ? JSON.parse(text)
+          : { status: res.status, msg: res.statusText };
+      } catch (e) {
+        console.error('Failed to parse API response:', text, 'URL:', url);
+        throw new Error(
+          `Failed to parse server response. Status: ${res.status}`
+        );
+      }
 
-    return json;
+      if (!res.ok) {
+        console.error(`API Error for ${url}:`, json.msg || res.statusText);
+
+        throw new Error(
+          json.msg ?? `Request failed: ${res.statusText} (${res.status})`
+        );
+      }
+
+      return json;
+    } catch (error: any) {
+      const userFriendlyError = new Error(
+        error.message || 'An unknown error occurred. Please try again later.'
+      );
+      console.error('API Fetch Error:', error);
+
+      throw userFriendlyError;
+    }
   };
 
-  return makeRequest(token);
+  return makeRequest(useAuthStore.getState().token);
 }
+
+export const getTaskHistory = (
+  page: number,
+  filters: { status?: string; actionType?: string }
+) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    size: '10',
+    sort: 'createdAt,desc',
+  });
+  if (filters.status) params.append('status', filters.status);
+  if (filters.actionType) params.append('actionType', filters.actionType);
+
+  return apiFetch<Page<Task>>(`/tasks/me?${params.toString()}`);
+};
+
+export const getTaskStatus = (taskId: number) => {
+  return apiFetch<TaskStatusResponse>(`/tasks/${taskId}/status`);
+};
+
+export const getTaskImageUrl = (taskId: number) => {
+  return apiFetch<TaskImageUrlResponse>(`/tasks/${taskId}/image`);
+};

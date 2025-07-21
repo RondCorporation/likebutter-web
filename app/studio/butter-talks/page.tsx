@@ -43,9 +43,7 @@ export default function ButterTalksPage() {
           <p className="absolute left-4 top-4 text-lg font-semibold">
             {selectedMember}
           </p>
-          <div className="absolute bottom-4 right-4 h-24 w-40 items-center justify-center rounded-md border border-white/20 bg-black text-xs text-slate-400">
-            {/* todo: This would be the user's camera feed */}
-          </div>
+          <div className="absolute bottom-4 right-4 h-24 w-40 items-center justify-center rounded-md border border-white/20 bg-black text-xs text-slate-400"></div>
         </div>
         <div className="flex items-center gap-4">
           <button

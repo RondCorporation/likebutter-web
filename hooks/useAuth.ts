@@ -1,38 +1,44 @@
+'use client';
+
 import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 
 export function useAuth(required = true) {
-  const { token, user, fetchMe, logout, setToken } = useAuthStore();
+  const { user, isInitialized, isLoading } = useAuthStore();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('accessToken');
-
-    if (storedToken && !token) {
-      setToken(storedToken);
+    if (isLoading || !isInitialized) {
+      return;
     }
 
-    if (required && !storedToken) {
-      console.log('Auth required, no token. Redirecting to login.');
-      router.replace('/login');
-    } else if (storedToken && !user) {
-      console.log('Token exists, but no user. Fetching...');
-      fetchMe();
+    const isAuthPage = pathname === '/login' || pathname === '/signup';
+
+    if (required && !user) {
+      console.log('AuthGuard: User not found. Redirecting to login.');
+      const loginUrl = new URL('/login', window.location.origin);
+      loginUrl.searchParams.set('returnTo', pathname);
+      router.replace(loginUrl.toString());
+      return;
     }
 
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'accessToken' && event.newValue === null) {
-        console.log('accessToken removed. Logging out.');
-        logout();
-        router.replace('/login');
-      }
-    };
+    if (user && isAuthPage) {
+      console.log('AuthGuard: User already logged in. Redirecting...');
+      const returnTo = searchParams.get('returnTo');
+      router.replace(returnTo || '/studio');
+    }
+  }, [
+    user,
+    isInitialized,
+    isLoading,
+    required,
+    router,
+    pathname,
+    searchParams,
+  ]);
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [token, user, required, fetchMe, router, logout, pathname, setToken]);
-
-  return { token, user };
+  return { user, isLoading: !isInitialized || isLoading };
 }

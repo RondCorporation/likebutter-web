@@ -1,23 +1,24 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { apiFetch, ApiResponse } from '@/lib/api';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { apiFetch } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
-
-interface LoginResponse {
-  accessToken: { value: string };
-  refreshToken: { value: string };
-}
+import { LoginResponse } from '@/stores/authStore';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function Login() {
+function LoginContent() {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [err, setErr] = useState('');
   const router = useRouter();
-  const setToken = useAuthStore((s) => s.setToken);
+  const searchParams = useSearchParams();
+
+  const login = useAuthStore((s) => s.login);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const setLoading = useAuthStore((s) => s.setLoading);
+
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
 
   useEffect(() => {
@@ -27,7 +28,12 @@ export default function Login() {
         lastProvider.charAt(0).toUpperCase() + lastProvider.slice(1)
       );
     }
-  }, []);
+
+    const reason = searchParams.get('reason');
+    if (reason === 'session_expired') {
+      setErr('Your session has expired. Please log in again.');
+    }
+  }, [searchParams]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,26 +44,29 @@ export default function Login() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const res = await apiFetch<LoginResponse>(
         '/auth/login',
         {
           method: 'POST',
-          body: JSON.stringify({ email, password: pw }),
+          body: { email, password: pw },
         },
         false
       );
 
-      if (res.data?.accessToken?.value) {
-        const accessToken = res.data.accessToken.value;
-        localStorage.setItem('accessToken', accessToken);
-        setToken(accessToken);
-        router.replace('/studio');
+      if (res.data?.accessToken?.value && res.data.user) {
+        login(res);
+        const returnTo = searchParams.get('returnTo');
+        router.replace(returnTo || '/studio');
       } else {
-        setErr('Invalid email or password.');
+        setErr(res.msg || 'Invalid email or password.');
+        setLoading(false);
       }
     } catch (e: any) {
-      setErr('Invalid email or password.');
+      setErr(e.message);
+      setLoading(false);
     }
   }
 
@@ -72,6 +81,7 @@ export default function Login() {
           type="email"
           className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
           required
+          disabled={isLoading}
         />
         <input
           type="password"
@@ -80,16 +90,23 @@ export default function Login() {
           placeholder="Password"
           className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
           required
+          disabled={isLoading}
         />
         {err && <p className="text-sm text-red-400">{err}</p>}
-        <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black hover:brightness-90">
-          Login
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black transition hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
         <p className="text-sm text-center text-slate-400">
           Don't have an account?{' '}
           <span
-            onClick={() => router.push('/signup')}
-            className="cursor-pointer text-accent hover:underline"
+            onClick={() => !isLoading && router.push('/signup')}
+            className={`cursor-pointer text-accent hover:underline ${
+              isLoading ? 'pointer-events-none' : ''
+            }`}
           >
             Sign up
           </span>
@@ -118,5 +135,13 @@ export default function Login() {
         </div>
       </form>
     </main>
+  );
+}
+
+export default function Login() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

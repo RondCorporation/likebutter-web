@@ -6,6 +6,7 @@ import SettingsModal from '@/components/SettingsModal';
 import Header from '@/components/Header';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
+import AuthInitializer from '@/components/AuthInitializer';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({
@@ -22,9 +23,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-black text-white`}
       >
-        {showHeader && <Header />}
-        {children}
-        <SettingsModal />
+        <AuthInitializer>
+          {showHeader && <Header />}
+          {children}
+          <SettingsModal />
+        </AuthInitializer>
       </body>
     </html>
   );

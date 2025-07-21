@@ -240,7 +240,7 @@ export default function PricingPage() {
           <div className="min-w-[1200px] w-full">
             {/* Table Header */}
             <div className="grid grid-cols-6 gap-x-6">
-              <div className="col-span-1"></div> {/* Empty top-left corner */}
+              <div className="col-span-1"></div>
               {PLANS.map((plan) => (
                 <div
                   key={plan.name}

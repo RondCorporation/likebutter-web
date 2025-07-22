@@ -1,9 +1,14 @@
+'use client';
+
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
-  const companyName = '론드코퍼레이션(Rond Corporation)';
-  const companyAddress =
-    'H-Tower, 12 Teheran-ro 70-gil, Gangnam-gu, Seoul, Republic of Korea';
+  const { t } = useTranslation();
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1];
+
   const companyContactEmail = 'info@rondcorp.com';
   const businessInquiryEmail = 'biz@likebutter.ai';
 
@@ -14,32 +19,32 @@ export default function Footer() {
         <div className="space-y-3 md:col-span-2">
           <h3 className="font-semibold text-base text-accent">LIKEBUTTER</h3>
           <p className="text-slate-300">
-            © {new Date().getFullYear()} {companyName}. All rights reserved.
+            © {new Date().getFullYear()} {t('companyName')}. {t('footerRights')}
           </p>
-          <p>{companyAddress}</p>
+          <p>{t('companyAddress')}</p>
         </div>
 
         {/* Column 2: Links */}
         <div className="space-y-3">
-          <h3 className="font-semibold text-base text-white">Navigate</h3>
+          <h3 className="font-semibold text-base text-white">{t('footerNavigate')}</h3>
           <nav className="flex flex-col space-y-2">
             <Link
-              href="/#features"
+              href={`/${lang}/#features`}
               className="w-fit transition-colors hover:text-accent"
             >
-              Features
+              {t('navFeatures')}
             </Link>
             <Link
-              href="/pricing"
+              href={`/${lang}/pricing`}
               className="w-fit transition-colors hover:text-accent"
             >
-              Pricing
+              {t('navPricing')}
             </Link>
             <Link
-              href="/studio"
+              href={`/${lang}/studio`}
               className="w-fit transition-colors hover:text-accent"
             >
-              Studio Access
+              {t('footerStudioAccess')}
             </Link>
           </nav>
         </div>
@@ -47,26 +52,26 @@ export default function Footer() {
         {/* Column 3: Contact & Legal */}
         <div className="space-y-3">
           <h3 className="font-semibold text-base text-white">
-            Contact & Legal
+            {t('footerContactLegal')}
           </h3>
           <nav className="flex flex-col space-y-2">
             <a
               href={`mailto:${businessInquiryEmail}`}
               className="w-fit transition-colors hover:text-accent"
             >
-              Business Inquiries
+              {t('footerBusinessInquiries')}
             </a>
             <a
               href={`mailto:${companyContactEmail}`}
               className="w-fit transition-colors hover:text-accent"
             >
-              General Support
+              {t('footerGeneralSupport')}
             </a>
             <Link
-              href="/privacy"
+              href={`/${lang}/privacy`}
               className="w-fit transition-colors hover:text-accent"
             >
-              Privacy Policy
+              {t('footerPrivacyPolicy')}
             </Link>
           </nav>
         </div>

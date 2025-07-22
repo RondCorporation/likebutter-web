@@ -307,8 +307,8 @@ export default function ButterGenPage() {
           <div className="rounded-md border border-green-500/30 bg-green-500/10 p-4 text-green-300">
             <p className="font-semibold">{t('butterGenSuccessTitle')}</p>
             <p>
-              {t('butterGenSuccessTaskId')} {state.result.data.taskId} | {t('butterGenSuccessStatus')}{' '}
-              {state.result.data.status}
+              {t('butterGenSuccessTaskId')} {state.result.data.taskId} |{' '}
+              {t('butterGenSuccessStatus')} {state.result.data.status}
             </p>
             <Link
               href="/studio/history"

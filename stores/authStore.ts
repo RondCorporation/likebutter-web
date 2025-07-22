@@ -21,6 +21,7 @@ interface AuthState {
   token: string | null;
   isInitialized: boolean;
   isLoading: boolean;
+  isAuthenticated: boolean;
   setToken: (t: string | null) => void;
   setLoading: (isLoading: boolean) => void;
   initialize: () => Promise<void>;
@@ -33,6 +34,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   token: null,
   isInitialized: false,
   isLoading: true,
+  isAuthenticated: false,
 
   setToken: (t: string | null) => {
     set({ token: t });
@@ -60,10 +62,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       try {
         const { data: user } = await apiFetch<User>('/users/me');
         if (user) {
-          set({ user, isInitialized: true, isLoading: false });
+          set({
+            user,
+            isAuthenticated: true,
+            isInitialized: true,
+            isLoading: false,
+          });
         } else {
           get().setToken(null);
-          set({ user: null, isInitialized: true, isLoading: false });
+          set({
+            user: null,
+            isAuthenticated: false,
+            isInitialized: true,
+            isLoading: false,
+          });
         }
       } catch (error) {
         console.error(
@@ -71,10 +83,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           error
         );
         get().setToken(null);
-        set({ user: null, token: null, isInitialized: true, isLoading: false });
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isInitialized: true,
+          isLoading: false,
+        });
       }
     } else {
-      set({ isInitialized: true, isLoading: false, user: null, token: null });
+      set({
+        isInitialized: true,
+        isLoading: false,
+        user: null,
+        token: null,
+        isAuthenticated: false,
+      });
     }
   },
 
@@ -84,6 +108,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       get().setToken(accessToken.value);
       set({
         user,
+        isAuthenticated: true,
         isLoading: false,
         isInitialized: true,
       });
@@ -95,6 +120,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   logout: () => {
     console.log('Clearing token and user from store and localStorage.');
     get().setToken(null);
-    set({ user: null, isInitialized: true, isLoading: false });
+    set({
+      user: null,
+      isAuthenticated: false,
+      isInitialized: true,
+      isLoading: false,
+    });
   },
 }));

@@ -77,18 +77,24 @@ function LoginContent() {
   return (
     <main className="flex h-screen items-center justify-center bg-black px-4 pt-24 md:pt-28">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4">
-        <h2 className="text-2xl font-semibold text-accent">{t('loginTitle')}</h2>
+        <h2 className="text-2xl font-semibold text-accent">
+          {t('loginTitle')}
+        </h2>
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t('loginEmailPlaceholder')}
           type="email"
+          name="email"
+          autoComplete="email"
           className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
           required
           disabled={isLoading}
         />
         <input
           type="password"
+          name="password"
+          autoComplete="current-password"
           value={pw}
           onChange={(e) => setPw(e.target.value)}
           placeholder={t('loginPasswordPlaceholder')}

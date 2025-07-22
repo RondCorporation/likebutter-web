@@ -254,5 +254,7 @@
   "butterCutsStep2": "Upload your images & videos",
   "butterCutsUploadPlaceholder": "Click to browse or drag & drop your media",
   "butterCutsButton": "Generate Video",
-  "butterCutsFileCount": "{count} file(s) selected"
+  "butterCutsFileCount": "{count} file(s) selected",
+  "paymentSuccessTitle": "Payment Successful!",
+  "paymentSuccessMessage": "Your subscription has been activated. You can now enjoy all the features."
 }

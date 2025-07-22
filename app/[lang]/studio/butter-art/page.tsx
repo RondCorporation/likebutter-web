@@ -39,7 +39,9 @@ export default function ButterArtPage() {
 
       <div className="relative my-6 flex items-center">
         <div className="flex-grow border-t border-white/20"></div>
-        <span className="mx-4 flex-shrink text-sm text-slate-400">{t('butterArtOr')}</span>
+        <span className="mx-4 flex-shrink text-sm text-slate-400">
+          {t('butterArtOr')}
+        </span>
         <div className="flex-grow border-t border-white/20"></div>
       </div>
 

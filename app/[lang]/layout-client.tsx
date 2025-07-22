@@ -1,24 +1,22 @@
 'use client';
-
-import i18n from '@/lib/i18n-client';
-import { I18nextProvider } from 'react-i18next';
 import { usePathname } from 'next/navigation';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { ReactNode } from 'react';
 import AuthInitializer from '@/components/AuthInitializer';
-import Header from '@/components/Header';
-import SettingsModal from '@/components/SettingsModal';
+import '@/lib/i18n-client'; // Import to initialize i18next
 
 export function LayoutClient({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const showHeader = !pathname.includes('/studio');
+  const isStudioPage = pathname.includes('/studio');
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <AuthInitializer>
-        {showHeader && <Header />}
-        {children}
-        <SettingsModal />
-      </AuthInitializer>
-    </I18nextProvider>
+    <AuthInitializer>
+      <div className="flex min-h-screen flex-col">
+        {!isStudioPage && <Header />}
+        <main className="flex-grow">{children}</main>
+        {!isStudioPage && <Footer />}
+      </div>
+    </AuthInitializer>
   );
 }

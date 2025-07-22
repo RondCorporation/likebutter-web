@@ -1,24 +1,27 @@
 import { GenerationStatus, ActionType } from '@/types/task';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onFilterChange: (filters: { status?: string; actionType?: string }) => void;
 }
 
-const STATUS_OPTIONS: { label: string; value: GenerationStatus | '' }[] = [
-  { label: 'All Statuses', value: '' },
-  { label: 'Completed', value: 'COMPLETED' },
-  { label: 'Failed', value: 'FAILED' },
-  { label: 'Processing', value: 'PROCESSING' },
-  { label: 'Pending', value: 'PENDING' },
-];
-
-const ACTION_TYPE_OPTIONS: { label: string; value: ActionType | '' }[] = [
-  { label: 'All Types', value: '' },
-  { label: 'ButterGen', value: 'BUTTER_GEN' },
-  { label: 'ButterTest', value: 'BUTTER_TEST' },
-];
-
 export default function HistoryFilters({ onFilterChange }: Props) {
+  const { t } = useTranslation();
+
+  const STATUS_OPTIONS: { label: string; value: GenerationStatus | '' }[] = [
+    { label: t('historyFilterStatusAll'), value: '' },
+    { label: t('historyFilterStatusCompleted'), value: 'COMPLETED' },
+    { label: t('historyFilterStatusFailed'), value: 'FAILED' },
+    { label: t('historyFilterStatusProcessing'), value: 'PROCESSING' },
+    { label: t('historyFilterStatusPending'), value: 'PENDING' },
+  ];
+
+  const ACTION_TYPE_OPTIONS: { label: string; value: ActionType | '' }[] = [
+    { label: t('historyFilterTypeAll'), value: '' },
+    { label: t('historyFilterTypeButterGen'), value: 'BUTTER_GEN' },
+    { label: t('historyFilterTypeButterTest'), value: 'BUTTER_TEST' },
+  ];
+
   return (
     <div className="mb-8 flex flex-col md:flex-row gap-4">
       <select

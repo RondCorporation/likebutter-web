@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { i18n } from '@/i18n.config.mjs';
 import { dir } from 'i18next';
 import { Metadata } from 'next';
-import { LayoutClient } from './layout-client';
+import { LayoutClient } from './_components/LayoutClient';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({

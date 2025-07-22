@@ -11,7 +11,7 @@ export function generateStaticParams() {
 }
 
 export default async function PricingPage({ params }: Props) {
-  const { lang } = params;
+  const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
 
   const plans = [

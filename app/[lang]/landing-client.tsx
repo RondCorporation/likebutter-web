@@ -366,19 +366,24 @@ export default function LandingClient({ lang, translations }: Props) {
               variants={itemVariants}
               className="p-6 rounded-lg border border-white/10 bg-white/5"
             >
-              <h3 className="text-2xl font-bold text-white">{translations.landingPlanFreeName}</h3>
+              <h3 className="text-2xl font-bold text-white">
+                {translations.landingPlanFreeName}
+              </h3>
               <p className="text-sm text-slate-400 mt-2">
                 {translations.landingPlanFreeDesc}
               </p>
               <ul className="text-left mt-6 space-y-2 text-sm">
                 <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" /> {translations.landingFeatureCreditsFree}
+                  <Check size={16} className="text-accent" />{' '}
+                  {translations.landingFeatureCreditsFree}
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" /> {translations.landingFeatureSpeedFree}
+                  <Check size={16} className="text-accent" />{' '}
+                  {translations.landingFeatureSpeedFree}
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" /> {translations.landingFeatureWatermarkFree}
+                  <Check size={16} className="text-accent" />{' '}
+                  {translations.landingFeatureWatermarkFree}
                 </li>
               </ul>
             </motion.div>
@@ -386,19 +391,24 @@ export default function LandingClient({ lang, translations }: Props) {
               variants={itemVariants}
               className="p-6 rounded-lg border-2 border-accent bg-accent/5"
             >
-              <h3 className="text-2xl font-bold text-accent">{translations.landingPlanCreatorName}</h3>
+              <h3 className="text-2xl font-bold text-accent">
+                {translations.landingPlanCreatorName}
+              </h3>
               <p className="text-sm text-slate-400 mt-2">
                 {translations.landingPlanCreatorDesc}
               </p>
               <ul className="text-left mt-6 space-y-2 text-sm">
                 <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" /> {translations.landingFeatureCreditsCreator}
+                  <Check size={16} className="text-accent" />{' '}
+                  {translations.landingFeatureCreditsCreator}
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" /> {translations.landingFeatureSpeedCreator}
+                  <Check size={16} className="text-accent" />{' '}
+                  {translations.landingFeatureSpeedCreator}
                 </li>
                 <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" /> {translations.landingFeatureWatermarkCreator}
+                  <Check size={16} className="text-accent" />{' '}
+                  {translations.landingFeatureWatermarkCreator}
                 </li>
               </ul>
             </motion.div>
@@ -434,7 +444,9 @@ export default function LandingClient({ lang, translations }: Props) {
             variants={itemVariants}
             className="w-full max-w-md space-y-4 px-4"
           >
-            <h2 className="text-3xl font-semibold text-accent">{translations.contactTitle}</h2>
+            <h2 className="text-3xl font-semibold text-accent">
+              {translations.contactTitle}
+            </h2>
             <input
               placeholder={translations.contactEmail}
               className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-accent"
@@ -454,4 +466,3 @@ export default function LandingClient({ lang, translations }: Props) {
     </main>
   );
 }
-

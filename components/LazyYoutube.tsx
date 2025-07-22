@@ -10,7 +10,7 @@ export default function LazyYoutube({
   className?: string;
 }) {
   const [play, setPlay] = useState(false);
-  const thumb = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
   const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
 
   return (

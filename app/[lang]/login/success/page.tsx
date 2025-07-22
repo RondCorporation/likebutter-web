@@ -1,43 +1,73 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthStore, LoginResponse } from '@/stores/authStore';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useAuthStore, LoginResponse, User } from '@/stores/authStore';
 import { LoaderCircle } from 'lucide-react';
-import { ApiResponse } from '@/lib/api';
+import { apiFetch, ApiResponse } from '@/lib/api';
+
+const BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 function AuthRedirectHandler() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const { login } = useAuthStore();
+  const lang = pathname.split('/')[1] || 'en';
 
   useEffect(() => {
     const token = searchParams.get('accessToken');
-    const userStr = searchParams.get('user');
 
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        const loginResponse: ApiResponse<LoginResponse> = {
-          code: 'SUCCESS',
-          msg: 'Login successful',
-          data: {
-            accessToken: { value: token },
-            user,
-          },
-        };
-        login(loginResponse);
-        const returnTo = localStorage.getItem('oauthReturnTo') || '/studio';
-        localStorage.removeItem('oauthReturnTo');
-        router.replace(returnTo);
-      } catch (error) {
-        console.error('Failed to parse user data from URL', error);
-        router.replace('/login?error=auth_failed');
-      }
+    if (token) {
+      const fetchUser = async () => {
+        try {
+          // Use the token to fetch user data
+          const meResponse = await fetch(`${BASE}/users/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          if (!meResponse.ok) {
+            throw new Error('Failed to fetch user data');
+          }
+
+          const meApiRes: ApiResponse<User> = await meResponse.json();
+
+          if (!meApiRes.data) {
+            throw new Error(meApiRes.msg || 'User data not found');
+          }
+
+          const user = meApiRes.data;
+
+          // Construct the LoginResponse and call login
+          const loginResponse: ApiResponse<LoginResponse> = {
+            status: 200,
+            msg: 'Login successful',
+            data: {
+              accessToken: { value: token },
+              user,
+            },
+          };
+          login(loginResponse);
+
+          const returnTo =
+            localStorage.getItem('oauthReturnTo') || `/${lang}/studio`;
+          localStorage.removeItem('oauthReturnTo');
+          router.replace(returnTo);
+        } catch (error) {
+          console.error('Authentication failed:', error);
+          router.replace(`/${lang}/login?error=auth_failed`);
+        }
+      };
+
+      fetchUser();
     } else {
-      router.replace('/login?error=auth_failed');
+      // If no token is found, redirect to login with an error
+      console.error('No access token found in URL.');
+      router.replace(`/${lang}/login?error=auth_failed`);
     }
-  }, [searchParams, router, login]);
+  }, [searchParams, router, login, lang]);
 
   return null;
 }

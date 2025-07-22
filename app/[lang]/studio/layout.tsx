@@ -30,16 +30,44 @@ export default function StudioLayout({ children }: { children: ReactNode }) {
 
   const FIXED_LINKS = [
     { href: `/${lang}/studio`, label: t('studioNavHome'), icon: Home },
-    { href: `/${lang}/studio/history`, label: t('studioNavHistory'), icon: Clock },
+    {
+      href: `/${lang}/studio/history`,
+      label: t('studioNavHistory'),
+      icon: Clock,
+    },
   ];
 
   const BUTTER_TOOLS = [
-    { href: `/${lang}/studio/butter-gen`, label: t('studioToolButterGen'), icon: UsersRound },
-    { href: `/${lang}/studio/butter-test`, label: t('studioToolButterTest'), icon: TestTube },
-    { href: `/${lang}/studio/butter-talks`, label: t('studioToolButterTalks'), icon: MessageCircle },
-    { href: `/${lang}/studio/butter-art`, label: t('studioToolButterBrush'), icon: Brush },
-    { href: `/${lang}/studio/butter-cover`, label: t('studioToolButterBeats'), icon: Music },
-    { href: `/${lang}/studio/butter-cuts`, label: t('studioToolButterCuts'), icon: Clapperboard },
+    {
+      href: `/${lang}/studio/butter-gen`,
+      label: t('studioToolButterGen'),
+      icon: UsersRound,
+    },
+    {
+      href: `/${lang}/studio/butter-test`,
+      label: t('studioToolButterTest'),
+      icon: TestTube,
+    },
+    {
+      href: `/${lang}/studio/butter-talks`,
+      label: t('studioToolButterTalks'),
+      icon: MessageCircle,
+    },
+    {
+      href: `/${lang}/studio/butter-art`,
+      label: t('studioToolButterBrush'),
+      icon: Brush,
+    },
+    {
+      href: `/${lang}/studio/butter-cover`,
+      label: t('studioToolButterBeats'),
+      icon: Music,
+    },
+    {
+      href: `/${lang}/studio/butter-cuts`,
+      label: t('studioToolButterCuts'),
+      icon: Clapperboard,
+    },
   ];
 
   const PAGE_TITLES: { [key: string]: string } = {
@@ -62,7 +90,9 @@ export default function StudioLayout({ children }: { children: ReactNode }) {
   if (pathname.startsWith(`/${lang}/studio/asset/`)) {
     const assetName = pathname.split('/').pop();
     currentPageTitle = t('studioVaultTitle', {
-      assetName: assetName ? assetName.charAt(0).toUpperCase() + assetName.slice(1) : 'View',
+      assetName: assetName
+        ? assetName.charAt(0).toUpperCase() + assetName.slice(1)
+        : 'View',
     });
   }
 
@@ -115,7 +145,8 @@ export default function StudioLayout({ children }: { children: ReactNode }) {
                 </>
               ) : (
                 <>
-                  <ChevronDown size={14} /> {t('studioShowMore')} ({vaultItems.length - 2})
+                  <ChevronDown size={14} /> {t('studioShowMore')} (
+                  {vaultItems.length - 2})
                 </>
               )}
             </button>

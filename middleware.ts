@@ -5,16 +5,13 @@ import { match as matchLocale } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 
 function getLocale(request: NextRequest): string | undefined {
-  // Negotiator expects plain object so we need to transform headers
   const negotiatorHeaders: Record<string, string> = {};
   request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
 
-  // @ts-ignore locales are readonly
   const locales: string[] = i18n.locales;
 
-  // Use negotiator and intl-localematcher to get best locale
   let languages = new Negotiator({ headers: negotiatorHeaders }).languages(
-    locales,
+    locales
   );
 
   const locale = matchLocale(languages, locales, i18n.defaultLocale);
@@ -25,7 +22,6 @@ function getLocale(request: NextRequest): string | undefined {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Ignore specific files in `public`
   if (
     [
       '/favicon.ico',
@@ -39,25 +35,22 @@ export function middleware(request: NextRequest) {
     return;
   }
 
-  // Check if there is any supported locale in the pathname
   const pathnameIsMissingLocale = i18n.locales.every(
-    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`,
+    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   );
 
-  // Redirect if there is no locale
   if (pathnameIsMissingLocale) {
     const locale = getLocale(request);
 
-    return NextResponse.redirect(
-      new URL(
-        `/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}`,
-        request.url,
-      ),
+    const newUrl = new URL(
+      `/${locale}${pathname.startsWith('/') ? '' : '/'}${pathname}${request.nextUrl.search}`,
+      request.url
     );
+
+    return NextResponse.redirect(newUrl);
   }
 }
 
 export const config = {
-  // Matcher ignoring `/_next/` and `/api/`
   matcher: ['/((?!api|_next/static|_next/image|assets|images|sw.js).*)'],
 };

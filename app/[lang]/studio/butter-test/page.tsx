@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, LoaderCircle, TestTube } from 'lucide-react';
@@ -46,17 +46,7 @@ function apiSubmitReducer(state: State, action: Action): State {
 
 export default function ButterTestPage() {
   const { t } = useTranslation();
-  const [prompt, setPrompt] = useReducer(
-    (state: string, action: { type: 'SET_PROMPT'; payload: string }) => {
-      switch (action.type) {
-        case 'SET_PROMPT':
-          return action.payload;
-        default:
-          return state;
-      }
-    },
-    ''
-  );
+  const [prompt, setPrompt] = useState('');
   const [state, dispatch] = useReducer(apiSubmitReducer, initialState);
 
   const handleSubmit = async () => {
@@ -100,9 +90,7 @@ export default function ButterTestPage() {
         <textarea
           id="art-prompt"
           value={prompt}
-          onChange={(e) =>
-            setPrompt({ type: 'SET_PROMPT', payload: e.target.value })
-          }
+          onChange={(e) => setPrompt(e.target.value)}
           placeholder={t('butterTestPromptPlaceholder')}
           rows={4}
           className="w-full rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-slate-500 focus:border-accent focus:ring-0"
@@ -128,8 +116,8 @@ export default function ButterTestPage() {
           <div className="rounded-md border border-green-500/30 bg-green-500/10 p-4 text-green-300">
             <p className="font-semibold">{t('butterGenSuccessTitle')}</p>
             <p>
-              {t('butterGenSuccessTaskId')} {state.result.data.taskId} | {t('butterGenSuccessStatus')}{' '}
-              {state.result.data.status}
+              {t('butterGenSuccessTaskId')} {state.result.data.taskId} |{' '}
+              {t('butterGenSuccessStatus')} {state.result.data.status}
             </p>
             <Link
               href="/studio/history"

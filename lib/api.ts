@@ -162,3 +162,29 @@ export const getTaskStatus = (taskId: number) => {
 export const getTaskImageUrl = (taskId: number) => {
   return apiFetch<TaskImageUrlResponse>(`/tasks/${taskId}/image`);
 };
+
+// Payment APIs
+export const preRegisterPayment = (
+  merchantUid: string,
+  amount: number,
+  planKey: string
+) => {
+  return apiFetch('/subscriptions/pre-register', {
+    method: 'POST',
+    body: {
+      merchantUid,
+      amount,
+      planKey,
+    },
+  });
+};
+
+export const activatePayment = (impUid: string, merchantUid: string) => {
+  return apiFetch('/subscriptions/activate', {
+    method: 'POST',
+    body: {
+      impUid,
+      merchantUid,
+    },
+  });
+};

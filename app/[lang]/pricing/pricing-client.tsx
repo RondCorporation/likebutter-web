@@ -3,6 +3,12 @@
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Check, X } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
+import { useRouter } from 'next/navigation';
+import PortOne from '@portone/browser-sdk/v2';
+
+import { activatePayment, preRegisterPayment } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
 
 type Plan = {
   key: string;
@@ -44,11 +50,90 @@ export default function PricingClient({
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
   );
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
 
-  const handleSubscribeClick = (planName: string) => {
-    const plan = plans.find((p) => p.name === planName);
-    if (plan && plan.key !== 'Free' && plan.key !== 'Enterprise') {
-      alert(translations.paymentAlert);
+  const handlePayment = async (plan: Plan) => {
+    if (!isAuthenticated) {
+      router.push(`/${lang}/login`);
+      return;
+    }
+
+    if (plan.isCustom) {
+      window.location.href = plan.href;
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const price =
+        billingCycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
+
+      if (typeof price !== 'number') {
+        throw new Error('Invalid price for this plan.');
+      }
+
+      const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
+
+      if (!storeId || !channelKey) {
+        throw new Error('Payment environment variables are not set.');
+      }
+
+      const paymentId = uuidv4();
+      const planKey = plan.key;
+      const amount = price;
+
+      // 1. 결제 정보 사전 등록
+      await preRegisterPayment(paymentId, amount, planKey);
+
+      // 2. 포트원 V2 결제창 호출 (인라인 객체 전달)
+      const response = await PortOne.requestPayment({
+        storeId,
+        channelKey,
+        paymentId,
+        orderName: `${plan.name} Plan (${
+          billingCycle === 'monthly' ? 'Monthly' : 'Yearly'
+        })`,
+        totalAmount: amount,
+        currency: 'CURRENCY_KRW', // CURRENCY_USD, CURRENCY_KRW 처럼 CURRENCY_ 가 붙은게 옳바른 표현
+        payMethod: 'CARD',
+        customer: {
+          fullName: user?.name || 'User',
+          email: user?.email || 'default@example.com',
+        },
+      });
+
+      if (!response) {
+        // 사용자가 결제창을 닫은 경우
+        alert('Payment was cancelled.');
+        return;
+      }
+
+      if (response.code) {
+        // 결제 실패
+        throw new Error(response.message || 'Payment failed or was cancelled.');
+      }
+
+      // 3. 결제 검증 및 구독 활성화
+      const validationResult = await activatePayment(
+        response.paymentId,
+        paymentId
+      );
+
+      if (validationResult.data === 'SUBSCRIPTION_SUCCESSFUL') {
+        alert('Subscription successful!');
+        router.push(`/${lang}/pricing/success`);
+      } else {
+        throw new Error('Subscription activation failed.');
+      }
+    } catch (error: any) {
+      alert(`An error occurred: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,167 +168,176 @@ export default function PricingClient({
   };
 
   return (
-    <div className="min-h-screen bg-black px-4 pb-20 pt-28 text-white">
-      <div className="container mx-auto max-w-7xl">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-4xl font-bold text-accent md:text-5xl">
-            {translations.title}
-          </h1>
-          <p className="mt-4 text-lg text-slate-300">
-            {translations.subtitle}
-          </p>
-        </div>
+    <>
+      <div className="min-h-screen bg-black px-4 pb-20 pt-28 text-white">
+        <div className="container mx-auto max-w-7xl">
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="text-4xl font-bold text-accent md:text-5xl">
+              {translations.title}
+            </h1>
+            <p className="mt-4 text-lg text-slate-300">
+              {translations.subtitle}
+            </p>
+          </div>
 
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <span
-            className={`font-medium transition ${
-              billingCycle === 'monthly' ? 'text-accent' : 'text-slate-400'
-            }`}
-          >
-            {translations.monthly}
-          </span>
-          <label className="relative inline-flex cursor-pointer items-center">
-            <input
-              type="checkbox"
-              className="peer sr-only"
-              checked={billingCycle === 'yearly'}
-              onChange={() =>
-                setBillingCycle(
-                  billingCycle === 'monthly' ? 'yearly' : 'monthly'
-                )
-              }
-            />
-            <div className="peer h-6 w-11 rounded-full bg-slate-700 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:content-[''] after:transition-all peer-checked:bg-accent peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
-          </label>
-          <span
-            className={`font-medium transition ${
-              billingCycle === 'yearly' ? 'text-accent' : 'text-slate-400'
-            }`}
-          >
-            {translations.yearly}
-            <span className="ml-2 rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-300">
-              {translations.save20}
+          <div className="mt-10 flex items-center justify-center gap-4">
+            <span
+              className={`font-medium transition ${
+                billingCycle === 'monthly' ? 'text-accent' : 'text-slate-400'
+              }`}
+            >
+              {translations.monthly}
             </span>
-          </span>
-        </div>
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input
+                type="checkbox"
+                className="peer sr-only"
+                checked={billingCycle === 'yearly'}
+                onChange={() =>
+                  setBillingCycle(
+                    billingCycle === 'monthly' ? 'yearly' : 'monthly'
+                  )
+                }
+              />
+              <div className="peer h-6 w-11 rounded-full bg-slate-700 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:content-[''] after:transition-all peer-checked:bg-accent peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+            </label>
+            <span
+              className={`font-medium transition ${
+                billingCycle === 'yearly' ? 'text-accent' : 'text-slate-400'
+              }`}
+            >
+              {translations.yearly}
+              <span className="ml-2 rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-300">
+                {translations.save20}
+              </span>
+            </span>
+          </div>
 
-        <div className="mt-12 overflow-x-auto pb-4">
-          <div className="min-w-[1200px] w-full">
-            {/* Table Header */}
-            <div className="grid grid-cols-5 gap-x-6">
-              <div className="col-span-1"></div>
-              {plans.map((plan) => (
-                <div
-                  key={plan.name}
-                  className={`col-span-1 p-4 rounded-t-lg ${
-                    plan.isPopular ? 'bg-accent/10' : ''
-                  }`}
-                >
-                  <h2
-                    className={`text-xl font-bold ${
-                      plan.isPopular ? 'text-accent' : 'text-white'
+          <div className="mt-12 overflow-x-auto pb-4">
+            <div className="min-w-[1200px] w-full">
+              {/* Table Header */}
+              <div className="grid grid-cols-5 gap-x-6">
+                <div className="col-span-1"></div>
+                {plans.map((plan) => (
+                  <div
+                    key={plan.name}
+                    className={`col-span-1 p-4 rounded-t-lg ${
+                      plan.isPopular ? 'bg-accent/10' : ''
                     }`}
                   >
-                    {plan.name}
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-1 h-10">
-                    {plan.description}
-                  </p>
-                  <div className="mt-4 h-20">
-                    {plan.isCustom ? (
-                      <span className="text-4xl font-bold">
-                        {plan.priceMonthly}
-                      </span>
-                    ) : (
-                      <>
+                    <h2
+                      className={`text-xl font-bold ${
+                        plan.isPopular ? 'text-accent' : 'text-white'
+                      }`}
+                    >
+                      {plan.name}
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-1 h-10">
+                      {plan.description}
+                    </p>
+                    <div className="mt-4 h-20">
+                      {plan.isCustom ? (
                         <span className="text-4xl font-bold">
-                          {formatPrice(
-                            billingCycle === 'monthly'
-                              ? plan.priceMonthly
-                              : plan.priceYearly
-                          )}
+                          {plan.priceMonthly}
                         </span>
-                        <span className="text-lg text-slate-400">/mo</span>
-                        {billingCycle === 'yearly' &&
-                          plan.priceMonthly !== 0 && (
-                            <p className="text-xs text-slate-500">
-                              {translations.billedAs}{' '}
-                              {formatPrice((plan.priceYearly as number) * 12)}
-                              /year
-                            </p>
-                          )}
-                      </>
+                      ) : (
+                        <>
+                          <span className="text-4xl font-bold">
+                            {formatPrice(
+                              billingCycle === 'monthly'
+                                ? plan.priceMonthly
+                                : plan.priceYearly
+                            )}
+                          </span>
+                          <span className="text-lg text-slate-400">/mo</span>
+                          {billingCycle === 'yearly' &&
+                            plan.priceMonthly !== 0 && (
+                              <p className="text-xs text-slate-500">
+                                {translations.billedAs}{' '}
+                                {formatPrice((plan.priceYearly as number) * 12)}
+                                /year
+                              </p>
+                            )}
+                        </>
+                      )}
+                    </div>
+                    {plan.key === 'Free' ? (
+                      <Link href={plan.href}>
+                        <button
+                          className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition bg-white/10 text-white hover:bg-white/20`}
+                        >
+                          {plan.cta}
+                        </button>
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={() => handlePayment(plan)}
+                        disabled={isLoading}
+                        className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition ${
+                          plan.isPopular
+                            ? 'bg-accent text-black hover:brightness-90'
+                            : plan.isCustom
+                              ? 'bg-slate-600 text-white hover:bg-slate-500'
+                              : 'bg-white/10 text-white hover:bg-white/20'
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        {isLoading ? 'Processing...' : plan.cta}
+                      </button>
                     )}
                   </div>
-                  <Link href={plan.href}>
-                    <button
-                      onClick={() => handleSubscribeClick(plan.name)}
-                      className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition ${
-                        plan.isPopular
-                          ? 'bg-accent text-black hover:brightness-90'
-                          : plan.isCustom
-                          ? 'bg-slate-600 text-white hover:bg-slate-500'
-                          : 'bg-white/10 text-white hover:bg-white/20'
-                      }`}
-                    >
-                      {plan.cta}
-                    </button>
-                  </Link>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
 
-            {/* Table Body */}
-            {Object.entries(groupedFeatures).map(
-              ([category, featuresInSection]) => (
-                <Fragment key={category}>
-                  <div className="grid grid-cols-5 gap-x-6 items-center bg-black">
-                    <h3 className="text-base font-semibold text-slate-300 py-4 col-span-5 px-4">
-                      {category}
-                    </h3>
-                  </div>
-                  {featuresInSection.map((feature, featureIdx) => (
-                    <div
-                      key={feature.name}
-                      className={`grid grid-cols-5 gap-x-6 items-center text-center ${
-                        featureIdx % 2 === 0
-                          ? 'bg-white/[0.02]'
-                          : 'bg-black'
-                      }`}
-                    >
-                      <div className="col-span-1 text-left text-sm text-slate-300 p-4">
-                        {feature.name}
-                      </div>
-                      {plans.map((plan) => {
-                        const value = feature.values[plan.name];
-                        return (
-                          <div
-                            key={`${plan.name}-${feature.name}`}
-                            className={`col-span-1 p-4 text-white ${
-                              plan.isPopular ? 'bg-accent/5' : ''
-                            }`}
-                          >
-                            {getFeatureValue(value)}
-                          </div>
-                        );
-                      })}
+              {/* Table Body */}
+              {Object.entries(groupedFeatures).map(
+                ([category, featuresInSection]) => (
+                  <Fragment key={category}>
+                    <div className="grid grid-cols-5 gap-x-6 items-center bg-black">
+                      <h3 className="text-base font-semibold text-slate-300 py-4 col-span-5 px-4">
+                        {category}
+                      </h3>
                     </div>
-                  ))}
-                </Fragment>
-              )
-            )}
+                    {featuresInSection.map((feature, featureIdx) => (
+                      <div
+                        key={feature.name}
+                        className={`grid grid-cols-5 gap-x-6 items-center text-center ${
+                          featureIdx % 2 === 0 ? 'bg-white/[0.02]' : 'bg-black'
+                        }`}
+                      >
+                        <div className="col-span-1 text-left text-sm text-slate-300 p-4">
+                          {feature.name}
+                        </div>
+                        {plans.map((plan) => {
+                          const value = feature.values[plan.name];
+                          return (
+                            <div
+                              key={`${plan.name}-${feature.name}`}
+                              className={`col-span-1 p-4 text-white ${
+                                plan.isPopular ? 'bg-accent/5' : ''
+                              }`}
+                            >
+                              {getFeatureValue(value)}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </Fragment>
+                )
+              )}
+            </div>
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link
+              href={`/${lang}/studio`}
+              className="text-accent hover:underline"
+            >
+              {translations.goToStudio} →
+            </Link>
           </div>
         </div>
-
-        <div className="mt-16 text-center">
-          <Link
-            href={`/${lang}/studio`}
-            className="text-accent hover:underline"
-          >
-            {translations.goToStudio} →
-          </Link>
-        </div>
       </div>
-    </div>
+    </>
   );
 }

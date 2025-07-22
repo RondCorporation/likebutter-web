@@ -39,9 +39,7 @@ export default function HistoryPage() {
     <div className="mx-auto max-w-7xl">
       <div className="mb-8">
         <h2 className="mb-2 text-2xl font-bold">{t('studioTitleHistory')}</h2>
-        <p className="text-slate-400">
-          {t('historySubtitle')}
-        </p>
+        <p className="text-slate-400">{t('historySubtitle')}</p>
       </div>
 
       <HistoryFilters onFilterChange={setFilters} />
@@ -54,7 +52,11 @@ export default function HistoryPage() {
           </div>
         )}
 
-      {error && <p className="text-center text-red-400">{t('historyError', { error })}</p>}
+      {error && (
+        <p className="text-center text-red-400">
+          {t('historyError', { error })}
+        </p>
+      )}
 
       {!isLoading &&
         inProgressTasks.length === 0 &&

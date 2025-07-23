@@ -39,6 +39,7 @@ type Props = {
   plans: Plan[];
   features: Feature[];
   translations: Translations;
+  currency: string;
 };
 
 export default function PricingClient({
@@ -46,6 +47,7 @@ export default function PricingClient({
   plans,
   features,
   translations,
+  currency,
 }: Props) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
@@ -99,7 +101,7 @@ export default function PricingClient({
           billingCycle === 'monthly' ? 'Monthly' : 'Yearly'
         })`,
         totalAmount: amount,
-        currency: 'CURRENCY_KRW', // CURRENCY_USD, CURRENCY_KRW 처럼 CURRENCY_ 가 붙은게 옳바른 표현
+        currency: currency === '₩' ? 'KRW' : 'USD',
         payMethod: 'CARD',
         customer: {
           fullName: user?.name || 'User',
@@ -162,9 +164,9 @@ export default function PricingClient({
 
   const formatPrice = (price: number | string) => {
     if (typeof price === 'string') return price;
-    return lang === 'ko'
-      ? `₩${price.toLocaleString('ko-KR')}`
-      : `${price.toLocaleString('en-US')}`;
+    const formattedPrice =
+      currency === '₩' ? price.toLocaleString('ko-KR') : price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return `${currency}${formattedPrice}`;
   };
 
   return (

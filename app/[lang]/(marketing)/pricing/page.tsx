@@ -14,6 +14,20 @@ export default async function PricingPage({ params }: Props) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
 
+  const usdPrices = {
+    creator: { monthly: 24.99, yearly: 19.99 },
+    professional: { monthly: 69.99, yearly: 55.99 },
+  };
+
+  const krwPrices = {
+    creator: { monthly: 32900, yearly: 25900 },
+    professional: { monthly: 89900, yearly: 72900 },
+  };
+
+  const isKorean = lang === 'ko';
+  const currency = isKorean ? '₩' : '$';
+  const prices = isKorean ? krwPrices : usdPrices;
+
   const plans = [
     {
       key: 'Free',
@@ -30,8 +44,8 @@ export default async function PricingPage({ params }: Props) {
       key: 'Creator',
       name: t('planCreatorName'),
       description: t('planCreatorDesc'),
-      priceMonthly: 25,
-      priceYearly: 20,
+      priceMonthly: prices.creator.monthly,
+      priceYearly: prices.creator.yearly,
       cta: t('planCreatorCta'),
       href: '#',
       isPopular: true,
@@ -41,8 +55,8 @@ export default async function PricingPage({ params }: Props) {
       key: 'Professional',
       name: t('planProfessionalName'),
       description: t('planProfessionalDesc'),
-      priceMonthly: 75,
-      priceYearly: 60,
+      priceMonthly: prices.professional.monthly,
+      priceYearly: prices.professional.yearly,
       cta: t('planProfessionalCta'),
       href: '#',
       isPopular: false,
@@ -171,6 +185,7 @@ export default async function PricingPage({ params }: Props) {
       plans={plans}
       features={features}
       translations={translations}
+      currency={currency}
     />
   );
 }

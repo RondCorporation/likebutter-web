@@ -4,6 +4,8 @@ import nextI18NextConfig from '../../../../next-i18next.config.mjs';
 import { getPlans } from '@/app/_lib/api';
 import { Plan } from '@/app/_types/plan';
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   params: Promise<{ lang: string }>;
 };
@@ -41,9 +43,7 @@ export default async function PricingPage({ params }: Props) {
   const processedPlans = processApiPlans(apiPlans || []);
 
   const isKorean = lang === 'ko';
-  const currency = isKorean ? '₩' : '
-;
-
+  const currency = isKorean ? '₩' : '$';
   const getPrice = (planType: string, cycle: 'monthly' | 'yearly') => {
     const plan = processedPlans[planType]?.[cycle];
     if (!plan) return 0;
@@ -228,4 +228,3 @@ export default async function PricingPage({ params }: Props) {
     />
   );
 }
-

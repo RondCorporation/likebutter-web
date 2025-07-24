@@ -1,3 +1,4 @@
+import { Plan } from '@/app/_types/plan';
 import { useAuthStore } from '@/stores/authStore';
 import {
   Page,
@@ -164,8 +165,8 @@ export const getTaskImageUrl = (taskId: number) => {
 };
 
 // Payment APIs
-export const getPlans = () => {
-  return apiFetch('/plans');
+export const getPlans = (): Promise<ApiResponse<Plan[]>> => {
+  return apiFetch<Plan[]>('/plans');
 };
 
 export const preRegisterPayment = (merchantUid: string, planKey: string) => {

@@ -1,6 +1,8 @@
 import initTranslations from '@/lib/i18n-server';
 import PricingClient from './_components/PricingClient';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
+import { getPlans } from '@/app/_lib/api';
+import { Plan } from '@/app/_types/plan';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -10,23 +12,47 @@ export function generateStaticParams() {
   return nextI18NextConfig.i18n.locales.map((locale) => ({ lang: locale }));
 }
 
+const processApiPlans = (apiPlans: Plan[]) => {
+  const processed: {
+    [key: string]: {
+      monthly?: Plan;
+      yearly?: Plan;
+    };
+  } = {};
+
+  apiPlans.forEach((plan) => {
+    if (!processed[plan.planType]) {
+      processed[plan.planType] = {};
+    }
+    if (plan.billingCycle === 'MONTHLY') {
+      processed[plan.planType].monthly = plan;
+    } else if (plan.billingCycle === 'YEARLY') {
+      processed[plan.planType].yearly = plan;
+    }
+  });
+  return processed;
+};
+
 export default async function PricingPage({ params }: Props) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
 
-  const usdPrices = {
-    creator: { monthly: 24.99, yearly: 19.99 },
-    professional: { monthly: 69.99, yearly: 55.99 },
-  };
-
-  const krwPrices = {
-    creator: { monthly: 32900, yearly: 25900 },
-    professional: { monthly: 89900, yearly: 72900 },
-  };
+  const { data: apiPlans } = (await getPlans()) || { data: [] };
+  const processedPlans = processApiPlans(apiPlans || []);
 
   const isKorean = lang === 'ko';
-  const currency = isKorean ? '₩' : '$';
-  const prices = isKorean ? krwPrices : usdPrices;
+  const currency = isKorean ? '₩' : '
+;
+
+  const getPrice = (planType: string, cycle: 'monthly' | 'yearly') => {
+    const plan = processedPlans[planType]?.[cycle];
+    if (!plan) return 0;
+    return isKorean ? plan.priceKrw : plan.priceUsd;
+  };
+
+  const getPlanKey = (planType: string, cycle: 'monthly' | 'yearly') => {
+    return processedPlans[planType]?.[cycle]?.planKey || '';
+  };
 
   const plans = [
     {
@@ -39,28 +65,37 @@ export default async function PricingPage({ params }: Props) {
       href: `/${lang}/signup`,
       isPopular: false,
       isCustom: false,
+      planKeyMonthly: '',
+      planKeyYearly: '',
+      priceYearlyTotal: 0,
     },
     {
       key: 'Creator',
       name: t('planCreatorName'),
       description: t('planCreatorDesc'),
-      priceMonthly: prices.creator.monthly,
-      priceYearly: prices.creator.yearly,
+      priceMonthly: getPrice('CREATOR', 'monthly'),
+      priceYearly: getPrice('CREATOR', 'yearly') / 12,
       cta: t('planCreatorCta'),
       href: '#',
       isPopular: true,
       isCustom: false,
+      planKeyMonthly: getPlanKey('CREATOR', 'monthly'),
+      planKeyYearly: getPlanKey('CREATOR', 'yearly'),
+      priceYearlyTotal: getPrice('CREATOR', 'yearly'),
     },
     {
       key: 'Professional',
       name: t('planProfessionalName'),
       description: t('planProfessionalDesc'),
-      priceMonthly: prices.professional.monthly,
-      priceYearly: prices.professional.yearly,
+      priceMonthly: getPrice('PROFESSIONAL', 'monthly'),
+      priceYearly: getPrice('PROFESSIONAL', 'yearly') / 12,
       cta: t('planProfessionalCta'),
       href: '#',
       isPopular: false,
       isCustom: false,
+      planKeyMonthly: getPlanKey('PROFESSIONAL', 'monthly'),
+      planKeyYearly: getPlanKey('PROFESSIONAL', 'yearly'),
+      priceYearlyTotal: getPrice('PROFESSIONAL', 'yearly'),
     },
     {
       key: 'Enterprise',
@@ -72,6 +107,9 @@ export default async function PricingPage({ params }: Props) {
       href: 'mailto:enterprise@likebutter.com',
       isPopular: false,
       isCustom: true,
+      planKeyMonthly: '',
+      planKeyYearly: '',
+      priceYearlyTotal: 0,
     },
   ];
 
@@ -186,6 +224,8 @@ export default async function PricingPage({ params }: Props) {
       features={features}
       translations={translations}
       currency={currency}
+      apiPlans={apiPlans || []}
     />
   );
 }
+

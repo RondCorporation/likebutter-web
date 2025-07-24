@@ -3,12 +3,12 @@
 import { useState, Fragment } from 'react';
 import Link from 'next/link';
 import { Check, X } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import PortOne from '@portone/browser-sdk/v2';
 
 import { activatePayment, preRegisterPayment } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
+import { Plan as ApiPlan } from '@/app/_types/plan';
 
 type Plan = {
   key: string;
@@ -20,6 +20,9 @@ type Plan = {
   href: string;
   isPopular: boolean;
   isCustom: boolean;
+  planKeyMonthly: string;
+  planKeyYearly: string;
+  priceYearlyTotal: number;
 };
 
 type Feature = {
@@ -40,6 +43,7 @@ type Props = {
   features: Feature[];
   translations: Translations;
   currency: string;
+  apiPlans: ApiPlan[];
 };
 
 export default function PricingClient({
@@ -48,17 +52,17 @@ export default function PricingClient({
   features,
   translations,
   currency,
+  apiPlans,
 }: Props) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
   );
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const user = useAuthStore((state) => state.user);
+  const { isAuthenticated, user } = useAuthStore();
 
   const handlePayment = async (plan: Plan) => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       router.push(`/${lang}/login`);
       return;
     }
@@ -71,67 +75,61 @@ export default function PricingClient({
     setIsLoading(true);
 
     try {
-      const price =
-        billingCycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
-
-      if (typeof price !== 'number') {
-        throw new Error('Invalid price for this plan.');
+      const planKey =
+        billingCycle === 'monthly'
+          ? plan.planKeyMonthly
+          : plan.planKeyYearly;
+      if (!planKey) {
+        throw new Error('Selected plan is not available for purchase.');
       }
 
-      const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
-      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
+      const selectedApiPlan = apiPlans.find((p) => p.planKey === planKey);
+      if (!selectedApiPlan) {
+        throw new Error('Could not find the details for the selected plan.');
+      }
 
-      if (!storeId || !channelKey) {
+      const merchantUid = `${planKey}_${new Date().getTime()}`;
+
+      await preRegisterPayment(merchantUid, planKey);
+
+      const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
+      if (!storeId) {
         throw new Error('Payment environment variables are not set.');
       }
 
-      const paymentId = uuidv4();
-      const planKey = plan.key;
-      const amount = price;
-
-      // 1. 결제 정보 사전 등록
-      await preRegisterPayment(paymentId, amount, planKey);
-
-      // 2. 포트원 V2 결제창 호출 (인라인 객체 전달)
       const response = await PortOne.requestPayment({
         storeId,
-        channelKey,
-        paymentId,
-        orderName: `${plan.name} Plan (${
-          billingCycle === 'monthly' ? 'Monthly' : 'Yearly'
-        })`,
-        totalAmount: amount,
+        paymentId: merchantUid,
+        orderName: selectedApiPlan.description,
+        totalAmount:
+          currency === '₩'
+            ? selectedApiPlan.priceKrw
+            : selectedApiPlan.priceUsd,
         currency: currency === '₩' ? 'KRW' : 'USD',
         payMethod: 'CARD',
         customer: {
-          fullName: user?.name || 'User',
-          email: user?.email || 'default@example.com',
+          customerId: user.id.toString(),
+          fullName: user.name,
+          email: user.email,
+          phoneNumber: user.phone,
         },
+        isTest: process.env.NODE_ENV !== 'production',
       });
 
-      if (!response) {
-        // 사용자가 결제창을 닫은 경우
-        alert('Payment was cancelled.');
-        return;
-      }
-
-      if (response.code) {
-        // 결제 실패
+      if (response?.code) {
         throw new Error(response.message || 'Payment failed or was cancelled.');
       }
 
-      // 3. 결제 검증 및 구독 활성화
-      const validationResult = await activatePayment(
-        response.paymentId,
-        paymentId
-      );
-
-      if (validationResult.data === 'SUBSCRIPTION_SUCCESSFUL') {
-        alert('Subscription successful!');
-        router.push(`/${lang}/pricing/success`);
-      } else {
-        throw new Error('Subscription activation failed.');
+      if (!response?.paymentId) {
+        alert('Payment was cancelled.');
+        setIsLoading(false);
+        return;
       }
+
+      await activatePayment(response.paymentId, merchantUid);
+
+      alert('Subscription successful!');
+      router.push(`/${lang}/pricing/success`);
     } catch (error: any) {
       alert(`An error occurred: ${error.message}`);
     } finally {
@@ -165,7 +163,12 @@ export default function PricingClient({
   const formatPrice = (price: number | string) => {
     if (typeof price === 'string') return price;
     const formattedPrice =
-      currency === '₩' ? price.toLocaleString('ko-KR') : price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      currency === '₩'
+        ? price.toLocaleString('ko-KR')
+        : price.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
     return `${currency}${formattedPrice}`;
   };
 
@@ -256,7 +259,7 @@ export default function PricingClient({
                             plan.priceMonthly !== 0 && (
                               <p className="text-xs text-slate-500">
                                 {translations.billedAs}{' '}
-                                {formatPrice((plan.priceYearly as number) * 12)}
+                                {formatPrice(plan.priceYearlyTotal)}
                                 /year
                               </p>
                             )}
@@ -279,8 +282,8 @@ export default function PricingClient({
                           plan.isPopular
                             ? 'bg-accent text-black hover:brightness-90'
                             : plan.isCustom
-                              ? 'bg-slate-600 text-white hover:bg-slate-500'
-                              : 'bg-white/10 text-white hover:bg-white/20'
+                            ? 'bg-slate-600 text-white hover:bg-slate-500'
+                            : 'bg-white/10 text-white hover:bg-white/20'
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
                         {isLoading ? 'Processing...' : plan.cta}
@@ -343,3 +346,4 @@ export default function PricingClient({
     </>
   );
 }
+

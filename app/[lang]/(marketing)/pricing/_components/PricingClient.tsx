@@ -76,9 +76,7 @@ export default function PricingClient({
 
     try {
       const planKey =
-        billingCycle === 'monthly'
-          ? plan.planKeyMonthly
-          : plan.planKeyYearly;
+        billingCycle === 'monthly' ? plan.planKeyMonthly : plan.planKeyYearly;
       if (!planKey) {
         throw new Error('Selected plan is not available for purchase.');
       }
@@ -105,15 +103,14 @@ export default function PricingClient({
           currency === '₩'
             ? selectedApiPlan.priceKrw
             : selectedApiPlan.priceUsd,
-        currency: currency === '₩' ? 'KRW' : 'USD',
+        currency: currency === '₩' ? 'CURRENCY_KRW' : 'CURRENCY_USD',
         payMethod: 'CARD',
         customer: {
           customerId: user.id.toString(),
           fullName: user.name,
           email: user.email,
-          phoneNumber: user.phone,
+          phoneNumber: user.phone ?? undefined,
         },
-        isTest: process.env.NODE_ENV !== 'production',
       });
 
       if (response?.code) {
@@ -282,8 +279,8 @@ export default function PricingClient({
                           plan.isPopular
                             ? 'bg-accent text-black hover:brightness-90'
                             : plan.isCustom
-                            ? 'bg-slate-600 text-white hover:bg-slate-500'
-                            : 'bg-white/10 text-white hover:bg-white/20'
+                              ? 'bg-slate-600 text-white hover:bg-slate-500'
+                              : 'bg-white/10 text-white hover:bg-white/20'
                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                       >
                         {isLoading ? 'Processing...' : plan.cta}
@@ -346,4 +343,3 @@ export default function PricingClient({
     </>
   );
 }
-

@@ -164,16 +164,15 @@ export const getTaskImageUrl = (taskId: number) => {
 };
 
 // Payment APIs
-export const preRegisterPayment = (
-  merchantUid: string,
-  amount: number,
-  planKey: string
-) => {
+export const getPlans = () => {
+  return apiFetch('/plans');
+};
+
+export const preRegisterPayment = (merchantUid: string, planKey: string) => {
   return apiFetch('/subscriptions/pre-register', {
     method: 'POST',
     body: {
       merchantUid,
-      amount,
       planKey,
     },
   });

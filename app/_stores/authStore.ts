@@ -2,13 +2,15 @@ import { create } from 'zustand';
 import { apiFetch, ApiResponse } from '@/lib/api';
 
 export interface User {
-  accountId: number;
+  id: number;
   email: string;
   name: string;
-  gender: string;
-  countryCode: string;
-  countryName: string;
-  phoneNumber: string | null;
+  phone: string | null;
+  subscription: {
+    id: number;
+    planName: string;
+    status: 'ACTIVE' | 'CANCELED';
+  } | null;
 }
 
 export interface LoginResponse {

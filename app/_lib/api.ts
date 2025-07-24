@@ -187,3 +187,9 @@ export const activatePayment = (impUid: string, merchantUid: string) => {
     },
   });
 };
+
+export const cancelSubscription = (subscriptionId: number) => {
+  return apiFetch(`/subscriptions/${subscriptionId}`, {
+    method: 'DELETE',
+  });
+};

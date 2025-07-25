@@ -2,15 +2,13 @@ import { create } from 'zustand';
 import { apiFetch, ApiResponse } from '@/lib/api';
 
 export interface User {
-  id: number;
+  accountId: number;
   email: string;
   name: string;
-  phone: string | null;
-  subscription: {
-    id: number;
-    planName: string;
-    status: 'ACTIVE' | 'CANCELED';
-  } | null;
+  gender: string;
+  countryCode: string;
+  countryName: string;
+  phoneNumber: string | null;
 }
 
 export interface LoginResponse {
@@ -62,7 +60,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (token) {
       set({ token });
       try {
+        // apiFetch는 ApiResponse<User> 형태인 { status, data } 객체를 반환합니다.
+        // 따라서 `data` 프로퍼티를 직접 추출하여 `user` 상태에 저장해야 합니다.
         const { data: user } = await apiFetch<User>('/users/me');
+        console.log('[AuthStore] Fetched user data on initialize:', user); // 로그 추가
         if (user) {
           set({
             user,
@@ -107,6 +108,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   login: (res) => {
     if (res.data?.accessToken?.value && res.data.user) {
       const { accessToken, user } = res.data;
+      console.log('[AuthStore] Setting user data on login:', user); // 로그 추가
       get().setToken(accessToken.value);
       set({
         user,
@@ -120,7 +122,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: () => {
-    console.log('Clearing token and user from store and localStorage.');
+    console.log('[AuthStore] Clearing token and user from store and localStorage.');
     get().setToken(null);
     set({
       user: null,

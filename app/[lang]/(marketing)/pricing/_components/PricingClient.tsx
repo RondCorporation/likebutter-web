@@ -91,12 +91,29 @@ export default function PricingClient({
       await preRegisterPayment(merchantUid, planKey);
 
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
-      if (!storeId) {
+      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
+      if (!storeId || !channelKey) {
         throw new Error('Payment environment variables are not set.');
+      }
+
+      const customer: {
+        customerId: string;
+        fullName: string;
+        email: string;
+        phoneNumber?: string;
+      } = {
+        customerId: user.accountId.toString(),
+        fullName: user.name,
+        email: user.email,
+      };
+
+      if (user.phoneNumber) {
+        customer.phoneNumber = user.phoneNumber;
       }
 
       const response = await PortOne.requestPayment({
         storeId,
+        channelKey,
         paymentId: merchantUid,
         orderName: selectedApiPlan.description,
         totalAmount:
@@ -105,12 +122,7 @@ export default function PricingClient({
             : selectedApiPlan.priceUsd,
         currency: currency === '₩' ? 'CURRENCY_KRW' : 'CURRENCY_USD',
         payMethod: 'CARD',
-        customer: {
-          customerId: user.id.toString(),
-          fullName: user.name,
-          email: user.email,
-          phoneNumber: user.phone ?? undefined,
-        },
+        customer,
       });
 
       if (response?.code) {

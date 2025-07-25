@@ -8,7 +8,13 @@ import { LoginResponse } from '@/stores/authStore';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function LoginClient({ lang, translations }: { lang: string, translations: any }) {
+export default function LoginClient({
+  lang,
+  translations,
+}: {
+  lang: string;
+  translations: any;
+}) {
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [err, setErr] = useState('');
@@ -57,7 +63,7 @@ export default function LoginClient({ lang, translations }: { lang: string, tran
       );
 
       if (res.data?.accessToken?.value && res.data.user) {
-        login(res);
+        await login(res);
         const returnTo = searchParams.get('returnTo');
         router.replace(returnTo || `/${lang}/studio`);
       } else {
@@ -104,7 +110,9 @@ export default function LoginClient({ lang, translations }: { lang: string, tran
           disabled={isLoading}
           className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black transition hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {isLoading ? translations.loginButtonLoggingIn : translations.loginButton}
+          {isLoading
+            ? translations.loginButtonLoggingIn
+            : translations.loginButton}
         </button>
         <p className="text-sm text-center text-slate-400">
           {translations.loginSignupPrompt}{' '}

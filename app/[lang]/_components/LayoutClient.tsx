@@ -4,7 +4,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { ReactNode } from 'react';
 import AuthInitializer from '@/components/AuthInitializer';
-import '@/lib/i18n-client'; // Import to initialize i18next
+import SettingsModal from '@/components/SettingsModal';
+import '@/lib/i18n-client';
 
 export function LayoutClient({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -12,6 +13,7 @@ export function LayoutClient({ children }: { children: ReactNode }) {
 
   return (
     <AuthInitializer>
+      <SettingsModal />
       <div className="flex min-h-screen flex-col">
         {!isStudioPage && <Header />}
         <main className="flex-grow">{children}</main>

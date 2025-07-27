@@ -4,6 +4,7 @@ import nextI18NextConfig from '../../../../next-i18next.config.mjs';
 import { getPlans, getSubscriptions } from '@/app/_lib/apis/subscription.api';
 import { Plan } from '@/app/_types/plan';
 import { Subscription } from '@/app/_types/subscription';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,11 +40,16 @@ const processApiPlans = (apiPlans: Plan[]) => {
 export default async function PricingPage({ params }: Props) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get('accessToken')?.value;
 
   // Fetch plans and subscriptions in parallel
   const [{ data: apiPlans }, { data: userSubscriptions }] = await Promise.all([
     getPlans().catch(() => ({ data: [] })),
-    getSubscriptions().catch(() => ({ data: [] })),
+    // Only fetch subscriptions if the user is logged in
+    accessToken
+      ? getSubscriptions().catch(() => ({ data: [] }))
+      : Promise.resolve({ data: [] }),
   ]);
 
   const activeSubscription =

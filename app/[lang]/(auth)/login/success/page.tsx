@@ -23,14 +23,15 @@ function AuthRedirectHandler() {
           const meApiRes = await getMe(token);
 
           if (!meApiRes.data) {
-            throw new Error(meApiRes.error?.message || 'User data not found');
+            throw new Error(meApiRes.msg || 'User data not found');
           }
 
           const user = meApiRes.data;
 
+          // Construct the LoginResponse and call login
           const loginResponse: ApiResponse<LoginResponse> = {
-            success: true,
-            error: null,
+            status: 200,
+            msg: 'Login successful',
             data: {
               accessToken: { value: token },
               user,

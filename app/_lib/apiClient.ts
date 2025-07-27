@@ -4,12 +4,9 @@ import { useAuthStore } from '@/stores/authStore';
 import { parse } from 'cookie';
 
 export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  error: {
-    code: string;
-    message: string;
-  } | null;
+  status: number;
+  data?: T;
+  msg?: string;
 }
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE;
@@ -59,9 +56,9 @@ async function refreshToken(): Promise<string | null> {
       const json: ApiResponse<{ accessToken: { value: string } }> =
         await res.json();
 
-      if (!json.success || !json.data?.accessToken?.value) {
+      if (!json.data?.accessToken?.value) {
         throw new Error(
-          json.error?.message || 'Token refresh failed: No new token received'
+          json.msg || 'Token refresh failed: No new token received'
         );
       }
 
@@ -184,11 +181,7 @@ export async function apiFetch<T>(
       try {
         json = text
           ? JSON.parse(text)
-          : ({
-              success: res.ok,
-              data: null,
-              error: { code: res.status.toString(), message: res.statusText },
-            } as any);
+          : { status: res.status, msg: res.statusText };
       } catch (e) {
         console.error('Failed to parse API response:', text, 'URL:', url);
         throw new Error(
@@ -196,9 +189,9 @@ export async function apiFetch<T>(
         );
       }
 
-      if (!res.ok || !json.success) {
+      if (!res.ok) {
         const errorMessage =
-          json.error?.message ?? `Request failed: ${res.statusText} (${res.status})`;
+          json.msg ?? `Request failed: ${res.statusText} (${res.status})`;
         console.error(`API Error for ${url}:`, errorMessage);
         throw new Error(errorMessage);
       }

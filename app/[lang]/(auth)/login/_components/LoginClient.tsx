@@ -60,7 +60,7 @@ export default function LoginClient({
         const returnTo = searchParams.get('returnTo');
         router.replace(returnTo || `/${lang}/studio`);
       } else {
-        setErr(res.error?.message || translations.loginErrorInvalidPassword);
+        setErr(res.msg || translations.loginErrorInvalidPassword);
         setLoading(false);
       }
     } catch (e: any) {

@@ -1,5 +1,3 @@
-'use client';
-
 import { useAuthStore } from '@/stores/authStore';
 import { parse } from 'cookie';
 

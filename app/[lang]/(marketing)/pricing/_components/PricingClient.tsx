@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -8,6 +8,7 @@ import PortOne from '@portone/browser-sdk/v2';
 import {
   createSubscription,
   registerBillingKey,
+  getSubscriptions,
 } from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
@@ -48,7 +49,6 @@ type Props = {
   translations: Translations;
   currency: string;
   apiPlans: ApiPlan[];
-  activeSubscription: Subscription | null;
 };
 
 const planRanks: Record<string, number> = {
@@ -67,15 +67,35 @@ export default function PricingClient({
   translations,
   currency,
   apiPlans,
-  activeSubscription,
 }: Props) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [activeSubscription, setActiveSubscription] =
+    useState<Subscription | null>(null);
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { openSettings } = useUIStore();
+
+  useEffect(() => {
+    const fetchUserSubscription = async () => {
+      if (isAuthenticated) {
+        try {
+          const { data: subscriptions } = await getSubscriptions();
+          if (subscriptions) {
+            const activeSub =
+              subscriptions.find((sub) => sub.status === 'ACTIVE') || null;
+            setActiveSubscription(activeSub);
+          }
+        } catch (error) {
+          console.error('Failed to fetch user subscription:', error);
+        }
+      }
+    };
+
+    fetchUserSubscription();
+  }, [isAuthenticated]);
 
   const activePlanKey = activeSubscription?.planKey ?? 'FREE';
   const activePlanRank = planRanks[activePlanKey] ?? 0;
@@ -291,10 +311,12 @@ export default function PricingClient({
                 <div className="col-span-1"></div>
                 {plans.map((plan) => {
                   const isCurrentPlan =
-                    (billingCycle === 'monthly' &&
+                    isAuthenticated &&
+                    activeSubscription &&
+                    ((billingCycle === 'monthly' &&
                       activePlanKey === plan.planKeyMonthly) ||
-                    (billingCycle === 'yearly' &&
-                      activePlanKey === plan.planKeyYearly);
+                      (billingCycle === 'yearly' &&
+                        activePlanKey === plan.planKeyYearly));
 
                   return (
                     <div

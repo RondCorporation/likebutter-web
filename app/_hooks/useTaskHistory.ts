@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer, useCallback } from 'react';
 import { Task } from '@/types/task';
-import { getTaskHistory, getTaskStatus } from '@/lib/api';
+import { getTaskHistory, getTaskStatus } from '@/lib/apis/task.api';
 
 interface HistoryState {
   tasks: Task[];

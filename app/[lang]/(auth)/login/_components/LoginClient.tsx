@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { apiFetch } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
 import { LoginResponse } from '@/stores/authStore';
+import { login as apiLogin } from '@/lib/apis/auth.api';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -53,21 +53,14 @@ export default function LoginClient({
     setLoading(true);
 
     try {
-      const res = await apiFetch<LoginResponse>(
-        '/auth/login',
-        {
-          method: 'POST',
-          body: { email, password: pw },
-        },
-        false
-      );
+      const res = await apiLogin(email, pw);
 
       if (res.data?.accessToken?.value && res.data.user) {
         await login(res);
         const returnTo = searchParams.get('returnTo');
         router.replace(returnTo || `/${lang}/studio`);
       } else {
-        setErr(res.msg || translations.loginErrorInvalidPassword);
+        setErr(res.error?.message || translations.loginErrorInvalidPassword);
         setLoading(false);
       }
     } catch (e: any) {

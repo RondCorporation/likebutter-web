@@ -4,9 +4,8 @@ import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useAuthStore, LoginResponse, User } from '@/stores/authStore';
 import { LoaderCircle } from 'lucide-react';
-import { apiFetch, ApiResponse } from '@/lib/api';
-
-const BASE = process.env.NEXT_PUBLIC_API_BASE;
+import { getMe } from '@/lib/apis/user.api';
+import { ApiResponse } from '@/lib/apiClient';
 
 function AuthRedirectHandler() {
   const searchParams = useSearchParams();
@@ -21,29 +20,17 @@ function AuthRedirectHandler() {
     if (token) {
       const fetchUser = async () => {
         try {
-          // Use the token to fetch user data
-          const meResponse = await fetch(`${BASE}/users/me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-
-          if (!meResponse.ok) {
-            throw new Error('Failed to fetch user data');
-          }
-
-          const meApiRes: ApiResponse<User> = await meResponse.json();
+          const meApiRes = await getMe(token);
 
           if (!meApiRes.data) {
-            throw new Error(meApiRes.msg || 'User data not found');
+            throw new Error(meApiRes.error?.message || 'User data not found');
           }
 
           const user = meApiRes.data;
 
-          // Construct the LoginResponse and call login
           const loginResponse: ApiResponse<LoginResponse> = {
-            status: 200,
-            msg: 'Login successful',
+            success: true,
+            error: null,
             data: {
               accessToken: { value: token },
               user,
@@ -63,13 +50,12 @@ function AuthRedirectHandler() {
 
       fetchUser();
     } else {
-      // If no token is found, redirect to login with an error
       console.error('No access token found in URL.');
       router.replace(`/${lang}/login?error=auth_failed`);
     }
   }, [searchParams, router, login, lang]);
 
-  return null;
+  return <LoaderCircle className="h-12 w-12 animate-spin text-accent" />;
 }
 
 export default function LoginSuccessPage() {

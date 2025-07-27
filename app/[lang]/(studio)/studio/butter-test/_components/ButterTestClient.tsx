@@ -4,7 +4,8 @@ import { useReducer, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, LoaderCircle, TestTube } from 'lucide-react';
-import { apiFetch, ApiResponse } from '@/lib/api';
+import { createButterTestTask } from '@/lib/apis/task.api';
+import { ApiResponse } from '@/lib/apiClient';
 
 interface TaskResponse {
   taskId: number;
@@ -60,10 +61,7 @@ export default function ButterTestClient() {
     dispatch({ type: 'SUBMIT_START' });
 
     try {
-      const response = await apiFetch<TaskResponse>('/tasks/butter-test', {
-        method: 'POST',
-        body: { prompt },
-      });
+      const response = await createButterTestTask(prompt);
       dispatch({ type: 'SUBMIT_SUCCESS', payload: response });
     } catch (e: any) {
       dispatch({

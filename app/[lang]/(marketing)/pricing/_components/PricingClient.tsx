@@ -5,7 +5,10 @@ import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import PortOne from '@portone/browser-sdk/v2';
-import { createSubscription, registerBillingKey } from '@/lib/api';
+import {
+  createSubscription,
+  registerBillingKey,
+} from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
 

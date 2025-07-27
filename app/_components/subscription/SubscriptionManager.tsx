@@ -7,7 +7,7 @@ import {
   cancelSubscription,
   upgradeSubscription,
   getSubscriptionDetails,
-} from '@/lib/api';
+} from '@/lib/apis/subscription.api';
 import {
   Subscription,
   SubscriptionDetails,

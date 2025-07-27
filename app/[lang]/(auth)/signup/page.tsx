@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import SocialButtons from '@/components/SocialButtons';
-import { apiFetch, ApiResponse } from '@/lib/api';
+import { signup } from '@/lib/apis/auth.api';
+import { getCountries } from '@/lib/apis/country.api';
+import { ApiResponse } from '@/lib/apiClient';
 import PhoneInput, {
   isValidPhoneNumber,
   parsePhoneNumber,
@@ -44,11 +46,7 @@ export default function Signup() {
   useEffect(() => {
     async function fetchCountries() {
       try {
-        const res: ApiResponse<Country[]> = await apiFetch(
-          '/countries',
-          {},
-          false
-        );
+        const res = await getCountries();
         if (res.data) {
           setCountries(res.data);
           const defaultCountry = res.data.find((c) => c.isoCode === 'KR');
@@ -59,7 +57,7 @@ export default function Signup() {
             }));
           }
         } else {
-          setErr(res.msg || t('signupErrorCountryList'));
+          setErr(res.error?.message || t('signupErrorCountryList'));
         }
       } catch (e: any) {
         setErr(e.message || t('signupErrorCountryListRetry'));
@@ -121,21 +119,14 @@ export default function Signup() {
     }
 
     try {
-      await apiFetch(
-        '/auth/sign-up',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            email: form.email,
-            password: form.pw,
-            name: form.name,
-            gender: form.gender,
-            countryCode: form.nationalityIsoCode,
-            phoneNumber: formattedPhoneNumber,
-          }),
-        },
-        false
-      );
+      await signup({
+        email: form.email,
+        password: form.pw,
+        name: form.name,
+        gender: form.gender,
+        countryCode: form.nationalityIsoCode,
+        phoneNumber: formattedPhoneNumber,
+      });
       alert(t('signupSuccessAlert'));
       router.replace(`/${lang}/login`);
     } catch (e: any) {

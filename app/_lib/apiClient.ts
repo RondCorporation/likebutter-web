@@ -1,21 +1,15 @@
-import { Plan } from '@/app/_types/plan';
-import {
-  CreateSubscriptionResponse,
-  Subscription,
-  SubscriptionDetails,
-} from '@/app/_types/subscription';
+'use client';
+
 import { useAuthStore } from '@/stores/authStore';
-import {
-  Page,
-  Task,
-  TaskImageUrlResponse,
-  TaskStatusResponse,
-} from '@/types/task';
+import { parse } from 'cookie';
 
 export interface ApiResponse<T> {
-  status: number;
-  data?: T;
-  msg?: string;
+  success: boolean;
+  data: T;
+  error: {
+    code: string;
+    message: string;
+  } | null;
 }
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE;
@@ -25,13 +19,8 @@ let refreshPromise: Promise<string | null> | null = null;
 
 const handleLogout = async () => {
   if (IS_SERVER) {
-    // Deleting cookies is a side-effect that is not allowed in Server Components.
-    // This should be handled by a Server Action or an API Route.
-    // We throw an error to indicate that the session has expired, which will be
-    // caught by the calling function.
     throw new Error('Your session has expired. Please log in again.');
   } else {
-    // On client, use Zustand and redirect
     useAuthStore.getState().logout();
     window.location.href = '/login?reason=session_expired';
   }
@@ -47,8 +36,6 @@ async function refreshToken(): Promise<string | null> {
         method: 'POST',
       };
 
-      // On the server, we must manually handle cookies.
-      // On the client, `credentials: 'include'` handles it automatically.
       if (IS_SERVER) {
         const { cookies } = await import('next/headers');
         const cookieStore = await cookies();
@@ -72,25 +59,50 @@ async function refreshToken(): Promise<string | null> {
       const json: ApiResponse<{ accessToken: { value: string } }> =
         await res.json();
 
-      if (!json.data?.accessToken?.value) {
+      if (!json.success || !json.data?.accessToken?.value) {
         throw new Error(
-          json.msg || 'Token refresh failed: No new token received'
+          json.error?.message || 'Token refresh failed: No new token received'
         );
       }
 
       const newAccessToken = json.data.accessToken.value;
       console.log('Token refreshed successfully.');
 
-      // Store the new token based on the environment
       if (IS_SERVER) {
         const { cookies } = await import('next/headers');
         const cookieStore = await cookies();
+
         cookieStore.set('accessToken', newAccessToken, {
           httpOnly: true,
           secure: process.env.NODE_ENV === 'production',
           path: '/',
           sameSite: 'lax',
         });
+
+        const newRefreshTokenCookie = res.headers.get('set-cookie');
+        if (newRefreshTokenCookie) {
+          const parsedCookie = parse(newRefreshTokenCookie);
+          const [rtName, rtValue] = Object.entries(parsedCookie)[0];
+          
+          // Extract cookie attributes, providing defaults that match the backend policy
+          const httpOnly = newRefreshTokenCookie.toLowerCase().includes('httponly');
+          const secure = newRefreshTokenCookie.toLowerCase().includes('secure');
+          const sameSite = parsedCookie.SameSite?.toLowerCase() as 'strict' | 'lax' | 'none' | undefined ?? 'strict';
+          const path = parsedCookie.Path ?? '/auth/reissue';
+
+          if (rtName && rtValue) {
+            cookieStore.set(rtName, rtValue, {
+              httpOnly,
+              secure,
+              path,
+              sameSite,
+              // 'max-age' or 'expires' should also be forwarded if present
+              ...(parsedCookie['Max-Age'] && { maxAge: parseInt(parsedCookie['Max-Age'], 10) }),
+              ...(parsedCookie.Expires && { expires: new Date(parsedCookie.Expires) }),
+            });
+             console.log(`Forwarded new ${rtName} cookie to browser.`);
+          }
+        }
       } else {
         useAuthStore.getState().setToken(newAccessToken);
       }
@@ -101,7 +113,6 @@ async function refreshToken(): Promise<string | null> {
       if (!IS_SERVER) {
         await handleLogout();
       }
-      // On the server, we just return null and let the caller handle it.
       return null;
     } finally {
       refreshPromise = null;
@@ -114,7 +125,8 @@ async function refreshToken(): Promise<string | null> {
 export async function apiFetch<T>(
   url: string,
   opts: Omit<RequestInit, 'body'> & { body?: any } = {},
-  withAuth = true
+  withAuth = true,
+  tokenOverride: string | null = null
 ): Promise<ApiResponse<T>> {
   const makeRequest = async (token: string | null): Promise<ApiResponse<T>> => {
     const isMultipart = opts.body instanceof FormData;
@@ -134,11 +146,9 @@ export async function apiFetch<T>(
       headers,
     };
 
-    // On the client, we need to send credentials to handle cookies automatically
     if (!IS_SERVER) {
       config.credentials = 'include';
     } else {
-      // On the server, we need to manually forward cookies
       const { cookies } = await import('next/headers');
       const cookieStore = await cookies();
       const cookieHeader = cookieStore
@@ -174,7 +184,11 @@ export async function apiFetch<T>(
       try {
         json = text
           ? JSON.parse(text)
-          : { status: res.status, msg: res.statusText };
+          : ({
+              success: res.ok,
+              data: null,
+              error: { code: res.status.toString(), message: res.statusText },
+            } as any);
       } catch (e) {
         console.error('Failed to parse API response:', text, 'URL:', url);
         throw new Error(
@@ -182,12 +196,11 @@ export async function apiFetch<T>(
         );
       }
 
-      if (!res.ok) {
-        console.error(`API Error for ${url}:`, json.msg || res.statusText);
-
-        throw new Error(
-          json.msg ?? `Request failed: ${res.statusText} (${res.status})`
-        );
+      if (!res.ok || !json.success) {
+        const errorMessage =
+          json.error?.message ?? `Request failed: ${res.statusText} (${res.status})`;
+        console.error(`API Error for ${url}:`, errorMessage);
+        throw new Error(errorMessage);
       }
 
       return json;
@@ -201,93 +214,16 @@ export async function apiFetch<T>(
     }
   };
 
-  let token: string | null = null;
-  if (IS_SERVER) {
-    // On the server, get the token from cookies
-    const { cookies } = await import('next/headers');
-    token = (await cookies()).get('accessToken')?.value || null;
-  } else {
-    // On the client, get the token from Zustand store
-    token = useAuthStore.getState().token;
+  let token: string | null = tokenOverride;
+
+  if (!token && withAuth) {
+    if (IS_SERVER) {
+      const { cookies } = await import('next/headers');
+      token = (await cookies()).get('accessToken')?.value || null;
+    } else {
+      token = useAuthStore.getState().token;
+    }
   }
 
   return makeRequest(token);
 }
-
-export const getTaskHistory = (
-  page: number,
-  filters: { status?: string; actionType?: string }
-) => {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    size: '10',
-    sort: 'createdAt,desc',
-  });
-  if (filters.status) params.append('status', filters.status);
-  if (filters.actionType) params.append('actionType', filters.actionType);
-
-  return apiFetch<Page<Task>>(`/tasks/me?${params.toString()}`);
-};
-
-export const getTaskStatus = (taskId: number) => {
-  return apiFetch<TaskStatusResponse>(`/tasks/${taskId}/status`);
-};
-
-export const getTaskImageUrl = (taskId: number) => {
-  return apiFetch<TaskImageUrlResponse>(`/tasks/${taskId}/image`);
-};
-
-// Payment APIs
-export const getPlans = (): Promise<ApiResponse<Plan[]>> => {
-  return apiFetch<Plan[]>('/plans');
-};
-
-export const registerBillingKey = (billingKey: string) => {
-  return apiFetch('/subscriptions/register-billing-key', {
-    method: 'POST',
-    body: {
-      billingKey,
-    },
-  });
-};
-
-export const createSubscription = (
-  planKey: string
-): Promise<ApiResponse<CreateSubscriptionResponse>> => {
-  return apiFetch('/subscriptions/create', {
-    method: 'POST',
-    body: {
-      planKey,
-    },
-  });
-};
-
-export const getSubscriptions = (): Promise<ApiResponse<Subscription[]>> => {
-  return apiFetch<Subscription[]>('/subscriptions');
-};
-
-export const getSubscriptionDetails = (
-  id: number
-): Promise<ApiResponse<SubscriptionDetails>> => {
-  return apiFetch<SubscriptionDetails>(`/subscriptions/${id}`);
-};
-
-export const upgradeSubscription = (
-  id: number,
-  newPlanKey: string
-): Promise<ApiResponse<SubscriptionDetails>> => {
-  return apiFetch<SubscriptionDetails>(`/subscriptions/${id}/upgrade`, {
-    method: 'POST',
-    body: {
-      newPlanKey,
-    },
-  });
-};
-
-export const cancelSubscription = (
-  subscriptionId: number
-): Promise<ApiResponse<null>> => {
-  return apiFetch<null>(`/subscriptions/${subscriptionId}`, {
-    method: 'DELETE',
-  });
-};

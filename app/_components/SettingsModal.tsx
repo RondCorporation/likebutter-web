@@ -13,7 +13,6 @@ import {
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useLogout';
-import { cancelSubscription } from '@/lib/api';
 import SubscriptionManager from './subscription/SubscriptionManager';
 
 function AccountSettings() {

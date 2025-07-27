@@ -4,7 +4,8 @@ import { useReducer, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Image as ImageIcon, LoaderCircle } from 'lucide-react';
-import { apiFetch, ApiResponse } from '@/lib/api';
+import { createButterGenTask } from '@/lib/apis/task.api';
+import { ApiResponse } from '@/lib/apiClient';
 
 interface TaskResponse {
   taskId: number;
@@ -117,10 +118,7 @@ export default function ButterGenClient() {
     }
 
     try {
-      const response = await apiFetch<TaskResponse>('/tasks/butter-gen', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await createButterGenTask(formData);
       dispatch({ type: 'SUBMIT_SUCCESS', payload: response });
     } catch (e: any) {
       dispatch({

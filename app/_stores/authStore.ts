@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import { apiFetch, ApiResponse } from '@/lib/api';
 
+export interface Subscription {
+  id: number;
+  status: 'ACTIVE' | 'CANCELED' | 'INACTIVE';
+  planName: string;
+}
+
 export interface User {
   accountId: number;
   email: string;
@@ -9,10 +15,12 @@ export interface User {
   countryCode: string;
   countryName: string;
   phoneNumber: string | null;
+  subscription?: Subscription | null;
 }
 
 export interface LoginResponse {
   accessToken: { value: string };
+  refreshToken?: { value: string };
   user: User;
 }
 
@@ -29,6 +37,24 @@ interface AuthState {
   logout: () => void;
 }
 
+const setCookie = (name: string, value: string | null, days: number = 7) => {
+  if (typeof window === 'undefined') return;
+
+  let expires = '';
+  if (value) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    expires = '; expires=' + date.toUTCString();
+  }
+
+  // For cross-site requests (like returning from a payment gateway),
+  // SameSite=None and Secure=true are required.
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  document.cookie = `${name}=${
+    value || ''
+  }${expires}; path=/; SameSite=None${secure}`;
+};
+
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   token: null,
@@ -41,8 +67,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (typeof window !== 'undefined') {
       if (t) {
         localStorage.setItem('accessToken', t);
+        setCookie('accessToken', t);
       } else {
         localStorage.removeItem('accessToken');
+        setCookie('accessToken', null, -1);
+        setCookie('refreshToken', null, -1); // Also clear refreshToken cookie
       }
     }
   },
@@ -60,10 +89,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (token) {
       set({ token });
       try {
-        // apiFetch는 ApiResponse<User> 형태인 { status, data } 객체를 반환합니다.
-        // 따라서 `data` 프로퍼티를 직접 추출하여 `user` 상태에 저장해야 합니다.
         const { data: user } = await apiFetch<User>('/users/me');
-        console.log('[AuthStore] Fetched user data on initialize:', user); // 로그 추가
+        console.log('[AuthStore] Fetched user data on initialize:', user);
         if (user) {
           set({
             user,
@@ -107,9 +134,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: (res) => {
     if (res.data?.accessToken?.value && res.data.user) {
-      const { accessToken, user } = res.data;
-      console.log('[AuthStore] Setting user data on login:', user); // 로그 추가
+      const { accessToken, refreshToken, user } = res.data;
+      console.log('[AuthStore] Setting user data on login:', user);
       get().setToken(accessToken.value);
+      if (refreshToken?.value) {
+        setCookie('refreshToken', refreshToken.value);
+      }
       set({
         user,
         isAuthenticated: true,
@@ -122,7 +152,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: () => {
-    console.log('[AuthStore] Clearing token and user from store and localStorage.');
+    console.log(
+      '[AuthStore] Clearing token and user from store, localStorage, and cookies.'
+    );
     get().setToken(null);
     set({
       user: null,

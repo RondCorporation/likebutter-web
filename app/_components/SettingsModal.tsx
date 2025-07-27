@@ -14,6 +14,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useLogout';
 import { cancelSubscription } from '@/lib/api';
+import SubscriptionManager from './subscription/SubscriptionManager';
 
 function AccountSettings() {
   const { user } = useAuthStore();
@@ -52,84 +53,7 @@ function AccountSettings() {
 }
 
 function SubscriptionSettings() {
-  const { user, initialize: revalidateUser } = useAuthStore();
-  const { t } = useTranslation();
-  const router = useRouter();
-  const pathname = usePathname();
-  const lang = pathname.split('/')[1];
-  const { closeSettings } = useUIStore();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const goToPricing = () => {
-    closeSettings();
-    router.push(`/${lang}/pricing`);
-  };
-
-  const handleCancelSubscription = async () => {
-    if (!user?.subscription?.id) return;
-
-    const confirmed = window.confirm(t('settingsSubscriptionCancelConfirm'));
-    if (!confirmed) return;
-
-    setIsLoading(true);
-    try {
-      await cancelSubscription(user.subscription.id);
-      alert(t('settingsSubscriptionCancelSuccess'));
-      await revalidateUser(); // Re-fetch user data to update subscription status
-    } catch (error: any) {
-      alert(`${t('settingsSubscriptionCancelError')}: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const hasActiveSubscription = user?.subscription?.status === 'ACTIVE';
-
-  return (
-    <div>
-      <h3 className="mb-6 text-xl font-semibold">
-        {t('settingsSubscriptionTitle')}
-      </h3>
-      {hasActiveSubscription ? (
-        <div className="space-y-4 text-sm">
-          <div className="flex justify-between items-center p-4 bg-white/5 rounded-md">
-            <span className="text-slate-400">{t('settingsCurrentPlan')}</span>
-            <span className="font-semibold text-accent">
-              {user.subscription?.planName}
-            </span>
-          </div>
-          <div className="pt-6">
-            <p className="text-slate-400 text-xs mb-2">
-              {t('settingsSubscriptionCancelInfo')}
-            </p>
-            <button
-              onClick={handleCancelSubscription}
-              disabled={isLoading}
-              className="w-full rounded-md bg-amber-600/80 py-2.5 text-sm font-medium text-white hover:bg-amber-600 transition disabled:opacity-50"
-            >
-              {isLoading
-                ? t('settingsSubscriptionCancelling')
-                : t('settingsSubscriptionCancelAction')}
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div>
-          <p className="text-slate-400">
-            {user?.subscription?.status === 'CANCELED'
-              ? t('settingsSubscriptionCancelled')
-              : t('settingsSubscriptionNone')}
-          </p>
-          <button
-            onClick={goToPricing}
-            className="mt-4 text-accent underline hover:text-yellow-300"
-          >
-            {t('settingsViewPlans')}
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  return <SubscriptionManager />;
 }
 
 export default function SettingsModal() {

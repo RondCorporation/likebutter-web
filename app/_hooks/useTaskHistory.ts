@@ -156,7 +156,7 @@ export function useTaskHistory() {
 
   useEffect(() => {
     fetchHistory(state.page, state.filters);
-  }, [state.page, state.filters, fetchHistory]);
+  }, [state.page, JSON.stringify(state.filters), fetchHistory]);
 
   useEffect(() => {
     const tasksToCheck = state.tasks.filter(

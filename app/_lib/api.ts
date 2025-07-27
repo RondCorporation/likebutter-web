@@ -1,4 +1,9 @@
 import { Plan } from '@/app/_types/plan';
+import {
+  CreateSubscriptionResponse,
+  Subscription,
+  SubscriptionDetails,
+} from '@/app/_types/subscription';
 import { useAuthStore } from '@/stores/authStore';
 import {
   Page,
@@ -246,7 +251,9 @@ export const registerBillingKey = (billingKey: string) => {
   });
 };
 
-export const createSubscription = (planKey: string) => {
+export const createSubscription = (
+  planKey: string
+): Promise<ApiResponse<CreateSubscriptionResponse>> => {
   return apiFetch('/subscriptions/create', {
     method: 'POST',
     body: {
@@ -255,8 +262,32 @@ export const createSubscription = (planKey: string) => {
   });
 };
 
-export const cancelSubscription = (subscriptionId: number) => {
-  return apiFetch(`/subscriptions/${subscriptionId}`, {
+export const getSubscriptions = (): Promise<ApiResponse<Subscription[]>> => {
+  return apiFetch<Subscription[]>('/subscriptions');
+};
+
+export const getSubscriptionDetails = (
+  id: number
+): Promise<ApiResponse<SubscriptionDetails>> => {
+  return apiFetch<SubscriptionDetails>(`/subscriptions/${id}`);
+};
+
+export const upgradeSubscription = (
+  id: number,
+  newPlanKey: string
+): Promise<ApiResponse<SubscriptionDetails>> => {
+  return apiFetch<SubscriptionDetails>(`/subscriptions/${id}/upgrade`, {
+    method: 'POST',
+    body: {
+      newPlanKey,
+    },
+  });
+};
+
+export const cancelSubscription = (
+  subscriptionId: number
+): Promise<ApiResponse<null>> => {
+  return apiFetch<null>(`/subscriptions/${subscriptionId}`, {
     method: 'DELETE',
   });
 };

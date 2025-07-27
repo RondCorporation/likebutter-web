@@ -57,7 +57,7 @@ export default function Signup() {
             }));
           }
         } else {
-          setErr(res.error?.message || t('signupErrorCountryList'));
+          setErr(res.msg || t('signupErrorCountryList'));
         }
       } catch (e: any) {
         setErr(e.message || t('signupErrorCountryListRetry'));

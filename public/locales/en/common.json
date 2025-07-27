@@ -194,7 +194,7 @@
   "historyFilterTypeButterTest": "ButterTest",
   "historyLoading": "Loading...",
   "historyError": "Error: {error}",
-  "historyNoTaspriksa": "No tasks found that match your criteria.",
+  "historyNoTasks": "No tasks found that match your criteria.",
   "historySubtitle": "Track your ongoing creations and browse your completed AI art.",
   "historyLoadMore": "Load More",
   "butterGenTitle": "Generate with ButterGen",
@@ -285,12 +285,16 @@
     "selectUpgrade": "Please select a plan to upgrade to:",
     "plan": "Plan",
     "term": "Term",
-    "nextPayment": "Next Payment",
+  "nextPayment": "Next Payment",
     "paymentHistory": "Payment History",
     "loadingDetails": "Loading details...",
     "fetchDetailsError": "Failed to fetch subscription details.",
     "upgradeSuccess": "Plan upgraded successfully.",
     "upgradeError": "An error occurred while upgrading the plan.",
     "noPaymentHistory": "No payment history found."
-  }
+  },
+  "currentPlan": "Current Plan",
+  "downgradeNotAvailable": "Downgrade not available",
+  "upgradePlan": "Upgrade",
+  "processing": "Processing..."
 }

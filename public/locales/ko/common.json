@@ -292,5 +292,9 @@
     "upgradeSuccess": "요금제가 성공적으로 업그레이드되었습니다.",
     "upgradeError": "요금제 업그레이드 중 오류가 발생했습니다.",
     "noPaymentHistory": "결제 내역이 없습니다."
-  }
+  },
+  "currentPlan": "현재 요금제",
+  "downgradeNotAvailable": "다운그레이드 불가",
+  "upgradePlan": "업그레이드",
+  "processing": "처리 중..."
 }

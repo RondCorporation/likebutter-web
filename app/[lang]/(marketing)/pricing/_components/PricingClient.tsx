@@ -307,7 +307,7 @@ export default function PricingClient({
 
           <div className="mt-12 overflow-x-auto pb-4">
             <div className="min-w-[1200px] w-full">
-              <div className="grid grid-cols-5 gap-x-6">
+              <div className="grid grid-cols-5 gap-x-6 pt-4">
                 <div className="col-span-1"></div>
                 {plans.map((plan) => {
                   const isCurrentPlan =

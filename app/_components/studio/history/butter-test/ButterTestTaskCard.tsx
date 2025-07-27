@@ -2,7 +2,7 @@
 
 import { Task, ButterTestDetails } from '@/types/task';
 import { useState, useEffect } from 'react';
-import { getTaskStatus } from '@/lib/api';
+import { getTaskStatus } from '@/lib/apis/task.api';
 import { LoaderCircle, AlertTriangle, TestTube, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
 import StatusBadge from '../StatusBadge';

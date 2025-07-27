@@ -2,7 +2,7 @@
 
 import { Task, ButterGenDetails } from '@/types/task';
 import { useState, useEffect } from 'react';
-import { getTaskStatus } from '@/lib/api';
+import { getTaskStatus } from '@/lib/apis/task.api';
 import {
   LoaderCircle,
   Sparkles,

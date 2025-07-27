@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { apiFetch, ApiResponse } from '@/lib/api';
+import { getMe } from '@/lib/apis/user.api';
+import { ApiResponse } from '@/lib/apiClient';
 
 export interface Subscription {
   id: number;
@@ -89,7 +90,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (token) {
       set({ token });
       try {
-        const { data: user } = await apiFetch<User>('/users/me');
+        const { data: user } = await getMe();
         console.log('[AuthStore] Fetched user data on initialize:', user);
         if (user) {
           set({

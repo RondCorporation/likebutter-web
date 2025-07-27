@@ -12,6 +12,8 @@
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.6.1",
     "@portone/browser-sdk": "^0.0.24",
+    "@types/cookie": "^0.6.0",
+    "cookie": "^1.0.2",
     "framer-motion": "^12.11.0",
     "i18next": "^25.3.2",
     "i18next-browser-languagedetector": "^8.2.0",

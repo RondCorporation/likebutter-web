@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
-import { apiFetch } from '@/lib/api';
+import { logout as apiLogout } from '@/lib/apis/auth.api';
 
 export function useLogout() {
   const router = useRouter();
@@ -8,7 +8,7 @@ export function useLogout() {
 
   const logout = async () => {
     try {
-      await apiFetch('/auth/logout', { method: 'DELETE' }, true);
+      await apiLogout();
       console.log('Server logout successful.');
     } catch (error) {
       console.error(

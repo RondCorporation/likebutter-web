@@ -1,7 +1,7 @@
 import initTranslations from '@/lib/i18n-server';
 import PricingClient from './_components/PricingClient';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
-import { getPlans } from '@/app/_lib/api';
+import { getPlans } from '@/app/_lib/apis/subscription.api';
 import { Plan } from '@/app/_types/plan';
 
 export const dynamic = 'force-dynamic';

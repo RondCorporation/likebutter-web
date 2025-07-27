@@ -38,7 +38,7 @@ function AccountSettings() {
         </div>
         <div className="flex justify-between items-center p-4 bg-white/5 rounded-md">
           <span className="text-slate-400">{t('settingsAccountPhone')}</span>
-          <span>{user.phone || t('settingsNotProvided')}</span>
+          <span>{user.phoneNumber || t('settingsNotProvided')}</span>
         </div>
       </div>
       <button

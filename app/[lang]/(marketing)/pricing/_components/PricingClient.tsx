@@ -5,8 +5,7 @@ import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import PortOne from '@portone/browser-sdk/v2';
-
-import { activatePayment, preRegisterPayment } from '@/lib/api';
+import { createSubscription, registerBillingKey } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
 
@@ -81,63 +80,32 @@ export default function PricingClient({
         throw new Error('Selected plan is not available for purchase.');
       }
 
-      const selectedApiPlan = apiPlans.find((p) => p.planKey === planKey);
-      if (!selectedApiPlan) {
-        throw new Error('Could not find the details for the selected plan.');
-      }
-
-      const merchantUid = `${planKey}_${new Date().getTime()}`;
-
-      await preRegisterPayment(merchantUid, planKey);
-
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
       const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
       if (!storeId || !channelKey) {
         throw new Error('Payment environment variables are not set.');
       }
 
-      const customer: {
-        customerId: string;
-        fullName: string;
-        email: string;
-        phoneNumber?: string;
-      } = {
-        customerId: user.accountId.toString(),
-        fullName: user.name,
-        email: user.email,
-      };
-
-      if (user.phoneNumber) {
-        customer.phoneNumber = user.phoneNumber;
-      }
-
-      const response = await PortOne.requestPayment({
+      // 1. 빌링키 발급 요청
+      const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
-        paymentId: merchantUid,
-        orderName: selectedApiPlan.description,
-        totalAmount:
-          currency === '₩'
-            ? selectedApiPlan.priceKrw
-            : selectedApiPlan.priceUsd,
-        currency: currency === '₩' ? 'CURRENCY_KRW' : 'CURRENCY_USD',
-        payMethod: 'CARD',
-        customer,
+        billingKeyMethod: 'CARD',
       });
 
-      if (response?.code) {
-        throw new Error(response.message || 'Payment failed or was cancelled.');
+      if (!issueResponse || issueResponse.code) {
+        throw new Error(
+          `Billing key issuing failed: ${issueResponse?.message || 'User cancelled.'}`
+        );
       }
 
-      if (!response?.paymentId) {
-        alert('Payment was cancelled.');
-        setIsLoading(false);
-        return;
-      }
+      // 2. 발급된 빌링키를 백엔드에 등록
+      await registerBillingKey(issueResponse.billingKey);
 
-      await activatePayment(response.paymentId, merchantUid);
+      // 3. 등록된 빌링키로 구독 생성 및 결제
+      await createSubscription(planKey);
 
-      alert('Subscription successful!');
+      // 4. 성공 페이지로 이동
       router.push(`/${lang}/pricing/success`);
     } catch (error: any) {
       alert(`An error occurred: ${error.message}`);
@@ -267,9 +235,8 @@ export default function PricingClient({
                           {billingCycle === 'yearly' &&
                             plan.priceMonthly !== 0 && (
                               <p className="text-xs text-slate-500">
-                                {translations.billedAs}{' '}
-                                {formatPrice(plan.priceYearlyTotal)}
-                                /year
+                                {translations.billedAs}
+                                {formatPrice(plan.priceYearlyTotal)} /year
                               </p>
                             )}
                         </>
@@ -301,7 +268,6 @@ export default function PricingClient({
                   </div>
                 ))}
               </div>
-
               {/* Table Body */}
               {Object.entries(groupedFeatures).map(
                 ([category, featuresInSection]) => (

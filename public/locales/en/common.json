@@ -256,5 +256,10 @@
   "butterCutsButton": "Generate Video",
   "butterCutsFileCount": "{count} file(s) selected",
   "paymentSuccessTitle": "Payment Successful!",
-  "paymentSuccessMessage": "Your subscription has been activated. You can now enjoy all the features."
+  "paymentSuccessMessage": "Your subscription has been activated. You can now enjoy all the features.",
+  "invalidPaymentAccessTitle": "Invalid Access",
+  "invalidPaymentAccessMessage": "The payment information is incorrect. Please try again through the pricing page.",
+  "paymentVerificationFailedTitle": "Payment Verification Failed",
+  "paymentVerificationFailedMessage": "We couldn't verify your payment. Please try again or contact support.",
+  "goToPricing": "Go to Pricing"
 }

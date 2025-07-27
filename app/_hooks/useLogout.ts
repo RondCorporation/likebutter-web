@@ -17,6 +17,9 @@ export function useLogout() {
       );
     } finally {
       logoutStore();
+      // Thoroughly clear the accessToken cookie by setting its expiration to the past.
+      // This prevents stale tokens from being sent by the browser, especially for Server Components.
+      document.cookie = 'accessToken=; path=/; max-age=-1;';
       router.replace('/login');
     }
   };

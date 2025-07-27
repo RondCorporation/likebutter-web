@@ -14,12 +14,20 @@ export interface ApiResponse<T> {
 }
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE;
+const IS_SERVER = typeof window === 'undefined';
 
 let refreshPromise: Promise<string | null> | null = null;
 
-const handleLogout = () => {
-  useAuthStore.getState().logout();
-  if (typeof window !== 'undefined') {
+const handleLogout = async () => {
+  if (IS_SERVER) {
+    // Deleting cookies is a side-effect that is not allowed in Server Components.
+    // This should be handled by a Server Action or an API Route.
+    // We throw an error to indicate that the session has expired, which will be
+    // caught by the calling function.
+    throw new Error('Your session has expired. Please log in again.');
+  } else {
+    // On client, use Zustand and redirect
+    useAuthStore.getState().logout();
     window.location.href = '/login?reason=session_expired';
   }
 };
@@ -30,10 +38,27 @@ async function refreshToken(): Promise<string | null> {
   console.log('Attempting to refresh token...');
   refreshPromise = (async () => {
     try {
-      const res = await fetch(`${BASE}/auth/reissue`, {
+      const fetchOptions: RequestInit = {
         method: 'POST',
-        credentials: 'include',
-      });
+      };
+
+      // On the server, we must manually handle cookies.
+      // On the client, `credentials: 'include'` handles it automatically.
+      if (IS_SERVER) {
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        const refreshToken = cookieStore.get('refreshToken')?.value;
+        if (!refreshToken) {
+          throw new Error('No refresh token found in server-side cookies.');
+        }
+        fetchOptions.headers = {
+          Cookie: `refreshToken=${refreshToken}`,
+        };
+      } else {
+        fetchOptions.credentials = 'include';
+      }
+
+      const res = await fetch(`${BASE}/auth/reissue`, fetchOptions);
 
       if (!res.ok) {
         throw new Error(`Token refresh failed with status ${res.status}`);
@@ -50,11 +75,28 @@ async function refreshToken(): Promise<string | null> {
 
       const newAccessToken = json.data.accessToken.value;
       console.log('Token refreshed successfully.');
-      useAuthStore.getState().setToken(newAccessToken);
+
+      // Store the new token based on the environment
+      if (IS_SERVER) {
+        const { cookies } = await import('next/headers');
+        const cookieStore = await cookies();
+        cookieStore.set('accessToken', newAccessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          path: '/',
+          sameSite: 'lax',
+        });
+      } else {
+        useAuthStore.getState().setToken(newAccessToken);
+      }
+
       return newAccessToken;
     } catch (error) {
       console.error('Token refresh failed, logging out:', error);
-      handleLogout();
+      if (!IS_SERVER) {
+        await handleLogout();
+      }
+      // On the server, we just return null and let the caller handle it.
       return null;
     } finally {
       refreshPromise = null;
@@ -83,10 +125,26 @@ export async function apiFetch<T>(
     Object.assign(headers, opts.headers);
 
     const config: RequestInit = {
-      credentials: 'include',
       ...opts,
       headers,
     };
+
+    // On the client, we need to send credentials to handle cookies automatically
+    if (!IS_SERVER) {
+      config.credentials = 'include';
+    } else {
+      // On the server, we need to manually forward cookies
+      const { cookies } = await import('next/headers');
+      const cookieStore = await cookies();
+      const cookieHeader = cookieStore
+        .getAll()
+        .map((cookie) => `${cookie.name}=${cookie.value}`)
+        .join('; ');
+
+      if (cookieHeader) {
+        headers.Cookie = cookieHeader;
+      }
+    }
 
     if (opts.body && !isMultipart) {
       config.body = JSON.stringify(opts.body);
@@ -138,7 +196,17 @@ export async function apiFetch<T>(
     }
   };
 
-  return makeRequest(useAuthStore.getState().token);
+  let token: string | null = null;
+  if (IS_SERVER) {
+    // On the server, get the token from cookies
+    const { cookies } = await import('next/headers');
+    token = (await cookies()).get('accessToken')?.value || null;
+  } else {
+    // On the client, get the token from Zustand store
+    token = useAuthStore.getState().token;
+  }
+
+  return makeRequest(token);
 }
 
 export const getTaskHistory = (
@@ -169,22 +237,20 @@ export const getPlans = (): Promise<ApiResponse<Plan[]>> => {
   return apiFetch<Plan[]>('/plans');
 };
 
-export const preRegisterPayment = (merchantUid: string, planKey: string) => {
-  return apiFetch('/subscriptions/pre-register', {
+export const registerBillingKey = (billingKey: string) => {
+  return apiFetch('/subscriptions/register-billing-key', {
     method: 'POST',
     body: {
-      merchantUid,
-      planKey,
+      billingKey,
     },
   });
 };
 
-export const activatePayment = (impUid: string, merchantUid: string) => {
-  return apiFetch('/subscriptions/activate', {
+export const createSubscription = (planKey: string) => {
+  return apiFetch('/subscriptions/create', {
     method: 'POST',
     body: {
-      impUid,
-      merchantUid,
+      planKey,
     },
   });
 };

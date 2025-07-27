@@ -11,6 +11,8 @@ import {
 } from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
+import { Subscription, PlanKey } from '@/app/_types/subscription';
+import { useUIStore } from '@/app/_stores/uiStore';
 
 type Plan = {
   key: string;
@@ -46,6 +48,16 @@ type Props = {
   translations: Translations;
   currency: string;
   apiPlans: ApiPlan[];
+  activeSubscription: Subscription | null;
+};
+
+const planRanks: Record<string, number> = {
+  FREE: 0,
+  CREATOR_MONTHLY: 1,
+  CREATOR_YEARLY: 1,
+  PROFESSIONAL_MONTHLY: 2,
+  PROFESSIONAL_YEARLY: 2,
+  ENTERPRISE: 3,
 };
 
 export default function PricingClient({
@@ -55,6 +67,7 @@ export default function PricingClient({
   translations,
   currency,
   apiPlans,
+  activeSubscription,
 }: Props) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
@@ -62,6 +75,10 @@ export default function PricingClient({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
+  const { openSettings } = useUIStore();
+
+  const activePlanKey = activeSubscription?.planKey ?? 'FREE';
+  const activePlanRank = planRanks[activePlanKey] ?? 0;
 
   const handlePayment = async (plan: Plan) => {
     if (!isAuthenticated || !user) {
@@ -89,7 +106,6 @@ export default function PricingClient({
         throw new Error('Payment environment variables are not set.');
       }
 
-      // 1. 빌링키 발급 요청
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
@@ -98,17 +114,14 @@ export default function PricingClient({
 
       if (!issueResponse || issueResponse.code) {
         throw new Error(
-          `Billing key issuing failed: ${issueResponse?.message || 'User cancelled.'}`
+          `Billing key issuing failed: ${
+            issueResponse?.message || 'User cancelled.'
+          }`
         );
       }
 
-      // 2. 발급된 빌링키를 백엔드에 등록
       await registerBillingKey(issueResponse.billingKey);
-
-      // 3. 등록된 빌링키로 구독 생성 및 결제
       await createSubscription(planKey);
-
-      // 4. 성공 페이지로 이동
       router.push(`/${lang}/pricing/success`);
     } catch (error: any) {
       alert(`An error occurred: ${error.message}`);
@@ -132,9 +145,9 @@ export default function PricingClient({
   const getFeatureValue = (value: string | boolean) => {
     if (typeof value === 'boolean') {
       return value ? (
-        <X className="h-5 w-5 text-slate-500 mx-auto" />
-      ) : (
         <Check className="h-5 w-5 text-accent mx-auto" />
+      ) : (
+        <X className="h-5 w-5 text-slate-500 mx-auto" />
       );
     }
     return <span className="text-sm">{value}</span>;
@@ -150,6 +163,80 @@ export default function PricingClient({
             maximumFractionDigits: 2,
           });
     return `${currency}${formattedPrice}`;
+  };
+
+  const renderCtaButton = (plan: Plan) => {
+    if (plan.key === 'Free') {
+      return (
+        <Link href={plan.href}>
+          <button
+            className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition bg-white/10 text-white hover:bg-white/20`}
+          >
+            {plan.cta}
+          </button>
+        </Link>
+      );
+    }
+
+    const monthlyPlanRank = planRanks[plan.planKeyMonthly] ?? -1;
+    const yearlyPlanRank = planRanks[plan.planKeyYearly] ?? -1;
+    const currentPlanRank =
+      billingCycle === 'monthly' ? monthlyPlanRank : yearlyPlanRank;
+
+    if (activeSubscription) {
+      if (
+        (billingCycle === 'monthly' &&
+          activePlanKey === plan.planKeyMonthly) ||
+        (billingCycle === 'yearly' && activePlanKey === plan.planKeyYearly)
+      ) {
+        return (
+          <button
+            disabled
+            className="w-full mt-4 rounded-md py-2.5 text-sm font-semibold bg-accent/50 text-black cursor-default"
+          >
+            {translations.currentPlan}
+          </button>
+        );
+      }
+
+      if (currentPlanRank < activePlanRank) {
+        return (
+          <button
+            disabled
+            className="w-full mt-4 rounded-md py-2.5 text-sm font-semibold bg-slate-700 text-slate-400 cursor-not-allowed"
+          >
+            {translations.downgradeNotAvailable}
+          </button>
+        );
+      }
+
+      if (currentPlanRank > activePlanRank) {
+        return (
+          <button
+            onClick={() => openSettings('subscription')}
+            className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition bg-blue-500 text-white hover:bg-blue-400`}
+          >
+            {translations.upgradePlan}
+          </button>
+        );
+      }
+    }
+
+    return (
+      <button
+        onClick={() => handlePayment(plan)}
+        disabled={isLoading}
+        className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition ${
+          plan.isPopular
+            ? 'bg-accent text-black hover:brightness-90'
+            : plan.isCustom
+            ? 'bg-slate-600 text-white hover:bg-slate-500'
+            : 'bg-white/10 text-white hover:bg-white/20'
+        } disabled:opacity-50 disabled:cursor-not-allowed`}
+      >
+        {isLoading ? translations.processing : plan.cta}
+      </button>
+    );
   };
 
   return (
@@ -200,78 +287,71 @@ export default function PricingClient({
 
           <div className="mt-12 overflow-x-auto pb-4">
             <div className="min-w-[1200px] w-full">
-              {/* Table Header */}
               <div className="grid grid-cols-5 gap-x-6">
                 <div className="col-span-1"></div>
-                {plans.map((plan) => (
-                  <div
-                    key={plan.name}
-                    className={`col-span-1 p-4 rounded-t-lg ${
-                      plan.isPopular ? 'bg-accent/10' : ''
-                    }`}
-                  >
-                    <h2
-                      className={`text-xl font-bold ${
-                        plan.isPopular ? 'text-accent' : 'text-white'
+                {plans.map((plan) => {
+                  const isCurrentPlan =
+                    (billingCycle === 'monthly' &&
+                      activePlanKey === plan.planKeyMonthly) ||
+                    (billingCycle === 'yearly' &&
+                      activePlanKey === plan.planKeyYearly);
+
+                  return (
+                    <div
+                      key={plan.name}
+                      className={`relative col-span-1 p-4 rounded-t-lg ${
+                        plan.isPopular ? 'bg-accent/10' : ''
+                      } ${
+                        isCurrentPlan
+                          ? 'border-2 border-accent'
+                          : 'border-2 border-transparent'
                       }`}
                     >
-                      {plan.name}
-                    </h2>
-                    <p className="text-xs text-slate-400 mt-1 h-10">
-                      {plan.description}
-                    </p>
-                    <div className="mt-4 h-20">
-                      {plan.isCustom ? (
-                        <span className="text-4xl font-bold">
-                          {plan.priceMonthly}
-                        </span>
-                      ) : (
-                        <>
-                          <span className="text-4xl font-bold">
-                            {formatPrice(
-                              billingCycle === 'monthly'
-                                ? plan.priceMonthly
-                                : plan.priceYearly
-                            )}
-                          </span>
-                          <span className="text-lg text-slate-400">/mo</span>
-                          {billingCycle === 'yearly' &&
-                            plan.priceMonthly !== 0 && (
-                              <p className="text-xs text-slate-500">
-                                {translations.billedAs}
-                                {formatPrice(plan.priceYearlyTotal)} /year
-                              </p>
-                            )}
-                        </>
+                      {isCurrentPlan && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-black">
+                          {translations.currentPlan}
+                        </div>
                       )}
-                    </div>
-                    {plan.key === 'Free' ? (
-                      <Link href={plan.href}>
-                        <button
-                          className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition bg-white/10 text-white hover:bg-white/20`}
-                        >
-                          {plan.cta}
-                        </button>
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={() => handlePayment(plan)}
-                        disabled={isLoading}
-                        className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition ${
-                          plan.isPopular
-                            ? 'bg-accent text-black hover:brightness-90'
-                            : plan.isCustom
-                              ? 'bg-slate-600 text-white hover:bg-slate-500'
-                              : 'bg-white/10 text-white hover:bg-white/20'
-                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      <h2
+                        className={`text-xl font-bold ${
+                          plan.isPopular ? 'text-accent' : 'text-white'
+                        }`}
                       >
-                        {isLoading ? 'Processing...' : plan.cta}
-                      </button>
-                    )}
-                  </div>
-                ))}
+                        {plan.name}
+                      </h2>
+                      <p className="text-xs text-slate-400 mt-1 h-10">
+                        {plan.description}
+                      </p>
+                      <div className="mt-4 h-20">
+                        {plan.isCustom ? (
+                          <span className="text-4xl font-bold">
+                            {plan.priceMonthly}
+                          </span>
+                        ) : (
+                          <>
+                            <span className="text-4xl font-bold">
+                              {formatPrice(
+                                billingCycle === 'monthly'
+                                  ? plan.priceMonthly
+                                  : plan.priceYearly
+                              )}
+                            </span>
+                            <span className="text-lg text-slate-400">/mo</span>
+                            {billingCycle === 'yearly' &&
+                              plan.priceMonthly !== 0 && (
+                                <p className="text-xs text-slate-500">
+                                  {translations.billedAs}
+                                  {formatPrice(plan.priceYearlyTotal)} /year
+                                </p>
+                              )}
+                          </>
+                        )}
+                      </div>
+                      {renderCtaButton(plan)}
+                    </div>
+                  );
+                })}
               </div>
-              {/* Table Body */}
               {Object.entries(groupedFeatures).map(
                 ([category, featuresInSection]) => (
                   <Fragment key={category}>
@@ -284,7 +364,9 @@ export default function PricingClient({
                       <div
                         key={feature.name}
                         className={`grid grid-cols-5 gap-x-6 items-center text-center ${
-                          featureIdx % 2 === 0 ? 'bg-white/[0.02]' : 'bg-black'
+                          featureIdx % 2 === 0
+                            ? 'bg-white/[0.02]'
+                            : 'bg-black'
                         }`}
                       >
                         <div className="col-span-1 text-left text-sm text-slate-300 p-4">

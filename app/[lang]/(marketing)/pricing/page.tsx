@@ -1,8 +1,9 @@
 import initTranslations from '@/lib/i18n-server';
 import PricingClient from './_components/PricingClient';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
-import { getPlans } from '@/app/_lib/apis/subscription.api';
+import { getPlans, getSubscriptions } from '@/app/_lib/apis/subscription.api';
 import { Plan } from '@/app/_types/plan';
+import { Subscription } from '@/app/_types/subscription';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +40,15 @@ export default async function PricingPage({ params }: Props) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
 
-  const { data: apiPlans } = (await getPlans()) || { data: [] };
+  // Fetch plans and subscriptions in parallel
+  const [{ data: apiPlans }, { data: userSubscriptions }] = await Promise.all([
+    getPlans().catch(() => ({ data: [] })),
+    getSubscriptions().catch(() => ({ data: [] })),
+  ]);
+
+  const activeSubscription =
+    userSubscriptions?.find((sub) => sub.status === 'ACTIVE') || null;
+
   const processedPlans = processApiPlans(apiPlans || []);
 
   const isKorean = lang === 'ko';
@@ -215,6 +224,10 @@ export default async function PricingPage({ params }: Props) {
     billedAs: t('billedAs'),
     goToStudio: t('goToStudio'),
     paymentAlert: t('paymentAlert'),
+    currentPlan: t('currentPlan'),
+    downgradeNotAvailable: t('downgradeNotAvailable'),
+    upgradePlan: t('upgradePlan'),
+    processing: t('processing'),
   };
 
   return (
@@ -225,6 +238,7 @@ export default async function PricingPage({ params }: Props) {
       translations={translations}
       currency={currency}
       apiPlans={apiPlans || []}
+      activeSubscription={activeSubscription}
     />
   );
 }

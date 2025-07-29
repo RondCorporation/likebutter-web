@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import PortOne from '@portone/browser-sdk/v2';
+import toast from 'react-hot-toast';
 import {
   createSubscription,
   registerBillingKey,
@@ -144,7 +145,7 @@ export default function PricingClient({
       await createSubscription(planKey);
       router.push(`/${lang}/pricing/success`);
     } catch (error: any) {
-      alert(`An error occurred: ${error.message}`);
+      toast.error(`An error occurred: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -205,8 +206,7 @@ export default function PricingClient({
 
     if (activeSubscription) {
       if (
-        (billingCycle === 'monthly' &&
-          activePlanKey === plan.planKeyMonthly) ||
+        (billingCycle === 'monthly' && activePlanKey === plan.planKeyMonthly) ||
         (billingCycle === 'yearly' && activePlanKey === plan.planKeyYearly)
       ) {
         return (
@@ -250,8 +250,8 @@ export default function PricingClient({
           plan.isPopular
             ? 'bg-accent text-black hover:brightness-90'
             : plan.isCustom
-            ? 'bg-slate-600 text-white hover:bg-slate-500'
-            : 'bg-white/10 text-white hover:bg-white/20'
+              ? 'bg-slate-600 text-white hover:bg-slate-500'
+              : 'bg-white/10 text-white hover:bg-white/20'
         } disabled:opacity-50 disabled:cursor-not-allowed`}
       >
         {isLoading ? translations.processing : plan.cta}
@@ -386,9 +386,7 @@ export default function PricingClient({
                       <div
                         key={feature.name}
                         className={`grid grid-cols-5 gap-x-6 items-center text-center ${
-                          featureIdx % 2 === 0
-                            ? 'bg-white/[0.02]'
-                            : 'bg-black'
+                          featureIdx % 2 === 0 ? 'bg-white/[0.02]' : 'bg-black'
                         }`}
                       >
                         <div className="col-span-1 text-left text-sm text-slate-300 p-4">

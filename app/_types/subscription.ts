@@ -6,7 +6,11 @@ export type PlanKey =
   | 'PROFESSIONAL_YEARLY'
   | 'ENTERPRISE';
 
-export type SubscriptionStatus = 'ACTIVE' | 'CANCELLED' | 'PAST_DUE' | 'EXPIRED';
+export type SubscriptionStatus =
+  | 'ACTIVE'
+  | 'CANCELLED'
+  | 'PAST_DUE'
+  | 'EXPIRED';
 
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED';
 

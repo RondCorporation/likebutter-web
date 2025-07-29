@@ -1,10 +1,11 @@
 'use client';
-import { usePathname } from 'next/navigation';
+
+import { ReactNode, useEffect } from 'react';
+import { useAuthStore } from '@/stores/authStore';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { ReactNode } from 'react';
-import AuthInitializer from '@/components/AuthInitializer';
 import SettingsModal from '@/components/SettingsModal';
+import { Toaster } from 'react-hot-toast';
 import '@/lib/i18n-client';
 
 export function LayoutClient({ children }: { children: ReactNode }) {
@@ -14,11 +15,21 @@ export function LayoutClient({ children }: { children: ReactNode }) {
   return (
     <AuthInitializer>
       <SettingsModal />
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          style: {
+            background: '#333',
+            color: '#fff',
+          },
+        }}
+      />
       <div className="flex min-h-screen flex-col">
-        {!isStudioPage && <Header />}
+        <Header />
         <main className="flex-grow">{children}</main>
-        {!isStudioPage && <Footer />}
+        <Footer />
       </div>
+    </>
     </AuthInitializer>
   );
 }

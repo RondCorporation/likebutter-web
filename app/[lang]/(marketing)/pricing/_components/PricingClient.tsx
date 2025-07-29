@@ -10,6 +10,7 @@ import {
   createSubscription,
   registerBillingKey,
   getSubscriptions,
+  getSubscriptionDetails,
 } from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
@@ -142,8 +143,24 @@ export default function PricingClient({
       }
 
       await registerBillingKey(issueResponse.billingKey);
-      await createSubscription(planKey);
-      router.push(`/${lang}/pricing/success`);
+      const createSubResponse = await createSubscription(planKey);
+
+      if (createSubResponse.data?.subscriptionId) {
+        // Fetch the latest payment details to redirect to the receipt
+        const detailsResponse = await getSubscriptionDetails(
+          createSubResponse.data.subscriptionId
+        );
+        const latestPayment = detailsResponse.data?.paymentHistory?.[0];
+
+        if (latestPayment) {
+          router.push(`/${lang}/payments/${latestPayment.paymentId}`);
+        } else {
+          // Fallback if payment details are not immediately available
+          router.push(`/${lang}/pricing/success`);
+        }
+      } else {
+        throw new Error('Subscription creation failed to return a subscription ID.');
+      }
     } catch (error: any) {
       toast.error(`An error occurred: ${error.message}`);
     } finally {

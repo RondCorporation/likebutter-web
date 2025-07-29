@@ -18,6 +18,7 @@ import { useAuthStore } from '@/app/_stores/authStore';
 import { useUIStore } from '@/app/_stores/uiStore';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import ConfirmationModal from '@/components/shared/ConfirmationModal';
 
 const planNames: Record<PlanKey, string> = {
   FREE: 'Free Plan',
@@ -111,11 +112,12 @@ export default function SubscriptionManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<'upgrade' | 'details' | null>(
-    null
-  );
+  const [modalContent, setModalContent] = useState<
+    'upgrade' | 'details' | 'cancel' | null
+  >(null);
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
   const [details, setDetails] = useState<SubscriptionDetails | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const { initialize: revalidateUser } = useAuthStore();
   const { closeSettings } = useUIStore();
@@ -147,19 +149,25 @@ export default function SubscriptionManager() {
     fetchSubscriptions();
   }, []);
 
-  const handleCancel = async (subscriptionId: number) => {
-    const confirmed = window.confirm(t('subscriptionManager.cancelConfirm'));
-    if (!confirmed) return;
+  const handleCancelClick = (sub: Subscription) => {
+    setSelectedSub(sub);
+    setModalContent('cancel');
+    setIsModalOpen(true);
+  };
 
+  const handleConfirmCancel = async () => {
+    if (!selectedSub) return;
+    setIsConfirming(true);
     try {
-      await cancelSubscription(subscriptionId);
+      await cancelSubscription(selectedSub.subscriptionId);
       toast.success(t('subscriptionManager.cancelSuccess'));
       await revalidateUser();
       await fetchSubscriptions();
+      closeModal();
     } catch (err: any) {
-      toast.error(
-        `${t('subscriptionManager.cancelError')}: ${err.message}`
-      );
+      toast.error(`${t('subscriptionManager.cancelError')}: ${err.message}`);
+    } finally {
+      setIsConfirming(false);
     }
   };
 
@@ -193,9 +201,7 @@ export default function SubscriptionManager() {
       await revalidateUser();
       await fetchSubscriptions();
     } catch (err: any) {
-      toast.error(
-        `${t('subscriptionManager.upgradeError')}: ${err.message}`
-      );
+      toast.error(`${t('subscriptionManager.upgradeError')}: ${err.message}`);
     }
   };
 
@@ -281,7 +287,7 @@ export default function SubscriptionManager() {
                       )}
                     {sub.status === 'ACTIVE' && (
                       <button
-                        onClick={() => handleCancel(sub.subscriptionId)}
+                        onClick={() => handleCancelClick(sub)}
                         className="px-3 py-1.5 bg-amber-600/80 hover:bg-amber-600 rounded-md transition"
                       >
                         {t('subscriptionManager.cancelAction')}
@@ -295,7 +301,7 @@ export default function SubscriptionManager() {
         )}
       </div>
 
-      {isModalOpen && selectedSub && (
+      {isModalOpen && modalContent !== 'cancel' && selectedSub && (
         <SubscriptionModal
           title={
             modalContent === 'upgrade'
@@ -370,6 +376,16 @@ export default function SubscriptionManager() {
           )}
         </SubscriptionModal>
       )}
+
+      <ConfirmationModal
+        isOpen={isModalOpen && modalContent === 'cancel'}
+        title={t('subscriptionManager.cancelTitle')}
+        message={t('subscriptionManager.cancelConfirm')}
+        onConfirm={handleConfirmCancel}
+        onCancel={closeModal}
+        confirmText={t('subscriptionManager.cancelAction')}
+        isConfirming={isConfirming}
+      />
     </Fragment>
   );
 }

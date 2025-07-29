@@ -264,7 +264,7 @@
   "goToPricing": "요금제로 이동",
   "subscriptionManager": {
     "fetchError": "구독 정보를 가져오는 데 실패했습니다.",
-    "cancelConfirm": "정말로 이 구독을 취소하시겠습니까? 현재 결제 주기가 끝날 때까지는 계속 활성 상태로 유지됩니다.",
+    "cancelConfirm": "현재 결제 주기가 끝날 때까지 구독이 유지됩니다. 정말로 취소하시겠습니까?",
     "cancelSuccess": "구독이 성공적으로 취소되었습니다.",
     "cancelError": "구독 취소 중 오류가 발생했습니다.",
     "loading": "구독 정보를 불러오는 중...",
@@ -291,10 +291,33 @@
     "fetchDetailsError": "상세 정보를 가져오는 데 실패했습니다.",
     "upgradeSuccess": "요금제가 성공적으로 업그레이드되었습니다.",
     "upgradeError": "요금제 업그레이드 중 오류가 발생했습니다.",
-    "noPaymentHistory": "결제 내역이 없습니다."
+    "noPaymentHistory": "결제 내역이 없습니다.",
+    "cancelTitle": "구독 취소 확인"
   },
   "currentPlan": "현재 요금제",
   "downgradeNotAvailable": "다운그레이드 불가",
   "upgradePlan": "업그레이드",
-  "processing": "처리 중..."
+  "processing": "처리 중...",
+  "paymentHistory": {
+    "title": "결제 내역",
+    "noPayments": "결제 내역이 없습니다.",
+    "date": "결제일",
+    "order": "주문",
+    "plan": "요금제",
+    "amount": "금액",
+    "status": "상태",
+    "viewReceipt": "영수증 보기"
+  },
+  "receipt": {
+    "title": "결제 영수증",
+    "subtitle": "결제가 성공적으로 처리되었습니다.",
+    "errorTitle": "영수증 조회 오류",
+    "paymentId": "결제 ID",
+    "pgTxId": "거래 ID",
+    "paidAt": "결제일",
+    "orderName": "주문명",
+    "planName": "상품명",
+    "totalAmount": "총 결제 금액",
+    "backToList": "목록으로 돌아가기"
+  }
 }

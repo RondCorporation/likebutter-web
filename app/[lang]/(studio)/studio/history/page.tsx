@@ -6,9 +6,7 @@ type Props = {
   params: Promise<{ lang: string }>;
 };
 
-export async function generateMetadata({
-  params,
-}: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
   return {

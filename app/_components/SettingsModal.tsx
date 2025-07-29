@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import {
@@ -56,13 +56,23 @@ function SubscriptionSettings() {
 }
 
 export default function SettingsModal() {
-  const { isSettingsOpen, closeSettings } = useUIStore();
-  const [activeTab, setActiveTab] = useState('account');
+  const { isSettingsOpen, closeSettings, initialSettingsTab } = useUIStore();
+  const [activeTab, setActiveTab] = useState(initialSettingsTab);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (isSettingsOpen) {
+      setActiveTab(initialSettingsTab);
+    }
+  }, [isSettingsOpen, initialSettingsTab]);
 
   const TABS = [
     { id: 'account', label: t('settingsTabAccount'), icon: User },
-    { id: 'subscription', label: t('settingsTabSubscription'), icon: CreditCard },
+    {
+      id: 'subscription',
+      label: t('settingsTabSubscription'),
+      icon: CreditCard,
+    },
     { id: 'general', label: t('settingsTabGeneral'), icon: SettingsIcon },
     { id: 'notifications', label: t('settingsTabNotifications'), icon: Bell },
   ];

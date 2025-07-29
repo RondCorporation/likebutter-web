@@ -16,7 +16,8 @@ const PaymentSuccessPage = () => {
           결제 정보가 등록되었습니다
         </h1>
         <p className="mt-2 text-lg text-slate-300">
-          구독이 성공적으로 처리되었습니다. 이제 모든 기능을 이용하실 수 있습니다.
+          구독이 성공적으로 처리되었습니다. 이제 모든 기능을 이용하실 수
+          있습니다.
         </p>
         <div className="mt-8">
           <Link

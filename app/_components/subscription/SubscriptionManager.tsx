@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
 import {
   getSubscriptions,
   cancelSubscription,
@@ -110,7 +111,9 @@ export default function SubscriptionManager() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<'upgrade' | 'details' | null>(null);
+  const [modalContent, setModalContent] = useState<'upgrade' | 'details' | null>(
+    null
+  );
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
   const [details, setDetails] = useState<SubscriptionDetails | null>(null);
 
@@ -150,11 +153,13 @@ export default function SubscriptionManager() {
 
     try {
       await cancelSubscription(subscriptionId);
-      alert(t('subscriptionManager.cancelSuccess'));
+      toast.success(t('subscriptionManager.cancelSuccess'));
       await revalidateUser();
       await fetchSubscriptions();
     } catch (err: any) {
-      alert(`${t('subscriptionManager.cancelError')}: ${err.message}`);
+      toast.error(
+        `${t('subscriptionManager.cancelError')}: ${err.message}`
+      );
     }
   };
 
@@ -170,12 +175,12 @@ export default function SubscriptionManager() {
     setIsModalOpen(true);
     setDetails(null); // Clear previous details
     try {
-        const res = await getSubscriptionDetails(sub.subscriptionId);
-        if (res.data) {
-            setDetails(res.data);
-        }
+      const res = await getSubscriptionDetails(sub.subscriptionId);
+      if (res.data) {
+        setDetails(res.data);
+      }
     } catch (err: any) {
-        alert(err.message || t('subscriptionManager.fetchDetailsError'));
+      toast.error(err.message || t('subscriptionManager.fetchDetailsError'));
     }
   };
 
@@ -183,12 +188,14 @@ export default function SubscriptionManager() {
     if (!selectedSub) return;
     try {
       await upgradeSubscription(selectedSub.subscriptionId, newPlanKey);
-      alert(t('subscriptionManager.upgradeSuccess'));
+      toast.success(t('subscriptionManager.upgradeSuccess'));
       setIsModalOpen(false);
       await revalidateUser();
       await fetchSubscriptions();
     } catch (err: any) {
-      alert(`${t('subscriptionManager.upgradeError')}: ${err.message}`);
+      toast.error(
+        `${t('subscriptionManager.upgradeError')}: ${err.message}`
+      );
     }
   };
 
@@ -205,7 +212,9 @@ export default function SubscriptionManager() {
   };
 
   if (isLoading) {
-    return <div className="text-center p-8">{t('subscriptionManager.loading')}</div>;
+    return (
+      <div className="text-center p-8">{t('subscriptionManager.loading')}</div>
+    );
   }
 
   if (error) {
@@ -229,7 +238,9 @@ export default function SubscriptionManager() {
 
         {subscriptions.length === 0 ? (
           <div className="text-center py-10 px-4 bg-white/5 rounded-md">
-            <p className="text-slate-400">{t('subscriptionManager.noSubscriptions')}</p>
+            <p className="text-slate-400">
+              {t('subscriptionManager.noSubscriptions')}
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -259,21 +270,22 @@ export default function SubscriptionManager() {
                     >
                       {t('subscriptionManager.details')}
                     </button>
-                    {sub.status === 'ACTIVE' && getAvailableUpgrades(sub.planKey).length > 0 && (
+                    {sub.status === 'ACTIVE' &&
+                      getAvailableUpgrades(sub.planKey).length > 0 && (
                         <button
                           onClick={() => handleUpgradeClick(sub)}
                           className="px-3 py-1.5 bg-accent/80 hover:bg-accent rounded-md transition"
                         >
                           {t('subscriptionManager.upgrade')}
                         </button>
-                    )}
+                      )}
                     {sub.status === 'ACTIVE' && (
-                        <button
-                          onClick={() => handleCancel(sub.subscriptionId)}
-                          className="px-3 py-1.5 bg-amber-600/80 hover:bg-amber-600 rounded-md transition"
-                        >
-                          {t('subscriptionManager.cancelAction')}
-                        </button>
+                      <button
+                        onClick={() => handleCancel(sub.subscriptionId)}
+                        className="px-3 py-1.5 bg-amber-600/80 hover:bg-amber-600 rounded-md transition"
+                      >
+                        {t('subscriptionManager.cancelAction')}
+                      </button>
                     )}
                   </div>
                 </div>
@@ -300,14 +312,14 @@ export default function SubscriptionManager() {
               </p>
               <p className="mb-4">{t('subscriptionManager.selectUpgrade')}</p>
               <div className="flex flex-col space-y-2">
-                {getAvailableUpgrades(selectedSub.planKey).map(planKey => (
-                    <button 
-                        key={planKey}
-                        onClick={() => handleUpgrade(planKey)} 
-                        className="p-3 bg-blue-600 hover:bg-blue-700 rounded-md transition text-white font-semibold"
-                    >
-                        {planNames[planKey]}
-                    </button>
+                {getAvailableUpgrades(selectedSub.planKey).map((planKey) => (
+                  <button
+                    key={planKey}
+                    onClick={() => handleUpgrade(planKey)}
+                    className="p-3 bg-blue-600 hover:bg-blue-700 rounded-md transition text-white font-semibold"
+                  >
+                    {planNames[planKey]}
+                  </button>
                 ))}
               </div>
             </div>
@@ -318,20 +330,40 @@ export default function SubscriptionManager() {
                 <p>{t('subscriptionManager.loadingDetails')}</p>
               ) : (
                 <div className="space-y-2 text-sm">
-                    <p><strong>{t('subscriptionManager.plan')}:</strong> {details.planInfo.description}</p>
-                    <p><strong>{t('subscriptionManager.status')}:</strong> {details.status}</p>
-                    <p><strong>{t('subscriptionManager.term')}:</strong> {new Date(details.startDate).toLocaleString()} - {new Date(details.endDate).toLocaleString()}</p>
-                    <p><strong>{t('subscriptionManager.nextPayment')}:</strong> {new Date(details.nextPaymentDate).toLocaleDateString()}</p>
-                    <h5 className="font-semibold pt-4 mb-2">{t('subscriptionManager.paymentHistory')}</h5>
-                    {details.paymentHistory.length > 0 ? (
-                        <ul className="list-disc list-inside space-y-1">
-                            {details.paymentHistory.map(p => (
-                                <li key={p.paymentId}>{new Date(p.paidAt).toLocaleString()}: ${p.amount.toFixed(2)} ({p.status})</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-slate-400">{t('subscriptionManager.noPaymentHistory')}</p>
-                    )}
+                  <p>
+                    <strong>{t('subscriptionManager.plan')}:</strong>{' '}
+                    {details.planInfo.description}
+                  </p>
+                  <p>
+                    <strong>{t('subscriptionManager.status')}:</strong>{' '}
+                    {details.status}
+                  </p>
+                  <p>
+                    <strong>{t('subscriptionManager.term')}:</strong>{' '}
+                    {new Date(details.startDate).toLocaleString()} -{' '}
+                    {new Date(details.endDate).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>{t('subscriptionManager.nextPayment')}:</strong>{' '}
+                    {new Date(details.nextPaymentDate).toLocaleDateString()}
+                  </p>
+                  <h5 className="font-semibold pt-4 mb-2">
+                    {t('subscriptionManager.paymentHistory')}
+                  </h5>
+                  {details.paymentHistory.length > 0 ? (
+                    <ul className="list-disc list-inside space-y-1">
+                      {details.paymentHistory.map((p) => (
+                        <li key={p.paymentId}>
+                          {new Date(p.paidAt).toLocaleString()}: $
+                          {p.amount.toFixed(2)} ({p.status})
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-slate-400">
+                      {t('subscriptionManager.noPaymentHistory')}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

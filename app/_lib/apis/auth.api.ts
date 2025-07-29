@@ -15,13 +15,15 @@ export const login = (
   );
 };
 
-export const signup = (
-  signupData: any
-): Promise<ApiResponse<any>> => {
-  return apiFetch('/auth/sign-up', {
-    method: 'POST',
-    body: signupData,
-  }, false);
+export const signup = (signupData: any): Promise<ApiResponse<any>> => {
+  return apiFetch(
+    '/auth/sign-up',
+    {
+      method: 'POST',
+      body: signupData,
+    },
+    false
+  );
 };
 
 export const logout = (): Promise<ApiResponse<any>> => {

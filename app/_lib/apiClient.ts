@@ -78,11 +78,18 @@ async function refreshToken(): Promise<string | null> {
         if (newRefreshTokenCookie) {
           const parsedCookie = parse(newRefreshTokenCookie);
           const [rtName, rtValue] = Object.entries(parsedCookie)[0];
-          
+
           // Extract cookie attributes, providing defaults that match the backend policy
-          const httpOnly = newRefreshTokenCookie.toLowerCase().includes('httponly');
+          const httpOnly = newRefreshTokenCookie
+            .toLowerCase()
+            .includes('httponly');
           const secure = newRefreshTokenCookie.toLowerCase().includes('secure');
-          const sameSite = parsedCookie.SameSite?.toLowerCase() as 'strict' | 'lax' | 'none' | undefined ?? 'strict';
+          const sameSite =
+            (parsedCookie.SameSite?.toLowerCase() as
+              | 'strict'
+              | 'lax'
+              | 'none'
+              | undefined) ?? 'strict';
           const path = parsedCookie.Path ?? '/auth/reissue';
 
           if (rtName && rtValue) {
@@ -92,10 +99,14 @@ async function refreshToken(): Promise<string | null> {
               path,
               sameSite,
               // 'max-age' or 'expires' should also be forwarded if present
-              ...(parsedCookie['Max-Age'] && { maxAge: parseInt(parsedCookie['Max-Age'], 10) }),
-              ...(parsedCookie.Expires && { expires: new Date(parsedCookie.Expires) }),
+              ...(parsedCookie['Max-Age'] && {
+                maxAge: parseInt(parsedCookie['Max-Age'], 10),
+              }),
+              ...(parsedCookie.Expires && {
+                expires: new Date(parsedCookie.Expires),
+              }),
             });
-             console.log(`Forwarded new ${rtName} cookie to browser.`);
+            console.log(`Forwarded new ${rtName} cookie to browser.`);
           }
         }
       } else {

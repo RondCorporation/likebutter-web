@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import '@/lib/i18n-client';
 import { usePathname } from 'next/navigation';
 import AuthInitializer from '@/components/AuthInitializer';
+import ServerErrorDisplay from '@/components/shared/ServerErrorDisplay';
 
 export function LayoutClient({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export function LayoutClient({ children }: { children: ReactNode }) {
   return (
     <AuthInitializer>
       <>
+        <ServerErrorDisplay />
         <SettingsModal />
         <Toaster
           position="bottom-center"

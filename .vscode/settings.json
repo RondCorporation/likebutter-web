@@ -1,5 +1,9 @@
 {
-  "cSpell.words": ["rondcorp"],
+  "cSpell.words": [
+    "LIKEBUTTER",
+    "LikeButter",
+    "docktory"
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },

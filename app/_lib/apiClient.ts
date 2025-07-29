@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/stores/authStore';
+import { useUIStore } from '@/stores/uiStore';
 import { parse } from 'cookie';
 
 export interface ApiResponse<T> {
@@ -207,6 +208,16 @@ export async function apiFetch<T>(
 
       return json;
     } catch (error: any) {
+      // Check for network errors (e.g., server is down)
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        const errorMessage = 'Unable to connect to the service. Please try again later.';
+        if (!IS_SERVER) {
+          useUIStore.getState().setServerError(errorMessage);
+        }
+        // We throw the error so the calling component knows the request failed.
+        throw new Error(errorMessage);
+      }
+
       const userFriendlyError = new Error(
         error.message || 'An unknown error occurred. Please try again later.'
       );

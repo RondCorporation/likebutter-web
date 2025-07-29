@@ -264,7 +264,7 @@
   "goToPricing": "Go to Pricing",
   "subscriptionManager": {
     "fetchError": "Failed to fetch subscription information.",
-    "cancelConfirm": "Are you sure you want to cancel this subscription? It will remain active until the end of the current billing cycle.",
+    "cancelConfirm": "Your subscription will remain active until the end of the current billing cycle. Are you sure you want to cancel?",
     "cancelSuccess": "Subscription cancelled successfully.",
     "cancelError": "An error occurred while cancelling the subscription.",
     "loading": "Loading subscription info...",
@@ -285,16 +285,39 @@
     "selectUpgrade": "Please select a plan to upgrade to:",
     "plan": "Plan",
     "term": "Term",
-  "nextPayment": "Next Payment",
+    "nextPayment": "Next Payment",
     "paymentHistory": "Payment History",
     "loadingDetails": "Loading details...",
     "fetchDetailsError": "Failed to fetch subscription details.",
     "upgradeSuccess": "Plan upgraded successfully.",
     "upgradeError": "An error occurred while upgrading the plan.",
-    "noPaymentHistory": "No payment history found."
+    "noPaymentHistory": "No payment history found.",
+    "cancelTitle": "Confirm Subscription Cancellation"
   },
   "currentPlan": "Current Plan",
   "downgradeNotAvailable": "Downgrade not available",
   "upgradePlan": "Upgrade",
-  "processing": "Processing..."
+  "processing": "Processing...",
+  "paymentHistory": {
+    "title": "Payment History",
+    "noPayments": "No payment history found.",
+    "date": "Date",
+    "order": "Order",
+    "plan": "Plan",
+    "amount": "Amount",
+    "status": "Status",
+    "viewReceipt": "View Receipt"
+  },
+  "receipt": {
+    "title": "Payment Receipt",
+    "subtitle": "Your payment has been processed successfully.",
+    "errorTitle": "Error Fetching Receipt",
+    "paymentId": "Payment ID",
+    "pgTxId": "Transaction ID",
+    "paidAt": "Date Paid",
+    "orderName": "Order",
+    "planName": "Item",
+    "totalAmount": "Total Amount",
+    "backToList": "Back to Payment History"
+  }
 }

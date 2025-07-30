@@ -137,7 +137,7 @@ export default function ButterGenClient() {
         <h3 className="mb-3 block text-lg font-medium text-slate-200">
           {t('butterGenStep1')}
         </h3>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
           <div>
             <label
               htmlFor="idol-name"
@@ -154,7 +154,7 @@ export default function ButterGenClient() {
               className="w-full rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-slate-500 focus:border-accent focus:ring-0"
             />
           </div>
-          <div className="flex items-center justify-center md:mt-6">
+          <div className="my-4 flex items-center justify-center">
             <div className="relative flex w-full items-center">
               <div className="flex-grow border-t border-white/20"></div>
               <span className="mx-4 flex-shrink text-sm text-slate-400">
@@ -170,12 +170,12 @@ export default function ButterGenClient() {
             >
               {t('butterGenUploadLabel')}
             </label>
-            <div className="relative flex h-[50px] w-full items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-white/20 bg-white/5 px-4 text-slate-400 transition-colors hover:border-accent/50 hover:text-accent">
+            <div className="relative flex w-full aspect-square items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-white/20 bg-white/5 px-4 text-slate-400 transition-colors hover:border-accent/50 hover:text-accent">
               {previewUrl ? (
                 <img
                   src={previewUrl}
                   alt="Source preview"
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-contain"
                 />
               ) : (
                 <div className="flex items-center">

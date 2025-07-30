@@ -1,4 +1,4 @@
-export type PaymentStatus = 'PAID' | 'FAILED' | 'CANCELLED';
+export type PaymentStatus = 'PAID' | 'FAILED' | 'CANCELLED' | 'PENDING';
 
 export interface PaymentHistoryResponse {
   paymentId: number;

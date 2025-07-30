@@ -13,12 +13,12 @@ import { LoaderCircle } from 'lucide-react';
 function RedirectHandler() {
   const router = useRouter();
   const pathname = usePathname();
-  const lang = pathname.split('/')[1] || 'en';
 
   useEffect(() => {
-    // The cookie is already set by the browser from the backend's response headers.
-    // We just need to navigate to the correct page.
-    const returnTo = localStorage.getItem('oauthReturnTo') || `/${lang}/studio`;
+    const lang = pathname.split('/')[1] || 'en';
+    // SocialButtons component now saves the full, absolute path.
+    const returnTo =
+      localStorage.getItem('oauthReturnTo') || `/${lang}/studio`;
     localStorage.removeItem('oauthReturnTo');
     router.replace(returnTo);
     // eslint-disable-next-line react-hooks/exhaustive-deps

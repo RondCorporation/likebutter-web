@@ -11,7 +11,7 @@ export default function LazyYoutube({
 }) {
   const [play, setPlay] = useState(false);
   const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  const videoSrc = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`;
 
   return (
     <div

@@ -98,7 +98,7 @@ export default function Header() {
           <UserDropdown />
         ) : (
           <Link
-            href={`/${lang}/login`}
+            href="/login"
             className="rounded-md border border-accent/40 px-4 py-1 text-sm text-accent transition hover:bg-accent/10"
           >
             {t('login')}

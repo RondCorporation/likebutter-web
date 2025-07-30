@@ -8,7 +8,7 @@ import {
 } from '@/app/_types/subscription';
 
 // Payment APIs - Client-side implementations
-export const getPlans = (): Promise<ApiResponse<Plan[]>> => {
+export const getPlansOnClient = (): Promise<ApiResponse<Plan[]>> => {
   return apiFetch<Plan[]>('/plans', {}, false);
 };
 

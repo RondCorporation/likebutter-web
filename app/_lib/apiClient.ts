@@ -6,11 +6,13 @@ const API_URL =
     ? '/api'
     : process.env.NEXT_PUBLIC_API_URL;
 
-const getAccessTokenCookie = () => {
+const getCookie = (name: string) => {
   if (typeof window === 'undefined') return null;
-  const match = document.cookie.match(new RegExp('(^| )accessToken=([^;]+)'));
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
   return match ? match[2] : null;
 };
+
+export const getAccessToken = () => getCookie('accessToken');
 
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -80,7 +82,7 @@ export async function apiFetch<T>(
   };
 
   try {
-    const initialToken = getAccessTokenCookie();
+    const initialToken = getCookie('accessToken');
     let response = await performRequest(initialToken);
 
     if (response.status === 401 && withAuth) {
@@ -89,10 +91,9 @@ export async function apiFetch<T>(
       const refreshSuccessful = await refreshToken();
 
       if (refreshSuccessful) {
-        const newToken = getAccessTokenCookie();
+        const newToken = getCookie('accessToken');
         response = await performRequest(newToken);
       } else {
-        // This is a final auth failure, dispatch event and throw to stop execution.
         window.dispatchEvent(new CustomEvent('auth-failure'));
         throw new Error('Authentication failed: Token refresh was unsuccessful.');
       }

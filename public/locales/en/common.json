@@ -326,5 +326,6 @@
     "title": "Service Connection Error",
     "message": "We couldn't connect to the server. Please check your network or try again in a moment.",
     "retry": "Retry"
-  }
+  },
+  "settingsLanguage": "Language"
 }

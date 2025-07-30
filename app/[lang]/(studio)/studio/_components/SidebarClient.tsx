@@ -77,7 +77,7 @@ export default function StudioSidebar({ lang }: { lang: string }) {
   return (
     <aside className="flex w-64 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
       <div className="mb-4 px-2 py-1">
-        <Logo className="text-2xl" href={`/${lang}/studio`} />
+        <Logo className="text-2xl" href={`/${lang}`} />
       </div>
 
       {FIXED_LINKS.map(({ href, label, icon: Icon }) => (

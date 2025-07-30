@@ -12,61 +12,35 @@ const getAccessTokenCookie = () => {
   return match ? match[2] : null;
 };
 
-const deleteAccessTokenCookie = () => {
-  if (typeof window === 'undefined') return;
-  console.log('Deleting access token cookie due to auth failure.');
-  document.cookie = 'accessToken=; path=/; max-age=-1;';
-};
+let refreshPromise: Promise<boolean> | null = null;
 
-let refreshPromise: Promise<string | null> | null = null;
-
-async function refreshToken(): Promise<string | null> {
+async function refreshToken(): Promise<boolean> {
   if (refreshPromise) {
-    console.log('[AUTH] A token refresh is already in progress. Waiting...');
     return refreshPromise;
   }
 
-  console.log('[AUTH] Attempting to refresh token via internal API route...');
-  refreshPromise = (async () => {
+  console.log('[AUTH] Attempting to refresh token...');
+  refreshPromise = (async (): Promise<boolean> => {
     try {
-      const res = await fetch(`/api/auth/reissue`, {
+      const res = await fetch(`${API_URL}/auth/reissue`, {
         method: 'POST',
         credentials: 'include',
       });
 
-      console.log(`[AUTH] Refresh API response status: ${res.status}`);
-
       if (!res.ok) {
-        console.error(`[AUTH] Token refresh API failed. Status: ${res.status}`);
-        const errorBody = await res.text();
-        console.error(`[AUTH] Refresh API error body: ${errorBody}`);
-        return null;
+        // This is an expected failure if the refresh token is invalid or expired.
+        // It should not be logged as an error.
+        console.log(`[AUTH] Token refresh failed with status: ${res.status}.`);
+        return false;
       }
 
-      const json = await res.json();
-      console.log('[AUTH] Refresh API response JSON:', json);
-
-      const newAccessToken = json.newAccessToken;
-
-      if (!newAccessToken) {
-        console.error(
-          '[AUTH] Token refresh failed: No new access token in response body.'
-        );
-        return null;
-      }
-
-      console.log(
-        `[AUTH] Token refreshed successfully. New accessToken: ${newAccessToken.substring(
-          0,
-          15
-        )}...`
-      );
-      return newAccessToken;
+      console.log('[AUTH] Token refresh successful.');
+      return true;
     } catch (error) {
-      console.error('[AUTH] Error during token refresh fetch:', error);
-      return null;
+      // This indicates a network or server error, which is worth logging.
+      console.warn('[AUTH] Network error during token refresh:', error);
+      return false;
     } finally {
-      console.log('[AUTH] Resetting refresh promise.');
       refreshPromise = null;
     }
   })();
@@ -106,22 +80,21 @@ export async function apiFetch<T>(
   };
 
   try {
-    const initialToken = withAuth ? getAccessTokenCookie() : null;
+    const initialToken = getAccessTokenCookie();
     let response = await performRequest(initialToken);
 
     if (response.status === 401 && withAuth) {
-      console.log(`[AUTH] Received 401 for ${url}. Refreshing token...`);
+      console.log(`[AUTH] Unauthorized for ${url}. Refreshing token...`);
 
-      deleteAccessTokenCookie();
+      const refreshSuccessful = await refreshToken();
 
-      const newToken = await refreshToken();
-
-      if (newToken) {
-        console.log(`[AUTH] Retrying ${url} with new token.`);
+      if (refreshSuccessful) {
+        const newToken = getAccessTokenCookie();
         response = await performRequest(newToken);
       } else {
-        console.log('[AUTH] Refresh failed. Session expired.');
+        // This is a final auth failure, dispatch event and throw to stop execution.
         window.dispatchEvent(new CustomEvent('auth-failure'));
+        throw new Error('Authentication failed: Token refresh was unsuccessful.');
       }
     }
 
@@ -139,7 +112,11 @@ export async function apiFetch<T>(
 
     return json;
   } catch (error: any) {
-    console.error(`API Fetch Error for ${url} (client):`, error.message);
+    // Log only unexpected errors. Auth failures are handled and thrown intentionally.
+    if (!error.message.includes('Authentication failed')) {
+      console.error(`API Fetch Error for ${url} (client):`, error.message);
+    }
+    
     if (error.message.includes('Failed to fetch')) {
       useUIStore
         .getState()

@@ -66,23 +66,21 @@ export default function UserDropdown() {
         <div className="absolute right-0 mt-2 w-48 rounded-md bg-neutral-900 border border-white/10 shadow-lg py-1 z-50 animate-fadeIn">
           <Link
             href={`/${lang}/studio`}
-            onClick={() => handleAction(() => router.push(`/${lang}/studio`))}
+            onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <LayoutGrid size={16} /> {t('dropdownStudio')}
           </Link>
           <Link
             href={`/${lang}/pricing`}
-            onClick={() => handleAction(() => router.push(`/${lang}/pricing`))}
+            onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <CreditCard size={16} /> {t('dropdownSubscription')}
           </Link>
           <Link
             href={`/${lang}/pricing/history`}
-            onClick={() =>
-              handleAction(() => router.push(`/${lang}/pricing/history`))
-            }
+            onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <History size={16} /> {t('dropdownPaymentHistory')}

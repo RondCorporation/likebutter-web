@@ -4,6 +4,8 @@ import { i18n } from '@/i18n.config.mjs';
 import path from 'path';
 import fs from 'fs';
 
+const translationsCache: Record<string, any> = {};
+
 const initTranslations = async (locale: string, namespaces: string[]) => {
   const i18nInstance = createInstance();
   await i18nInstance.use(initReactI18next).init({
@@ -17,6 +19,12 @@ const initTranslations = async (locale: string, namespaces: string[]) => {
   });
 
   for (const ns of namespaces) {
+    const cacheKey = `${locale}-${ns}`;
+    if (translationsCache[cacheKey]) {
+      i18nInstance.addResourceBundle(locale, ns, translationsCache[cacheKey]);
+      continue;
+    }
+
     const filePath = path.join(
       process.cwd(),
       'public',
@@ -26,7 +34,9 @@ const initTranslations = async (locale: string, namespaces: string[]) => {
     );
     try {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
-      i18nInstance.addResourceBundle(locale, ns, JSON.parse(fileContent));
+      const resources = JSON.parse(fileContent);
+      translationsCache[cacheKey] = resources;
+      i18nInstance.addResourceBundle(locale, ns, resources);
     } catch (error) {
       if (
         error &&

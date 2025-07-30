@@ -11,7 +11,7 @@ import {
   registerBillingKey,
   getSubscriptions,
   getSubscriptionDetails,
-} from '@/lib/apis/subscription.api';
+} from '@/app/_lib/apis/subscription.api.client';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
 import { Subscription, PlanKey } from '@/app/_types/subscription';
@@ -159,7 +159,9 @@ export default function PricingClient({
           router.push(`/${lang}/pricing/success`);
         }
       } else {
-        throw new Error('Subscription creation failed to return a subscription ID.');
+        throw new Error(
+          'Subscription creation failed to return a subscription ID.'
+        );
       }
     } catch (error: any) {
       toast.error(`An error occurred: ${error.message}`);

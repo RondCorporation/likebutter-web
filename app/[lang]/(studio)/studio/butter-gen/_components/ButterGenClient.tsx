@@ -4,8 +4,8 @@ import { useReducer, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, Image as ImageIcon, LoaderCircle } from 'lucide-react';
-import { createButterGenTask } from '@/lib/apis/task.api';
-import { ApiResponse } from '@/lib/apiClient';
+import { createButterGenTask } from '@/app/_lib/apis/task.api';
+import { ApiResponse } from '@/app/_types/api';
 
 interface TaskResponse {
   taskId: number;

@@ -1,5 +1,5 @@
 import initTranslations from '@/lib/i18n-server';
-import { getPaymentHistory } from '@/app/_lib/apis/payment.api';
+import { getPaymentHistory } from '@/app/_lib/apis/payment.api.server';
 import { PaymentHistoryResponse } from '@/app/_types/payment';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';

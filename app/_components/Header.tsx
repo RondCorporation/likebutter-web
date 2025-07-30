@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function Header() {
   const [activeSection, setActiveSection] = useState('about');
-  const { token } = useAuthStore();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
   const { t } = useTranslation();
@@ -63,7 +63,8 @@ export default function Header() {
   }, [pathname, lang]);
 
   const showNav = pathname === `/${lang}/` || pathname === '/';
-  const showAuthControls = !pathname.includes('/login') && !pathname.includes('/signup');
+  const showAuthControls =
+    !pathname.includes('/login') && !pathname.includes('/signup');
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-6 py-4 backdrop-blur-md bg-black/30">
@@ -93,7 +94,7 @@ export default function Header() {
       {/* 로그인 또는 사용자 메뉴 버튼 */}
       {isClient &&
         showAuthControls &&
-        (token ? (
+        (isAuthenticated ? (
           <UserDropdown />
         ) : (
           <Link

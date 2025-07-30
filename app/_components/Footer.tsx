@@ -19,14 +19,17 @@ export default function Footer() {
         <div className="space-y-3 md:col-span-2">
           <h3 className="font-semibold text-base text-accent">LIKEBUTTER</h3>
           <p className="text-slate-300">
-            © {new Date().getFullYear()} {t('companyName')}. {t('footerRights')}
+            © {new Date().getFullYear()} {t('companyName')}.{' '}
+            {t('footerRights')}
           </p>
           <p>{t('companyAddress')}</p>
         </div>
 
         {/* Column 2: Links */}
         <div className="space-y-3">
-          <h3 className="font-semibold text-base text-white">{t('footerNavigate')}</h3>
+          <h3 className="font-semibold text-base text-white">
+            {t('footerNavigate')}
+          </h3>
           <nav className="flex flex-col space-y-2">
             <Link
               href={`/${lang}/#features`}

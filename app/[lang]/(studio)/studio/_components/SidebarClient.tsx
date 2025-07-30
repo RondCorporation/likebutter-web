@@ -67,7 +67,10 @@ export default function StudioSidebar({ lang }: { lang: string }) {
   ];
 
   const [showVault, setShowVault] = useState(false);
-  const { data: vaultItems = ['Favorite', 'Private', 'Test'] } = useAssets();
+  const { data } = useAssets();
+  const vaultItems = Array.isArray(data)
+    ? data
+    : ['Favorite', 'Private', 'Test'];
 
   const displayedVaultItems = showVault ? vaultItems : vaultItems.slice(0, 2);
 

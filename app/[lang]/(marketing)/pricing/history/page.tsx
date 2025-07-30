@@ -1,37 +1,46 @@
-import initTranslations from '@/lib/i18n-server';
-import { getPaymentHistory } from '@/app/_lib/apis/payment.api.server';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { getPaymentHistory } from '@/app/_lib/apis/payment.api.client';
 import { PaymentHistoryResponse } from '@/app/_types/payment';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import '@/app/_lib/i18n-client';
+import { useParams } from 'next/navigation';
 
-type Props = {
-  params: Promise<{ lang: string }>;
-};
+export default function PaymentHistoryPage() {
+  const params = useParams();
+  const { t } = useTranslation('common');
 
-export default async function PaymentHistoryPage({ params }: Props) {
-  const { lang } = await params;
-  const { t } = await initTranslations(lang, ['common']);
+  const [payments, setPayments] = useState<PaymentHistoryResponse[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  let payments: PaymentHistoryResponse[] = [];
-  let error: string | null = null;
-
-  try {
-    const res = await getPaymentHistory();
-    if (res.data) {
-      payments = res.data;
-    }
-  } catch (e: any) {
-    error = e.message;
-  }
+  useEffect(() => {
+    getPaymentHistory()
+      .then((res) => {
+        if (res.data) {
+          setPayments(res.data);
+        }
+      })
+      .catch((err) => {
+        setError(err.message || 'Failed to fetch payment history.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="container mx-auto min-h-screen bg-black p-4 pt-24 text-white md:p-8 md:pt-28">
       <div className="mx-auto max-w-7xl">
         <h1 className="text-2xl font-bold mb-6">{t('paymentHistory.title')}</h1>
+        {loading && <p>{t('loading')}</p>}
         {error && <p className="text-red-500">{error}</p>}
-        {!error && payments.length === 0 && (
+        {!loading && !error && payments.length === 0 && (
           <p className="text-slate-400">{t('paymentHistory.noPayments')}</p>
         )}
-        {!error && payments.length > 0 && (
+        {!loading && !error && payments.length > 0 && (
           <div className="bg-white/5 rounded-lg border border-white/10">
             <table className="w-full text-sm text-left">
               <thead className="text-xs text-slate-400 uppercase bg-white/5">
@@ -51,6 +60,7 @@ export default async function PaymentHistoryPage({ params }: Props) {
                   <th scope="col" className="px-6 py-3">
                     {t('paymentHistory.status')}
                   </th>
+
                   <th scope="col" className="px-6 py-3"></th>
                 </tr>
               </thead>
@@ -65,11 +75,13 @@ export default async function PaymentHistoryPage({ params }: Props) {
                     </td>
                     <td className="px-6 py-4">{p.orderName}</td>
                     <td className="px-6 py-4">{p.planName}</td>
-                    <td className="px-6 py-4">{`${p.amount.toLocaleString()} ${p.currency}`}</td>
+                    <td className="px-6 py-4">{`${p.amount.toLocaleString()} ${
+                      p.currency
+                    }`}</td>
                     <td className="px-6 py-4">{p.status}</td>
                     <td className="px-6 py-4 text-right">
                       <Link
-                        href={`/${lang}/payments/${p.paymentId}`}
+                        href={`/${params.lang}/payments/${p.paymentId}`}
                         className="font-medium text-accent hover:underline"
                       >
                         {t('paymentHistory.viewReceipt')}

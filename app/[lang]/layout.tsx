@@ -5,6 +5,8 @@ import { i18n } from '@/i18n.config.mjs';
 import { dir } from 'i18next';
 import { Metadata } from 'next';
 import { LayoutClient } from './_components/LayoutClient';
+import { apiServer } from '@/app/_lib/apiServer';
+import { User } from '@/app/_stores/authStore';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({
@@ -23,12 +25,25 @@ type Props = {
 
 export default async function RootLayout({ children, params }: Props) {
   const { lang } = await params;
+
+  let preloadedUser: User | null = null;
+  try {
+    // This will fail if the user is not logged in, which is expected.
+    // No need to log an error here.
+    const res = await apiServer.get<User>('/users/me');
+    preloadedUser = res.data ?? null;
+  } catch (error) {
+    // This catch block is intentionally empty.
+    // Failing to preload a user is a normal flow for logged-out users.
+    preloadedUser = null;
+  }
+
   return (
     <html lang={lang} dir={dir(lang)}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-black text-white`}
       >
-        <LayoutClient>{children}</LayoutClient>
+        <LayoutClient preloadedUser={preloadedUser}>{children}</LayoutClient>
       </body>
     </html>
   );

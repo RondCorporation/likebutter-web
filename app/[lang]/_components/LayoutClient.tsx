@@ -29,9 +29,9 @@ export function LayoutClient({ children }: { children: ReactNode }) {
           }}
         />
         <div className="flex min-h-screen flex-col">
-          <Header />
+          {!isStudioPage && <Header />}
           <main className="flex-grow">{children}</main>
-          <Footer />
+          {!isStudioPage && <Footer />}
         </div>
       </>
     </AuthInitializer>

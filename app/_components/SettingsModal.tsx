@@ -90,7 +90,9 @@ export default function SettingsModal() {
         </button>
 
         <aside className="w-56 border-r border-white/10 p-6 pt-8 space-y-1 flex-shrink-0">
-          <h2 className="text-lg font-semibold mb-6 px-3">{t('settingsTitle')}</h2>
+          <h2 className="text-lg font-semibold mb-6 px-3">
+            {t('settingsTitle')}
+          </h2>
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -114,7 +116,9 @@ export default function SettingsModal() {
             <p className="text-slate-400">{t('settingsGeneralComingSoon')}</p>
           )}
           {activeTab === 'notifications' && (
-            <p className="text-slate-400">{t('settingsNotificationsComingSoon')}</p>
+            <p className="text-slate-400">
+              {t('settingsNotificationsComingSoon')}
+            </p>
           )}
         </section>
       </div>

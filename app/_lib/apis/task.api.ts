@@ -1,4 +1,5 @@
-import { apiFetch, ApiResponse } from '../apiClient';
+import { apiFetch } from '../apiClient';
+import { ApiResponse } from '@/app/_types/api';
 import {
   Page,
   Task,

@@ -1,4 +1,5 @@
-import { apiFetch, ApiResponse } from '../apiClient';
+import { apiFetch } from '../apiClient';
+import { ApiResponse } from '@/app/_types/api';
 import { LoginResponse } from '@/stores/authStore';
 
 export const login = (
@@ -27,5 +28,5 @@ export const signup = (signupData: any): Promise<ApiResponse<any>> => {
 };
 
 export const logout = (): Promise<ApiResponse<any>> => {
-  return apiFetch('/auth/logout', { method: 'DELETE' }, true);
+  return apiFetch('/auth/logout', { method: 'POST' }, true);
 };

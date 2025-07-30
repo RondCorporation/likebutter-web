@@ -4,7 +4,15 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { User, Settings, CreditCard, LogOut, ChevronDown } from 'lucide-react';
+import {
+  User,
+  Settings,
+  CreditCard,
+  LogOut,
+  ChevronDown,
+  LayoutGrid,
+  History,
+} from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 import { useUIStore } from '@/stores/uiStore';
 import { useLogout } from '@/hooks/useLogout';
@@ -57,11 +65,27 @@ export default function UserDropdown() {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 rounded-md bg-neutral-900 border border-white/10 shadow-lg py-1 z-50 animate-fadeIn">
           <Link
+            href={`/${lang}/studio`}
+            onClick={() => handleAction(() => router.push(`/${lang}/studio`))}
+            className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
+          >
+            <LayoutGrid size={16} /> {t('dropdownStudio')}
+          </Link>
+          <Link
             href={`/${lang}/pricing`}
             onClick={() => handleAction(() => router.push(`/${lang}/pricing`))}
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <CreditCard size={16} /> {t('dropdownSubscription')}
+          </Link>
+          <Link
+            href={`/${lang}/pricing/history`}
+            onClick={() =>
+              handleAction(() => router.push(`/${lang}/pricing/history`))
+            }
+            className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
+          >
+            <History size={16} /> {t('dropdownPaymentHistory')}
           </Link>
           <button
             onClick={() => handleAction(openSettings)}

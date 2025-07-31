@@ -16,16 +16,27 @@ import {
   MessageCircle,
   UsersRound,
   TestTube,
+  X,
 } from 'lucide-react';
 import { useAssets } from '@/hooks/useAssets';
 import Logo from '@/components/Logo';
 
-export default function StudioSidebar({ lang }: { lang: string }) {
+export default function StudioSidebar({
+  lang,
+  onClose,
+}: {
+  lang: string;
+  onClose: () => void;
+}) {
   const pathname = usePathname();
   const { t } = useTranslation();
 
+  const handleLinkClick = () => {
+    onClose();
+  };
+
   const FIXED_LINKS = [
-    { href: `/${lang}/studio`, label: t('studioNavHome'), icon: Home },
+    { href: `/${lang}/`, label: t('studioNavHome'), icon: Home },
     {
       href: `/${lang}/studio/history`,
       label: t('studioNavHistory'),
@@ -75,15 +86,23 @@ export default function StudioSidebar({ lang }: { lang: string }) {
   const displayedVaultItems = showVault ? vaultItems : vaultItems.slice(0, 2);
 
   return (
-    <aside className="flex w-64 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
-      <div className="mb-4 px-2 py-1">
+    <aside className="flex h-full w-64 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
+      <div className="mb-4 flex items-center justify-between px-2 py-1">
         <Logo className="text-2xl" href={`/${lang}`} />
+        <button
+          onClick={onClose}
+          className="md:hidden text-slate-300 hover:text-white"
+          aria-label="Close sidebar"
+        >
+          <X size={24} />
+        </button>
       </div>
 
       {FIXED_LINKS.map(({ href, label, icon: Icon }) => (
         <Link
           href={href}
           key={href}
+          onClick={handleLinkClick}
           className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors hover:bg-white/10 ${
             pathname === href
               ? 'bg-white/10 font-semibold text-white'
@@ -105,6 +124,7 @@ export default function StudioSidebar({ lang }: { lang: string }) {
         <Link
           key={item}
           href={`/${lang}/studio/asset/${encodeURIComponent(item.toLowerCase())}`}
+          onClick={handleLinkClick}
           className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
         >
           <div className="h-2 w-2 rounded-full bg-slate-500" /> {item}
@@ -135,6 +155,7 @@ export default function StudioSidebar({ lang }: { lang: string }) {
         <Link
           key={href}
           href={href}
+          onClick={handleLinkClick}
           className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm transition-colors hover:bg-white/10 ${
             pathname === href
               ? 'bg-white/10 font-semibold text-white'

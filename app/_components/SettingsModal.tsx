@@ -27,24 +27,28 @@ function AccountSettings() {
 
   return (
     <div>
-      <h3 className="mb-6 text-xl font-semibold">{t('settingsAccountInfo')}</h3>
-      <div className="space-y-4 text-sm">
-        <div className="flex justify-between items-center p-4 bg-white/5 rounded-md">
+      <h3 className="mb-4 text-lg font-semibold md:mb-6 md:text-xl">
+        {t('settingsAccountInfo')}
+      </h3>
+      <div className="space-y-3 text-sm">
+        <div className="flex flex-col gap-1 rounded-md bg-white/5 p-3 md:flex-row md:items-center md:justify-between md:p-4">
           <span className="text-slate-400">{t('settingsAccountEmail')}</span>
-          <span>{user.email}</span>
+          <span className="font-medium">{user.email}</span>
         </div>
-        <div className="flex justify-between items-center p-4 bg-white/5 rounded-md">
+        <div className="flex flex-col gap-1 rounded-md bg-white/5 p-3 md:flex-row md:items-center md:justify-between md:p-4">
           <span className="text-slate-400">{t('settingsAccountName')}</span>
-          <span>{user.name}</span>
+          <span className="font-medium">{user.name}</span>
         </div>
-        <div className="flex justify-between items-center p-4 bg-white/5 rounded-md">
+        <div className="flex flex-col gap-1 rounded-md bg-white/5 p-3 md:flex-row md:items-center md:justify-between md:p-4">
           <span className="text-slate-400">{t('settingsAccountPhone')}</span>
-          <span>{user.phoneNumber || t('settingsNotProvided')}</span>
+          <span className="font-medium">
+            {user.phoneNumber || t('settingsNotProvided')}
+          </span>
         </div>
       </div>
       <button
         onClick={logout}
-        className="mt-10 w-full rounded-md bg-red-600/80 py-2.5 text-sm font-medium text-white hover:bg-red-600 transition"
+        className="mt-8 w-full rounded-md bg-red-600/80 py-2.5 text-sm font-medium text-white transition hover:bg-red-600 md:mt-10"
       >
         {t('dropdownLogout')}
       </button>
@@ -78,11 +82,13 @@ function GeneralSettings() {
 
   return (
     <div>
-      <h3 className="mb-6 text-xl font-semibold">{t('settingsTabGeneral')}</h3>
+      <h3 className="mb-4 text-lg font-semibold md:mb-6 md:text-xl">
+        {t('settingsTabGeneral')}
+      </h3>
       <div className="space-y-2">
         <label
           id="language-dropdown-label"
-          className="text-sm text-slate-400 mb-2 block"
+          className="mb-2 block text-sm text-slate-400"
         >
           {t('settingsLanguage')}
         </label>
@@ -92,7 +98,7 @@ function GeneralSettings() {
             aria-haspopup="listbox"
             aria-labelledby="language-dropdown-label"
             onClick={() => setIsOpen(!isOpen)}
-            className="w-full flex items-center justify-between rounded-md border border-white/10 bg-white/5 px-3 py-2 text-white transition hover:bg-white/20 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+            className="flex w-full items-center justify-between rounded-md border border-white/10 bg-white/5 px-3 py-2 text-white transition hover:bg-white/20 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           >
             <span>{currentLanguageName}</span>
             <ChevronDown
@@ -153,17 +159,18 @@ export default function SettingsModal() {
   if (!isSettingsOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="relative flex w-full max-w-4xl h-[70vh] rounded-lg bg-black border border-white/10 text-white overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 backdrop-blur-sm md:p-4">
+      <div className="relative flex h-full w-full flex-col overflow-hidden rounded-none border border-white/10 bg-black text-white shadow-2xl md:h-[70vh] md:max-w-4xl md:flex-row md:rounded-lg">
         <button
           onClick={closeSettings}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white z-10"
+          className="absolute top-4 right-4 z-10 text-slate-400 hover:text-white"
         >
           <X size={20} />
         </button>
 
-        <aside className="w-56 border-r border-white/10 p-6 pt-8 space-y-1 flex-shrink-0">
-          <h2 className="text-lg font-semibold mb-6 px-3">
+        {/* Desktop Sidebar */}
+        <aside className="hidden w-56 flex-shrink-0 space-y-1 border-r border-white/10 p-6 pt-8 md:flex md:flex-col">
+          <h2 className="mb-6 px-3 text-lg font-semibold">
             {t('settingsTitle')}
           </h2>
           {TABS.map(({ id, label, icon: Icon }) => (
@@ -172,7 +179,7 @@ export default function SettingsModal() {
               onClick={() => setActiveTab(id)}
               className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition hover:bg-white/10 ${
                 activeTab === id
-                  ? 'bg-white/10 text-accent font-medium'
+                  ? 'bg-white/10 font-medium text-accent'
                   : 'text-slate-300'
               }`}
             >
@@ -182,7 +189,28 @@ export default function SettingsModal() {
           ))}
         </aside>
 
-        <section className="flex-1 p-8 overflow-y-auto">
+        {/* Mobile Tabs */}
+        <div className="border-b border-white/10 p-4 pt-6 md:hidden">
+          <h2 className="mb-4 text-center text-lg font-semibold">
+            {t('settingsTitle')}
+          </h2>
+          <div className="flex justify-around">
+            {TABS.map(({ id, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={`flex flex-col items-center gap-1 p-2 text-xs ${
+                  activeTab === id ? 'text-accent' : 'text-slate-400'
+                }`}
+              >
+                <Icon size={20} />
+                <span>{t(`settingsTab${id.charAt(0).toUpperCase() + id.slice(1)}`)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <section className="flex-1 overflow-y-auto p-6 md:p-8">
           {activeTab === 'account' && <AccountSettings />}
           {activeTab === 'subscription' && <SubscriptionSettings />}
           {activeTab === 'general' && <GeneralSettings />}

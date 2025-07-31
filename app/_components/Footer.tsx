@@ -13,8 +13,8 @@ export default function Footer() {
   const businessInquiryEmail = 'biz@likebutter.ai';
 
   return (
-    <footer className="snap-end flex-none bg-black/90 px-8 py-12 text-sm text-slate-400">
-      <div className="container mx-auto grid grid-cols-1 gap-10 md:grid-cols-4">
+    <footer className="snap-end flex-none bg-black/90 px-4 sm:px-8 py-12 text-sm text-slate-400">
+      <div className="container mx-auto grid grid-cols-1 gap-8 text-center md:grid-cols-4 md:text-left">
         {/* Column 1: Company Info */}
         <div className="space-y-3 md:col-span-2">
           <h3 className="font-semibold text-base text-accent">LIKEBUTTER</h3>
@@ -30,7 +30,7 @@ export default function Footer() {
           <h3 className="font-semibold text-base text-white">
             {t('footerNavigate')}
           </h3>
-          <nav className="flex flex-col space-y-2">
+          <nav className="flex flex-col space-y-2 items-center md:items-start">
             <Link
               href={`/${lang}/#features`}
               className="w-fit transition-colors hover:text-accent"
@@ -57,7 +57,7 @@ export default function Footer() {
           <h3 className="font-semibold text-base text-white">
             {t('footerContactLegal')}
           </h3>
-          <nav className="flex flex-col space-y-2">
+          <nav className="flex flex-col space-y-2 items-center md:items-start">
             <a
               href={`mailto:${businessInquiryEmail}`}
               className="w-fit transition-colors hover:text-accent"

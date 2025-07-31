@@ -14,7 +14,7 @@ import {
 } from '@/app/_lib/apis/subscription.api.client';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
-import { Subscription, PlanKey } from '@/app/_types/subscription';
+import { Subscription } from '@/app/_types/subscription';
 import { useUIStore } from '@/app/_stores/uiStore';
 
 type Plan = {
@@ -146,7 +146,6 @@ export default function PricingClient({
       const createSubResponse = await createSubscription(planKey);
 
       if (createSubResponse.data?.subscriptionId) {
-        // Fetch the latest payment details to redirect to the receipt
         const detailsResponse = await getSubscriptionDetails(
           createSubResponse.data.subscriptionId
         );
@@ -155,7 +154,6 @@ export default function PricingClient({
         if (latestPayment) {
           router.push(`/${lang}/payments/${latestPayment.paymentId}`);
         } else {
-          // Fallback if payment details are not immediately available
           router.push(`/${lang}/pricing/success`);
         }
       } else {
@@ -283,10 +281,10 @@ export default function PricingClient({
       <div className="min-h-screen bg-black px-4 pb-20 pt-28 text-white">
         <div className="container mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold text-accent md:text-5xl">
+            <h1 className="text-3xl font-bold text-accent md:text-5xl">
               {translations.title}
             </h1>
-            <p className="mt-4 text-lg text-slate-300">
+            <p className="mt-4 text-base text-slate-300 md:text-lg">
               {translations.subtitle}
             </p>
           </div>
@@ -324,7 +322,8 @@ export default function PricingClient({
             </span>
           </div>
 
-          <div className="mt-12 overflow-x-auto pb-4">
+          {/* Desktop Table View */}
+          <div className="mt-12 hidden lg:block overflow-x-auto pb-4">
             <div className="min-w-[1200px] w-full">
               <div className="grid grid-cols-5 gap-x-6 pt-4">
                 <div className="col-span-1"></div>
@@ -432,9 +431,96 @@ export default function PricingClient({
             </div>
           </div>
 
+          {/* Mobile Card View */}
+          <div className="mt-8 space-y-6 lg:hidden">
+            {plans.map((plan) => {
+              const isCurrentPlan =
+                isAuthenticated &&
+                activeSubscription &&
+                ((billingCycle === 'monthly' &&
+                  activePlanKey === plan.planKeyMonthly) ||
+                  (billingCycle === 'yearly' &&
+                    activePlanKey === plan.planKeyYearly));
+              return (
+                <div
+                  key={plan.key}
+                  className={`relative rounded-lg p-6 ${
+                    plan.isPopular ? 'bg-accent/10' : 'bg-white/5'
+                  } ${
+                    isCurrentPlan
+                      ? 'border-2 border-accent'
+                      : 'border-2 border-transparent'
+                  }`}
+                >
+                  {isCurrentPlan && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-black">
+                      {translations.currentPlan}
+                    </div>
+                  )}
+                  <h2
+                    className={`text-2xl font-bold ${
+                      plan.isPopular ? 'text-accent' : 'text-white'
+                    }`}
+                  >
+                    {plan.name}
+                  </h2>
+                  <p className="text-sm text-slate-400 mt-2">
+                    {plan.description}
+                  </p>
+                  <div className="mt-4">
+                    {plan.isCustom ? (
+                      <span className="text-3xl font-bold">
+                        {plan.priceMonthly}
+                      </span>
+                    ) : (
+                      <>
+                        <span className="text-3xl font-bold">
+                          {formatPrice(
+                            billingCycle === 'monthly'
+                              ? plan.priceMonthly
+                              : plan.priceYearly
+                          )}
+                        </span>
+                        <span className="text-md text-slate-400">/mo</span>
+                        {billingCycle === 'yearly' &&
+                          plan.priceMonthly !== 0 && (
+                            <p className="text-xs text-slate-500">
+                              {translations.billedAs}
+                              {formatPrice(plan.priceYearlyTotal)} /year
+                            </p>
+                          )}
+                      </>
+                    )}
+                  </div>
+                  {renderCtaButton(plan)}
+                  <div className="mt-6 border-t border-white/10 pt-4">
+                    <h3 className="font-semibold text-white">
+                      {translations.features}
+                    </h3>
+                    <ul className="mt-2 space-y-2 text-sm">
+                      {features.map((feature) => (
+                        <li
+                          key={feature.name}
+                          className="flex items-center justify-between"
+                        >
+                          <span className="text-slate-300">
+                            {feature.name}
+                          </span>
+                          <div className="w-20 text-right">
+                            {getFeatureValue(feature.values[plan.name])}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
           <div className="mt-16 text-center">
             <Link
-              href={`/${lang}/studio`}
+              href={`/${lang}/studio/history`}
               className="text-accent hover:underline"
             >
               {translations.goToStudio} →

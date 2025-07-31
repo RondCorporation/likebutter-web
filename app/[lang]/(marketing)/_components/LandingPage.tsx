@@ -14,55 +14,54 @@ import {
   Mouse,
 } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-
-const SECTIONS = ['about', 'features', 'demo', 'pricing', 'contact'];
-
-type Translations = {
-  welcomeMessage: string;
-  startStudio: string;
-  featuresTitle: string;
-  featuresSubtitle: string;
-  feature1Title: string;
-  feature1Desc: string;
-  feature2Title: string;
-  feature2Desc: string;
-  feature3Title: string;
-  feature3Desc: string;
-  feature4Title: string;
-  feature4Desc: string;
-  demoTitle: string;
-  demoSubtitle: string;
-  demoComingSoon: string;
-  pricingSectionTitle: string;
-  pricingSectionSubtitle: string;
-  viewPricing: string;
-  contactTitle: string;
-  contactEmail: string;
-  contactMessage: string;
-  contactSend: string;
-  landingPlanFreeDesc: string;
-  landingPlanCreatorDesc: string;
-  landingTitle: string;
-  landingScroll: string;
-  landingPlanFreeName: string;
-  landingPlanCreatorName: string;
-  landingFeatureCreditsFree: string;
-  landingFeatureSpeedFree: string;
-  landingFeatureWatermarkFree: string;
-  landingFeatureCreditsCreator: string;
-  landingFeatureSpeedCreator: string;
-  landingFeatureWatermarkCreator: string;
-};
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   lang: string;
-  translations: Translations;
 };
 
-export default function LandingPage({ lang, translations }: Props) {
+export default function LandingPage({ lang }: Props) {
+  const { t } = useTranslation();
+
+  const translations = {
+    welcomeMessage: t('welcome'),
+    startStudio: t('startStudio'),
+    featuresTitle: t('featuresTitle'),
+    featuresSubtitle: t('featuresSubtitle'),
+    feature1Title: t('feature1Title'),
+    feature1Desc: t('feature1Desc'),
+    feature2Title: t('feature2Title'),
+    feature2Desc: t('feature2Desc'),
+    feature3Title: t('feature3Title'),
+    feature3Desc: t('feature3Desc'),
+    feature4Title: t('feature4Title'),
+    feature4Desc: t('feature4Desc'),
+    demoTitle: t('demoTitle'),
+    demoSubtitle: t('demoSubtitle'),
+    demoComingSoon: t('demoComingSoon'),
+    pricingSectionTitle: t('pricingSectionTitle'),
+    pricingSectionSubtitle: t('pricingSectionSubtitle'),
+    viewPricing: t('viewPricing'),
+    contactTitle: t('contactTitle'),
+    contactEmail: t('contactEmail'),
+    contactMessage: t('contactMessage'),
+    contactSend: t('contactSend'),
+    landingPlanFreeDesc: t('landingPlanFreeDesc'),
+    landingPlanCreatorDesc: t('landingPlanCreatorDesc'),
+    landingTitle: t('landingTitle'),
+    landingScroll: t('landingScroll'),
+    landingPlanFreeName: t('landingPlanFreeName'),
+    landingPlanCreatorName: t('landingPlanCreatorName'),
+    landingFeatureCreditsFree: t('landingFeatureCreditsFree'),
+    landingFeatureSpeedFree: t('landingFeatureSpeedFree'),
+    landingFeatureWatermarkFree: t('landingFeatureWatermarkFree'),
+    landingFeatureCreditsCreator: t('landingFeatureCreditsCreator'),
+    landingFeatureSpeedCreator: t('landingFeatureSpeedCreator'),
+    landingFeatureWatermarkCreator: t('landingFeatureWatermarkCreator'),
+  };
+
   const descSpeed = 30;
-  const titleDur = translations.landingTitle.length * 50 + 400;
+  const titleDur = (translations.landingTitle || '').length * 50 + 400;
 
   const FEATURES = [
     {
@@ -87,53 +86,6 @@ export default function LandingPage({ lang, translations }: Props) {
     },
   ];
 
-  const mainRef = useRef<HTMLElement>(null);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [currentSection, setCurrentSection] = useState(0);
-
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      if (isScrolling) return;
-
-      const scrollDown = e.deltaY > 0;
-      setIsScrolling(true);
-
-      if (scrollDown) {
-        if (currentSection < SECTIONS.length - 1) {
-          const nextSectionIndex = currentSection + 1;
-          document
-            .getElementById(SECTIONS[nextSectionIndex])
-            ?.scrollIntoView({ behavior: 'smooth' });
-          setCurrentSection(nextSectionIndex);
-        }
-      } else {
-        if (currentSection > 0) {
-          const prevSectionIndex = currentSection - 1;
-          document
-            .getElementById(SECTIONS[prevSectionIndex])
-            ?.scrollIntoView({ behavior: 'smooth' });
-          setCurrentSection(prevSectionIndex);
-        }
-      }
-
-      setTimeout(() => {
-        setIsScrolling(false);
-      }, 1000);
-    };
-
-    const mainEl = mainRef.current;
-    if (mainEl) {
-      mainEl.addEventListener('wheel', handleWheel, { passive: false });
-    }
-
-    return () => {
-      if (mainEl) {
-        mainEl.removeEventListener('wheel', handleWheel);
-      }
-    };
-  }, [isScrolling, currentSection]);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -156,19 +108,19 @@ export default function LandingPage({ lang, translations }: Props) {
   };
 
   return (
-    <main ref={mainRef} className="h-screen overflow-y-hidden bg-black">
+    <main className="bg-black">
       <div className="animated-gradient" />
       <section
         id="about"
-        className="relative flex h-screen flex-col justify-center overflow-hidden"
+        className="relative flex min-h-screen flex-col justify-center overflow-hidden py-16 md:py-0"
       >
-        <div className="grid h-full items-center px-8 md:grid-cols-2 md:px-24">
-          <div className="z-10">
+        <div className="grid h-full items-center gap-12 px-4 md:grid-cols-2 md:px-12 lg:px-24">
+          <div className="z-10 text-center md:text-left">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: 'easeInOut' }}
-              className="mb-4 whitespace-pre-line text-4xl font-bold text-accent md:text-7xl"
+              className="mb-4 whitespace-pre-line text-4xl font-bold text-accent md:text-5xl lg:text-6xl"
             >
               <Typewriter text={translations.landingTitle} speed={50} />
             </motion.h2>
@@ -176,7 +128,7 @@ export default function LandingPage({ lang, translations }: Props) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeInOut' }}
-              className="max-w-sm whitespace-pre-line text-lg text-slate-300 md:text-xl"
+              className="mx-auto max-w-sm whitespace-pre-line text-base text-slate-300 md:mx-0 md:text-lg"
             >
               <Typewriter
                 text={translations.welcomeMessage}
@@ -191,7 +143,7 @@ export default function LandingPage({ lang, translations }: Props) {
               transition={{ duration: 0.8, delay: 0.4, ease: 'easeInOut' }}
             >
               <Link
-                href={`/${lang}/studio`}
+                href={`/${lang}/studio/history`}
                 className="mt-8 inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-transform duration-300 ease-in-out hover:scale-105 hover:brightness-90"
               >
                 {translations.startStudio}
@@ -203,7 +155,7 @@ export default function LandingPage({ lang, translations }: Props) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative z-0 hidden items-center justify-center md:flex"
+            className="relative z-0 flex items-center justify-center"
           >
             <LazyYoutube
               videoId="mPVDGOVjRQ0"
@@ -236,7 +188,7 @@ export default function LandingPage({ lang, translations }: Props) {
             </g>
           </svg>
         </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 text-accent animate-bounce">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-accent animate-bounce hidden md:flex">
           <span className="text-xs">{translations.landingScroll}</span>
           <Mouse size={16} />
         </div>
@@ -244,15 +196,15 @@ export default function LandingPage({ lang, translations }: Props) {
 
       <section
         id="features"
-        className="relative flex h-screen items-center justify-center bg-neutral-900/80 backdrop-blur-lg"
+        className="relative flex min-h-screen items-center justify-center bg-neutral-900/80 backdrop-blur-lg py-16 md:py-24"
       >
-        <div className="container mx-auto max-w-5xl px-8 text-center">
+        <div className="container mx-auto max-w-5xl px-4 text-center">
           <motion.h2
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={itemVariants}
-            className="mb-4 text-3xl font-semibold text-accent"
+            className="mb-4 text-3xl font-semibold text-accent md:text-4xl"
           >
             {translations.featuresTitle}
           </motion.h2>
@@ -271,7 +223,7 @@ export default function LandingPage({ lang, translations }: Props) {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
-            className="grid grid-cols-1 gap-8 md:grid-cols-2"
+            className="grid grid-cols-1 gap-8 sm:grid-cols-2"
           >
             {FEATURES.map((f, i) => (
               <motion.div
@@ -292,7 +244,7 @@ export default function LandingPage({ lang, translations }: Props) {
 
       <section
         id="demo"
-        className="flex h-screen items-center justify-center bg-black"
+        className="flex min-h-screen items-center justify-center bg-black py-16 md:py-24"
       >
         <div className="w-full max-w-4xl text-center px-4">
           <motion.h2
@@ -300,7 +252,7 @@ export default function LandingPage({ lang, translations }: Props) {
             whileInView="visible"
             viewport={{ once: true }}
             variants={itemVariants}
-            className="mb-4 text-3xl font-semibold text-accent"
+            className="mb-4 text-3xl font-semibold text-accent md:text-4xl"
           >
             {translations.demoTitle}
           </motion.h2>
@@ -332,7 +284,7 @@ export default function LandingPage({ lang, translations }: Props) {
 
       <section
         id="pricing"
-        className="relative flex h-screen items-center justify-center bg-neutral-900/80 text-white backdrop-blur-lg"
+        className="relative flex min-h-screen items-center justify-center bg-neutral-900/80 text-white backdrop-blur-lg py-16 md:py-24"
       >
         <div className="text-center px-4">
           <motion.h2
@@ -340,7 +292,7 @@ export default function LandingPage({ lang, translations }: Props) {
             whileInView="visible"
             viewport={{ once: true }}
             variants={itemVariants}
-            className="mb-4 text-3xl font-semibold text-accent"
+            className="mb-4 text-3xl font-semibold text-accent md:text-4xl"
           >
             {translations.pricingSectionTitle}
           </motion.h2>
@@ -434,9 +386,9 @@ export default function LandingPage({ lang, translations }: Props) {
 
       <section
         id="contact"
-        className="relative flex h-screen flex-col justify-center bg-black"
+        className="relative flex min-h-screen flex-col justify-center bg-black"
       >
-        <div className="flex-grow flex items-center justify-center">
+        <div className="flex-grow flex items-center justify-center py-16 md:py-24">
           <motion.form
             initial="hidden"
             whileInView="visible"
@@ -466,3 +418,4 @@ export default function LandingPage({ lang, translations }: Props) {
     </main>
   );
 }
+

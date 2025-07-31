@@ -1,60 +1,28 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { useAuthStore, LoginResponse, User } from '@/stores/authStore';
+import { useRouter, usePathname } from 'next/navigation';
 import { LoaderCircle } from 'lucide-react';
-import { getMe } from '@/lib/apis/user.api';
-import { ApiResponse } from '@/lib/apiClient';
 
-function AuthRedirectHandler() {
-  const searchParams = useSearchParams();
+/**
+ * This component's only job is to redirect the user after a successful login.
+ * The backend is responsible for setting the accessToken cookie via a Set-Cookie header
+ * during the redirect to this page. This component simply reads the destination
+ * from localStorage and sends the user there.
+ */
+function RedirectHandler() {
   const router = useRouter();
   const pathname = usePathname();
-  const { login } = useAuthStore();
-  const lang = pathname.split('/')[1] || 'en';
 
   useEffect(() => {
-    const token = searchParams.get('accessToken');
-
-    if (token) {
-      const fetchUser = async () => {
-        try {
-          const meApiRes = await getMe(token);
-
-          if (!meApiRes.data) {
-            throw new Error(meApiRes.msg || 'User data not found');
-          }
-
-          const user = meApiRes.data;
-
-          // Construct the LoginResponse and call login
-          const loginResponse: ApiResponse<LoginResponse> = {
-            status: 200,
-            msg: 'Login successful',
-            data: {
-              accessToken: { value: token },
-              user,
-            },
-          };
-          login(loginResponse);
-
-          const returnTo =
-            localStorage.getItem('oauthReturnTo') || `/${lang}/studio`;
-          localStorage.removeItem('oauthReturnTo');
-          router.replace(returnTo);
-        } catch (error) {
-          console.error('Authentication failed:', error);
-          router.replace(`/${lang}/login?error=auth_failed`);
-        }
-      };
-
-      fetchUser();
-    } else {
-      console.error('No access token found in URL.');
-      router.replace(`/${lang}/login?error=auth_failed`);
-    }
-  }, [searchParams, router, login, lang]);
+    const lang = pathname.split('/')[1] || 'en';
+    // SocialButtons component now saves the full, absolute path.
+    const returnTo =
+      localStorage.getItem('oauthReturnTo') || `/${lang}/studio`;
+    localStorage.removeItem('oauthReturnTo');
+    router.replace(returnTo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once
 
   return <LoaderCircle className="h-12 w-12 animate-spin text-accent" />;
 }
@@ -67,7 +35,7 @@ export default function LoginSuccessPage() {
           <LoaderCircle className="h-12 w-12 animate-spin text-accent" />
         }
       >
-        <AuthRedirectHandler />
+        <RedirectHandler />
       </Suspense>
     </div>
   );

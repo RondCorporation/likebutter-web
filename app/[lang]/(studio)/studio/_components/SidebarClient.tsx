@@ -67,14 +67,17 @@ export default function StudioSidebar({ lang }: { lang: string }) {
   ];
 
   const [showVault, setShowVault] = useState(false);
-  const { data: vaultItems = ['Favorite', 'Private', 'Test'] } = useAssets();
+  const { data } = useAssets();
+  const vaultItems = Array.isArray(data)
+    ? data
+    : ['Favorite', 'Private', 'Test'];
 
   const displayedVaultItems = showVault ? vaultItems : vaultItems.slice(0, 2);
 
   return (
     <aside className="flex w-64 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
       <div className="mb-4 px-2 py-1">
-        <Logo className="text-2xl" href={`/${lang}/studio`} />
+        <Logo className="text-2xl" href={`/${lang}`} />
       </div>
 
       {FIXED_LINKS.map(({ href, label, icon: Icon }) => (

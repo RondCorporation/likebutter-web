@@ -55,7 +55,7 @@ export default function LoginClient({
     try {
       const res = await apiLogin(email, pw);
 
-      if (res.data?.accessToken?.value && res.data.user) {
+      if (res.data?.user) {
         await login(res);
         const returnTo = searchParams.get('returnTo');
         router.replace(returnTo || `/${lang}/studio`);

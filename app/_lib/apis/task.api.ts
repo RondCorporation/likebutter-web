@@ -1,4 +1,5 @@
-import { apiFetch, ApiResponse } from '../apiClient';
+import { apiFetch } from '../apiClient';
+import { ApiResponse } from '@/app/_types/api';
 import {
   Page,
   Task,
@@ -13,11 +14,11 @@ interface TaskCreationResponse {
 
 export const getTaskHistory = (
   page: number,
-  filters: { status?: string; actionType?: string }
+  filters: { status?: string; actionType?: string; size?: number }
 ): Promise<ApiResponse<Page<Task>>> => {
   const params = new URLSearchParams({
     page: page.toString(),
-    size: '10',
+    size: (filters.size || 10).toString(),
     sort: 'createdAt,desc',
   });
   if (filters.status) params.append('status', filters.status);

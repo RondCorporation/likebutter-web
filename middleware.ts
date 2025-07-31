@@ -4,19 +4,19 @@ import { i18n } from './i18n.config.mjs';
 import { match as matchLocale } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 
-function getLocale(request: NextRequest): string | undefined {
+function getLocale(request: NextRequest): string {
+  const localeCookie = request.cookies.get('i18next')?.value;
+  if (localeCookie && i18n.locales.includes(localeCookie)) {
+    return localeCookie;
+  }
+
   const negotiatorHeaders: Record<string, string> = {};
   request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
-
-  const locales: string[] = i18n.locales;
-
-  let languages = new Negotiator({ headers: negotiatorHeaders }).languages(
-    locales
+  const languages = new Negotiator({ headers: negotiatorHeaders }).languages(
+    i18n.locales
   );
 
-  const locale = matchLocale(languages, locales, i18n.defaultLocale);
-
-  return locale;
+  return matchLocale(languages, i18n.locales, i18n.defaultLocale);
 }
 
 export function middleware(request: NextRequest) {

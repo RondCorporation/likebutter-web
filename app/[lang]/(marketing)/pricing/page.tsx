@@ -1,7 +1,7 @@
 import initTranslations from '@/lib/i18n-server';
 import PricingClient from './_components/PricingClient';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
-import { getPlans } from '@/app/_lib/apis/subscription.api';
+import { getPlansOnServer } from '@/app/_lib/apis/subscription.api.server';
 import { Plan } from '@/app/_types/plan';
 import { cookies } from 'next/headers';
 
@@ -40,7 +40,7 @@ export default async function PricingPage({ params }: Props) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
 
-  const { data: apiPlans } = (await getPlans().catch(() => ({ data: [] }))) || {
+  const { data: apiPlans } = (await getPlansOnServer().catch(() => ({ data: [] }))) || {
     data: [],
   };
   const processedPlans = processApiPlans(apiPlans || []);

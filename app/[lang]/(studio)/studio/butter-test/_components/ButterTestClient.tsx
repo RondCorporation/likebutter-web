@@ -4,8 +4,8 @@ import { useReducer, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, LoaderCircle, TestTube } from 'lucide-react';
-import { createButterTestTask } from '@/lib/apis/task.api';
-import { ApiResponse } from '@/lib/apiClient';
+import { createButterTestTask } from '@/app/_lib/apis/task.api';
+import { ApiResponse } from '@/app/_types/api';
 
 interface TaskResponse {
   taskId: number;

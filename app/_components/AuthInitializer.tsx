@@ -1,16 +1,42 @@
 'use client';
 
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, User } from '@/stores/authStore';
 import { LoaderCircle } from 'lucide-react';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 
-export default function AuthInitializer({ children }: { children: ReactNode }) {
+export default function AuthInitializer({
+  children,
+  preloadedUser,
+}: {
+  children: ReactNode;
+  preloadedUser: User | null;
+}) {
   const isInitialized = useAuthStore((s) => s.isInitialized);
-  const initialize = useAuthStore((s) => s.initialize);
+  const { initialize, logout, hydrate } = useAuthStore.getState();
+  const effectRan = useRef(false);
 
   useEffect(() => {
-    initialize();
-  }, [initialize]);
+    if (effectRan.current) return;
+    effectRan.current = true;
+
+    if (preloadedUser) {
+      hydrate(preloadedUser);
+    } else {
+      initialize();
+    }
+
+    const handleAuthFailure = () => {
+      console.log('Auth failure event received. Logging out.');
+      logout();
+    };
+
+    window.addEventListener('auth-failure', handleAuthFailure);
+
+    return () => {
+      window.removeEventListener('auth-failure', handleAuthFailure);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!isInitialized) {
     return (

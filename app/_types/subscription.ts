@@ -1,3 +1,5 @@
+import { PaymentStatus } from './payment';
+
 export type PlanKey =
   | 'FREE'
   | 'CREATOR_MONTHLY'
@@ -11,8 +13,6 @@ export type SubscriptionStatus =
   | 'CANCELLED'
   | 'PAST_DUE'
   | 'EXPIRED';
-
-export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED';
 
 export interface Subscription {
   subscriptionId: number;

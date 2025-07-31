@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { LoaderCircle } from 'lucide-react';
 
 export default function AuthGuard({ children }: { children: ReactNode }) {
-  const { isLoading } = useAuth(true);
+  const { user, isLoading } = useAuth(true);
 
   if (isLoading) {
     return (
@@ -12,6 +12,13 @@ export default function AuthGuard({ children }: { children: ReactNode }) {
         <LoaderCircle size={40} className="animate-spin text-accent" />
       </div>
     );
+  }
+
+  if (!user) {
+    // If loading is complete but there is no user,
+    // the useAuth hook is already handling the redirect.
+    // Return null to prevent flashing the protected content.
+    return null;
   }
 
   return <>{children}</>;

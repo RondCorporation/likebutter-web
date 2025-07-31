@@ -1,4 +1,5 @@
-import { apiFetch, ApiResponse } from '../apiClient';
+import { apiFetch } from '../apiClient';
+import { ApiResponse } from '@/app/_types/api';
 import { Plan } from '@/app/_types/plan';
 import {
   CreateSubscriptionResponse,
@@ -6,9 +7,9 @@ import {
   SubscriptionDetails,
 } from '@/app/_types/subscription';
 
-// Payment APIs
-export const getPlans = (): Promise<ApiResponse<Plan[]>> => {
-  return apiFetch<Plan[]>('/plans', {}, false); // Assuming plans can be fetched without auth
+// Payment APIs - Client-side implementations
+export const getPlansOnClient = (): Promise<ApiResponse<Plan[]>> => {
+  return apiFetch<Plan[]>('/plans', {}, false);
 };
 
 export const registerBillingKey = (

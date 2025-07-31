@@ -3,9 +3,8 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import SocialButtons from '@/components/SocialButtons';
-import { signup } from '@/lib/apis/auth.api';
-import { getCountries } from '@/lib/apis/country.api';
-import { ApiResponse } from '@/lib/apiClient';
+import { signup } from '@/app/_lib/apis/auth.api';
+import { getCountries } from '@/app/_lib/apis/country.api';
 import PhoneInput, {
   isValidPhoneNumber,
   parsePhoneNumber,

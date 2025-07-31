@@ -8,7 +8,7 @@ import {
   cancelSubscription,
   upgradeSubscription,
   getSubscriptionDetails,
-} from '@/lib/apis/subscription.api';
+} from '@/app/_lib/apis/subscription.api.client';
 import {
   Subscription,
   SubscriptionDetails,

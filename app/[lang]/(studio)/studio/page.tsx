@@ -1,12 +1,7 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
+import DashboardClient from './_components/DashboardClient';
 
-export default function StudioHome() {
-  const { t } = useTranslation();
-  return (
-    <div className="flex h-full flex-col items-center justify-center text-center">
-      <p className="text-slate-300 text-xl">{t('studioHomeWelcome')}</p>
-    </div>
-  );
+export default function StudioPage() {
+  return <DashboardClient />;
 }

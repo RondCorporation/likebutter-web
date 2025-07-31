@@ -9,6 +9,7 @@ import {
   Bell,
   Settings as SettingsIcon,
   CreditCard,
+  ChevronDown,
 } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -47,6 +48,78 @@ function AccountSettings() {
       >
         {t('dropdownLogout')}
       </button>
+    </div>
+  );
+}
+
+function GeneralSettings() {
+  const { i18n, t } = useTranslation();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleLanguageChange = (newLang: string) => {
+    const currentLang = i18n.language;
+    setIsOpen(false);
+    if (newLang !== currentLang) {
+      const newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
+      document.cookie = `i18next=${newLang};path=/;max-age=31536000`;
+      router.push(newPath);
+    }
+  };
+
+  const languages = [
+    { code: 'ko', name: '한국어' },
+    { code: 'en', name: 'English' },
+  ];
+
+  const currentLanguageName =
+    languages.find((l) => l.code === i18n.language)?.name || i18n.language;
+
+  return (
+    <div>
+      <h3 className="mb-6 text-xl font-semibold">{t('settingsTabGeneral')}</h3>
+      <div className="space-y-2">
+        <label
+          id="language-dropdown-label"
+          className="text-sm text-slate-400 mb-2 block"
+        >
+          {t('settingsLanguage')}
+        </label>
+        <div className="relative w-full max-w-xs">
+          <button
+            type="button"
+            aria-haspopup="listbox"
+            aria-labelledby="language-dropdown-label"
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full flex items-center justify-between rounded-md border border-white/10 bg-white/5 px-3 py-2 text-white transition hover:bg-white/20 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          >
+            <span>{currentLanguageName}</span>
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+          {isOpen && (
+            <ul
+              className="absolute z-10 mt-1 w-full rounded-md border border-white/10 bg-slate-900 py-1 shadow-lg"
+              role="listbox"
+            >
+              {languages.map((lang) => (
+                <li
+                  key={lang.code}
+                  onClick={() => handleLanguageChange(lang.code)}
+                  className="flex cursor-pointer items-center px-3 py-2 text-sm text-white hover:bg-accent hover:text-black"
+                  role="option"
+                  aria-selected={i18n.language === lang.code}
+                >
+                  {lang.name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -90,7 +163,9 @@ export default function SettingsModal() {
         </button>
 
         <aside className="w-56 border-r border-white/10 p-6 pt-8 space-y-1 flex-shrink-0">
-          <h2 className="text-lg font-semibold mb-6 px-3">{t('settingsTitle')}</h2>
+          <h2 className="text-lg font-semibold mb-6 px-3">
+            {t('settingsTitle')}
+          </h2>
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -110,11 +185,11 @@ export default function SettingsModal() {
         <section className="flex-1 p-8 overflow-y-auto">
           {activeTab === 'account' && <AccountSettings />}
           {activeTab === 'subscription' && <SubscriptionSettings />}
-          {activeTab === 'general' && (
-            <p className="text-slate-400">{t('settingsGeneralComingSoon')}</p>
-          )}
+          {activeTab === 'general' && <GeneralSettings />}
           {activeTab === 'notifications' && (
-            <p className="text-slate-400">{t('settingsNotificationsComingSoon')}</p>
+            <p className="text-slate-400">
+              {t('settingsNotificationsComingSoon')}
+            </p>
           )}
         </section>
       </div>

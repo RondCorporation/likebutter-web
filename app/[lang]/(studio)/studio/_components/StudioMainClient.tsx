@@ -39,7 +39,8 @@ export default function StudioMainClient({
 
   return (
     <section className="flex flex-1 flex-col overflow-hidden">
-      <header className="flex h-[73px] flex-shrink-0 items-center justify-between border-b border-white/10 p-6">
+      {/* This header is for desktop view */}
+      <header className="hidden h-[73px] flex-shrink-0 items-center justify-between border-b border-white/10 p-6 md:flex">
         <h2 className="text-2xl font-semibold">{currentPageTitle}</h2>
         <UserDropdown />
       </header>

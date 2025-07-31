@@ -20,13 +20,7 @@ export default function ButterGenDetailsView({
   const { request } = details;
   return (
     <dl>
-      <DetailRow label="Idol Name" value={request.idolName} />
       <DetailRow label="Prompt" value={request.prompt} />
-      <DetailRow label="Image Count" value={request.imageCount} />
-      <DetailRow
-        label="Dimensions"
-        value={`${request.width} x ${request.height}`}
-      />
       <DetailRow
         label="Source Image"
         value={

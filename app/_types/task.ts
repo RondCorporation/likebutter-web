@@ -8,12 +8,8 @@ export type ActionType = 'BUTTER_GEN' | 'BUTTER_TEST';
 
 // ================= BUTTER_GEN Types =================
 interface ButterGenRequestDetails {
-  idolName: string;
   sourceImageUrl: string;
   prompt: string;
-  imageCount: number;
-  width: number;
-  height: number;
 }
 
 interface ButterGenResultDetails {

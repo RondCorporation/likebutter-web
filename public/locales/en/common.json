@@ -327,5 +327,14 @@
     "message": "We couldn't connect to the server. Please check your network or try again in a moment.",
     "retry": "Retry"
   },
-  "settingsLanguage": "Language"
+  "settingsLanguage": "Language",
+  "dashboardWelcome": "Welcome, {{name}}! 🧈",
+  "dashboardSubtitle": "Here's a quick overview of your creative space.",
+  "dashboardNoTasksTitle": "Ready to Create?",
+  "dashboardNoTasksSubtitle": "Start a new task using the quick start menu or explore the tools.",
+  "dashboardAccountStatus": "Account Status",
+  "dashboardPlan": "Plan",
+  "dashboardCredits": "Credits Used",
+  "dashboardManageSubscription": "Manage Subscription",
+  "dashboardQuickStart": "Quick Start"
 }

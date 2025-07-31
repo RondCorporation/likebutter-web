@@ -3,9 +3,15 @@
 import { useReducer, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Image as ImageIcon, LoaderCircle } from 'lucide-react';
+import {
+  Sparkles,
+  LoaderCircle,
+  UploadCloud,
+  X,
+} from 'lucide-react';
 import { createButterGenTask } from '@/app/_lib/apis/task.api';
 import { ApiResponse } from '@/app/_types/api';
+import Image from 'next/image';
 
 interface TaskResponse {
   taskId: number;
@@ -47,15 +53,9 @@ function apiSubmitReducer(state: State, action: Action): State {
 
 export default function ButterGenClient() {
   const { t } = useTranslation();
-  const [idolName, setIdolName] = useState('');
   const [sourceImage, setSourceImage] = useState<File | null>(null);
   const [prompt, setPrompt] = useState('');
-  const [imageCount, setImageCount] = useState(1);
-  const [width, setWidth] = useState(512);
-  const [height, setHeight] = useState(512);
-
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
   const [state, dispatch] = useReducer(apiSubmitReducer, initialState);
 
   useEffect(() => {
@@ -73,14 +73,20 @@ export default function ButterGenClient() {
 
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        dispatch({
+          type: 'SUBMIT_ERROR',
+          payload: 'Image size must be less than 5MB',
+        });
+        return;
+      }
       setSourceImage(file);
       setPreviewUrl(URL.createObjectURL(file));
-      setIdolName('');
+      dispatch({ type: 'RESET' });
     }
   };
 
-  const handleIdolNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIdolName(e.target.value);
+  const handleRemoveImage = () => {
     setSourceImage(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
@@ -89,7 +95,7 @@ export default function ButterGenClient() {
   };
 
   const handleSubmit = async () => {
-    if (!prompt || (!idolName && !sourceImage)) {
+    if (!prompt || !sourceImage) {
       dispatch({
         type: 'SUBMIT_ERROR',
         payload: t('butterGenErrorPrompt'),
@@ -99,23 +105,12 @@ export default function ButterGenClient() {
     dispatch({ type: 'SUBMIT_START' });
 
     const formData = new FormData();
-
-    const requestPayload = {
-      idolName: sourceImage ? '' : idolName,
-      prompt,
-      imageCount,
-      width,
-      height,
-    };
-
+    const requestPayload = { prompt };
     formData.append(
       'request',
       new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
     );
-
-    if (sourceImage) {
-      formData.append('sourceImage', sourceImage);
-    }
+    formData.append('sourceImage', sourceImage);
 
     try {
       const response = await createButterGenTask(formData);
@@ -128,161 +123,84 @@ export default function ButterGenClient() {
     }
   };
 
-  const isGenerationDisabled =
-    state.isLoading || !prompt || (!idolName && !sourceImage);
+  const isGenerationDisabled = state.isLoading || !prompt || !sourceImage;
 
   return (
-    <>
-      <div className="mb-6">
-        <h3 className="mb-3 block text-lg font-medium text-slate-200">
-          {t('butterGenStep1')}
-        </h3>
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        {/* Left Column: Image Upload */}
         <div>
-          <div>
-            <label
-              htmlFor="idol-name"
-              className="mb-2 block text-sm text-slate-400"
-            >
-              {t('butterGenIdolNameLabel')}
-            </label>
-            <input
-              id="idol-name"
-              type="text"
-              value={idolName}
-              onChange={handleIdolNameChange}
-              placeholder={t('butterGenIdolNamePlaceholder')}
-              className="w-full rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-slate-500 focus:border-accent focus:ring-0"
-            />
-          </div>
-          <div className="my-4 flex items-center justify-center">
-            <div className="relative flex w-full items-center">
-              <div className="flex-grow border-t border-white/20"></div>
-              <span className="mx-4 flex-shrink text-sm text-slate-400">
-                {t('butterGenOr')}
-              </span>
-              <div className="flex-grow border-t border-white/20"></div>
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="face-upload"
-              className="mb-2 block text-sm text-slate-400"
-            >
-              {t('butterGenUploadLabel')}
-            </label>
-            <div className="relative flex w-full aspect-square items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-white/20 bg-white/5 px-4 text-slate-400 transition-colors hover:border-accent/50 hover:text-accent">
-              {previewUrl ? (
-                <img
+          <label className="mb-3 block text-lg font-medium text-slate-200">
+            {t('butterGenStep1')}
+          </label>
+          <div
+            className="relative flex h-80 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-600 bg-slate-800/50 text-center transition-colors hover:border-accent"
+            onClick={() => document.getElementById('face-upload')?.click()}
+          >
+            {previewUrl ? (
+              <>
+                <Image
                   src={previewUrl}
                   alt="Source preview"
-                  className="h-full w-full object-contain"
+                  layout="fill"
+                  objectFit="contain"
+                  className="rounded-lg p-2"
                 />
-              ) : (
-                <div className="flex items-center">
-                  <ImageIcon size={20} className="mr-2" />
-                  <span className="text-sm">
-                    {sourceImage
-                      ? sourceImage.name
-                      : t('butterGenUploadPlaceholder')}
-                  </span>
-                </div>
-              )}
-              <input
-                id="face-upload"
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={handleFileChange}
-                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <label
-          htmlFor="art-prompt"
-          className="mb-3 block text-lg font-medium text-slate-200"
-        >
-          {t('butterGenStep2')}
-        </label>
-        <textarea
-          id="art-prompt"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder={t('butterGenPromptPlaceholder')}
-          rows={4}
-          className="w-full rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-slate-500 focus:border-accent focus:ring-0"
-        />
-      </div>
-
-      <div className="mb-8">
-        <h3 className="mb-3 block text-lg font-medium text-slate-200">
-          {t('butterGenStep3')}
-        </h3>
-        <div className="grid grid-cols-1 gap-4 rounded-lg border border-white/10 bg-white/5 p-4 md:grid-cols-3">
-          <div>
-            <label
-              htmlFor="image-count"
-              className="mb-2 block text-sm text-slate-300"
-            >
-              {t('butterGenImageCount')}
-            </label>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4].map((num) => (
                 <button
-                  key={num}
-                  onClick={() => setImageCount(num)}
-                  className={`flex-1 rounded-md border py-2 text-xs font-semibold transition-all ${
-                    imageCount === num
-                      ? 'border-accent bg-accent text-black'
-                      : 'border-white/20 bg-white/10 hover:border-accent/50'
-                  }`}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveImage();
+                  }}
+                  className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white shadow-lg transition-transform hover:scale-110"
                 >
-                  {num}
+                  <X size={16} />
                 </button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="width"
-              className="mb-2 block text-sm text-slate-300"
-            >
-              {t('butterGenWidth')}
-            </label>
+              </>
+            ) : (
+              <div className="flex flex-col items-center text-slate-400">
+                <UploadCloud className="mb-3 h-10 w-10" />
+                <p className="mb-1 font-semibold text-slate-300">
+                  {t('butterGenUploadLabel')}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {t('butterGenUploadPlaceholder')}
+                </p>
+                <p className="text-xs text-slate-500">
+                  PNG, JPG, WEBP up to 5MB
+                </p>
+              </div>
+            )}
             <input
-              id="width"
-              type="number"
-              step="64"
-              min="512"
-              max="1024"
-              value={width}
-              onChange={(e) => setWidth(parseInt(e.target.value, 10))}
-              className="w-full rounded-md border border-white/20 bg-white/10 p-2 text-center text-sm"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="height"
-              className="mb-2 block text-sm text-slate-300"
-            >
-              {t('butterGenHeight')}
-            </label>
-            <input
-              id="height"
-              type="number"
-              step="64"
-              min="512"
-              max="1024"
-              value={height}
-              onChange={(e) => setHeight(parseInt(e.target.value, 10))}
-              className="w-full rounded-md border border-white/20 bg-white/10 p-2 text-center text-sm"
+              id="face-upload"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleFileChange}
+              className="hidden"
             />
           </div>
         </div>
+
+        {/* Right Column: Prompt */}
+        <div>
+          <label
+            htmlFor="art-prompt"
+            className="mb-3 block text-lg font-medium text-slate-200"
+          >
+            {t('butterGenStep2')}
+          </label>
+          <textarea
+            id="art-prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder={t('butterGenPromptPlaceholder')}
+            rows={12}
+            className="w-full rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-slate-500 focus:border-accent focus:ring-0"
+          />
+        </div>
       </div>
 
+      {/* Submit Button */}
       <button
         disabled={isGenerationDisabled}
         onClick={handleSubmit}
@@ -296,6 +214,7 @@ export default function ButterGenClient() {
         {state.isLoading ? t('butterGenButtonLoading') : t('butterGenButton')}
       </button>
 
+      {/* Result/Error Display */}
       <div className="mt-6 text-center text-sm">
         {state.error && <p className="text-red-400">{state.error}</p>}
         {state.result && state.result.data && (
@@ -307,13 +226,13 @@ export default function ButterGenClient() {
             </p>
             <Link
               href="/studio/history"
-              className="mt-2 inline-block underline"
+              className="mt-2 inline-block text-accent underline"
             >
               {t('butterGenSuccessLink')}
             </Link>
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

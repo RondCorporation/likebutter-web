@@ -9,13 +9,20 @@ import '@/lib/i18n-client';
 import { usePathname } from 'next/navigation';
 import AuthInitializer from '@/components/AuthInitializer';
 import ServerErrorDisplay from '@/components/shared/ServerErrorDisplay';
+import { User } from '@/stores/authStore';
 
-export function LayoutClient({ children }: { children: ReactNode }) {
+export function LayoutClient({
+  children,
+  preloadedUser,
+}: {
+  children: ReactNode;
+  preloadedUser: User | null;
+}) {
   const pathname = usePathname();
   const isStudioPage = pathname.includes('/studio');
 
   return (
-    <AuthInitializer>
+    <AuthInitializer preloadedUser={preloadedUser}>
       <>
         <ServerErrorDisplay />
         <SettingsModal />

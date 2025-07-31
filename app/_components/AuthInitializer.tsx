@@ -1,23 +1,29 @@
 'use client';
 
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore, User } from '@/stores/authStore';
 import { LoaderCircle } from 'lucide-react';
-import { ReactNode, useEffect, useRef } from 'react'; // useRef 추가
+import { ReactNode, useEffect, useRef } from 'react';
 
-export default function AuthInitializer({ children }: { children: ReactNode }) {
+export default function AuthInitializer({
+  children,
+  preloadedUser,
+}: {
+  children: ReactNode;
+  preloadedUser: User | null;
+}) {
   const isInitialized = useAuthStore((s) => s.isInitialized);
-  // store에서 직접 함수를 가져옵니다.
-  const initialize = useAuthStore.getState().initialize;
-  const logout = useAuthStore.getState().logout;
-  const effectRan = useRef(false); // 실행 여부를 추적할 ref
+  const { initialize, logout, hydrate } = useAuthStore.getState();
+  const effectRan = useRef(false);
 
   useEffect(() => {
-    // React 18의 StrictMode는 개발 환경에서 effect를 두 번 실행하므로,
-    // 한 번만 실행되도록 ref로 방어합니다.
     if (effectRan.current) return;
     effectRan.current = true;
 
-    initialize();
+    if (preloadedUser) {
+      hydrate(preloadedUser);
+    } else {
+      initialize();
+    }
 
     const handleAuthFailure = () => {
       console.log('Auth failure event received. Logging out.');
@@ -30,7 +36,7 @@ export default function AuthInitializer({ children }: { children: ReactNode }) {
       window.removeEventListener('auth-failure', handleAuthFailure);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 의존성 배열을 비워서 마운트 시 한 번만 실행되도록 합니다.
+  }, []);
 
   if (!isInitialized) {
     return (

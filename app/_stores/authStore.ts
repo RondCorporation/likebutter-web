@@ -17,6 +17,7 @@ export interface User {
   countryCode: string;
   countryName: string;
   phoneNumber: string | null;
+  role: string;
   subscription?: Subscription | null;
 }
 

@@ -20,6 +20,7 @@ export function LayoutClient({
 }) {
   const pathname = usePathname();
   const isStudioPage = pathname.includes('/studio');
+  const isAdminPage = pathname.includes('/admin');
 
   return (
     <AuthInitializer preloadedUser={preloadedUser}>
@@ -36,9 +37,9 @@ export function LayoutClient({
           }}
         />
         <div className="flex min-h-screen flex-col">
-          {!isStudioPage && <Header />}
+          {!isStudioPage && !isAdminPage && <Header />}
           <main className="flex-grow">{children}</main>
-          {!isStudioPage && <Footer />}
+          {!isStudioPage && !isAdminPage && <Footer />}
         </div>
       </>
     </AuthInitializer>

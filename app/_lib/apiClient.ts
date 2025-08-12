@@ -128,3 +128,16 @@ export async function apiFetch<T>(
     throw error;
   }
 }
+
+export const apiClient = {
+  get: <T>(url: string, opts: Omit<RequestInit, 'body'> = {}) =>
+    apiFetch<T>(url, { ...opts, method: 'GET' }),
+  post: <T>(url: string, body?: any, opts: Omit<RequestInit, 'body'> = {}) =>
+    apiFetch<T>(url, { ...opts, method: 'POST', body }),
+  patch: <T>(url: string, body?: any, opts: Omit<RequestInit, 'body'> = {}) =>
+    apiFetch<T>(url, { ...opts, method: 'PATCH', body }),
+  put: <T>(url: string, body?: any, opts: Omit<RequestInit, 'body'> = {}) =>
+    apiFetch<T>(url, { ...opts, method: 'PUT', body }),
+  delete: <T>(url: string, opts: Omit<RequestInit, 'body'> = {}) =>
+    apiFetch<T>(url, { ...opts, method: 'DELETE' }),
+};

@@ -17,7 +17,7 @@ export interface User {
   countryCode: string;
   countryName: string;
   phoneNumber: string | null;
-  role: string;
+  roles: string;
   subscription?: Subscription | null;
 }
 
@@ -107,9 +107,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: () => {
-    apiLogout().catch((err) =>
-      console.warn('Server-side logout failed:', err)
-    );
+    apiLogout().catch((err) => console.warn('Server-side logout failed:', err));
     deleteAccessTokenCookie();
     set({
       user: null,

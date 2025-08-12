@@ -6,7 +6,7 @@
   "featuresSubtitle": "LikeButter의 AI 요정 '버터'가 당신의 팬심을 다채로운 콘텐츠로 녹여낼 수 있도록 안내할게요.",
   "feature1Title": "ButterTalks",
   "feature1Desc": "최애와 나누고 싶은 이야기를 AI와 함께 나눠보세요. 감정을 쏟아내는 것만으로 시작돼요.",
-  "feature2Title": "ButterBeats & Cover",
+  "feature2Title": "ButterCover",
   "feature2Desc": "나의 감정을 담아 세상에 하나뿐인 팬송을 만들거나, 최애의 목소리로 커버곡을 만들어보세요.",
   "feature3Title": "ButterBrush",
   "feature3Desc": "마음속에 떠오른 이미지를 텍스트로 입력하거나 그림을 업로드하여 AI 팬아트를 완성할 수 있어요.",
@@ -145,13 +145,13 @@
   "studioToolButterTest": "ButterTest",
   "studioToolButterTalks": "ButterTalks",
   "studioToolButterBrush": "ButterBrush",
-  "studioToolButterBeats": "ButterBeats",
+  "studioToolButterCover": "ButterCover",
   "studioToolButterCuts": "ButterCuts",
   "studioTitleHome": "스튜디오 홈",
   "studioTitleHistory": "내 작업 공간",
   "studioTitleButterGen": "ButterGen",
   "studioTitleButterTest": "ButterTest",
-  "studioTitleButterBeats": "ButterBeats",
+  "studioTitleButterCover": "ButterCover",
   "studioTitleButterBrush": "ButterBrush",
   "studioTitleButterCuts": "ButterCuts",
   "studioTitleButterTalks": "ButterTalks",
@@ -245,7 +245,7 @@
   "butterArtButton": "아트 생성",
   "butterCoverTitle": "Butter Cover 만들기",
   "butterCoverSubtitle": "원하는 BTS 멤버의 목소리를 선택하고, 커버하고 싶은 노래를 업로드하여 AI 커버를 만들어보세요.",
-  "butterCoverStep1": "1. 멤버 목소리 선택",
+  "butterCoverStep1": "1. 음성 모델 선택",
   "butterCoverStep2": "2. 노래 업로드",
   "butterCoverUploadPlaceholder": "클릭하여 오디오 파일을 찾거나 드래그 앤 드롭하세요",
   "butterCoverButton": "커버 생성",
@@ -291,7 +291,7 @@
     "paymentHistory": "결제 내역",
     "loadingDetails": "상세 정보를 불러오는 중...",
     "fetchDetailsError": "상세 정보를 가져오는 데 실패했습니다.",
-    "upgradeSuccess": "요금제가 성공적으로 업그레이드되었습니다.",
+  "upgradeSuccess": "요금제가 성공적으로 업그레이드되었습니다.",
     "upgradeError": "요금제 업그레이드 중 오류가 발생했습니다.",
     "noPaymentHistory": "결제 내역이 없습니다.",
     "cancelTitle": "구독 취소 확인"
@@ -336,5 +336,10 @@
   "dashboardPlan": "요금제",
   "dashboardCredits": "사용한 크레딧",
   "dashboardManageSubscription": "구독 관리",
-  "dashboardQuickStart": "빠른 시작"
+  "dashboardQuickStart": "빠른 시작",
+  "voiceModel": {
+    "jungkook": "정국(BTS)",
+    "iu": "아이유",
+    "newjeans": "뉴진스(NewJeans)"
+  }
 }

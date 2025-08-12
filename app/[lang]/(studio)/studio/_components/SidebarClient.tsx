@@ -56,6 +56,11 @@ export default function StudioSidebar({
       icon: TestTube,
     },
     {
+      href: `/${lang}/studio/butter-cover`,
+      label: t('studioToolButterCover'),
+      icon: Music,
+    },
+    {
       href: `/${lang}/studio/butter-talks`,
       label: t('studioToolButterTalks'),
       icon: MessageCircle,
@@ -64,11 +69,6 @@ export default function StudioSidebar({
       href: `/${lang}/studio/butter-art`,
       label: t('studioToolButterBrush'),
       icon: Brush,
-    },
-    {
-      href: `/${lang}/studio/butter-cover`,
-      label: t('studioToolButterBeats'),
-      icon: Music,
     },
     {
       href: `/${lang}/studio/butter-cuts`,

@@ -56,3 +56,27 @@ export const createButterTestTask = (
     body: { prompt },
   });
 };
+
+export interface ButterCoverRequest {
+  voiceModel: string;
+  pitchChange?: number;
+  useUvr?: boolean;
+  outputFormat?: string;
+}
+
+export const createButterCoverTask = (
+  audio: File,
+  request: ButterCoverRequest
+): Promise<ApiResponse<TaskCreationResponse>> => {
+  const formData = new FormData();
+  formData.append('audio', audio);
+  formData.append(
+    'request',
+    new Blob([JSON.stringify(request)], { type: 'application/json' })
+  );
+
+  return apiFetch<TaskCreationResponse>('/tasks/butter-cover', {
+    method: 'POST',
+    body: formData,
+  });
+};

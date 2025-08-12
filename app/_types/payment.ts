@@ -10,3 +10,13 @@ export interface PaymentHistoryResponse {
   planName: string;
   orderName: string;
 }
+
+export interface Payment {
+  id: number;
+  paymentId: string;
+  accountId: number;
+  plan: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}

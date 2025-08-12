@@ -30,5 +30,3 @@ export const signup = (signupData: any): Promise<ApiResponse<any>> => {
 export const logout = (): Promise<ApiResponse<any>> => {
   return apiFetch('/auth/logout', { method: 'DELETE' }, true);
 };
-
-

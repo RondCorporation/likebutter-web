@@ -1,29 +1,37 @@
-import { Metadata } from 'next';
-import initTranslations from '@/lib/i18n-server';
 import ButterCoverClient from './_components/ButterCoverClient';
+import initTranslations from '@/app/_lib/i18n-server';
 
-type Props = {
+export default async function ButterCoverPage({
+  params,
+}: {
   params: Promise<{ lang: string }>;
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+}) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
-  return {
-    title: t('studioTitleButterBeats'),
-    description: t('butterCoverSubtitle'),
+  const dictionary = {
+    studioTitleButterCover: t('studioTitleButterCover'),
+    butterCoverSubtitle: t('butterCoverSubtitle'),
+    butterCoverStep1: t('butterCoverStep1'),
+    butterCoverStep2: t('butterCoverStep2'),
+    butterCoverUploadPlaceholder: t('butterCoverUploadPlaceholder'),
+    butterCoverButton: t('butterCoverButton'),
+    butterGenButtonLoading: t('butterGenButtonLoading'),
+    butterGenSuccessTitle: t('butterGenSuccessTitle'),
+    butterGenSuccessTaskId: t('butterGenSuccessTaskId'),
+    butterGenSuccessStatus: t('butterGenSuccessStatus'),
+    butterGenSuccessLink: t('butterGenSuccessLink'),
+    voiceModel: t('voiceModel', { returnObjects: true }),
   };
-}
-
-export default async function ButterCoverPage({ params }: Props) {
-  const { lang } = await params;
-  const { t } = await initTranslations(lang, ['common']);
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <h2 className="mb-2 text-xl font-semibold">{t('butterCoverTitle')}</h2>
-      <p className="mb-8 text-slate-400">{t('butterCoverSubtitle')}</p>
-      <ButterCoverClient />
+    <div className="container mx-auto h-full px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-white">
+          {dictionary.studioTitleButterCover}
+        </h1>
+        <p className="text-slate-400">{dictionary.butterCoverSubtitle}</p>
+      </div>
+      <ButterCoverClient dictionary={dictionary} />
     </div>
   );
 }

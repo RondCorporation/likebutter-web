@@ -93,9 +93,16 @@ function historyReducer(
     case 'FETCH_ERROR':
       return { ...state, isLoading: false, error: action.payload };
     case 'UPDATE_TASK_STATUS':
-      const updatedTasks = state.tasks.map((t) =>
-        t.taskId === action.payload.taskId ? action.payload : t
-      );
+      const updatedTasks = state.tasks.map((t) => {
+        if (t.taskId === action.payload.taskId) {
+          return {
+            ...t,
+            status: action.payload.status,
+            details: action.payload.details as any,
+          };
+        }
+        return t;
+      });
       return {
         ...state,
         tasks: updatedTasks,
@@ -172,13 +179,11 @@ export function useTaskHistory() {
       const pollingPromises = tasksToCheck.map(async (task) => {
         try {
           const res = await getTaskStatus(task.taskId);
-          if (res.data && res.data.status !== task.status) {
-            const updatedTask: Task = {
-              ...task,
-              status: res.data.status,
-              details: { ...task.details, ...res.data.details },
-            };
-            dispatch({ type: 'UPDATE_TASK_STATUS', payload: updatedTask });
+          if (res.data && (res.data.status !== task.status || !task.details)) {
+            dispatch({
+              type: 'UPDATE_TASK_STATUS',
+              payload: res.data as Task,
+            });
           }
         } catch (error) {
           console.error(

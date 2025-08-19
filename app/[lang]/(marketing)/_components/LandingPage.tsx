@@ -3,9 +3,44 @@
 import { useTranslation } from 'react-i18next';
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Logo from '@/components/Logo';
 import { usePathname } from 'next/navigation';
+
+// Reusable Page Section Component with robust padding and alignment
+const PageSection = ({
+  children,
+  className = '',
+  verticalAlign = 'center',
+  wide = false,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  verticalAlign?: 'center' | 'top';
+  wide?: boolean;
+}) => {
+  const alignmentClasses = {
+    center: 'justify-center',
+    top: 'justify-start',
+  };
+  const paddingClasses = {
+    center: 'pt-24', // Clears header, content is centered in remaining space
+    top: 'pt-32', // Clears header and adds 2rem (8*4px) of space for titles
+  };
+
+  const containerClasses = wide ? 'w-full px-4 sm:px-6' : 'container mx-auto px-4 sm:px-6';
+
+  return (
+    <section className={`h-screen snap-start ${className}`}>
+      <div
+        className={`${containerClasses} h-full flex flex-col ${alignmentClasses[verticalAlign]} items-center ${paddingClasses[verticalAlign]}`}
+        style={{ boxSizing: 'border-box' }}
+      >
+        {children}
+      </div>
+    </section>
+  );
+};
 
 // Simplified and refactored for robust snap scrolling.
 export default function LandingPage() {
@@ -36,37 +71,6 @@ export default function LandingPage() {
 
   const handleLangChange = (newLang: string) => {
     window.location.href = `/${newLang}`;
-  };
-
-  // Reusable Page Section Component with robust padding and alignment
-  const PageSection = ({
-    children,
-    className = '',
-    verticalAlign = 'center',
-  }: {
-    children: React.ReactNode;
-    className?: string;
-    verticalAlign?: 'center' | 'top';
-  }) => {
-    const alignmentClasses = {
-      center: 'justify-center',
-      top: 'justify-start',
-    };
-    const paddingClasses = {
-      center: 'pt-24', // Clears header, content is centered in remaining space
-      top: 'pt-32', // Clears header and adds 2rem (8*4px) of space for titles
-    };
-
-    return (
-      <section className={`h-screen snap-start ${className}`}>
-        <div
-          className={`container mx-auto px-4 sm:px-6 h-full flex flex-col ${alignmentClasses[verticalAlign]} items-center ${paddingClasses[verticalAlign]}`}
-          style={{ boxSizing: 'border-box' }}
-        >
-          {children}
-        </div>
-      </section>
-    );
   };
 
   return (
@@ -112,12 +116,13 @@ export default function LandingPage() {
         {/* Page 1: Hero Section */}
         <PageSection>
           <div className="text-center relative z-10">
-            <div className="text-4xl md:text-6xl font-bold min-h-[150px] md:min-h-[200px] flex items-center justify-center">
-              <span>{t('heroSubtitle')}</span>
+            <div className="text-4xl md:text-6xl font-bold min-h-[150px] md:min-h-[200px] flex flex-col items-center justify-center">
+              <span className="font-light text-gray-300">{t('heroTitle_soft')}</span>
+              <span className="font-extrabold text-white mt-2">{t('heroTitle_main')}</span>
             </div>
             <Link
               href={`/${lang}/signup`}
-              className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-10 py-4 text-xl font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-all duration-300 hover:scale-105 hover:shadow-butter-yellow/40 animate-fade-in"
+              className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-10 py-4 text-xl font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-all duration-300 hover:scale-105 hover:shadow-butter-yellow/40 hover:-translate-y-1 animate-fade-in"
             >
               <Sparkles size={24} />
               {t('getStarted')}
@@ -126,13 +131,13 @@ export default function LandingPage() {
         </PageSection>
 
         {/* Page 2: Gradient Cards Section */}
-        <PageSection>
+        <PageSection wide={true}>
           <div>
-            <div className="relative w-full max-w-5xl">
+            <div className="relative w-full">
               <div className="overflow-hidden rounded-3xl">
                 <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentCard * 100}%)` }}>
                   {cards.map((card, index) => (
-                    <div key={index} className={`flex-shrink-0 w-full h-[65vh] bg-gradient-to-br ${card.gradient} flex justify-center items-center`}>
+                    <div key={index} className={`flex-shrink-0 w-full h-[75vh] bg-gradient-to-br ${card.gradient} flex justify-center items-center`}>
                       <span className="text-white text-4xl font-bold">{card.title}</span>
                     </div>
                   ))}
@@ -140,13 +145,30 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="mt-8 flex items-center gap-6 justify-center">
-              <button onClick={prevCard} className="bg-white/20 text-white rounded-full p-3 hover:bg-white/40 transition-colors"><ChevronLeft size={24} /></button>
+              <button
+                type="button"
+                onClick={prevCard}
+                className="bg-white/20 text-white rounded-full p-3 hover:bg-white/40 transition-colors"
+              >
+                <ChevronLeft size={24} />
+              </button>
               <div className="flex items-center gap-3">
                 {cards.map((_, index) => (
-                  <button key={index} onClick={() => setCurrentCard(index)} className={`h-2 rounded-full transition-all duration-300 ${currentCard === index ? 'w-6 bg-white' : 'w-2 bg-white/50'}`} />
+                  <button
+                    type="button"
+                    key={index}
+                    onClick={() => setCurrentCard(index)}
+                    className={`h-2 rounded-full transition-all duration-300 ${currentCard === index ? 'w-6 bg-white' : 'w-2 bg-white/50'}`}
+                  />
                 ))}
               </div>
-              <button onClick={nextCard} className="bg-white/20 text-white rounded-full p-3 hover:bg-white/40 transition-colors"><ChevronRight size={24} /></button>
+              <button
+                type="button"
+                onClick={nextCard}
+                className="bg-white/20 text-white rounded-full p-3 hover:bg-white/40 transition-colors"
+              >
+                <ChevronRight size={24} />
+              </button>
             </div>
           </div>
         </PageSection>

@@ -346,7 +346,8 @@
     "iu": "IU",
     "newjeans": "NewJeans"
   },
-  "heroSubtitle": "A buttery-smooth AI experience, LikeButter",
+  "heroTitle_soft": "A buttery-smooth",
+  "heroTitle_main": "AI experience, LikeButter",
   "getStarted": "Get Started",
   "fandomParadigm": "A New Paradigm for Fandom",
   "butterSeriesTitle": "Butter Series | Create Your Own Content",

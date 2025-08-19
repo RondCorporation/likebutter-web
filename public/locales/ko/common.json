@@ -343,7 +343,8 @@
     "iu": "아이유",
     "newjeans": "뉴진스(NewJeans)"
   },
-  "heroSubtitle": "버터처럼 부드러운 AI 경험, LikeButter",
+  "heroTitle_soft": "버터처럼 부드러운",
+  "heroTitle_main": "AI 경험, LikeButter",
   "getStarted": "시작하기",
   "butterSeriesTitle": "버터 시리즈 | 나만의 콘텐츠 만들기",
   "butterGenDesc1": "아이돌 특화 생성 AI",

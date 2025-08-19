@@ -71,24 +71,24 @@ export default function LandingPage() {
 
   return (
     <div
-      className="bg-[#001123] text-white h-screen snap-y snap-mandatory overflow-y-scroll"
+      className="bg-gradient-to-br from-gradient-start via-gradient-middle to-gradient-end text-white h-screen snap-y snap-mandatory overflow-y-scroll"
       style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
     >
       {/* HEADER */}
       <header className="fixed top-0 left-0 right-0 z-50 h-24">
-        <div className="bg-[#FFD93B] text-black">
+        <div className="bg-slate-900/50 text-white">
           <div className="container mx-auto flex justify-end items-center px-4 sm:px-6 h-8 text-sm">
             <div className="flex items-center gap-4">
               <select onChange={(e) => handleLangChange(e.target.value)} value={i18n.language} className="bg-transparent cursor-pointer">
-                <option value="ko">한국어</option>
-                <option value="en">English</option>
+                <option value="ko" className="text-black">한국어</option>
+                <option value="en" className="text-black">English</option>
               </select>
               <Link href="#" className="hover:underline">{t('customerCenter')}</Link>
               <Link href="#" className="hover:underline">{t('notices')}</Link>
             </div>
           </div>
         </div>
-        <div className="bg-[#001123]/80 backdrop-blur-sm border-b border-gray-700/50 h-16">
+        <div className="bg-slate-800/20 backdrop-blur-sm border-b border-white/10 h-16">
           <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 h-full">
             <div className="flex items-center gap-10">
               <Logo className="text-3xl" />
@@ -110,14 +110,14 @@ export default function LandingPage() {
       {/* Main content area */}
       <main>
         {/* Page 1: Hero Section */}
-        <PageSection className="bg-gradient-radial from-gray-900 to-[#001123] animate-subtle-pulse">
+        <PageSection>
           <div className="text-center relative z-10">
             <div className="text-4xl md:text-6xl font-bold min-h-[150px] md:min-h-[200px] flex items-center justify-center">
               <span>{t('heroSubtitle')}</span>
             </div>
             <Link
               href={`/${lang}/signup`}
-              className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-10 py-4 text-xl font-semibold text-black shadow-lg shadow-yellow-500/20 transition-all duration-300 hover:scale-105 hover:shadow-yellow-400/40 animate-fade-in"
+              className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-10 py-4 text-xl font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-all duration-300 hover:scale-105 hover:shadow-butter-yellow/40 animate-fade-in"
             >
               <Sparkles size={24} />
               {t('getStarted')}

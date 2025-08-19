@@ -24,6 +24,11 @@ export default {
       },
       colors: {
         accent: 'var(--accent)',
+        'gradient-start': '#0f2027',
+        'gradient-middle': '#203a43',
+        'gradient-end': '#2c5364',
+        'butter-yellow': '#FFD84D',
+        'butter-orange': '#FF9E2C',
       },
     },
   },

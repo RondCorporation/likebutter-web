@@ -1,9 +1,9 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Logo from '@/components/Logo';
 import { usePathname } from 'next/navigation';
 
@@ -112,8 +112,14 @@ export default function LandingPage() {
         {/* Page 1: Hero Section */}
         <PageSection className="bg-gradient-radial from-gray-900 to-[#001123] animate-subtle-pulse">
           <div className="text-center relative z-10">
-            <p className="text-4xl md:text-6xl font-bold">{t('heroSubtitle')}</p>
-            <Link href={`/${lang}/signup`} className="mt-8 rounded-lg bg-white px-10 py-4 text-xl font-semibold text-black transition-transform hover:scale-105 inline-block">
+            <div className="text-4xl md:text-6xl font-bold min-h-[150px] md:min-h-[200px] flex items-center justify-center">
+              <span>{t('heroSubtitle')}</span>
+            </div>
+            <Link
+              href={`/${lang}/signup`}
+              className="mt-8 inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 px-10 py-4 text-xl font-semibold text-black shadow-lg shadow-yellow-500/20 transition-all duration-300 hover:scale-105 hover:shadow-yellow-400/40 animate-fade-in"
+            >
+              <Sparkles size={24} />
               {t('getStarted')}
             </Link>
           </div>

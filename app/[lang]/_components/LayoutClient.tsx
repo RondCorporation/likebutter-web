@@ -19,6 +19,8 @@ export function LayoutClient({
   preloadedUser: User | null;
 }) {
   const pathname = usePathname();
+  const lang = pathname.split('/')[1];
+  const isMarketingPage = pathname === `/${lang}`;
   const isStudioPage = pathname.includes('/studio');
   const isAdminPage = pathname.includes('/admin');
 
@@ -37,9 +39,9 @@ export function LayoutClient({
           }}
         />
         <div className="flex min-h-screen flex-col">
-          {!isStudioPage && !isAdminPage && <Header />}
+          {!isStudioPage && !isAdminPage && !isMarketingPage && <Header />}
           <main className="flex-grow">{children}</main>
-          {!isStudioPage && !isAdminPage && <Footer />}
+          {!isStudioPage && !isAdminPage && !isMarketingPage && <Footer />}
         </div>
       </>
     </AuthInitializer>

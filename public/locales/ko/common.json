@@ -1,5 +1,6 @@
 {
   "login": "로그인",
+  "signUp": "회원가입",
   "welcome": "버터처럼 부드러운 AI 경험, LikeButter",
   "startStudio": "Butter Studio 시작하기",
   "featuresTitle": "당신의 모든 감정이 작품이 되는 곳",
@@ -291,7 +292,7 @@
     "paymentHistory": "결제 내역",
     "loadingDetails": "상세 정보를 불러오는 중...",
     "fetchDetailsError": "상세 정보를 가져오는 데 실패했습니다.",
-  "upgradeSuccess": "요금제가 성공적으로 업그레이드되었습니다.",
+    "upgradeSuccess": "요금제가 성공적으로 업그레이드되었습니다.",
     "upgradeError": "요금제 업그레이드 중 오류가 발생했습니다.",
     "noPaymentHistory": "결제 내역이 없습니다.",
     "cancelTitle": "구독 취소 확인"
@@ -341,5 +342,20 @@
     "jungkook": "정국(BTS)",
     "iu": "아이유",
     "newjeans": "뉴진스(NewJeans)"
-  }
+  },
+  "heroSubtitle": "버터처럼 부드러운 AI 경험, LikeButter",
+  "getStarted": "시작하기",
+  "butterSeriesTitle": "버터 시리즈 | 나만의 콘텐츠 만들기",
+  "butterGenDesc1": "아이돌 특화 생성 AI",
+  "butterGenDesc2": "고성능 최신 디퓨전 모델 활용",
+  "butterCoverDesc1": "아이돌 특화 생성 AI",
+  "butterCoverDesc2": "고성능 최신 디퓨전 모델 활용",
+  "butterTalksDesc1": "아이돌 특화 생성 AI",
+  "butterTalksDesc2": "고성능 최신 디퓨전 모델 활용",
+  "butterBrushDesc1": "아이돌 특화 생성 AI",
+  "butterBrushDesc2": "고성능 최신 디퓨전 모델 활용",
+  "customerCenter": "고객센터",
+  "notices": "공지사항",
+  "navServices": "제공 서비스",
+  "fandomParadigm": "팬덤 활동의 새로운 패러다임"
 }

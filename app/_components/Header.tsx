@@ -1,178 +1,95 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import UserDropdown from './UserDropdown';
 import Logo from './Logo';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
+import { Globe } from 'lucide-react';
 
 export default function Header() {
-  const [activeSection, setActiveSection] = useState('about');
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [isClient, setIsClient] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { t } = useTranslation();
-
-  const NAV_ITEMS = [
-    { id: 'about', label: t('navAbout') },
-    { id: 'features', label: t('navFeatures') },
-    { id: 'demo', label: t('navDemo') },
-    { id: 'pricing', label: t('navPricing') },
-    { id: 'contact', label: t('navContact') },
-  ];
-
-  const lang = pathname.split('/')[1];
-
-  const handleNavClick = useCallback(
-    (id: string) => {
-      setActiveSection(id);
-      if (pathname === `/${lang}/`) {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-      setIsMobileMenuOpen(false); // Close mobile menu on navigation
-    },
-    [pathname, lang]
-  );
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     setIsClient(true);
+  }, []);
 
-    if (pathname === `/${lang}/`) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) setActiveSection(entry.target.id);
-          });
-        },
-        {
-          rootMargin: '-40% 0px -40% 0px',
-          threshold: 0.1,
-        }
-      );
+  const lang = pathname.split('/')[1];
 
-      NAV_ITEMS.forEach(({ id }) => {
-        const el = document.getElementById(id);
-        if (el) observer.observe(el);
-      });
-      return () => observer.disconnect();
-    }
-  }, [pathname, lang]);
-
-  useEffect(() => {
-    // Disable body scroll when mobile menu is open
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [isMobileMenuOpen]);
-
-  const showNav = pathname === `/${lang}/` || pathname === '/';
-  const showAuthControls =
-    !pathname.includes('/login') && !pathname.includes('/signup');
+  const handleLangChange = (newLang: string) => {
+    const newPath = `/${newLang}${pathname.substring(`/${lang}`.length)}`;
+    window.location.href = newPath;
+  };
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-4 sm:px-6 py-4 backdrop-blur-md bg-black/30">
-      <Logo />
-
-      {/* Desktop Navigation */}
-      {showNav && (
-        <nav className="hidden gap-6 md:flex">
-          {NAV_ITEMS.map(({ id, label }) => (
-            <Link
-              key={id}
-              href={`#${id}`}
-              onClick={() => handleNavClick(id)}
-              className={`relative transition-all ${
-                activeSection === id
-                  ? 'text-sm md:text-base text-accent scale-102'
-                  : 'text-sm text-slate-200 hover:text-accent'
-              }`}
-            >
-              {label}
-              {activeSection === id && (
-                <span className="absolute left-1/2 top-full mt-1 block h-1 w-1 -translate-x-1/2 rounded-full bg-accent" />
-              )}
+    <header className="w-full bg-[#001123] text-white">
+      {/* Top bar */}
+      <div className="bg-[#FFD93B] text-black">
+        <div className="container mx-auto flex justify-end items-center px-4 sm:px-6 py-1 text-sm">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <select
+                onChange={(e) => handleLangChange(e.target.value)}
+                value={i18n.language}
+                className="bg-transparent cursor-pointer"
+              >
+                <option value="ko">한국어</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <Link href="/customer-service" className="hover:underline">
+              {t('customerCenter')}
             </Link>
-          ))}
-        </nav>
-      )}
-
-      <div className="flex items-center gap-4">
-        {/* Auth Controls */}
-        {isClient &&
-          showAuthControls &&
-          (isAuthenticated ? (
-            <UserDropdown />
-          ) : (
-            <Link
-              href="/login"
-              className="hidden sm:block rounded-md border border-accent/40 px-4 py-1 text-sm text-accent transition hover:bg-accent/10"
-            >
-              {t('login')}
+            <Link href="/notices" className="hover:underline">
+              {t('notices')}
             </Link>
-          ))}
-        {!isClient && showAuthControls && (
-          <div className="w-20 h-7 rounded-md border border-accent/40 bg-accent/5 animate-pulse" />
-        )}
-
-        {/* Mobile Menu Button */}
-        {showNav && (
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="md:hidden text-white"
-            aria-label="Open menu"
-          >
-            <Menu size={24} />
-          </button>
-        )}
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Menu Panel */}
-      {isMobileMenuOpen && showNav && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg md:hidden">
-          <div className="flex justify-between items-center p-4 border-b border-slate-700">
+      {/* Main Header */}
+      <div className="border-b border-gray-700">
+        <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 py-4">
+          <div className="flex items-center gap-8">
             <Logo />
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="text-white"
-              aria-label="Close menu"
-            >
-              <X size={24} />
-            </button>
-          </div>
-          <nav className="flex flex-col items-center justify-center gap-8 mt-16">
-            {NAV_ITEMS.map(({ id, label }) => (
-              <Link
-                key={id}
-                href={`#${id}`}
-                onClick={() => handleNavClick(id)}
-                className={`text-2xl transition-colors ${
-                  activeSection === id ? 'text-accent' : 'text-slate-200'
-                }`}
-              >
-                {label}
+            <nav className="hidden md:flex gap-6">
+              <Link href="/services" className="hover:text-accent">
+                {t('navServices')}
               </Link>
-            ))}
-            {/* Mobile Auth Button */}
-            {!isAuthenticated && showAuthControls && (
-               <Link
-                  href="/login"
-                  className="sm:hidden rounded-md border border-accent/40 px-6 py-2 text-lg text-accent transition hover:bg-accent/10"
-                >
-                  {t('login')}
-                </Link>
+              <Link href="/pricing" className="hover:text-accent">
+                {t('navPricing')}
+              </Link>
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isClient &&
+              (isAuthenticated ? (
+                <UserDropdown />
+              ) : (
+                <>
+                  <Link href="/login" className="hover:text-accent text-sm">
+                    {t('login')}
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-black transition-transform hover:scale-105"
+                  >
+                    {t('signUp')}
+                  </Link>
+                </>
+              ))}
+            {!isClient && (
+              <div className="w-32 h-8 rounded-md bg-gray-700 animate-pulse" />
             )}
-          </nav>
+          </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }

@@ -1,5 +1,6 @@
 {
   "login": "Login",
+  "signUp": "Sign Up",
   "welcome": "A buttery-smooth AI experience, LikeButter",
   "startStudio": "Start Butter Studio",
   "featuresTitle": "Where all your emotions become a masterpiece",
@@ -80,6 +81,9 @@
   "navDemo": "Demo",
   "navPricing": "Pricing",
   "navContact": "Contact",
+  "navServices": "Services",
+  "customerCenter": "Customer Center",
+  "notices": "Notices",
   "footerRights": "All rights reserved.",
   "footerNavigate": "Navigate",
   "footerStudioAccess": "Studio Access",
@@ -341,5 +345,17 @@
     "jungkook": "Jungkook (BTS)",
     "iu": "IU",
     "newjeans": "NewJeans"
-  }
+  },
+  "heroSubtitle": "A buttery-smooth AI experience, LikeButter",
+  "getStarted": "Get Started",
+  "fandomParadigm": "A New Paradigm for Fandom",
+  "butterSeriesTitle": "Butter Series | Create Your Own Content",
+  "butterGenDesc1": "Idol-specific generative AI",
+  "butterGenDesc2": "Utilizes high-performance latest Diffusion models",
+  "butterCoverDesc1": "Idol-specific generative AI",
+  "butterCoverDesc2": "Utilizes high-performance latest Diffusion models",
+  "butterTalksDesc1": "Idol-specific generative AI",
+  "butterTalksDesc2": "Utilizes high-performance latest Diffusion models",
+  "butterBrushDesc1": "Idol-specific generative AI",
+  "butterBrushDesc2": "Utilizes high-performance latest Diffusion models"
 }

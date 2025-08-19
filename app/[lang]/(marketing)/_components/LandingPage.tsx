@@ -1,421 +1,215 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import Footer from '@/components/Footer';
-import Typewriter from '@/components/Typewriter';
-import LazyYoutube from '@/components/LazyYoutube';
-import {
-  Bot,
-  Clapperboard,
-  Music,
-  Palette,
-  Check,
-  Sparkles,
-  Mouse,
-} from 'lucide-react';
-import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import Logo from '@/components/Logo';
+import { usePathname } from 'next/navigation';
 
-type Props = {
-  lang: string;
-};
+// Simplified and refactored for robust snap scrolling.
+export default function LandingPage() {
+  const { t, i18n } = useTranslation();
+  const [currentCard, setCurrentCard] = useState(0);
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1];
 
-export default function LandingPage({ lang }: Props) {
-  const { t } = useTranslation();
+  const companyContactEmail = 'info@rondcorp.com';
+  const businessInquiryEmail = 'biz@likebutter.ai';
 
-  const translations = {
-    welcomeMessage: t('welcome'),
-    startStudio: t('startStudio'),
-    featuresTitle: t('featuresTitle'),
-    featuresSubtitle: t('featuresSubtitle'),
-    feature1Title: t('feature1Title'),
-    feature1Desc: t('feature1Desc'),
-    feature2Title: t('feature2Title'),
-    feature2Desc: t('feature2Desc'),
-    feature3Title: t('feature3Title'),
-    feature3Desc: t('feature3Desc'),
-    feature4Title: t('feature4Title'),
-    feature4Desc: t('feature4Desc'),
-    demoTitle: t('demoTitle'),
-    demoSubtitle: t('demoSubtitle'),
-    demoComingSoon: t('demoComingSoon'),
-    pricingSectionTitle: t('pricingSectionTitle'),
-    pricingSectionSubtitle: t('pricingSectionSubtitle'),
-    viewPricing: t('viewPricing'),
-    contactTitle: t('contactTitle'),
-    contactEmail: t('contactEmail'),
-    contactMessage: t('contactMessage'),
-    contactSend: t('contactSend'),
-    landingPlanFreeDesc: t('landingPlanFreeDesc'),
-    landingPlanCreatorDesc: t('landingPlanCreatorDesc'),
-    landingTitle: t('landingTitle'),
-    landingScroll: t('landingScroll'),
-    landingPlanFreeName: t('landingPlanFreeName'),
-    landingPlanCreatorName: t('landingPlanCreatorName'),
-    landingFeatureCreditsFree: t('landingFeatureCreditsFree'),
-    landingFeatureSpeedFree: t('landingFeatureSpeedFree'),
-    landingFeatureWatermarkFree: t('landingFeatureWatermarkFree'),
-    landingFeatureCreditsCreator: t('landingFeatureCreditsCreator'),
-    landingFeatureSpeedCreator: t('landingFeatureSpeedCreator'),
-    landingFeatureWatermarkCreator: t('landingFeatureWatermarkCreator'),
-  };
-
-  const descSpeed = 30;
-  const titleDur = (translations.landingTitle || '').length * 50 + 400;
-
-  const FEATURES = [
-    {
-      icon: Bot,
-      title: translations.feature1Title,
-      desc: translations.feature1Desc,
-    },
-    {
-      icon: Music,
-      title: translations.feature2Title,
-      desc: translations.feature2Desc,
-    },
-    {
-      icon: Palette,
-      title: translations.feature3Title,
-      desc: translations.feature3Desc,
-    },
-    {
-      icon: Clapperboard,
-      title: translations.feature4Title,
-      desc: translations.feature4Desc,
-    },
+  const cards = [
+    { title: 'Card News 1', gradient: 'from-purple-600 to-blue-500' },
+    { title: 'Card News 2', gradient: 'from-pink-500 to-orange-400' },
+    { title: 'Card News 3', gradient: 'from-green-400 to-teal-500' },
+    { title: 'Card News 4', gradient: 'from-yellow-400 to-red-500' },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+  const nextCard = () => setCurrentCard((prev) => (prev === cards.length - 1 ? 0 : prev + 1));
+  const prevCard = () => setCurrentCard((prev) => (prev === 0 ? cards.length - 1 : prev - 1));
+
+  const BUTTER_SERIES = [
+    { name: 'ButterGen', description: [t('butterGenDesc1'), t('butterGenDesc2')], link: `/${lang}/studio/butter-gen` },
+    { name: 'ButterCover', description: [t('butterCoverDesc1'), t('butterCoverDesc2')], link: `/${lang}/studio/butter-cover` },
+    { name: 'ButterTalks', description: [t('butterTalksDesc1'), t('butterTalksDesc2')], link: `/${lang}/studio/butter-talks` },
+    { name: 'ButterBrush', description: [t('butterBrushDesc1'), t('butterBrushDesc2')], link: `/${lang}/studio/butter-brush` },
+  ];
+
+  const handleLangChange = (newLang: string) => {
+    window.location.href = `/${newLang}`;
   };
 
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
+  // Reusable Page Section Component with robust padding and alignment
+  const PageSection = ({
+    children,
+    className = '',
+    verticalAlign = 'center',
+  }: {
+    children: React.ReactNode;
+    className?: string;
+    verticalAlign?: 'center' | 'top';
+  }) => {
+    const alignmentClasses = {
+      center: 'justify-center',
+      top: 'justify-start',
+    };
+    const paddingClasses = {
+      center: 'pt-24', // Clears header, content is centered in remaining space
+      top: 'pt-32', // Clears header and adds 2rem (8*4px) of space for titles
+    };
+
+    return (
+      <section className={`h-screen snap-start ${className}`}>
+        <div
+          className={`container mx-auto px-4 sm:px-6 h-full flex flex-col ${alignmentClasses[verticalAlign]} items-center ${paddingClasses[verticalAlign]}`}
+          style={{ boxSizing: 'border-box' }}
+        >
+          {children}
+        </div>
+      </section>
+    );
   };
 
   return (
-    <main className="bg-black">
-      <div className="animated-gradient" />
-      <section
-        id="about"
-        className="relative flex min-h-screen flex-col justify-center overflow-hidden py-16 md:py-0"
-      >
-        <div className="grid h-full items-center gap-12 px-4 md:grid-cols-2 md:px-12 lg:px-24">
-          <div className="z-10 text-center md:text-left">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: 'easeInOut' }}
-              className="mb-4 whitespace-pre-line text-4xl font-bold text-accent md:text-5xl lg:text-6xl"
-            >
-              <Typewriter text={translations.landingTitle} speed={50} />
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: 'easeInOut' }}
-              className="mx-auto max-w-sm whitespace-pre-line text-base text-slate-300 md:mx-0 md:text-lg"
-            >
-              <Typewriter
-                text={translations.welcomeMessage}
-                speed={descSpeed}
-                startDelay={titleDur}
-                keepCursor
-              />
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4, ease: 'easeInOut' }}
-            >
-              <Link
-                href={`/${lang}/studio/history`}
-                className="mt-8 inline-block rounded-md bg-accent px-6 py-3 text-sm font-semibold text-black transition-transform duration-300 ease-in-out hover:scale-105 hover:brightness-90"
-              >
-                {translations.startStudio}
-              </Link>
-            </motion.div>
+    <div
+      className="bg-[#001123] text-white h-screen snap-y snap-mandatory overflow-y-scroll"
+      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+    >
+      {/* HEADER */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-24">
+        <div className="bg-[#FFD93B] text-black">
+          <div className="container mx-auto flex justify-end items-center px-4 sm:px-6 h-8 text-sm">
+            <div className="flex items-center gap-4">
+              <select onChange={(e) => handleLangChange(e.target.value)} value={i18n.language} className="bg-transparent cursor-pointer">
+                <option value="ko">한국어</option>
+                <option value="en">English</option>
+              </select>
+              <Link href="#" className="hover:underline">{t('customerCenter')}</Link>
+              <Link href="#" className="hover:underline">{t('notices')}</Link>
+            </div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className="relative z-0 flex items-center justify-center"
-          >
-            <LazyYoutube
-              videoId="mPVDGOVjRQ0"
-              className="w-full rounded-lg shadow-2xl shadow-accent/10"
-            />
-          </motion.div>
         </div>
-
-        <div className="wave-container">
-          <svg
-            className="wave-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 24 150 28"
-            preserveAspectRatio="none"
-          >
-            <defs>
-              <path
-                id="wave"
-                d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
-              />
-            </defs>
-            <g className="animate-wave-slow opacity-20 blur-sm">
-              <use xlinkHref="#wave" fill="var(--accent)" />
-            </g>
-            <g className="animate-wave-mid opacity-50 blur-sm">
-              <use xlinkHref="#wave" fill="var(--accent)" />
-            </g>
-            <g className="animate-wave-fast opacity-70">
-              <use xlinkHref="#wave" fill="var(--accent)" />
-            </g>
-          </svg>
+        <div className="bg-[#001123]/80 backdrop-blur-sm border-b border-gray-700/50 h-16">
+          <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 h-full">
+            <div className="flex items-center gap-8">
+              <Logo className="text-2xl" />
+              <nav className="hidden md:flex gap-6">
+                <Link href="#" className="hover:text-accent">{t('navServices')}</Link>
+                <Link href={`/${lang}/pricing`} className="hover:text-accent">{t('navPricing')}</Link>
+              </nav>
+            </div>
+            <div className="flex items-center gap-4">
+              <Link href={`/${lang}/login`} className="hover:text-accent text-sm">{t('login')}</Link>
+              <Link href={`/${lang}/signup`} className="rounded-full bg-[#FFD93B] px-5 py-2 text-sm font-bold text-black transition-transform hover:scale-105">
+                {t('signUp')}
+              </Link>
+            </div>
+          </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex-col items-center gap-1 text-accent animate-bounce hidden md:flex">
-          <span className="text-xs">{translations.landingScroll}</span>
-          <Mouse size={16} />
-        </div>
-      </section>
+      </header>
 
-      <section
-        id="features"
-        className="relative flex min-h-screen items-center justify-center bg-neutral-900/80 backdrop-blur-lg py-16 md:py-24"
-      >
-        <div className="container mx-auto max-w-5xl px-4 text-center">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            className="mb-4 text-3xl font-semibold text-accent md:text-4xl"
-          >
-            {translations.featuresTitle}
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            transition={{ delay: 0.1 }}
-            className="mb-12 text-slate-300"
-          >
-            {translations.featuresSubtitle}
-          </motion.p>
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-            className="grid grid-cols-1 gap-8 sm:grid-cols-2"
-          >
-            {FEATURES.map((f, i) => (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                className="rounded-xl border border-white/10 bg-white/5 p-6 text-left transition-all duration-300 hover:border-accent/50 hover:bg-white/10 hover:shadow-2xl hover:shadow-accent/10 hover:-translate-y-2 backdrop-blur-md"
-              >
-                <div className="mb-4 flex items-center gap-3">
-                  <f.icon className="h-6 w-6 text-accent" />
-                  <h3 className="text-xl font-bold">{f.title}</h3>
-                </div>
-                <p className="text-slate-400">{f.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      <section
-        id="demo"
-        className="flex min-h-screen items-center justify-center bg-black py-16 md:py-24"
-      >
-        <div className="w-full max-w-4xl text-center px-4">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            className="mb-4 text-3xl font-semibold text-accent md:text-4xl"
-          >
-            {translations.demoTitle}
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            transition={{ delay: 0.1 }}
-            className="mb-12 text-slate-300"
-          >
-            {translations.demoSubtitle}
-          </motion.p>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            transition={{ delay: 0.2 }}
-            className="h-96 w-full rounded-lg border border-white/20 bg-white/5 p-6 backdrop-blur-sm flex items-center justify-center text-slate-400"
-          >
-            <p className="flex items-center gap-2">
-              <Sparkles size={20} className="text-accent" />
-              {translations.demoComingSoon}
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      <section
-        id="pricing"
-        className="relative flex min-h-screen items-center justify-center bg-neutral-900/80 text-white backdrop-blur-lg py-16 md:py-24"
-      >
-        <div className="text-center px-4">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            className="mb-4 text-3xl font-semibold text-accent md:text-4xl"
-          >
-            {translations.pricingSectionTitle}
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            transition={{ delay: 0.1 }}
-            className="mb-12 max-w-xl text-slate-300"
-          >
-            {translations.pricingSectionSubtitle}
-          </motion.p>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto"
-          >
-            <motion.div
-              variants={itemVariants}
-              className="p-6 rounded-lg border border-white/10 bg-white/5"
-            >
-              <h3 className="text-2xl font-bold text-white">
-                {translations.landingPlanFreeName}
-              </h3>
-              <p className="text-sm text-slate-400 mt-2">
-                {translations.landingPlanFreeDesc}
-              </p>
-              <ul className="text-left mt-6 space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" />{' '}
-                  {translations.landingFeatureCreditsFree}
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" />{' '}
-                  {translations.landingFeatureSpeedFree}
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" />{' '}
-                  {translations.landingFeatureWatermarkFree}
-                </li>
-              </ul>
-            </motion.div>
-            <motion.div
-              variants={itemVariants}
-              className="p-6 rounded-lg border-2 border-accent bg-accent/5"
-            >
-              <h3 className="text-2xl font-bold text-accent">
-                {translations.landingPlanCreatorName}
-              </h3>
-              <p className="text-sm text-slate-400 mt-2">
-                {translations.landingPlanCreatorDesc}
-              </p>
-              <ul className="text-left mt-6 space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" />{' '}
-                  {translations.landingFeatureCreditsCreator}
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" />{' '}
-                  {translations.landingFeatureSpeedCreator}
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check size={16} className="text-accent" />{' '}
-                  {translations.landingFeatureWatermarkCreator}
-                </li>
-              </ul>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            transition={{ delay: 0.3 }}
-            className="mt-12"
-          >
-            <Link
-              href={`/${lang}/pricing`}
-              className="rounded-md bg-accent px-8 py-3 text-base font-semibold text-black transition-transform duration-300 ease-in-out hover:scale-105 hover:brightness-90"
-            >
-              {translations.viewPricing}
+      {/* Main content area */}
+      <main>
+        {/* Page 1: Hero Section */}
+        <PageSection>
+          <div className="text-center">
+            <p className="text-4xl md:text-6xl font-bold">{t('heroSubtitle')}</p>
+            <Link href={`/${lang}/signup`} className="mt-8 rounded-lg bg-white px-10 py-4 text-xl font-semibold text-black transition-transform hover:scale-105 inline-block">
+              {t('getStarted')}
             </Link>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </PageSection>
 
-      <section
-        id="contact"
-        className="relative flex min-h-screen flex-col justify-center bg-black"
-      >
-        <div className="flex-grow flex items-center justify-center py-16 md:py-24">
-          <motion.form
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={itemVariants}
-            className="w-full max-w-md space-y-4 px-4"
-          >
-            <h2 className="text-3xl font-semibold text-accent">
-              {translations.contactTitle}
-            </h2>
-            <input
-              placeholder={translations.contactEmail}
-              className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-            <textarea
-              placeholder={translations.contactMessage}
-              rows={4}
-              className="w-full rounded-md bg-white/10 p-3 text-sm text-white placeholder-slate-400 transition-shadow focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-            <button className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black transition-transform duration-300 ease-in-out hover:scale-105 hover:brightness-90">
-              {translations.contactSend}
-            </button>
-          </motion.form>
-        </div>
-        <Footer />
-      </section>
-    </main>
+        {/* Page 2: Gradient Cards Section */}
+        <PageSection>
+          <div>
+            <div className="relative w-full max-w-5xl">
+              <div className="overflow-hidden rounded-3xl">
+                <div className="flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentCard * 100}%)` }}>
+                  {cards.map((card, index) => (
+                    <div key={index} className={`flex-shrink-0 w-full h-[65vh] bg-gradient-to-br ${card.gradient} flex justify-center items-center`}>
+                      <span className="text-white text-4xl font-bold">{card.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="mt-8 flex items-center gap-6 justify-center">
+              <button onClick={prevCard} className="bg-white/20 text-white rounded-full p-3 hover:bg-white/40 transition-colors"><ChevronLeft size={24} /></button>
+              <div className="flex items-center gap-3">
+                {cards.map((_, index) => (
+                  <button key={index} onClick={() => setCurrentCard(index)} className={`h-2 rounded-full transition-all duration-300 ${currentCard === index ? 'w-6 bg-white' : 'w-2 bg-white/50'}`} />
+                ))}
+              </div>
+              <button onClick={nextCard} className="bg-white/20 text-white rounded-full p-3 hover:bg-white/40 transition-colors"><ChevronRight size={24} /></button>
+            </div>
+          </div>
+        </PageSection>
+
+        {/* Page 3: Fandom & Video Section */}
+        <PageSection verticalAlign="top">
+          <div className="w-full">
+            <h2 className="text-4xl md:text-5xl font-bold text-left">{t('fandomParadigm')}</h2>
+            <div className="mt-12 aspect-video w-full">
+              <video className="h-full w-full object-cover rounded-2xl" autoPlay loop muted playsInline src="/hero-bg.mp4" />
+            </div>
+          </div>
+        </PageSection>
+
+        {/* Page 4: Butter Series Section */}
+        <PageSection verticalAlign="top">
+          <div className="w-full">
+            <h2 className="text-4xl md:text-5xl font-bold text-left mb-12">{t('butterSeriesTitle')}</h2>
+            <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {BUTTER_SERIES.map((service) => (
+                <Link href={service.link} key={service.name}>
+                  <div className="bg-slate-800/50 rounded-2xl p-6 h-full flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:bg-slate-700/60 cursor-pointer">
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">{service.name}</h3>
+                      <ul className="mt-4 space-y-2 text-gray-300 list-disc list-inside">
+                        {service.description.map((desc, i) => <li key={i}>{desc}</li>)}
+                      </ul>
+                    </div>
+                    <div className="flex justify-end mt-4"><ArrowRight size={24} /></div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </PageSection>
+
+        {/* Page 5: Footer Section */}
+        <section className="h-screen snap-start relative">
+          <div className="w-full h-full flex flex-col justify-end pt-24" style={{ boxSizing: 'border-box' }}>
+            <div className="w-full h-[calc(100%-6rem)] bg-[#0A192F] rounded-t-3xl flex flex-col justify-center items-center">
+              <div className="container mx-auto px-4 sm:px-6">
+                <div className="w-48 mx-auto mb-12"><Logo /></div>
+                <div className="grid grid-cols-1 gap-8 text-center md:grid-cols-4 md:text-left text-sm text-slate-400">
+                  <div className="space-y-3 md:col-span-2">
+                    <h3 className="font-semibold text-base text-accent">LIKEBUTTER</h3>
+                    <p className="text-slate-300">© {new Date().getFullYear()} {t('companyName')}. {t('footerRights')}</p>
+                    <p>{t('companyAddress')}</p>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-base text-white">{t('footerNavigate')}</h3>
+                    <nav className="flex flex-col space-y-2 items-center md:items-start">
+                      <Link href={`/${lang}/pricing`} className="w-fit transition-colors hover:text-accent">{t('navPricing')}</Link>
+                      <Link href={`/${lang}/studio`} className="w-fit transition-colors hover:text-accent">{t('footerStudioAccess')}</Link>
+                    </nav>
+                  </div>
+                  <div className="space-y-3">
+                    <h3 className="font-semibold text-base text-white">{t('footerContactLegal')}</h3>
+                    <nav className="flex flex-col space-y-2 items-center md:items-start">
+                      <a href={`mailto:${businessInquiryEmail}`} className="w-fit transition-colors hover:text-accent">{t('footerBusinessInquiries')}</a>
+                      <a href={`mailto:${companyContactEmail}`} className="w-fit transition-colors hover:text-accent">{t('footerGeneralSupport')}</a>
+                      <Link href={`/${lang}/privacy`} className="w-fit transition-colors hover:text-accent">{t('footerPrivacyPolicy')}</Link>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
-

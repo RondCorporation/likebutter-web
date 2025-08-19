@@ -90,11 +90,11 @@ export default function LandingPage() {
         </div>
         <div className="bg-[#001123]/80 backdrop-blur-sm border-b border-gray-700/50 h-16">
           <div className="container mx-auto flex justify-between items-center px-4 sm:px-6 h-full">
-            <div className="flex items-center gap-8">
-              <Logo className="text-2xl" />
+            <div className="flex items-center gap-10">
+              <Logo className="text-3xl" />
               <nav className="hidden md:flex gap-6">
-                <Link href="#" className="hover:text-accent">{t('navServices')}</Link>
-                <Link href={`/${lang}/pricing`} className="hover:text-accent">{t('navPricing')}</Link>
+                <Link href="#" className="text-sm hover:text-accent">{t('navServices')}</Link>
+                <Link href={`/${lang}/pricing`} className="text-sm hover:text-accent">{t('navPricing')}</Link>
               </nav>
             </div>
             <div className="flex items-center gap-4">
@@ -110,8 +110,8 @@ export default function LandingPage() {
       {/* Main content area */}
       <main>
         {/* Page 1: Hero Section */}
-        <PageSection>
-          <div className="text-center">
+        <PageSection className="bg-gradient-radial from-gray-900 to-[#001123] animate-subtle-pulse">
+          <div className="text-center relative z-10">
             <p className="text-4xl md:text-6xl font-bold">{t('heroSubtitle')}</p>
             <Link href={`/${lang}/signup`} className="mt-8 rounded-lg bg-white px-10 py-4 text-xl font-semibold text-black transition-transform hover:scale-105 inline-block">
               {t('getStarted')}

@@ -129,3 +129,12 @@ html {
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in-out forwards;
 }
+
+/* For hiding scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

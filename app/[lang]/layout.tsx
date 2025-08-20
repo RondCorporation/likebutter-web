@@ -40,7 +40,7 @@ export default async function RootLayout({ children, params }: Props) {
   return (
     <html lang={lang} dir={dir(lang)}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-black text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-black text-white overscroll-contain`}
       >
         <TranslationsProvider
           namespaces={['common']}
@@ -57,9 +57,27 @@ export default async function RootLayout({ children, params }: Props) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const title = 'likebutter';
+  const description = 'AI-powered video creation';
+  const ogImage = `${baseUrl}/og-image.png`;
 
   return {
     metadataBase: new URL(baseUrl),
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `/${lang}`,
+      images: [{ url: ogImage }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
     alternates: {
       canonical: `/${lang}`,
       languages: {
@@ -67,6 +85,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         'ko-KR': `${baseUrl}/ko`,
         'x-default': `${baseUrl}/ko`,
       },
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    other: {
+      'msapplication-TileColor': '#000000',
     },
   };
 }

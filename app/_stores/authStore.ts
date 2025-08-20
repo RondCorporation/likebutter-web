@@ -1,25 +1,7 @@
 import { create } from 'zustand';
 import { getMe } from '@/app/_lib/apis/user.api';
 import { logout as apiLogout } from '@/app/_lib/apis/auth.api';
-import { ApiResponse } from '@/app/_types/api';
-
-export interface Subscription {
-  id: number;
-  status: 'ACTIVE' | 'CANCELED' | 'INACTIVE';
-  planName: string;
-}
-
-export interface User {
-  accountId: number;
-  email: string;
-  name: string;
-  gender: string;
-  countryCode: string;
-  countryName: string;
-  phoneNumber: string | null;
-  roles: string;
-  subscription?: Subscription | null;
-}
+import { ApiResponse, User, Subscription } from '@/app/_types/api';
 
 export interface LoginResponse {
   accessToken: { value: string };

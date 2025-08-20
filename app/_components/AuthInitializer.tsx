@@ -1,6 +1,7 @@
 'use client';
 
-import { useAuthStore, User } from '@/stores/authStore';
+import { useAuthStore } from '@/app/_stores/authStore';
+import { User } from '@/app/_types/api';
 import { LoaderCircle } from 'lucide-react';
 import { ReactNode, useEffect, useRef } from 'react';
 

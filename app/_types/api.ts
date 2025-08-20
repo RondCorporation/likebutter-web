@@ -34,3 +34,21 @@ export interface PaginatedResponse<T> {
   numberOfElements: number;
   empty: boolean;
 }
+
+export interface Subscription {
+  id: number;
+  status: 'ACTIVE' | 'CANCELED' | 'INACTIVE';
+  planName: string;
+}
+
+export interface User {
+  accountId: number;
+  email: string;
+  name: string;
+  gender: string;
+  countryCode: string;
+  countryName: string;
+  phoneNumber: string | null;
+  roles: string;
+  subscription?: Subscription | null;
+}

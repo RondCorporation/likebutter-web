@@ -1,6 +1,6 @@
 import { apiFetch, getAccessToken } from '../apiClient';
 import { ApiResponse } from '@/app/_types/api';
-import { User } from '@/stores/authStore';
+import { User } from '@/app/_types/api';
 
 export const getMe = (): Promise<ApiResponse<User>> => {
   const accessToken = getAccessToken();

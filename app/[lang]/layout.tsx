@@ -6,7 +6,7 @@ import { dir } from 'i18next';
 import { Metadata } from 'next';
 import { LayoutClient } from './_components/LayoutClient';
 import { apiServer } from '@/app/_lib/apiServer';
-import { User } from '@/app/_stores/authStore';
+import { User } from '@/app/_types/api';
 import initTranslations from '../_lib/i18n-server';
 import TranslationsProvider from '../_components/TranslationsProvider';
 

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User } from '@/stores/authStore';
-import { Subscription, PlanKey } from '@/types/subscription';
-import { Task } from '@/types/task';
+import { User } from '@/app/_types/api';
+import { Subscription, PlanKey } from '@/app/_types/subscription';
+import { Task } from '@/app/_types/task';
 import { CreditCard, Sparkles } from 'lucide-react';
 import InProgressTasks from '@/components/studio/history/InProgressTasks';
 import CompletedTasks from '@/components/studio/history/CompletedTasks';

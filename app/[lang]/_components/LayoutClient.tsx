@@ -1,15 +1,12 @@
 'use client';
 
 import { ReactNode } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import SettingsModal from '@/components/SettingsModal';
+import SettingsModal from '@/app/_components/SettingsModal';
 import { Toaster } from 'react-hot-toast';
-import '@/lib/i18n-client';
-import { usePathname } from 'next/navigation';
-import AuthInitializer from '@/components/AuthInitializer';
-import ServerErrorDisplay from '@/components/shared/ServerErrorDisplay';
-import { User } from '@/stores/authStore';
+import '@/app/_lib/i18n-client';
+import AuthInitializer from '@/app/_components/AuthInitializer';
+import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
+import { User } from '@/app/_types/api';
 
 export function LayoutClient({
   children,
@@ -18,12 +15,6 @@ export function LayoutClient({
   children: ReactNode;
   preloadedUser: User | null;
 }) {
-  const pathname = usePathname();
-  const lang = pathname.split('/')[1];
-  const isMarketingPage = pathname === `/${lang}`;
-  const isStudioPage = pathname.includes('/studio');
-  const isAdminPage = pathname.includes('/admin');
-
   return (
     <AuthInitializer preloadedUser={preloadedUser}>
       <>
@@ -39,9 +30,7 @@ export function LayoutClient({
           }}
         />
         <div className="flex min-h-screen flex-col">
-          {!isStudioPage && !isAdminPage && !isMarketingPage && <Header />}
           <main className="flex-grow">{children}</main>
-          {!isStudioPage && !isAdminPage && !isMarketingPage && <Footer />}
         </div>
       </>
     </AuthInitializer>

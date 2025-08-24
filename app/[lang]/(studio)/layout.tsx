@@ -1,6 +1,14 @@
-import AuthGuard from '@/app/_components/AuthGuard';
 import { ReactNode } from 'react';
+import StudioLayoutClient from './_components/StudioLayoutClient';
 
-export default function StudioLayout({ children }: { children: ReactNode }) {
-  return <AuthGuard>{children}</AuthGuard>;
+interface StudioLayoutProps {
+  children: ReactNode;
+}
+
+export default function StudioLayout({ children }: StudioLayoutProps) {
+  return (
+    <StudioLayoutClient>
+      {children}
+    </StudioLayoutClient>
+  );
 }

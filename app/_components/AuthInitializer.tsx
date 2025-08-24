@@ -5,19 +5,25 @@ import { User } from '@/app/_types/api';
 import { LoaderCircle } from 'lucide-react';
 import { ReactNode, useEffect, useRef } from 'react';
 
+interface AuthInitializerProps {
+  children: ReactNode;
+  preloadedUser: User | null;
+  skipInitialization?: boolean;
+  showLoader?: boolean;
+}
+
 export default function AuthInitializer({
   children,
   preloadedUser,
-}: {
-  children: ReactNode;
-  preloadedUser: User | null;
-}) {
+  skipInitialization = false,
+  showLoader = true,
+}: AuthInitializerProps) {
   const isInitialized = useAuthStore((s) => s.isInitialized);
   const { initialize, logout, hydrate } = useAuthStore.getState();
   const effectRan = useRef(false);
 
   useEffect(() => {
-    if (effectRan.current) return;
+    if (effectRan.current || skipInitialization) return;
     effectRan.current = true;
 
     if (preloadedUser) {
@@ -37,9 +43,14 @@ export default function AuthInitializer({
       window.removeEventListener('auth-failure', handleAuthFailure);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [skipInitialization]);
 
-  if (!isInitialized) {
+  // Skip auth initialization for marketing pages
+  if (skipInitialization) {
+    return <>{children}</>;
+  }
+
+  if (!isInitialized && showLoader) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-black">
         <LoaderCircle size={40} className="animate-spin text-accent" />

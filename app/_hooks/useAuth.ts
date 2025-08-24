@@ -15,20 +15,26 @@ export function useAuth(required = true) {
       return;
     }
 
-    const isAuthPage = pathname === '/login' || pathname === '/signup';
+    // Extract language from pathname
+    const segments = pathname.split('/');
+    const lang = segments[1];
+    const routePath = segments.slice(2).join('/'); // Remove lang and get route path
+    
+    const isAuthPage = routePath === 'login' || 
+                      routePath === 'signup' ||
+                      routePath === 'login/success';
 
     if (required && !user) {
       console.log('AuthGuard: User not found. Redirecting to login.');
-      const loginUrl = new URL('/login', window.location.origin);
-      loginUrl.searchParams.set('returnTo', pathname);
-      router.replace(loginUrl.toString());
+      const returnToParam = encodeURIComponent(pathname);
+      router.replace(`/${lang}/login?returnTo=${returnToParam}`);
       return;
     }
 
     if (user && isAuthPage) {
       console.log('AuthGuard: User already logged in. Redirecting...');
       const returnTo = searchParams.get('returnTo');
-      router.replace(returnTo || '/studio');
+      router.replace(returnTo || `/${lang}/studio`);
     }
   }, [
     user,

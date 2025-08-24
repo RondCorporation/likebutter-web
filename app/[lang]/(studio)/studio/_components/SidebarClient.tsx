@@ -88,13 +88,14 @@ export default function StudioSidebar({
   return (
     <aside className="flex h-full w-64 flex-col gap-1 overflow-y-auto border-r border-white/10 p-4 pt-6">
       <div className="mb-4 flex items-center justify-between px-2 py-1">
-        <Logo className="text-2xl" href={`/${lang}`} />
+        <Link href={`/${lang}`}>
+          <Logo className="text-2xl" />
+        </Link>
         <button
           onClick={onClose}
           className="md:hidden text-slate-300 hover:text-white"
-          aria-label="Close sidebar"
         >
-          <X size={24} />
+          <X size={20} />
         </button>
       </div>
 

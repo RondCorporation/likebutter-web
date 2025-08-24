@@ -57,7 +57,9 @@ export default function MarketingLayout({
         >
           {children}
           <MarketingFooter
-            ref={(el) => (sectionRefs.current[4] = el)}
+            ref={(el) => {
+              sectionRefs.current[4] = el;
+            }}
             data-section-index={4}
             isSnapSection={true}
           />

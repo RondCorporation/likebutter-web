@@ -1,10 +1,12 @@
 'use client';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
-import { LoginResponse } from '@/stores/authStore';
 import { login as apiLogin } from '@/lib/apis/auth.api';
+import Logo from '@/components/Logo';
+import { Sparkles } from 'lucide-react';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -70,77 +72,104 @@ export default function LoginClient({
   }
 
   return (
-    <main className="flex h-screen items-center justify-center bg-black px-4 pt-24 md:pt-28">
-      <form onSubmit={submit} className="w-full max-w-sm space-y-4">
-        <h2 className="text-2xl font-semibold text-accent">
-          {translations.loginTitle}
-        </h2>
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder={translations.loginEmailPlaceholder}
-          type="email"
-          name="email"
-          autoComplete="email"
-          className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
-          required
-          disabled={isLoading}
-        />
-        <input
-          type="password"
-          name="password"
-          autoComplete="current-password"
-          value={pw}
-          onChange={(e) => setPw(e.target.value)}
-          placeholder={translations.loginPasswordPlaceholder}
-          className="w-full rounded-md bg-white/10 p-3 text-sm text-white"
-          required
-          disabled={isLoading}
-        />
-        {err && <p className="text-sm text-red-400">{err}</p>}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full rounded-md bg-accent py-2 text-sm font-medium text-black transition hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {isLoading
-            ? translations.loginButtonLoggingIn
-            : translations.loginButton}
-        </button>
-        <p className="text-sm text-center text-slate-400">
-          {translations.loginSignupPrompt}{' '}
-          <span
-            onClick={() => !isLoading && router.push(`/${lang}/signup`)}
-            className={`cursor-pointer text-accent hover:underline ${
-              isLoading ? 'pointer-events-none' : ''
-            }`}
-          >
-            {translations.loginSignupLink}
-          </span>
-        </p>
-
-        <div className="mt-6 w-full max-w-sm">
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-white/20" />
+    <div className="min-h-screen bg-black text-white">
+      <header className="absolute top-0 left-0 p-8">
+        <Link href={`/${lang}`}>
+          <Logo />
+        </Link>
+      </header>
+      <main className="flex min-h-screen flex-col items-center justify-center px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+              {translations.loginTitle}
+            </h1>
+          </div>
+          <form onSubmit={submit} className="mt-10 space-y-6">
+            <div className="space-y-4">
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={translations.loginEmailPlaceholder}
+                type="email"
+                name="email"
+                autoComplete="email"
+                className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-4 text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0"
+                required
+                disabled={isLoading}
+              />
+              <input
+                type="password"
+                name="password"
+                autoComplete="current-password"
+                value={pw}
+                onChange={(e) => setPw(e.target.value)}
+                placeholder={translations.loginPasswordPlaceholder}
+                className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-4 text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0"
+                required
+                disabled={isLoading}
+              />
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-black px-2 text-slate-400">
-                {translations.loginOrContinueWith}
-              </span>
+
+            {err && <p className="text-sm text-red-400">{err}</p>}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-8 py-4 text-lg font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-transform duration-300 will-change-transform hover:-translate-y-1 hover:shadow-butter-yellow/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-butter-yellow disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isLoading ? (
+                translations.loginButtonLoggingIn
+              ) : (
+                <>
+                  <Sparkles size={20} />
+                  {translations.loginButton}
+                </>
+              )}
+            </button>
+
+            <p className="text-center text-sm text-slate-400">
+              {translations.loginSignupPrompt}{' '}
+              <Link
+                href={`/${lang}/signup`}
+                className={`font-medium text-butter-yellow hover:underline ${
+                  isLoading ? 'pointer-events-none' : ''
+                }`}
+              >
+                {translations.loginSignupLink}
+              </Link>
+            </p>
+          </form>
+
+          <div className="mt-8">
+            <div className="relative">
+              <div
+                className="absolute inset-0 flex items-center"
+                aria-hidden="true"
+              >
+                <div className="w-full border-t border-slate-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="bg-black px-2 text-slate-400">
+                  {translations.loginOrContinueWith}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              {lastUsedProvider && (
+                <p className="mb-3 text-center text-xs text-slate-400">
+                  {translations.loginRecentlyUsed}{' '}
+                  <strong className="font-semibold text-butter-yellow">
+                    {lastUsedProvider}
+                  </strong>
+                </p>
+              )}
+              <SocialButtons />
             </div>
           </div>
-          {lastUsedProvider && (
-            <p className="mb-3 text-center text-xs text-slate-400">
-              {translations.loginRecentlyUsed}{' '}
-              <strong className="font-semibold text-accent">
-                {lastUsedProvider}
-              </strong>
-            </p>
-          )}
-          <SocialButtons />
         </div>
-      </form>
-    </main>
+      </main>
+    </div>
   );
 }

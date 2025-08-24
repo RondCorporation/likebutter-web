@@ -360,5 +360,18 @@
   "butterTalksDesc1": "Idol-specific generative AI",
   "butterTalksDesc2": "Utilizes high-performance latest Diffusion models",
   "butterBrushDesc1": "Idol-specific generative AI",
-  "butterBrushDesc2": "Utilizes high-performance latest Diffusion models"
+  "butterBrushDesc2": "Utilizes high-performance latest Diffusion models",
+  "pricingBasicPlan": "Basic",
+  "pricingBasicDesc": "Perfect for getting started and exploring basic features.",
+  "pricingProPlan": "Pro",
+  "pricingProDesc": "For creators who need more power and advanced features.",
+  "pricingEnterprisePlan": "Enterprise",
+  "pricingEnterpriseDesc": "Tailored solutions for large teams and businesses.",
+  "pricingContactUs": "Contact Us",
+  "contactSales": "Contact Sales",
+  "pricingFeature1": "Access to all basic AI models",
+  "pricingFeature2": "Standard generation speed",
+  "pricingFeature3": "Community support",
+  "pricingFeature4": "Priority generation queue",
+  "pricingFeature5": "Dedicated account manager"
 }

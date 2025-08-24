@@ -1,58 +1,54 @@
-import { Geist, Geist_Mono } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import '../globals.css';
 import { ReactNode } from 'react';
 import { i18n } from '@/i18n.config.mjs';
 import { dir } from 'i18next';
 import { Metadata } from 'next';
 import { LayoutClient } from './_components/LayoutClient';
-import { apiServer } from '@/app/_lib/apiServer';
-import { User } from '@/app/_types/api';
 import initTranslations from '../_lib/i18n-server';
 import TranslationsProvider from '../_components/TranslationsProvider';
-
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+import { User } from '@/app/_types/api';
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
+}
+
+const i18nNamespaces = ['common'];
+
+export default async function RootLayout({
+  children,
+  params,
+}: Readonly<{
+  children: React.ReactNode;
+  params: { lang: string };
+}>) {
+  const { lang } = await params;
+  const { resources } = await initTranslations(lang, i18nNamespaces);
+
+  return (
+    <html
+      lang={lang}
+      dir={dir(lang)}
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
+      <body>
+        <TranslationsProvider
+          namespaces={i18nNamespaces}
+          locale={lang}
+          resources={resources}
+        >
+          <LayoutClient preloadedUser={null}>{children}</LayoutClient>
+        </TranslationsProvider>
+      </body>
+    </html>
+  );
 }
 
 type Props = {
   children: ReactNode;
   params: Promise<{ lang: string }>;
 };
-
-export default async function RootLayout({ children, params }: Props) {
-  const { lang } = await params;
-  const { resources } = await initTranslations(lang, ['common']);
-
-  let preloadedUser: User | null = null;
-  try {
-    const res = await apiServer.get<User>('/users/me');
-    preloadedUser = res.data ?? null;
-  } catch (error) {
-    preloadedUser = null;
-  }
-
-  return (
-    <html lang={lang} dir={dir(lang)}>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-black text-white overscroll-contain`}
-      >
-        <TranslationsProvider
-          namespaces={['common']}
-          locale={lang}
-          resources={resources}
-        >
-          <LayoutClient preloadedUser={preloadedUser}>{children}</LayoutClient>
-        </TranslationsProvider>
-      </body>
-    </html>
-  );
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;

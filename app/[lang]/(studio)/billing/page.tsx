@@ -15,7 +15,6 @@ export function generateStaticParams() {
   return nextI18NextConfig.i18n.locales.map((locale) => ({ lang: locale }));
 }
 
-
 const processApiPlans = (apiPlans: Plan[]) => {
   const processed: {
     [key: string]: {
@@ -41,7 +40,9 @@ export default async function PricingPage({ params }: Props) {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
 
-  const { data: apiPlans } = (await getPlansOnServer().catch(() => ({ data: [] }))) || {
+  const { data: apiPlans } = (await getPlansOnServer().catch(() => ({
+    data: [],
+  }))) || {
     data: [],
   };
   const processedPlans = processApiPlans(apiPlans || []);

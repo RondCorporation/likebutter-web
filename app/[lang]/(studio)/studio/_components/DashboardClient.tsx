@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User } from '@/app/_types/api';
-import { Subscription, PlanKey } from '@/app/_types/subscription';
 import { Task } from '@/app/_types/task';
+import { PlanKey } from '@/app/_types/subscription';
 import { CreditCard, Sparkles } from 'lucide-react';
 import InProgressTasks from '@/components/studio/history/InProgressTasks';
 import CompletedTasks from '@/components/studio/history/CompletedTasks';
 import { useRouter } from 'next/navigation';
-import { getMe } from '@/lib/apis/user.api';
-import { getSubscriptions } from '@/lib/apis/subscription.api.client';
 import { getTaskHistory } from '@/lib/apis/task.api';
+import { useUser } from '@/hooks/useUser';
+import { useSubscriptions } from '@/hooks/useSubscriptions';
 
 const planNames: Record<PlanKey, string> = {
   FREE: 'Free',
@@ -22,46 +21,27 @@ const planNames: Record<PlanKey, string> = {
   ENTERPRISE: 'Enterprise',
 };
 
-export default function DashboardClient() {
+export default memo(function DashboardClient() {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  // SWR 훅을 사용한 데이터 페칭
+  const { user, isLoading: userLoading, isError: userError } = useUser();
+  const { activeSubscription, isLoading: subscriptionLoading, isError: subscriptionError } = useSubscriptions();
+
   const [inProgressTasks, setInProgressTasks] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [tasksLoading, setTasksLoading] = useState(true);
+  const [tasksError, setTasksError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchTasksData = async () => {
       try {
-        setIsLoading(true);
-        const [
-          userResponse,
-          subscriptionsResponse,
-          inProgressTasksResponse,
-          completedTasksResponse,
-        ] = await Promise.all([
-          getMe(),
-          getSubscriptions(),
+        setTasksLoading(true);
+        const [inProgressTasksResponse, completedTasksResponse] = await Promise.all([
           getTaskHistory(0, { status: 'IN_PROGRESS', size: 3 }),
           getTaskHistory(0, { status: 'COMPLETED', size: 3 }),
         ]);
-
-        if (userResponse.data) {
-          setUser(userResponse.data);
-        }
-
-        if (
-          subscriptionsResponse.data &&
-          subscriptionsResponse.data.length > 0
-        ) {
-          const activeSub = subscriptionsResponse.data.find(
-            (s) => s.status === 'ACTIVE'
-          );
-          setSubscription(activeSub || subscriptionsResponse.data[0]);
-        }
 
         if (inProgressTasksResponse.data) {
           setInProgressTasks(inProgressTasksResponse.data.content);
@@ -71,32 +51,41 @@ export default function DashboardClient() {
           setCompletedTasks(completedTasksResponse.data.content);
         }
       } catch (err: any) {
-        setError(err.message || 'Failed to load dashboard data.');
+        setTasksError(err.message || 'Failed to load task data.');
         console.error(err);
       } finally {
-        setIsLoading(false);
+        setTasksLoading(false);
       }
     };
 
-    fetchDashboardData();
+    fetchTasksData();
   }, []);
 
-  const handleTaskClick = (task: Task) => {
+  const handleTaskClick = useCallback((task: Task) => {
     router.push(`/studio/history?taskId=${task.taskId}`);
-  };
+  }, [router]);
+
+  const creditUsage = useMemo(() => 0, []);
+  const creditLimit = useMemo(() => 100, []);
+  const creditPercentage = useMemo(() => (creditUsage / creditLimit) * 100, [creditUsage, creditLimit]);
+
+  const planName = useMemo(() => {
+    return activeSubscription ? planNames[activeSubscription.planKey] : 'Free';
+  }, [activeSubscription]);
+
+  const isLoading = userLoading || subscriptionLoading || tasksLoading;
+  const hasError = userError || subscriptionError || tasksError;
 
   if (isLoading) {
     return <div className="text-center p-8">{t('historyLoading')}</div>;
   }
 
-  if (error) {
-    return <div className="text-red-500 text-center p-8">{error}</div>;
+  if (hasError) {
+    return <div className="text-red-500 text-center p-8">
+      {tasksError || 'Failed to load dashboard data'}
+    </div>;
   }
 
-  // TODO: Get credit info from API when available in Subscription object
-  const creditUsage = 0;
-  const creditLimit = 100;
-  const creditPercentage = (creditUsage / creditLimit) * 100;
 
   return (
     <div className="space-y-12">
@@ -151,7 +140,7 @@ export default function DashboardClient() {
                 <div className="flex justify-between items-center mb-1">
                   <span>{t('dashboardPlan')}</span>
                   <span className="font-semibold text-accent">
-                    {subscription ? planNames[subscription.planKey] : 'Free'}
+                    {planName}
                   </span>
                 </div>
               </div>
@@ -205,4 +194,4 @@ export default function DashboardClient() {
       </div>
     </div>
   );
-}
+});

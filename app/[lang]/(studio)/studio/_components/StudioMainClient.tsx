@@ -1,12 +1,12 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, memo, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserDropdown from '@/components/UserDropdown';
 
-export default function StudioMainClient({
+export default memo(function StudioMainClient({
   children,
   lang,
 }: {
@@ -16,26 +16,29 @@ export default function StudioMainClient({
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  const PAGE_TITLES: { [key: string]: string } = {
-    [`/${lang}/studio`]: t('studioTitleHome'),
-    [`/${lang}/studio/history`]: t('studioTitleHistory'),
-    [`/${lang}/studio/butter-gen`]: t('studioTitleButterGen'),
-    [`/${lang}/studio/butter-test`]: t('studioTitleButterTest'),
-    [`/${lang}/studio/butter-cover`]: t('studioTitleButterCover'),
-    [`/${lang}/studio/butter-art`]: t('studioTitleButterBrush'),
-    [`/${lang}/studio/butter-cuts`]: t('studioTitleButterCuts'),
-    [`/${lang}/studio/butter-talks`]: t('studioTitleButterTalks'),
-  };
+  const currentPageTitle = useMemo(() => {
+    const PAGE_TITLES: { [key: string]: string } = {
+      [`/${lang}/studio`]: t('studioTitleHome'),
+      [`/${lang}/studio/history`]: t('studioTitleHistory'),
+      [`/${lang}/studio/butter-gen`]: t('studioTitleButterGen'),
+      [`/${lang}/studio/butter-test`]: t('studioTitleButterTest'),
+      [`/${lang}/studio/butter-cover`]: t('studioTitleButterCover'),
+      [`/${lang}/studio/butter-art`]: t('studioTitleButterBrush'),
+      [`/${lang}/studio/butter-cuts`]: t('studioTitleButterCuts'),
+      [`/${lang}/studio/butter-talks`]: t('studioTitleButterTalks'),
+    };
 
-  let currentPageTitle = PAGE_TITLES[pathname] || 'Studio';
-  if (pathname.startsWith(`/${lang}/studio/asset/`)) {
-    const assetName = pathname.split('/').pop();
-    currentPageTitle = t('studioVaultTitle', {
-      assetName: assetName
-        ? assetName.charAt(0).toUpperCase() + assetName.slice(1)
-        : 'View',
-    });
-  }
+    let title = PAGE_TITLES[pathname] || 'Studio';
+    if (pathname.startsWith(`/${lang}/studio/asset/`)) {
+      const assetName = pathname.split('/').pop();
+      title = t('studioVaultTitle', {
+        assetName: assetName
+          ? assetName.charAt(0).toUpperCase() + assetName.slice(1)
+          : 'View',
+      });
+    }
+    return title;
+  }, [pathname, lang, t]);
 
   return (
     <section className="flex flex-1 flex-col overflow-hidden">
@@ -61,4 +64,4 @@ export default function StudioMainClient({
       </main>
     </section>
   );
-}
+});

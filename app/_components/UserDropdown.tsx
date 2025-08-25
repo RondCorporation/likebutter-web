@@ -13,14 +13,14 @@ import {
   LayoutGrid,
   History,
 } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
-import { useUIStore } from '@/stores/uiStore';
 import { useLogout } from '@/hooks/useLogout';
+import { useAuthUser } from '@/hooks/useAuthStore';
+import { useUIActions } from '@/hooks/useUIStore';
 
 export default function UserDropdown() {
-  const { user } = useAuthStore();
+  const user = useAuthUser();
   const logout = useLogout();
-  const openSettings = useUIStore((s) => s.openSettings);
+  const { openSettings } = useUIActions();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -86,7 +86,7 @@ export default function UserDropdown() {
             <History size={16} /> {t('dropdownPaymentHistory')}
           </Link>
           <button
-            onClick={() => handleAction(openSettings)}
+            onClick={() => handleAction(() => openSettings())}
             className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <Settings size={16} /> {t('dropdownSettings')}

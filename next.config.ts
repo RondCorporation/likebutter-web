@@ -15,6 +15,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion', 
+      'react-hot-toast',
+      '@headlessui/react',
+    ],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
 };
 
 if (process.env.NODE_ENV === 'development') {

@@ -2,7 +2,12 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-type Slide = { title: string; gradient: string };
+type Slide = { 
+  title: string; 
+  subtitle?: string;
+  gradient: string; 
+  icon?: string;
+};
 
 export default function CardCarousel({ slides }: { slides: Slide[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -132,15 +137,40 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
             <div
               key={i}
               data-real-index={realIndex}
-              className={`snap-center flex-shrink-0 basis-[88%] sm:basis-[72%] lg:basis-[66%] xl:basis-[58%] h-[65vh] bg-gradient-to-br ${slide.gradient} rounded-3xl shadow-2xl grid place-items-center text-white transition-all duration-500 ease-out mx-2`}
+              className={`snap-center flex-shrink-0 basis-[88%] sm:basis-[72%] lg:basis-[66%] xl:basis-[58%] h-[65vh] bg-gradient-to-br ${slide.gradient} rounded-3xl shadow-2xl grid place-items-center text-white transition-all duration-500 ease-out mx-2 relative overflow-hidden`}
               style={{
-                opacity: isActive ? 1 : 0.5,
-                transform: `translateY(${isActive ? 0 : '1.5rem'})`,
+                opacity: isActive ? 1 : 0.7,
+                transform: `translateY(${isActive ? 0 : '1.5rem'}) rotateY(${isActive ? 0 : '5deg'}) scale(${isActive ? 1 : 0.95})`,
+                transformStyle: 'preserve-3d',
               }}
               role="group"
               aria-label={`${realIndex + 1} / ${slides.length}`}
             >
-              <span className="text-3xl md:text-4xl font-bold">{slide.title}</span>
+              {/* Glass morphism overlay */}
+              <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+              
+              {/* Animated background elements */}
+              <div className="absolute top-4 right-4 w-16 h-16 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+              <div className="absolute bottom-8 left-8 w-12 h-12 bg-white/10 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}}></div>
+              
+              <div className="text-center px-8 relative z-10">
+                {slide.icon && (
+                  <div className="text-6xl md:text-7xl mb-6 transform hover:scale-110 transition-transform duration-300 animate-bounce-subtle">
+                    {slide.icon}
+                  </div>
+                )}
+                <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-white bg-clip-text text-transparent drop-shadow-lg">
+                  {slide.title}
+                </h3>
+                {slide.subtitle && (
+                  <p className="text-lg md:text-xl text-white/95 leading-relaxed max-w-md mx-auto font-medium">
+                    {slide.subtitle}
+                  </p>
+                )}
+              </div>
+              
+              {/* Shimmer effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full animate-shimmer"></div>
             </div>
           );
         })}

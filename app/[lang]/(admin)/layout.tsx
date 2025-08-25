@@ -1,14 +1,14 @@
-import React from 'react';
-import { i18n } from '@/i18n.config.mjs';
+import { ReactNode } from 'react';
+import AdminLayoutClient from './_components/AdminLayoutClient';
 
-export async function generateStaticParams() {
-  return i18n.locales.map((locale) => ({ lang: locale }));
+interface AdminLayoutProps {
+  children: ReactNode;
 }
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <>{children}</>;
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  return (
+    <AdminLayoutClient>
+      {children}
+    </AdminLayoutClient>
+  );
 }

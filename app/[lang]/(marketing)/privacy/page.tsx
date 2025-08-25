@@ -60,7 +60,7 @@ export default async function PrivacyPage({ params }: Props) {
   const { t } = await initTranslations(lang, ['common']);
 
   return (
-    <div className="container mx-auto min-h-screen bg-black p-4 pt-24 text-white md:p-8 md:pt-28">
+    <div className="container mx-auto px-4 sm:px-6 py-32 text-white">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-accent md:text-4xl mb-4">
           {t('privacyPolicy')}

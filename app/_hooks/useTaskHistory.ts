@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer, useCallback } from 'react';
 import { Task } from '@/types/task';
-import { getTaskHistory, getTaskStatus } from '@/lib/apis/task.api';
+import { getTaskHistory, getTaskStatus, getBatchTaskStatus } from '@/lib/apis/task.api';
 
 interface HistoryState {
   tasks: Task[];
@@ -172,31 +172,31 @@ export function useTaskHistory() {
 
     if (tasksToCheck.length === 0) return;
 
-    const interval = setInterval(() => {
+    const interval = setInterval(async () => {
       if (state.isPolling) return;
       dispatch({ type: 'POLLING_START' });
 
-      const pollingPromises = tasksToCheck.map(async (task) => {
-        try {
-          const res = await getTaskStatus(task.taskId);
-          if (res.data && (res.data.status !== task.status || !task.details)) {
-            dispatch({
-              type: 'UPDATE_TASK_STATUS',
-              payload: res.data as Task,
-            });
-          }
-        } catch (error) {
-          console.error(
-            `Failed to poll status for task ${task.taskId}, will retry on next interval:`,
-            error
-          );
+      try {
+        const taskIds = tasksToCheck.map(task => task.taskId);
+        const response = await getBatchTaskStatus(taskIds);
+        
+        if (response.data) {
+          response.data.forEach(updatedTask => {
+            const currentTask = tasksToCheck.find(t => t.taskId === updatedTask.taskId);
+            if (currentTask && (updatedTask.status !== currentTask.status || !currentTask.details)) {
+              dispatch({
+                type: 'UPDATE_TASK_STATUS',
+                payload: updatedTask as Task,
+              });
+            }
+          });
         }
-      });
-
-      Promise.all(pollingPromises).finally(() => {
+      } catch (error) {
+        console.error('Failed to poll batch task status, will retry on next interval:', error);
+      } finally {
         dispatch({ type: 'POLLING_END' });
-      });
-    }, 5000);
+      }
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [state.tasks, state.isPolling]);

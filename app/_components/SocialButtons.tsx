@@ -53,6 +53,24 @@ const IconX = () => (
   </svg>
 );
 
+const SocialButton = ({
+  href,
+  onClick,
+  children,
+}: {
+  href: string;
+  onClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  children: React.ReactNode;
+}) => (
+  <a
+    href={href}
+    onClick={onClick}
+    className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-white/10 px-8 py-3 text-base font-semibold text-white transition-colors duration-300 hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+  >
+    {children}
+  </a>
+);
+
 export default function SocialButtons({
   variant = 'login',
 }: {
@@ -89,30 +107,24 @@ export default function SocialButtons({
 
   return (
     <div className="w-full space-y-3">
-      <a
+      <SocialButton
         href={OAUTH_GOOGLE}
         onClick={(e) => handleSocialClick(e, 'Google')}
-        className="btn-social gap-3 bg-white text-black transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:ring-accent"
       >
         <IconGoogle />
         Continue with Google
-      </a>
-      <a
+      </SocialButton>
+      <SocialButton
         href={OAUTH_FACEBOOK}
         onClick={(e) => handleSocialClick(e, 'Facebook')}
-        className="btn-social gap-3 border border-white/30 bg-black text-white transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:ring-accent"
       >
         <IconFacebook />
         Continue with Facebook
-      </a>
-      <a
-        href={OAUTH_X}
-        onClick={(e) => handleSocialClick(e, 'X')}
-        className="btn-social gap-3 border border-white/30 bg-black text-white transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-black focus-visible:ring-accent"
-      >
+      </SocialButton>
+      <SocialButton href={OAUTH_X} onClick={(e) => handleSocialClick(e, 'X')}>
         <IconX />
         Continue with X
-      </a>
+      </SocialButton>
 
       {variant === 'signup' && (
         <p className="pt-2 text-center text-xs text-slate-400">

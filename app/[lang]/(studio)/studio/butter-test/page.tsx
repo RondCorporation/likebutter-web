@@ -1,6 +1,11 @@
 import { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import initTranslations from '@/lib/i18n-server';
-import ButterTestClient from './_components/ButterTestClient';
+import StudioToolSkeleton from '@/components/shared/StudioToolSkeleton';
+
+const ButterTestClient = dynamic(() => import('./_components/ButterTestClient'), {
+  loading: () => <StudioToolSkeleton />,
+});
 
 type Props = {
   params: Promise<{ lang: string }>;

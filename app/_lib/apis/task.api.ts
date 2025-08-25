@@ -33,6 +33,15 @@ export const getTaskStatus = (
   return apiFetch<TaskStatusResponse>(`/tasks/${taskId}/status`);
 };
 
+export const getBatchTaskStatus = (
+  taskIds: number[]
+): Promise<ApiResponse<TaskStatusResponse[]>> => {
+  return apiFetch<TaskStatusResponse[]>('/tasks/batch/status', {
+    method: 'POST',
+    body: { taskIds },
+  });
+};
+
 export const getTaskImageUrl = (
   taskId: number
 ): Promise<ApiResponse<TaskImageUrlResponse>> => {

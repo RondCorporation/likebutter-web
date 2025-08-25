@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import {
   BarChart,
   Users,
@@ -11,12 +12,37 @@ import {
   Shield,
 } from 'lucide-react';
 
-import DashboardView from './DashboardView';
-import AccountsView from './AccountsView';
-import UsersView from './UsersView';
-import SubscriptionsView from './SubscriptionsView';
-import PaymentsView from './PaymentsView';
-import TasksView from './TasksView';
+const DashboardView = dynamic(() => import('./DashboardView'), {
+  loading: () => <AdminViewSkeleton />,
+});
+const AccountsView = dynamic(() => import('./AccountsView'), {
+  loading: () => <AdminViewSkeleton />,
+});
+const UsersView = dynamic(() => import('./UsersView'), {
+  loading: () => <AdminViewSkeleton />,
+});
+const SubscriptionsView = dynamic(() => import('./SubscriptionsView'), {
+  loading: () => <AdminViewSkeleton />,
+});
+const PaymentsView = dynamic(() => import('./PaymentsView'), {
+  loading: () => <AdminViewSkeleton />,
+});
+const TasksView = dynamic(() => import('./TasksView'), {
+  loading: () => <AdminViewSkeleton />,
+});
+
+function AdminViewSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+      <div className="space-y-4">
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+      </div>
+    </div>
+  );
+}
 
 type AdminView =
   | 'dashboard'

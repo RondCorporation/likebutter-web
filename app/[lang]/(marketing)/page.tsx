@@ -1,11 +1,15 @@
+import initTranslations from '@/app/_lib/i18n-server';
 import LandingPage from './_components/LandingPage';
 
 type Props = {
   params: Promise<{ lang: string }>;
 };
 
-export default async function Home({ params }: Props) {
+const MarketingPage = async ({ params }: Props) => {
   const { lang } = await params;
+  await initTranslations(lang, ['common']);
 
-  return <LandingPage lang={lang} />;
-}
+  return <LandingPage />;
+};
+
+export default MarketingPage;

@@ -1,27 +1,39 @@
 import type { Config } from 'tailwindcss';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 
 export default {
   content: ['./app/**/*.{ts,tsx,js,jsx}', './components/**/*.{ts,tsx,js,jsx}'],
   theme: {
     extend: {
-      colors: {
-        accent: 'var(--accent)',
+      fontFamily: {
+        sans: ['var(--font-geist-sans)', ...fontFamily.sans],
+        mono: ['var(--font-geist-mono)', ...fontFamily.mono],
       },
-      keyframes: {
-        blink: {
-          '0%,60%': { opacity: '1' },
-          '60%,100%': { opacity: '0' },
-        },
-        wave: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       animation: {
-        cursor: 'blink 1s steps(2) infinite',
-        'wave-slow': 'wave 12s linear infinite',
-        'wave-mid': 'wave 8s  linear infinite',
-        'wave-fast': 'wave 4s  linear infinite',
+        'subtle-pulse': 'subtle-pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        'subtle-pulse': {
+          '0%, 100%': {
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'center',
+          },
+          '50%': {
+            backgroundSize: '120% 120%',
+            backgroundPosition: 'center',
+          },
+        },
+      },
+      colors: {
+        accent: 'var(--accent)',
+        'gradient-start': '#0f2027',
+        'gradient-middle': '#203a43',
+        'gradient-end': '#2c5364',
+        'butter-yellow': '#FFD84D',
+        'butter-orange': '#FF9E2C',
       },
     },
   },

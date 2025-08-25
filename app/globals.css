@@ -3,34 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #001123;
+  --foreground: #ffffff;
   --accent: #ffd93b;
 }
 
 @layer utilities {
-  @keyframes cursor-blink {
-    0%,
-    49% {
-      opacity: 1;
-    }
-    50%,
-    100% {
-      opacity: 0;
-    }
-  }
-  .animate-cursor {
-    animation: cursor-blink 0.8s steps(2) infinite;
-  }
-  /* Updated Wave Container */
-  .wave-container {
-    @apply absolute bottom-0 left-0 w-full h-24 overflow-hidden;
-  }
-  .wave-svg {
-    @apply absolute -bottom-1 w-full h-full;
-    transform-origin: bottom;
-  }
-  /* Animated Gradient Background */
   .animated-gradient {
     background: linear-gradient(
       300deg,
@@ -59,11 +37,103 @@
       background-position: 0% 50%;
     }
   }
+
+  /* Hero section animations */
+  .animate-fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease-out 0.5s forwards;
+  }
+
+  .animate-fade-in-up {
+    opacity: 0;
+    transform: translateY(2rem);
+    animation: fadeInUp 1s ease-out 1s forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Card Carousel animations */
+  .animate-bounce-subtle {
+    animation: bounceSubtle 3s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes bounceSubtle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%) skewX(12deg);
+    }
+    100% {
+      transform: translateX(200%) skewX(12deg);
+    }
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .animate-fade-in,
+    .animate-fade-in-up {
+      animation-duration: 0.8s;
+    }
+    
+    .animate-bounce-subtle {
+      animation-duration: 2s;
+    }
+
+    /* Reduce motion for performance on mobile */
+    @media (prefers-reduced-motion: reduce) {
+      .animate-fade-in,
+      .animate-fade-in-up,
+      .animate-bounce-subtle,
+      .animate-shimmer {
+        animation: none;
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+  /* Touch device optimizations */
+  @media (hover: none) and (pointer: coarse) {
+    .hover\:scale-105:hover,
+    .hover\:-translate-y-2:hover,
+    .hover\:scale-110:hover {
+      transform: none;
+    }
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #001123;
     --foreground: #ededed;
   }
 }
@@ -107,38 +177,58 @@ html {
   @apply w-full py-2 rounded-md font-medium flex items-center justify-center;
 }
 
-/* Phone Input Custom Styles */
-.phone-input-custom-signup .PhoneInputInput {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  color: white !important;
-  border-radius: 0.375rem !important;
-  padding: 0.75rem !important;
-  font-size: 0.875rem !important;
-  width: 100% !important;
-  border: none !important;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+/* For hiding scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* New Phone Input Custom Styles */
+.phone-input-custom .PhoneInputInput {
+  @apply w-full rounded-xl border-2 border-transparent bg-transparent p-4 text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:outline-none focus:ring-0;
   box-sizing: border-box !important;
   height: auto;
 }
 
-.phone-input-custom-signup .PhoneInputCountrySelect {
-  background-color: rgba(255, 255, 255, 0.1) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.2) !important;
+.phone-input-custom .PhoneInputCountry {
+  @apply bg-slate-800/50;
+  margin-right: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 }
 
-.phone-input-custom-signup .PhoneInputCountryIcon {
+.phone-input-custom .PhoneInputCountrySelect {
+  @apply text-white;
+}
+
+.phone-input-custom .PhoneInputCountryIcon {
   box-shadow: none !important;
-  margin-right: 0.5rem;
 }
 
-.phone-input-custom-signup .PhoneInputCountrySelectArrow {
+.phone-input-custom .PhoneInputCountrySelectArrow {
   opacity: 0.7;
-  margin-left: 0.25rem;
+  margin-left: 0.5rem;
 }
 
-.PhoneInput {
-  display: flex;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 0.375rem;
-  padding-left: 0.75rem;
+.phone-input-custom {
+  @apply flex w-full items-center rounded-xl border-2 border-slate-700 bg-slate-800/50 text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus-within:border-butter-yellow;
+  padding-left: 0.5rem;
 }

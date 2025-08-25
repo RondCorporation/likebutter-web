@@ -1,15 +1,14 @@
 'use client';
 
-import { ReactNode } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import SettingsModal from '@/components/SettingsModal';
+import { ReactNode, useMemo } from 'react';
+import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
 import { Toaster } from 'react-hot-toast';
-import '@/lib/i18n-client';
+import '@/app/_lib/i18n-client';
+import AuthInitializer from '@/app/_components/AuthInitializer';
+import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
+import { User } from '@/app/_types/api';
 import { usePathname } from 'next/navigation';
-import AuthInitializer from '@/components/AuthInitializer';
-import ServerErrorDisplay from '@/components/shared/ServerErrorDisplay';
-import { User } from '@/stores/authStore';
+import { AuthProvider } from '@/app/_contexts/AuthContext';
 
 export function LayoutClient({
   children,
@@ -19,14 +18,44 @@ export function LayoutClient({
   preloadedUser: User | null;
 }) {
   const pathname = usePathname();
-  const isStudioPage = pathname.includes('/studio');
-  const isAdminPage = pathname.includes('/admin');
+  
+  const routeInfo = useMemo(() => {
+    // Extract language and route segments
+    const segments = pathname.split('/').filter(Boolean);
+    const lang = segments[0];
+    const routePath = segments.slice(1).join('/');
+    
+    // Define marketing routes that don't need auth
+    const marketingRoutes = ['', 'pricing', 'privacy'];
+    const authRoutes = ['login', 'signup'];
+    const adminRoutes = ['admin'];
+    const studioRoutes = ['studio', 'billing'];
+    
+    const isMarketingRoute = marketingRoutes.includes(routePath);
+    const isAuthRoute = authRoutes.some(route => routePath.startsWith(route));
+    const isAdminRoute = adminRoutes.some(route => routePath.startsWith(route));
+    const isStudioRoute = studioRoutes.some(route => routePath.startsWith(route));
+    
+    // Check if we're in a route group that has its own layout
+    const hasRouteGroupLayout = isMarketingRoute || isAuthRoute || isAdminRoute || isStudioRoute;
+    
+    return {
+      lang,
+      routePath,
+      isMarketingRoute,
+      isAuthRoute,
+      isAdminRoute,
+      isStudioRoute,
+      hasRouteGroupLayout,
+    };
+  }, [pathname]);
 
-  return (
-    <AuthInitializer preloadedUser={preloadedUser}>
+  // If route groups handle their own auth, skip initialization here
+  if (routeInfo.hasRouteGroupLayout) {
+    return (
       <>
         <ServerErrorDisplay />
-        <SettingsModal />
+        <ConditionalSettingsModal />
         <Toaster
           position="bottom-center"
           toastOptions={{
@@ -37,11 +66,33 @@ export function LayoutClient({
           }}
         />
         <div className="flex min-h-screen flex-col">
-          {!isStudioPage && !isAdminPage && <Header />}
           <main className="flex-grow">{children}</main>
-          {!isStudioPage && !isAdminPage && <Footer />}
         </div>
       </>
-    </AuthInitializer>
+    );
+  }
+
+  // Fallback for other routes
+  return (
+    <AuthProvider shouldInitializeAuth={true}>
+      <AuthInitializer preloadedUser={preloadedUser}>
+        <>
+          <ServerErrorDisplay />
+          <ConditionalSettingsModal />
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: '#333',
+                color: '#fff',
+              },
+            }}
+          />
+          <div className="flex min-h-screen flex-col">
+            <main className="flex-grow">{children}</main>
+          </div>
+        </>
+      </AuthInitializer>
+    </AuthProvider>
   );
 }

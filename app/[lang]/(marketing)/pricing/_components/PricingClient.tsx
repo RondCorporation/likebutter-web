@@ -1,533 +1,146 @@
 'use client';
 
-import { useState, Fragment, useEffect } from 'react';
 import Link from 'next/link';
-import { Check, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import PortOne from '@portone/browser-sdk/v2';
-import toast from 'react-hot-toast';
-import {
-  createSubscription,
-  registerBillingKey,
-  getSubscriptions,
-  getSubscriptionDetails,
-} from '@/app/_lib/apis/subscription.api.client';
 import { useAuthStore } from '@/stores/authStore';
-import { Plan as ApiPlan } from '@/app/_types/plan';
-import { Subscription } from '@/app/_types/subscription';
-import { useUIStore } from '@/app/_stores/uiStore';
+import { useTranslation } from 'react-i18next';
+import { CheckCircle2 } from 'lucide-react';
 
-type Plan = {
-  key: string;
-  name: string;
-  description: string;
-  priceMonthly: number | string;
-  priceYearly: number | string;
-  cta: string;
-  href: string;
-  isPopular: boolean;
-  isCustom: boolean;
-  planKeyMonthly: string;
-  planKeyYearly: string;
-  priceYearlyTotal: number;
-};
-
-type Feature = {
-  category: string;
-  name: string;
-  values: {
-    [key: string]: string | boolean;
-  };
-};
-
-type Translations = {
-  [key: string]: string;
-};
-
-type Props = {
-  lang: string;
-  plans: Plan[];
-  features: Feature[];
-  translations: Translations;
-  currency: string;
-  apiPlans: ApiPlan[];
-};
-
-const planRanks: Record<string, number> = {
-  FREE: 0,
-  CREATOR_MONTHLY: 1,
-  CREATOR_YEARLY: 1,
-  PROFESSIONAL_MONTHLY: 2,
-  PROFESSIONAL_YEARLY: 2,
-  ENTERPRISE: 3,
-};
-
-export default function PricingClient({
-  lang,
-  plans,
+const PlanCard = ({
+  planName,
+  price,
+  description,
   features,
-  translations,
-  currency,
-  apiPlans,
-}: Props) {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
-    'yearly'
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeSubscription, setActiveSubscription] =
-    useState<Subscription | null>(null);
-  const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
-  const { openSettings } = useUIStore();
-
-  useEffect(() => {
-    const fetchUserSubscription = async () => {
-      if (isAuthenticated) {
-        try {
-          const { data: subscriptions } = await getSubscriptions();
-          if (subscriptions) {
-            const activeSub =
-              subscriptions.find((sub) => sub.status === 'ACTIVE') || null;
-            setActiveSubscription(activeSub);
-          }
-        } catch (error) {
-          console.error('Failed to fetch user subscription:', error);
-        }
-      }
-    };
-
-    fetchUserSubscription();
-  }, [isAuthenticated]);
-
-  const activePlanKey = activeSubscription?.planKey ?? 'FREE';
-  const activePlanRank = planRanks[activePlanKey] ?? 0;
-
-  const handlePayment = async (plan: Plan) => {
-    if (!isAuthenticated || !user) {
-      router.push(`/${lang}/login`);
-      return;
-    }
-
-    if (plan.isCustom) {
-      window.location.href = plan.href;
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const planKey =
-        billingCycle === 'monthly' ? plan.planKeyMonthly : plan.planKeyYearly;
-      if (!planKey) {
-        throw new Error('Selected plan is not available for purchase.');
-      }
-
-      const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
-      const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
-      if (!storeId || !channelKey) {
-        throw new Error('Payment environment variables are not set.');
-      }
-
-      const issueResponse = await PortOne.requestIssueBillingKey({
-        storeId,
-        channelKey,
-        billingKeyMethod: 'CARD',
-      });
-
-      if (!issueResponse || issueResponse.code) {
-        throw new Error(
-          `Billing key issuing failed: ${
-            issueResponse?.message || 'User cancelled.'
-          }`
-        );
-      }
-
-      await registerBillingKey(issueResponse.billingKey);
-      const createSubResponse = await createSubscription(planKey);
-
-      if (createSubResponse.data?.subscriptionId) {
-        const detailsResponse = await getSubscriptionDetails(
-          createSubResponse.data.subscriptionId
-        );
-        const latestPayment = detailsResponse.data?.paymentHistory?.[0];
-
-        if (latestPayment) {
-          router.push(`/${lang}/payments/${latestPayment.paymentId}`);
-        } else {
-          router.push(`/${lang}/pricing/success`);
-        }
-      } else {
-        throw new Error(
-          'Subscription creation failed to return a subscription ID.'
-        );
-      }
-    } catch (error: any) {
-      toast.error(`An error occurred: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const groupedFeatures = features.reduce(
-    (acc, feature) => {
-      const { category = 'General' } = feature;
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(feature);
-      return acc;
-    },
-    {} as Record<string, typeof features>
-  );
-
-  const getFeatureValue = (value: string | boolean) => {
-    if (typeof value === 'boolean') {
-      return value ? (
-        <Check className="h-5 w-5 text-accent mx-auto" />
-      ) : (
-        <X className="h-5 w-5 text-slate-500 mx-auto" />
-      );
-    }
-    return <span className="text-sm">{value}</span>;
-  };
-
-  const formatPrice = (price: number | string) => {
-    if (typeof price === 'string') return price;
-    const formattedPrice =
-      currency === '₩'
-        ? price.toLocaleString('ko-KR')
-        : price.toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          });
-    return `${currency}${formattedPrice}`;
-  };
-
-  const renderCtaButton = (plan: Plan) => {
-    if (plan.key === 'Free') {
-      return (
-        <Link href={plan.href}>
-          <button
-            className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition bg-white/10 text-white hover:bg-white/20`}
-          >
-            {plan.cta}
-          </button>
-        </Link>
-      );
-    }
-
-    const monthlyPlanRank = planRanks[plan.planKeyMonthly] ?? -1;
-    const yearlyPlanRank = planRanks[plan.planKeyYearly] ?? -1;
-    const currentPlanRank =
-      billingCycle === 'monthly' ? monthlyPlanRank : yearlyPlanRank;
-
-    if (activeSubscription) {
-      if (
-        (billingCycle === 'monthly' && activePlanKey === plan.planKeyMonthly) ||
-        (billingCycle === 'yearly' && activePlanKey === plan.planKeyYearly)
-      ) {
-        return (
-          <button
-            disabled
-            className="w-full mt-4 rounded-md py-2.5 text-sm font-semibold bg-accent/50 text-black cursor-default"
-          >
-            {translations.currentPlan}
-          </button>
-        );
-      }
-
-      if (currentPlanRank < activePlanRank) {
-        return (
-          <button
-            disabled
-            className="w-full mt-4 rounded-md py-2.5 text-sm font-semibold bg-slate-700 text-slate-400 cursor-not-allowed"
-          >
-            {translations.downgradeNotAvailable}
-          </button>
-        );
-      }
-
-      if (currentPlanRank > activePlanRank) {
-        return (
-          <button
-            onClick={() => openSettings('subscription')}
-            className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition bg-blue-500 text-white hover:bg-blue-400`}
-          >
-            {translations.upgradePlan}
-          </button>
-        );
-      }
-    }
-
-    return (
-      <button
-        onClick={() => handlePayment(plan)}
-        disabled={isLoading}
-        className={`w-full mt-4 rounded-md py-2.5 text-sm font-semibold transition ${
-          plan.isPopular
-            ? 'bg-accent text-black hover:brightness-90'
-            : plan.isCustom
-              ? 'bg-slate-600 text-white hover:bg-slate-500'
-              : 'bg-white/10 text-white hover:bg-white/20'
-        } disabled:opacity-50 disabled:cursor-not-allowed`}
-      >
-        {isLoading ? translations.processing : plan.cta}
-      </button>
-    );
-  };
+  ctaText,
+  ctaLink,
+  isFeatured = false,
+  onCtaClick,
+}: {
+  planName: string;
+  price: string;
+  description: string;
+  features: string[];
+  ctaText: string;
+  ctaLink: string;
+  isFeatured?: boolean;
+  onCtaClick: (link: string) => void;
+}) => {
+  const buttonClasses = isFeatured
+    ? 'w-full rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-8 py-3 text-lg font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-transform will-change-transform duration-300 hover:-translate-y-1 hover:shadow-butter-yellow/40'
+    : 'w-full rounded-full bg-white/30 px-8 py-3 text-lg font-semibold text-white transition-colors duration-300 hover:bg-white/40';
 
   return (
-    <>
-      <div className="min-h-screen bg-black px-4 pb-20 pt-28 text-white">
-        <div className="container mx-auto max-w-7xl">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-3xl font-bold text-accent md:text-5xl">
-              {translations.title}
-            </h1>
-            <p className="mt-4 text-base text-slate-300 md:text-lg">
-              {translations.subtitle}
-            </p>
-          </div>
-
-          <div className="mt-10 flex items-center justify-center gap-4">
-            <span
-              className={`font-medium transition ${
-                billingCycle === 'monthly' ? 'text-accent' : 'text-slate-400'
-              }`}
-            >
-              {translations.monthly}
-            </span>
-            <label className="relative inline-flex cursor-pointer items-center">
-              <input
-                type="checkbox"
-                className="peer sr-only"
-                checked={billingCycle === 'yearly'}
-                onChange={() =>
-                  setBillingCycle(
-                    billingCycle === 'monthly' ? 'yearly' : 'monthly'
-                  )
-                }
-              />
-              <div className="peer h-6 w-11 rounded-full bg-slate-700 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:content-[''] after:transition-all peer-checked:bg-accent peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
-            </label>
-            <span
-              className={`font-medium transition ${
-                billingCycle === 'yearly' ? 'text-accent' : 'text-slate-400'
-              }`}
-            >
-              {translations.yearly}
-              <span className="ml-2 rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-semibold text-green-300">
-                {translations.save20}
-              </span>
-            </span>
-          </div>
-
-          {/* Desktop Table View */}
-          <div className="mt-12 hidden lg:block overflow-x-auto pb-4">
-            <div className="min-w-[1200px] w-full">
-              <div className="grid grid-cols-5 gap-x-6 pt-4">
-                <div className="col-span-1"></div>
-                {plans.map((plan) => {
-                  const isCurrentPlan =
-                    isAuthenticated &&
-                    activeSubscription &&
-                    ((billingCycle === 'monthly' &&
-                      activePlanKey === plan.planKeyMonthly) ||
-                      (billingCycle === 'yearly' &&
-                        activePlanKey === plan.planKeyYearly));
-
-                  return (
-                    <div
-                      key={plan.name}
-                      className={`relative col-span-1 p-4 rounded-t-lg ${
-                        plan.isPopular ? 'bg-accent/10' : ''
-                      } ${
-                        isCurrentPlan
-                          ? 'border-2 border-accent'
-                          : 'border-2 border-transparent'
-                      }`}
-                    >
-                      {isCurrentPlan && (
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-black">
-                          {translations.currentPlan}
-                        </div>
-                      )}
-                      <h2
-                        className={`text-xl font-bold ${
-                          plan.isPopular ? 'text-accent' : 'text-white'
-                        }`}
-                      >
-                        {plan.name}
-                      </h2>
-                      <p className="text-xs text-slate-400 mt-1 h-10">
-                        {plan.description}
-                      </p>
-                      <div className="mt-4 h-20">
-                        {plan.isCustom ? (
-                          <span className="text-4xl font-bold">
-                            {plan.priceMonthly}
-                          </span>
-                        ) : (
-                          <>
-                            <span className="text-4xl font-bold">
-                              {formatPrice(
-                                billingCycle === 'monthly'
-                                  ? plan.priceMonthly
-                                  : plan.priceYearly
-                              )}
-                            </span>
-                            <span className="text-lg text-slate-400">/mo</span>
-                            {billingCycle === 'yearly' &&
-                              plan.priceMonthly !== 0 && (
-                                <p className="text-xs text-slate-500">
-                                  {translations.billedAs}
-                                  {formatPrice(plan.priceYearlyTotal)} /year
-                                </p>
-                              )}
-                          </>
-                        )}
-                      </div>
-                      {renderCtaButton(plan)}
-                    </div>
-                  );
-                })}
-              </div>
-              {Object.entries(groupedFeatures).map(
-                ([category, featuresInSection]) => (
-                  <Fragment key={category}>
-                    <div className="grid grid-cols-5 gap-x-6 items-center bg-black">
-                      <h3 className="text-base font-semibold text-slate-300 py-4 col-span-5 px-4">
-                        {category}
-                      </h3>
-                    </div>
-                    {featuresInSection.map((feature, featureIdx) => (
-                      <div
-                        key={feature.name}
-                        className={`grid grid-cols-5 gap-x-6 items-center text-center ${
-                          featureIdx % 2 === 0 ? 'bg-white/[0.02]' : 'bg-black'
-                        }`}
-                      >
-                        <div className="col-span-1 text-left text-sm text-slate-300 p-4">
-                          {feature.name}
-                        </div>
-                        {plans.map((plan) => {
-                          const value = feature.values[plan.name];
-                          return (
-                            <div
-                              key={`${plan.name}-${feature.name}`}
-                              className={`col-span-1 p-4 text-white ${
-                                plan.isPopular ? 'bg-accent/5' : ''
-                              }`}
-                            >
-                              {getFeatureValue(value)}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </Fragment>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* Mobile Card View */}
-          <div className="mt-8 space-y-6 lg:hidden">
-            {plans.map((plan) => {
-              const isCurrentPlan =
-                isAuthenticated &&
-                activeSubscription &&
-                ((billingCycle === 'monthly' &&
-                  activePlanKey === plan.planKeyMonthly) ||
-                  (billingCycle === 'yearly' &&
-                    activePlanKey === plan.planKeyYearly));
-              return (
-                <div
-                  key={plan.key}
-                  className={`relative rounded-lg p-6 ${
-                    plan.isPopular ? 'bg-accent/10' : 'bg-white/5'
-                  } ${
-                    isCurrentPlan
-                      ? 'border-2 border-accent'
-                      : 'border-2 border-transparent'
-                  }`}
-                >
-                  {isCurrentPlan && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-black">
-                      {translations.currentPlan}
-                    </div>
-                  )}
-                  <h2
-                    className={`text-2xl font-bold ${
-                      plan.isPopular ? 'text-accent' : 'text-white'
-                    }`}
-                  >
-                    {plan.name}
-                  </h2>
-                  <p className="text-sm text-slate-400 mt-2">
-                    {plan.description}
-                  </p>
-                  <div className="mt-4">
-                    {plan.isCustom ? (
-                      <span className="text-3xl font-bold">
-                        {plan.priceMonthly}
-                      </span>
-                    ) : (
-                      <>
-                        <span className="text-3xl font-bold">
-                          {formatPrice(
-                            billingCycle === 'monthly'
-                              ? plan.priceMonthly
-                              : plan.priceYearly
-                          )}
-                        </span>
-                        <span className="text-md text-slate-400">/mo</span>
-                        {billingCycle === 'yearly' &&
-                          plan.priceMonthly !== 0 && (
-                            <p className="text-xs text-slate-500">
-                              {translations.billedAs}
-                              {formatPrice(plan.priceYearlyTotal)} /year
-                            </p>
-                          )}
-                      </>
-                    )}
-                  </div>
-                  {renderCtaButton(plan)}
-                  <div className="mt-6 border-t border-white/10 pt-4">
-                    <h3 className="font-semibold text-white">
-                      {translations.features}
-                    </h3>
-                    <ul className="mt-2 space-y-2 text-sm">
-                      {features.map((feature) => (
-                        <li
-                          key={feature.name}
-                          className="flex items-center justify-between"
-                        >
-                          <span className="text-slate-300">
-                            {feature.name}
-                          </span>
-                          <div className="w-20 text-right">
-                            {getFeatureValue(feature.values[plan.name])}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-16 text-center">
-            <Link
-              href={`/${lang}/studio/history`}
-              className="text-accent hover:underline"
-            >
-              {translations.goToStudio} →
-            </Link>
-          </div>
+    <div
+      className={`flex h-full flex-col rounded-2xl p-8 ${
+        isFeatured
+          ? 'bg-slate-800/80 border-2 border-butter-yellow shadow-2xl shadow-butter-yellow/20'
+          : 'bg-slate-800/50 border border-slate-700'
+      } transition-transform duration-300 hover:scale-105`}
+    >
+      <div className="flex-grow">
+        <h3 className="text-2xl font-bold text-white">{planName}</h3>
+        <p className="mt-2 text-slate-300">{description}</p>
+        <div className="mt-6">
+          <span className="text-5xl font-extrabold text-white">{price}</span>
+          {price.startsWith('$') && (
+            <span className="text-lg font-medium text-slate-400">/mo</span>
+          )}
         </div>
+        <ul className="mt-8 space-y-4">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-center gap-3">
+              <CheckCircle2 className="h-6 w-6 text-butter-yellow" />
+              <span className="text-slate-200">{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-    </>
+      <div className="mt-10">
+        <button onClick={() => onCtaClick(ctaLink)} className={buttonClasses}>
+          {ctaText}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default function PricingClient({ lang }: { lang: string }) {
+  const { t } = useTranslation();
+  const router = useRouter();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
+  const handleCtaClick = (link: string) => {
+    if (link.startsWith('mailto:')) {
+      window.location.href = link;
+      return;
+    }
+
+    if (isAuthenticated) {
+      router.push(`/${lang}/studio/billing`);
+    } else {
+      router.push(link);
+    }
+  };
+
+  const plans = [
+    {
+      planName: t('pricingBasicPlan'),
+      price: '$10',
+      description: t('pricingBasicDesc'),
+      features: [
+        t('pricingFeature1'),
+        t('pricingFeature2'),
+        t('pricingFeature3'),
+      ],
+      ctaText: t('getStarted'),
+      ctaLink: `/${lang}/login?returnTo=/${lang}/studio/billing`,
+    },
+    {
+      planName: t('pricingProPlan'),
+      price: '$25',
+      description: t('pricingProDesc'),
+      features: [
+        t('pricingFeature1'),
+        t('pricingFeature2'),
+        t('pricingFeature3'),
+        t('pricingFeature4'),
+      ],
+      ctaText: t('getStarted'),
+      ctaLink: `/${lang}/login?returnTo=/${lang}/studio/billing`,
+      isFeatured: true,
+    },
+    {
+      planName: t('pricingEnterprisePlan'),
+      price: t('pricingContactUs'),
+      description: t('pricingEnterpriseDesc'),
+      features: [
+        t('pricingFeature1'),
+        t('pricingFeature2'),
+        t('pricingFeature3'),
+        t('pricingFeature4'),
+        t('pricingFeature5'),
+      ],
+      ctaText: t('contactSales'),
+      ctaLink: 'mailto:sales@likebutter.dev',
+    },
+  ];
+
+  return (
+    <div className="container mx-auto px-4 sm:px-6 py-32 text-white">
+      <div className="text-center max-w-3xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-white">
+          {t('pricingTitle')}
+        </h1>
+        <p className="mt-4 text-lg md:text-xl text-slate-300">
+          {t('pricingSubtitle')}
+        </p>
+      </div>
+
+      <div className="mt-16 grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
+        {plans.map((plan, index) => (
+          <PlanCard key={index} {...plan} onCtaClick={handleCtaClick} />
+        ))}
+      </div>
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { apiServer } from '@/app/_lib/apiServer';
-import { User } from '@/app/_stores/authStore';
+import { User } from '@/app/_types/api';
 
 import AdminDashboardClient from './_components/AdminDashboardClient';
 

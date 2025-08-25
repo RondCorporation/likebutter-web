@@ -15,12 +15,12 @@ import {
 } from 'lucide-react';
 import { useLogout } from '@/hooks/useLogout';
 import { useAuthUser } from '@/hooks/useAuthStore';
-import { useUIActions } from '@/hooks/useUIStore';
+import { useOpenSettings } from '@/hooks/useUIStore';
 
 export default function UserDropdown() {
   const user = useAuthUser();
   const logout = useLogout();
-  const { openSettings } = useUIActions();
+  const openSettings = useOpenSettings();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();

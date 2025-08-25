@@ -15,6 +15,9 @@ function RedirectHandler() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // localStorage는 클라이언트에서만 접근
+    if (typeof window === 'undefined') return;
+    
     const lang = pathname.split('/')[1] || 'en';
     // SocialButtons component now saves the full, absolute path.
     const returnTo =

@@ -14,21 +14,27 @@ import {
 
 const DashboardView = dynamic(() => import('./DashboardView'), {
   loading: () => <AdminViewSkeleton />,
+  ssr: false,
 });
 const AccountsView = dynamic(() => import('./AccountsView'), {
   loading: () => <AdminViewSkeleton />,
+  ssr: false,
 });
 const UsersView = dynamic(() => import('./UsersView'), {
   loading: () => <AdminViewSkeleton />,
+  ssr: false,
 });
 const SubscriptionsView = dynamic(() => import('./SubscriptionsView'), {
   loading: () => <AdminViewSkeleton />,
+  ssr: false,
 });
 const PaymentsView = dynamic(() => import('./PaymentsView'), {
   loading: () => <AdminViewSkeleton />,
+  ssr: false,
 });
 const TasksView = dynamic(() => import('./TasksView'), {
   loading: () => <AdminViewSkeleton />,
+  ssr: false,
 });
 
 function AdminViewSkeleton() {

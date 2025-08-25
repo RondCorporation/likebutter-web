@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, memo, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Task } from '@/app/_types/task';
 import { PlanKey } from '@/app/_types/subscription';
@@ -21,7 +21,7 @@ const planNames: Record<PlanKey, string> = {
   ENTERPRISE: 'Enterprise',
 };
 
-export default memo(function DashboardClient() {
+function DashboardClient() {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -194,4 +194,6 @@ export default memo(function DashboardClient() {
       </div>
     </div>
   );
-});
+}
+
+export default DashboardClient;

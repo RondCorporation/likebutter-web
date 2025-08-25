@@ -3,7 +3,7 @@
 import { useAuthStore } from '@/app/_stores/authStore';
 import { User } from '@/app/_types/api';
 import { LoaderCircle } from 'lucide-react';
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
 interface AuthInitializerProps {
   children: ReactNode;
@@ -21,9 +21,14 @@ export default function AuthInitializer({
   const isInitialized = useAuthStore((s) => s.isInitialized);
   const { initialize, logout, hydrate } = useAuthStore.getState();
   const effectRan = useRef(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (effectRan.current || skipInitialization) return;
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || effectRan.current || skipInitialization) return;
     effectRan.current = true;
 
     if (preloadedUser) {
@@ -37,17 +42,30 @@ export default function AuthInitializer({
       logout();
     };
 
-    window.addEventListener('auth-failure', handleAuthFailure);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('auth-failure', handleAuthFailure);
+    }
 
     return () => {
-      window.removeEventListener('auth-failure', handleAuthFailure);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('auth-failure', handleAuthFailure);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [skipInitialization]);
+  }, [isMounted, skipInitialization]);
 
   // Skip auth initialization for marketing pages
   if (skipInitialization) {
     return <>{children}</>;
+  }
+
+  // hydration 방지를 위한 마운트 체크
+  if (!isMounted) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-black">
+        <LoaderCircle size={40} className="animate-spin text-accent" />
+      </div>
+    );
   }
 
   if (!isInitialized && showLoader) {

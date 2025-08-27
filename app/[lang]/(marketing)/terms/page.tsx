@@ -17,21 +17,19 @@ const variables = {
   '{{COMPANY_ADDRESS}}': '서울특별시 강남구 테헤란로70길 12, H타워',
   '{{COMPANY_CONTACT_EMAIL}}': 'info@rondcorp.com',
   '{{COMPANY_CONTACT_PHONE}}': '+82 10 5231 1263',
-  '{{DPO_NAME}}': '김동연',
-  '{{DPO_DEPARTMENT}}': '론드코퍼레이션',
-  '{{DPO_POSITION}}': '대표',
-  '{{DPO_EMAIL}}': 'info@rondcorp.com',
-  '{{DPO_PHONE}}': '+82 10 5231 1263',
-  '{{CLOUD_PROVIDER_NAME}}': 'Amazon Web Services, Vercel',
+  '{{SERVICE_NAME}}': 'LikeButter',
+  '{{SERVICE_URL}}': 'https://likebutter.ai',
+  '{{REFUND_PERIOD}}': '14일',
+  '{{CANCELLATION_PERIOD}}': '서비스 제공 7일 전',
 };
 
-async function getPrivacyContent(lang: 'en' | 'ko'): Promise<string> {
+async function getTermsContent(lang: 'en' | 'ko'): Promise<string> {
   try {
     const filePath = path.join(
       process.cwd(),
       'public',
       'policies',
-      `privacy_${lang}.md`
+      `terms_${lang}.md`
     );
     let text = await fs.readFile(filePath, 'utf-8');
 
@@ -40,8 +38,8 @@ async function getPrivacyContent(lang: 'en' | 'ko'): Promise<string> {
     }
     return text;
   } catch (error) {
-    console.error(`Failed to load privacy policy for ${lang}:`, error);
-    return 'Error: Could not load the privacy policy. Please try again later.';
+    console.error(`Failed to load terms of service for ${lang}:`, error);
+    return 'Error: Could not load the terms of service. Please try again later.';
   }
 }
 
@@ -49,25 +47,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const { t } = await initTranslations(lang, ['common']);
   return {
-    title: t('privacyPolicy'),
-    description: t('privacyPolicySubtitle'),
+    title: t('termsOfService'),
+    description: '서비스 이용약관 및 환불 정책',
   };
 }
 
-export default async function PrivacyPage({ params }: Props) {
+export default async function TermsPage({ params }: Props) {
   const { lang } = await params;
-  const content = await getPrivacyContent(lang);
+  const content = await getTermsContent(lang);
   const { t } = await initTranslations(lang, ['common']);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 py-32 text-white">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-accent md:text-4xl mb-4">
-          {t('privacyPolicy')}
+          {t('termsOfService')}
         </h1>
         <div className="border-b border-slate-700 inline-block mb-8 md:mb-12">
           <Link
-            href="/en/privacy"
+            href="/en/terms"
             className={`px-4 py-2 text-base font-semibold transition-colors duration-200 border-b-2 ${
               lang === 'en'
                 ? 'text-accent border-accent'
@@ -77,7 +75,7 @@ export default async function PrivacyPage({ params }: Props) {
             English
           </Link>
           <Link
-            href="/ko/privacy"
+            href="/ko/terms"
             className={`px-4 py-2 text-base font-semibold transition-colors duration-200 border-b-2 ${
               lang === 'ko'
                 ? 'text-accent border-accent'

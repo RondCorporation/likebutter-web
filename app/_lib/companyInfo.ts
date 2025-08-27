@@ -11,20 +11,21 @@ export const COMPANY_INFO = {
   },
   ceo: '김동연',
   businessNumber: '645-86-03935',
-  
+
   // 주소 정보
   address: {
     full: '서울특별시 강남구 테헤란로70길 12, 402-제이143호(대치동, H 타워)',
     short: '서울특별시 강남구 테헤란로70길 12, H타워',
     zipCode: '06193',
   },
-  
+
   // 연락처
   contact: {
     business: 'biz@likebutter.ai',
     support: 'info@rondcorp.com',
+    phone: '+82 10-5231-1263',
   },
-  
+
   // 사업 정보
   business: {
     type: '영리법인의 본점',
@@ -33,7 +34,7 @@ export const COMPANY_INFO = {
     taxType: '부가가치세 일반과세자',
     status: '계속사업자',
   },
-  
+
   // 서비스 정보
   service: {
     name: 'LikeButter',

@@ -135,9 +135,7 @@ export default function MarketingHeader() {
               className="hidden md:flex gap-6"
               aria-label={t('mainNavigation')}
             >
-              <Link href="#" className="text-sm hover:text-accent">
-                {t('navServices')}
-              </Link>
+{/* 서비스 소개는 랜딩 페이지 내 섹션으로 이동 */}
               <Link
                 href={`/${lang}/pricing`}
                 className="text-sm hover:text-accent"

@@ -140,13 +140,27 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                       <span>{t('companyFullAddress')}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block mb-1">연락처</span>
-                      <a 
-                        href={`mailto:${COMPANY_INFO.contact.support}`}
-                        className="hover:text-accent transition-colors duration-200"
-                      >
-                        {COMPANY_INFO.contact.support}
-                      </a>
+                      <span className="text-slate-500 block mb-1">고객센터</span>
+                      <div className="space-y-1">
+                        <div>
+                          <span className="text-slate-400">전화: </span>
+                          <a 
+                            href={`tel:${COMPANY_INFO.contact.phone}`}
+                            className="hover:text-accent transition-colors duration-200"
+                          >
+                            {COMPANY_INFO.contact.phone}
+                          </a>
+                        </div>
+                        <div>
+                          <span className="text-slate-400">이메일: </span>
+                          <a 
+                            href={`mailto:${COMPANY_INFO.contact.support}`}
+                            className="hover:text-accent transition-colors duration-200"
+                          >
+                            {COMPANY_INFO.contact.support}
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

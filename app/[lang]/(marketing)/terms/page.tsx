@@ -16,7 +16,7 @@ const variables = {
   '{{COMPANY_NAME}}': '론드코퍼레이션(Rond Corporation)',
   '{{COMPANY_ADDRESS}}': '서울특별시 강남구 테헤란로70길 12, H타워',
   '{{COMPANY_CONTACT_EMAIL}}': 'info@rondcorp.com',
-  '{{COMPANY_CONTACT_PHONE}}': '+82 10 5231 1263',
+  '{{COMPANY_CONTACT_PHONE}}': '+82 10-5231-1263',
   '{{SERVICE_NAME}}': 'LikeButter',
   '{{SERVICE_URL}}': 'https://likebutter.ai',
   '{{REFUND_PERIOD}}': '14일',

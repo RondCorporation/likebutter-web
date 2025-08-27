@@ -36,7 +36,7 @@ export default function Signup() {
     pw2: '',
     name: '',
     gender: 'MALE',
-    nationalityIsoCode: '',
+    nationalityCode: '', // code 필드를 사용
   });
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
   const [err, setErr] = useState<string>('');
@@ -54,7 +54,7 @@ export default function Signup() {
           if (defaultCountry) {
             setForm((prevForm) => ({
               ...prevForm,
-              nationalityIsoCode: defaultCountry.isoCode,
+              nationalityCode: defaultCountry.code, // code 필드를 사용
             }));
           }
         } else {
@@ -100,7 +100,7 @@ export default function Signup() {
       setIsSubmitting(false);
       return;
     }
-    if (!form.nationalityIsoCode) {
+    if (!form.nationalityCode) {
       setErr(t('signupErrorNationalityRequired'));
       setIsSubmitting(false);
       return;
@@ -125,7 +125,7 @@ export default function Signup() {
         password: form.pw,
         name: form.name,
         gender: form.gender,
-        countryCode: form.nationalityIsoCode,
+        countryCode: form.nationalityCode,
         phoneNumber: formattedPhoneNumber,
       });
       alert(t('signupSuccessAlert'));
@@ -209,8 +209,8 @@ export default function Signup() {
                 </option>
               </select>
               <select
-                name="nationalityIsoCode"
-                value={form.nationalityIsoCode}
+                name="nationalityCode"
+                value={form.nationalityCode}
                 onChange={onChange}
                 required
                 className={`${inputStyles} appearance-none`}
@@ -224,11 +224,7 @@ export default function Signup() {
                   </option>
                 )}
                 {countries.map((c) => (
-                  <option
-                    key={c.isoCode}
-                    value={c.isoCode}
-                    className="bg-slate-800"
-                  >
+                  <option key={c.code} value={c.code} className="bg-slate-800">
                     {lang === 'ko' ? c.countryKo : c.countryEn} ({c.isoCode})
                   </option>
                 ))}
@@ -239,7 +235,10 @@ export default function Signup() {
                 onChange={setPhoneNumber}
                 international
                 smartCaret={false}
-                defaultCountry={form.nationalityIsoCode as any}
+                defaultCountry={
+                  countries.find((c) => c.code === form.nationalityCode)
+                    ?.isoCode as any
+                }
                 className="phone-input-custom"
               />
             </div>

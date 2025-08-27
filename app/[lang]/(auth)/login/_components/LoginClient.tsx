@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
@@ -20,7 +20,6 @@ export default function LoginClient({
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [err, setErr] = useState('');
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const login = useAuthStore((s) => s.login);
@@ -58,9 +57,9 @@ export default function LoginClient({
       const res = await apiLogin(email, pw);
 
       if (res.data?.user) {
-        await login(res);
-        const returnTo = searchParams.get('returnTo');
-        router.replace(returnTo || `/${lang}/studio`);
+        login(res);
+        // Let useAuth hook handle the redirect after state is updated
+        // No manual redirect needed here
       } else {
         setErr(res.msg || translations.loginErrorInvalidPassword);
         setLoading(false);

@@ -5,7 +5,6 @@ import StudioToolSkeleton from '@/components/shared/StudioToolSkeleton';
 
 const ButterTestClient = dynamic(() => import('./_components/ButterTestClient'), {
   loading: () => <StudioToolSkeleton />,
-  ssr: false,
 });
 
 type Props = {

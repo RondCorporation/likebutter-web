@@ -26,7 +26,6 @@ export default function AuthRedirectHandler() {
 
     // If user is authenticated and on an auth page, redirect to studio or returnTo
     if (user && isAuthPage) {
-      console.log('AuthRedirectHandler: User already logged in. Redirecting...');
       const returnTo = searchParams.get('returnTo');
       const redirectUrl = returnTo || `/${lang}/studio`;
       router.replace(redirectUrl);

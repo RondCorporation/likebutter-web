@@ -11,7 +11,6 @@ export const useIsInitialized = () => useAuthStore(state => state.isInitialized)
 // 개별 액션 훅들 - 각각을 분리하여 안정적인 참조 유지
 export const useSetUser = () => useAuthStore(state => state.setUser);
 export const useSetLoading = () => useAuthStore(state => state.setLoading);
-export const useAuthLogin = () => useAuthStore(state => state.login);
 export const useAuthLogout = () => useAuthStore(state => state.logout);
 export const useAuthInitialize = () => useAuthStore(state => state.initialize);
 export const useAuthHydrate = () => useAuthStore(state => state.hydrate);

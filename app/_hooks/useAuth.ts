@@ -25,14 +25,12 @@ export function useAuth(required = true) {
                       routePath === 'login/success';
 
     if (required && !user) {
-      console.log('AuthGuard: User not found. Redirecting to login.');
       const returnToParam = encodeURIComponent(pathname);
       router.replace(`/${lang}/login?returnTo=${returnToParam}`);
       return;
     }
 
     if (user && isAuthPage) {
-      console.log('AuthGuard: User already logged in. Redirecting...');
       const returnTo = searchParams.get('returnTo');
       router.replace(returnTo || `/${lang}/studio`);
     }

@@ -17,8 +17,9 @@ function AuthWithRedirectContent({ children }: AuthWithRedirectProps) {
   const searchParams = useSearchParams();
   const initializationAttempted = useRef(false);
 
+  // Initial auth check on page load
   useEffect(() => {
-    if (initializationAttempted.current) return;
+    if (initializationAttempted.current || isInitialized) return;
     initializationAttempted.current = true;
 
     const initializeAuth = async () => {
@@ -28,7 +29,6 @@ function AuthWithRedirectContent({ children }: AuthWithRedirectProps) {
         const { data: user } = await getMe();
         if (user) {
           // User is authenticated, redirect immediately
-          console.log('AuthWithRedirect: User authenticated, redirecting to studio...');
           setUser(user);
           
           const segments = pathname.split('/');
@@ -41,7 +41,6 @@ function AuthWithRedirectContent({ children }: AuthWithRedirectProps) {
         }
       } catch (error) {
         // User is not authenticated, this is expected for auth pages
-        console.log('AuthWithRedirect: User not authenticated, staying on auth page');
       } finally {
         setLoading(false);
         // Mark as initialized after we've checked auth status
@@ -50,7 +49,7 @@ function AuthWithRedirectContent({ children }: AuthWithRedirectProps) {
     };
 
     initializeAuth();
-  }, [setLoading, setUser, router, pathname, searchParams]);
+  }, [setLoading, setUser, router, pathname, searchParams, isInitialized]);
 
   // Show loading while checking authentication
   if (isLoading || !isInitialized) {

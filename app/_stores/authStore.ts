@@ -5,7 +5,7 @@ import { ApiResponse, User, Subscription } from '@/app/_types/api';
 
 export interface LoginResponse {
   accessToken: { value: string };
-  user: User;
+  refreshToken: { value: string };
 }
 
 interface AuthState {
@@ -14,8 +14,7 @@ interface AuthState {
   isLoading: boolean;
   isAuthenticated: boolean;
   setLoading: (isLoading: boolean) => void;
-  initialize: () => Promise<void>;
-  login: (res: ApiResponse<LoginResponse>) => void;
+  initialize: (force?: boolean) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
   hydrate: (preloadedUser: User) => void;
@@ -45,11 +44,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  initialize: async () => {
-    if (get().isInitialized) {
+  initialize: async (force = false) => {
+    if (get().isInitialized && !force) {
       set({ isLoading: false });
       return;
     }
+    
     set({ isLoading: true });
 
     try {
@@ -66,6 +66,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null,
         isAuthenticated: false,
       });
+      // Re-throw error only when force is true to handle login flow failures
+      if (force) {
+        throw error;
+      }
     } finally {
       set({
         isInitialized: true,
@@ -74,19 +78,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  login: (res) => {
-    if (res.data?.user) {
-      const { user } = res.data;
-      set({
-        user,
-        isAuthenticated: true,
-        isLoading: false,
-        isInitialized: true,
-      });
-    } else {
-      set({ isLoading: false });
-    }
-  },
 
   logout: () => {
     apiLogout().catch((err) => console.warn('Server-side logout failed:', err));

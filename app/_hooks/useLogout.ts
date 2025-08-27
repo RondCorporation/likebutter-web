@@ -9,12 +9,8 @@ export function useLogout() {
   const logout = async () => {
     try {
       await apiLogout();
-      console.log('Server logout successful.');
     } catch (error) {
-      console.error(
-        'Server logout failed, proceeding with client-side logout:',
-        error
-      );
+      // Server logout failed, proceed with client-side logout
     } finally {
       logoutStore();
       // Thoroughly clear the accessToken cookie by setting its expiration to the past.

@@ -38,7 +38,6 @@ export default function AuthInitializer({
     }
 
     const handleAuthFailure = () => {
-      console.log('Auth failure event received. Logging out.');
       logout();
     };
 

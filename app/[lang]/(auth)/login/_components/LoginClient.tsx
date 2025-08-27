@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
 import SocialButtons from '@/components/SocialButtons';
@@ -20,9 +20,10 @@ export default function LoginClient({
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [err, setErr] = useState('');
+  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const login = useAuthStore((s) => s.login);
+  const initialize = useAuthStore((s) => s.initialize);
   const isLoading = useAuthStore((s) => s.isLoading);
   const setLoading = useAuthStore((s) => s.setLoading);
 
@@ -56,16 +57,19 @@ export default function LoginClient({
     try {
       const res = await apiLogin(email, pw);
 
-      if (res.data?.user) {
-        login(res);
-        // Let useAuth hook handle the redirect after state is updated
-        // No manual redirect needed here
+      if (res.data?.accessToken) {
+        // Force re-authentication to sync server state with client
+        await initialize(true);
+        
+        const returnTo = searchParams.get('returnTo');
+        const redirectUrl = returnTo || `/${lang}/studio`;
+        router.replace(redirectUrl);
       } else {
         setErr(res.msg || translations.loginErrorInvalidPassword);
         setLoading(false);
       }
     } catch (e: any) {
-      setErr(e.message);
+      setErr(e.message || translations.loginErrorInvalidPassword);
       setLoading(false);
     }
   }

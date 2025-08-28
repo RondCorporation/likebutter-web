@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PortOne from '@portone/browser-sdk/v2';
 import toast from 'react-hot-toast';
@@ -164,7 +164,15 @@ const PlanCard = ({
             {formatPrice(price)}
           </span>
           {!plan.isCustom && (
-            <span className="text-lg font-medium text-slate-400">/mo</span>
+            <>
+              <span className="text-lg font-medium text-slate-400">/mo</span>
+              <div className="mt-2 text-sm text-slate-400">
+                {billingCycle === 'monthly' 
+                  ? translations.servicePeriodMonthly 
+                  : translations.servicePeriodYearly
+                }
+              </div>
+            </>
           )}
         </div>
         <ul className="mt-8 space-y-4">
@@ -176,12 +184,20 @@ const PlanCard = ({
           ))}
         </ul>
       </div>
-      <div className="mt-10">{getButton()}</div>
+      <div className="mt-10">
+        {getButton()}
+        {!plan.isCustom && !isCurrent && !isDowngrade && (
+          <div className="mt-3 text-center text-xs text-slate-400">
+            <div>{billingCycle === 'monthly' ? translations.monthlyBilling : translations.yearlyBilling}</div>
+            <div className="mt-1">{translations.autoRenewing}</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
-export default function PricingClient({
+function PricingClientContent({
   lang,
   plans,
   features,
@@ -354,8 +370,8 @@ export default function PricingClient({
                   현재 플랜: {currentPlan.name}
                 </h3>
                 <p className="text-slate-300 mt-1">
-                  {isYearlySubscription ? '연간' : '월간'} 구독 | 
-                  만료일: {new Date(activeSubscription.endDate).toLocaleDateString('ko-KR')}
+                  {isYearlySubscription ? translations.yearlyBilling : translations.monthlyBilling}<br/>
+                  만료일: {new Date(activeSubscription.endDate).toLocaleDateString('ko-KR')} | {translations.autoRenewing}
                 </p>
               </div>
               <div className="text-right">
@@ -495,5 +511,17 @@ export default function PricingClient({
         </div>
       )}
     </div>
+  );
+}
+
+export default function PricingClient(props: Props) {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 sm:px-6 py-16 text-white flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
+      </div>
+    }>
+      <PricingClientContent {...props} />
+    </Suspense>
   );
 }

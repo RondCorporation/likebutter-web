@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import SocialButtons from '@/app/_components/SocialButtons';
@@ -10,7 +10,7 @@ import { Sparkles } from 'lucide-react';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function LoginClient({
+function LoginClientContent({
   lang,
   translations,
 }: {
@@ -188,5 +188,23 @@ export default function LoginClient({
         </div>
       </main>
     </div>
+  );
+}
+
+export default function LoginClient({
+  lang,
+  translations,
+}: {
+  lang: string;
+  translations: any;
+}) {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
+      </div>
+    }>
+      <LoginClientContent lang={lang} translations={translations} />
+    </Suspense>
   );
 }

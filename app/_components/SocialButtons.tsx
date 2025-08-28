@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { OAUTH_GOOGLE, OAUTH_FACEBOOK, OAUTH_X } from '@/lib/constants';
 
@@ -71,7 +72,7 @@ const SocialButton = ({
   </a>
 );
 
-export default function SocialButtons({
+function SocialButtonsContent({
   variant = 'login',
 }: {
   variant?: 'login' | 'signup';
@@ -132,5 +133,17 @@ export default function SocialButtons({
         </p>
       )}
     </div>
+  );
+}
+
+export default function SocialButtons({
+  variant = 'login',
+}: {
+  variant?: 'login' | 'signup';
+}) {
+  return (
+    <Suspense fallback={<div className="w-full space-y-3">Loading...</div>}>
+      <SocialButtonsContent variant={variant} />
+    </Suspense>
   );
 }

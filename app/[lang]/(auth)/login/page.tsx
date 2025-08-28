@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { Metadata } from 'next';
 import initTranslations from '@/lib/i18n-server';
 import LoginClient from './_components/LoginClient';
@@ -34,9 +33,5 @@ export default async function LoginPage({ params }: Props) {
     loginErrorInvalidPassword: t('loginErrorInvalidPassword'),
   };
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LoginClient lang={lang} translations={translations} />
-    </Suspense>
-  );
+  return <LoginClient lang={lang} translations={translations} />;
 }

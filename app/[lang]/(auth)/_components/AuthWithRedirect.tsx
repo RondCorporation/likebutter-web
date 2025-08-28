@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, ReactNode } from 'react';
+import { useEffect, useState, ReactNode, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { getMe } from '@/lib/apis/user.api';
 import { LoaderCircle } from 'lucide-react';
@@ -12,7 +12,7 @@ import { useAuthStore } from '@/stores/authStore';
  * 인증된 사용자라면, 인증 페이지에서 벗어나 메인 애플리케이션(`/studio`)으로 리디렉션합니다.
  * 인증되지 않은 사용자라면, 자식 컴포넌트(로그인/회원가입 폼)를 렌더링합니다.
  */
-export default function AuthWithRedirect({ children }: { children: ReactNode }) {
+function AuthWithRedirectContent({ children }: { children: ReactNode }) {
   // 'checking': 사용자의 토큰을 확인하는 초기 상태
   // 'authenticated': 사용자가 확인되었으며, 리디렉션이 임박한 상태
   // 'unauthenticated': 사용자가 로그인하지 않았으므로, 폼을 보여줘야 하는 상태
@@ -77,4 +77,16 @@ export default function AuthWithRedirect({ children }: { children: ReactNode }) 
 
   // 확인 절차가 완료되고 사용자가 미인증 상태임이 확인되면, 자식 컴포넌트를 렌더링합니다.
   return <>{children}</>;
+}
+
+export default function AuthWithRedirect({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen w-full items-center justify-center bg-black">
+        <LoaderCircle size={40} className="animate-spin text-accent" />
+      </div>
+    }>
+      <AuthWithRedirectContent>{children}</AuthWithRedirectContent>
+    </Suspense>
+  );
 }

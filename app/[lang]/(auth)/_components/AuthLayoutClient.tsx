@@ -14,7 +14,7 @@ interface AuthLayoutClientProps {
 
 export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
   return (
-    <AuthProvider shouldInitializeAuth={true}>
+    <AuthProvider shouldInitializeAuth={false}>
       <>
         <ServerErrorDisplay />
         <ConditionalSettingsModal />

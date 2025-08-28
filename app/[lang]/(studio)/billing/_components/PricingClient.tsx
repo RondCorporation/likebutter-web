@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PortOne from '@portone/browser-sdk/v2';
 import toast from 'react-hot-toast';
 import {
@@ -14,7 +14,8 @@ import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
 import { Subscription } from '@/app/_types/subscription';
 import { useUIStore } from '@/app/_stores/uiStore';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Shield, CreditCard, Clock, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 type Plan = {
   key: string;
@@ -187,12 +188,19 @@ export default function PricingClient({
   translations,
   currency,
 }: Props) {
+  const searchParams = useSearchParams();
+  const selectedPlanParam = searchParams.get('plan'); // basic, pro, enterprise
+  const billingParam = searchParams.get('billing'); // monthly, yearly
+  
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
-    'yearly'
+    (billingParam as 'monthly' | 'yearly') || 'yearly'
   );
   const [isLoading, setIsLoading] = useState(false);
   const [activeSubscription, setActiveSubscription] =
     useState<Subscription | null>(null);
+  const [currentStep, setCurrentStep] = useState<'selection' | 'checkout' | 'confirmation'>(
+    selectedPlanParam ? 'checkout' : 'selection'
+  );
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { openSettings } = useUIStore();
@@ -219,9 +227,33 @@ export default function PricingClient({
   const activePlanKey = activeSubscription?.planKey ?? 'FREE';
   const activePlanRank = planRanks[activePlanKey] ?? 0;
 
+  // 현재 구독에 따른 플랜 필터링 및 추천 로직
+  const getPersonalizedPlans = () => {
+    if (!activeSubscription || activePlanKey === 'FREE') {
+      // 무료 사용자: 모든 유료 플랜 표시
+      return plans.filter(p => p.key !== 'Free' && (p.isCustom || p.planKeyMonthly || p.planKeyYearly));
+    }
+
+    // 현재 구독이 있는 사용자: 현재 플랜 + 업그레이드 가능한 플랜만 표시
+    return plans.filter(p => {
+      if (p.key === 'Free') return false;
+      if (!p.isCustom && !p.planKeyMonthly && !p.planKeyYearly) return false;
+
+      const monthlyPlanRank = planRanks[p.planKeyMonthly] ?? -1;
+      const yearlyPlanRank = planRanks[p.planKeyYearly] ?? -1;
+      const maxPlanRank = Math.max(monthlyPlanRank, yearlyPlanRank);
+
+      // 현재 플랜이거나 업그레이드 가능한 플랜만 표시
+      return maxPlanRank >= activePlanRank;
+    });
+  };
+
+  const personalizedPlans = getPersonalizedPlans();
+
   const handlePayment = async (plan: Plan) => {
     if (!isAuthenticated || !user) {
-      router.push(`/${lang}/login`);
+      const returnToParam = encodeURIComponent(`/${lang}/billing`);
+      router.push(`/${lang}/login?returnTo=${returnToParam}`);
       return;
     }
 
@@ -285,16 +317,74 @@ export default function PricingClient({
     }
   };
 
+  // 현재 플랜 정보 표시용 함수
+  const getCurrentPlanInfo = () => {
+    if (!activeSubscription) return null;
+    
+    const currentPlan = plans.find(p => 
+      p.planKeyMonthly === activePlanKey || p.planKeyYearly === activePlanKey
+    );
+    
+    return currentPlan;
+  };
+
+  const currentPlan = getCurrentPlanInfo();
+  const isYearlySubscription = activePlanKey.includes('YEARLY');
+
   return (
     <div className="container mx-auto px-4 sm:px-6 py-16 text-white">
       <div className="text-center max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-          {translations.title}
+          {activeSubscription ? translations.managePlan : translations.title}
         </h1>
         <p className="mt-4 text-lg md:text-xl text-slate-300">
-          {translations.subtitle}
+          {activeSubscription 
+            ? `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다` 
+            : translations.subtitle}
         </p>
       </div>
+
+      {/* 현재 구독 상태 표시 */}
+      {activeSubscription && currentPlan && (
+        <div className="mt-8 max-w-2xl mx-auto">
+          <div className="bg-slate-800/60 border border-butter-yellow/30 rounded-2xl p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold text-butter-yellow">
+                  현재 플랜: {currentPlan.name}
+                </h3>
+                <p className="text-slate-300 mt-1">
+                  {isYearlySubscription ? '연간' : '월간'} 구독 | 
+                  만료일: {new Date(activeSubscription.endDate).toLocaleDateString('ko-KR')}
+                </p>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-white">
+                  {isYearlySubscription 
+                    ? (typeof currentPlan.priceYearly === 'number' ? `₩${currentPlan.priceYearly.toLocaleString()}/년` : currentPlan.priceYearly)
+                    : (typeof currentPlan.priceMonthly === 'number' ? `₩${currentPlan.priceMonthly.toLocaleString()}/월` : currentPlan.priceMonthly)
+                  }
+                </div>
+                <div className="text-sm text-slate-400">
+                  상태: {activeSubscription.status === 'ACTIVE' ? '활성' : activeSubscription.status}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 추천 플랜 섹션 */}
+      {activeSubscription && personalizedPlans.length > 1 && (
+        <div className="mt-12 text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            더 나은 플랜으로 업그레이드하세요
+          </h2>
+          <p className="text-slate-300">
+            현재 플랜보다 더 많은 기능을 이용할 수 있는 플랜을 확인해보세요
+          </p>
+        </div>
+      )}
 
       <div className="mt-10 flex items-center justify-center gap-4">
         <span
@@ -327,14 +417,8 @@ export default function PricingClient({
         </span>
       </div>
 
-      <div className="mt-16 grid gap-8 sm:grid-cols-1 lg:grid-cols-3">
-        {plans
-          .filter(
-            (p) =>
-              p.key !== 'Free' &&
-              (p.isCustom || p.planKeyMonthly || p.planKeyYearly)
-          )
-          .map((plan) => {
+      <div className={`mt-16 grid gap-8 ${personalizedPlans.length === 1 ? 'justify-center max-w-md mx-auto' : personalizedPlans.length === 2 ? 'sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-1 lg:grid-cols-3'}`}>
+        {personalizedPlans.map((plan) => {
             const monthlyPlanRank = planRanks[plan.planKeyMonthly] ?? -1;
             const yearlyPlanRank = planRanks[plan.planKeyYearly] ?? -1;
             const currentPlanRank =
@@ -350,7 +434,7 @@ export default function PricingClient({
             const isDowngrade =
               activeSubscription && currentPlanRank < activePlanRank;
             const isUpgrade =
-              activeSubscription && currentPlanRank > activePlanRank;
+              activeSubscription && currentPlanRank > activePlanRank && !isCurrent;
 
             const planFeatures = features
               .filter((f) => f.category === translations.featureCategoryCore)
@@ -381,6 +465,35 @@ export default function PricingClient({
             );
           })}
       </div>
+
+      {/* 무료 사용자에게 프리미엄 기능 안내 */}
+      {!activeSubscription && (
+        <div className="mt-16 max-w-4xl mx-auto">
+          <div className="bg-gradient-to-r from-butter-yellow/10 to-butter-orange/10 border border-butter-yellow/30 rounded-2xl p-8 text-center">
+            <h3 className="text-2xl font-bold text-butter-yellow mb-4">
+              🎯 프리미엄 기능을 경험해보세요
+            </h3>
+            <p className="text-slate-300 text-lg mb-6">
+              더 빠른 AI 처리, 무제한 생성, 고품질 결과물과 함께<br />
+              Like-Butter의 모든 기능을 마음껏 활용하세요
+            </p>
+            <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="text-butter-yellow font-semibold mb-2">⚡ 빠른 처리속도</div>
+                <div className="text-slate-300">우선순위 처리로 더 빠른 결과</div>
+              </div>
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="text-butter-yellow font-semibold mb-2">🎨 고품질 결과물</div>
+                <div className="text-slate-300">프리미엄 AI 모델 액세스</div>
+              </div>
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <div className="text-butter-yellow font-semibold mb-2">📈 무제한 사용</div>
+                <div className="text-slate-300">일일 한도 없이 자유롭게</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

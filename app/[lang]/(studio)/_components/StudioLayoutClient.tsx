@@ -8,9 +8,20 @@ import AuthGuard from '@/app/_components/AuthGuard';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
 import { AuthProvider } from '@/app/_contexts/AuthContext';
+import StudioAuthGuard from './StudioAuthGuard';
 
 interface StudioLayoutClientProps {
   children: ReactNode;
+}
+
+function StudioContent({ children }: { children: ReactNode }) {
+  return (
+    <StudioAuthGuard>
+      <div className="flex min-h-screen flex-col">
+        <main className="flex-grow">{children}</main>
+      </div>
+    </StudioAuthGuard>
+  );
 }
 
 export default function StudioLayoutClient({ children }: StudioLayoutClientProps) {
@@ -33,11 +44,7 @@ export default function StudioLayoutClient({ children }: StudioLayoutClientProps
               },
             }}
           />
-          <AuthGuard>
-            <div className="flex min-h-screen flex-col">
-              <main className="flex-grow">{children}</main>
-            </div>
-          </AuthGuard>
+          <StudioContent>{children}</StudioContent>
         </>
       </AuthInitializer>
     </AuthProvider>

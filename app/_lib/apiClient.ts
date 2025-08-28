@@ -12,7 +12,15 @@ const getCookie = (name: string) => {
   return match ? match[2] : null;
 };
 
-export const getAccessToken = () => getCookie('accessToken');
+export const getAccessToken = () => {
+  if (typeof window === 'undefined') {
+    console.log('🚫 getAccessToken: Called on server-side, returning null');
+    return null;
+  }
+  const token = getCookie('accessToken');
+  console.log('🔑 getAccessToken:', !!token ? 'Token found' : 'No token');
+  return token;
+};
 
 let refreshPromise: Promise<boolean> | null = null;
 

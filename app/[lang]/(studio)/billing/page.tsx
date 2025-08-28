@@ -1,14 +1,16 @@
+import { redirect } from 'next/navigation';
 import initTranslations from '@/app/_lib/i18n-server';
 import PricingClient from './_components/PricingClient';
+import CheckoutClient from './_components/CheckoutClient';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
 import { getPlansOnServer } from '@/app/_lib/apis/subscription.api.server';
 import { Plan } from '@/app/_types/plan';
-import { cookies } from 'next/headers';
 
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 3600;
 
 type Props = {
   params: Promise<{ lang: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export function generateStaticParams() {
@@ -36,16 +38,73 @@ const processApiPlans = (apiPlans: Plan[]) => {
   return processed;
 };
 
-export default async function PricingPage({ params }: Props) {
+const PLAN_MAP: { [key: string]: string } = {
+  basic: 'CREATOR',
+  pro: 'PROFESSIONAL',
+};
+
+const PLAN_FEATURES_MAP: { [key: string]: string[] } = {
+  CREATOR: ['pricingFeature1', 'pricingFeature2', 'pricingFeature3'],
+  PROFESSIONAL: [
+    'pricingFeature1',
+    'pricingFeature2',
+    'pricingFeature3',
+    'pricingFeature4',
+  ],
+};
+
+export default async function BillingPage({ params, searchParams }: Props) {
   const { lang } = await params;
+  const resolvedSearchParams = await searchParams;
   const { t } = await initTranslations(lang, ['common']);
 
   const { data: apiPlans } = (await getPlansOnServer().catch(() => ({
     data: [],
-  }))) || {
-    data: [],
-  };
+  }))) || { data: [] };
   const processedPlans = processApiPlans(apiPlans || []);
+
+  const planQuery = resolvedSearchParams?.plan as string;
+  if (planQuery) {
+    const billingCycleQuery =
+      (resolvedSearchParams?.billing as string) || 'monthly';
+    const planType = PLAN_MAP[planQuery];
+    const planData =
+      billingCycleQuery === 'yearly'
+        ? processedPlans[planType]?.yearly
+        : processedPlans[planType]?.monthly;
+
+    if (!planData) {
+      return redirect(`/${lang}/pricing`);
+    }
+
+    const isKorean = lang === 'ko';
+    const currency = isKorean ? '₩' : '$';
+    const price = isKorean ? planData.priceKrw : planData.priceUsd;
+    const pricePerMonth =
+      billingCycleQuery === 'yearly' && planData.pricePerMonth
+        ? isKorean
+          ? planData.pricePerMonth.krw
+          : planData.pricePerMonth.usd
+        : price;
+
+    const priceFormatted =
+      billingCycleQuery === 'yearly'
+        ? `${currency}${pricePerMonth.toLocaleString(
+            isKorean ? 'ko-KR' : 'en-US',
+          )}/mo`
+        : `${currency}${price.toLocaleString(isKorean ? 'ko-KR' : 'en-US')}/mo`;
+
+    const planForCheckout = {
+      name: t(
+        planType === 'CREATOR' ? 'planCreatorName' : 'planProfessionalName',
+      ),
+      priceFormatted,
+      features: PLAN_FEATURES_MAP[planType].map((featureKey) => t(featureKey)),
+      planKey: planData.planKey,
+    };
+
+    return <CheckoutClient lang={lang} plan={planForCheckout} />;
+  }
 
   const isKorean = lang === 'ko';
   const currency = isKorean ? '₩' : '$';
@@ -126,86 +185,6 @@ export default async function PricingPage({ params }: Props) {
         [t('planFreeName')]: t('value300'),
         [t('planCreatorName')]: t('value4000'),
         [t('planProfessionalName')]: t('value12000'),
-        [t('planEnterpriseName')]: t('valueCustom'),
-      },
-    },
-    {
-      category: t('featureCategoryCore'),
-      name: t('featureGenSpeed'),
-      values: {
-        [t('planFreeName')]: t('valueStandard'),
-        [t('planCreatorName')]: t('valueFast'),
-        [t('planProfessionalName')]: t('valueFast'),
-        [t('planEnterpriseName')]: t('valuePriority'),
-      },
-    },
-    {
-      category: t('featureCategoryCore'),
-      name: t('featureWatermark'),
-      values: {
-        [t('planFreeName')]: true,
-        [t('planCreatorName')]: false,
-        [t('planProfessionalName')]: false,
-        [t('planEnterpriseName')]: false,
-      },
-    },
-    {
-      category: t('featureCategoryCore'),
-      name: t('featureCreditRollover'),
-      values: {
-        [t('planFreeName')]: false,
-        [t('planCreatorName')]: true,
-        [t('planProfessionalName')]: true,
-        [t('planEnterpriseName')]: true,
-      },
-    },
-    {
-      category: t('featureCategoryCore'),
-      name: t('featureExtraCredits'),
-      values: {
-        [t('planFreeName')]: false,
-        [t('planCreatorName')]: true,
-        [t('planProfessionalName')]: true,
-        [t('planEnterpriseName')]: true,
-      },
-    },
-    {
-      category: t('featureCategoryUsage'),
-      name: t('featureChatTokens'),
-      values: {
-        [t('planFreeName')]: t('valueUpTo3000'),
-        [t('planCreatorName')]: t('valueUpTo40000'),
-        [t('planProfessionalName')]: t('valueUpTo120000'),
-        [t('planEnterpriseName')]: t('valueCustom'),
-      },
-    },
-    {
-      category: t('featureCategoryUsage'),
-      name: t('featureImageGens'),
-      values: {
-        [t('planFreeName')]: t('valueUpTo30'),
-        [t('planCreatorName')]: t('valueUpTo400'),
-        [t('planProfessionalName')]: t('valueUpTo1200'),
-        [t('planEnterpriseName')]: t('valueCustom'),
-      },
-    },
-    {
-      category: t('featureCategoryUsage'),
-      name: t('featureVideoSecs'),
-      values: {
-        [t('planFreeName')]: t('valueUpTo7s'),
-        [t('planCreatorName')]: t('valueUpTo100s'),
-        [t('planProfessionalName')]: t('valueUpTo300s'),
-        [t('planEnterpriseName')]: t('valueCustom'),
-      },
-    },
-    {
-      category: t('featureCategoryUsage'),
-      name: t('featureCoverGens'),
-      values: {
-        [t('planFreeName')]: t('valueUpTo6'),
-        [t('planCreatorName')]: t('valueUpTo20'),
-        [t('planProfessionalName')]: t('valueUpTo80'),
         [t('planEnterpriseName')]: t('valueCustom'),
       },
     },

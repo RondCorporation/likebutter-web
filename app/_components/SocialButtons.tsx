@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams, usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { OAUTH_GOOGLE, OAUTH_FACEBOOK, OAUTH_X } from '@/lib/constants';
 
 const IconGoogle = () => (
@@ -77,7 +77,6 @@ export default function SocialButtons({
   variant?: 'login' | 'signup';
 }) {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
 
   const handleSocialClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -87,11 +86,12 @@ export default function SocialButtons({
 
     const returnTo = searchParams.get('returnTo');
     if (returnTo) {
-      // Ensure the path is absolute, including the language prefix.
-      const lang = pathname.split('/')[1] || 'en';
-      const absoluteReturnTo = returnTo.startsWith('/')
-        ? returnTo
-        : `/${lang}/${returnTo}`;
+      // returnTo is already URL-encoded, decode it first
+      const decodedReturnTo = decodeURIComponent(returnTo);
+      // Ensure the path is absolute and properly formatted
+      const absoluteReturnTo = decodedReturnTo.startsWith('/')
+        ? decodedReturnTo
+        : `/${decodedReturnTo}`;
       localStorage.setItem('oauthReturnTo', absoluteReturnTo);
     } else {
       localStorage.removeItem('oauthReturnTo');

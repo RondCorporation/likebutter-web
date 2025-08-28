@@ -1,31 +1,37 @@
 'use client';
 
 import { useEffect, Suspense } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { LoaderCircle } from 'lucide-react';
 
 /**
- * This component's only job is to redirect the user after a successful login.
- * The backend is responsible for setting the accessToken cookie via a Set-Cookie header
- * during the redirect to this page. This component simply reads the destination
- * from localStorage and sends the user there.
+ * This component handles redirect after successful OAuth login.
+ * The backend sets the accessToken cookie and redirects to this page.
+ * We directly navigate to the destination using window.location to ensure
+ * a fresh page load with proper authentication state.
  */
 function RedirectHandler() {
-  const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    // localStorage는 클라이언트에서만 접근
     if (typeof window === 'undefined') return;
-    
+
     const lang = pathname.split('/')[1] || 'en';
-    // SocialButtons component now saves the full, absolute path.
-    const returnTo =
-      localStorage.getItem('oauthReturnTo') || `/${lang}/studio`;
+
+    // Get returnTo from localStorage (set by SocialButtons)
+    const returnTo = localStorage.getItem('oauthReturnTo');
     localStorage.removeItem('oauthReturnTo');
-    router.replace(returnTo);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only once
+
+    // Default fallback to studio page
+    const redirectUrl = returnTo || `/${lang}/studio`;
+
+    // Use window.location for immediate redirect after OAuth success
+    if (redirectUrl.startsWith('/')) {
+      window.location.href = redirectUrl;
+    } else {
+      window.location.href = `/${lang}/studio`;
+    }
+  }, [pathname]);
 
   return <LoaderCircle className="h-12 w-12 animate-spin text-accent" />;
 }

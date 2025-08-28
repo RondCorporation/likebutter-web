@@ -5,4 +5,8 @@ export interface Plan {
   billingCycle: 'MONTHLY' | 'YEARLY';
   priceKrw: number;
   priceUsd: number;
+  pricePerMonth?: {
+    krw: number;
+    usd: number;
+  };
 }

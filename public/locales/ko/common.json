@@ -391,5 +391,23 @@
   "cardVideoEditing": "AI 영상 편집",
   "cardVideoEditingDesc": "생성된 콘텐츠를 활용해 감각적인 영상을 완성하세요",
   "cardCreativeTools": "창작 도구",
-  "cardCreativeToolsDesc": "팬아트부터 뮤직비디오까지, 모든 창작 활동을 지원합니다"
+  "cardCreativeToolsDesc": "팬아트부터 뮤직비디오까지, 모든 창작 활동을 지원합니다",
+
+  "checkoutTitle": "안전한 결제",
+  "checkoutSubtitle": "놀라운 기능들을 경험하기까지 한 걸음 남았습니다.",
+  "orderSummary": "주문 요약",
+  "plan": "플랜",
+  "total": "총계",
+  "changePlan": "플랜 변경",
+  "paymentDetails": "결제 정보",
+  "creditCard": "신용카드 또는 체크카드",
+  "securePayment": "모든 거래는 안전하게 암호화됩니다.",
+  "pay": "결제하기",
+  "loginRequiredForPayment": "결제를 진행하려면 로그인해주세요.",
+  "planNotAvailableError": "선택한 플랜은 구매할 수 없습니다.",
+  "paymentEnvError": "결제 환경 변수가 설정되지 않았습니다.",
+  "billingKeyError": "빌링키 발급 실패",
+  "userCancelled": "사용자가 취소했습니다.",
+  "subscriptionIdError": "구독 생성 후 구독 ID를 받지 못했습니다.",
+  "genericError": "오류가 발생했습니다"
 }

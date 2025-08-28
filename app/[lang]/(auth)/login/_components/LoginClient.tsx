@@ -1,11 +1,11 @@
 'use client';
+
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthStore } from '@/stores/authStore';
-import SocialButtons from '@/components/SocialButtons';
-import { login as apiLogin } from '@/lib/apis/auth.api';
-import Logo from '@/components/Logo';
+import SocialButtons from '@/app/_components/SocialButtons';
+import { login as apiLogin } from '@/app/_lib/apis/auth.api';
+import Logo from '@/app/_components/Logo';
 import { Sparkles } from 'lucide-react';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,13 +20,9 @@ export default function LoginClient({
   const [email, setEmail] = useState('');
   const [pw, setPw] = useState('');
   const [err, setErr] = useState('');
-  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const initialize = useAuthStore((s) => s.initialize);
-  const isLoading = useAuthStore((s) => s.isLoading);
-  const setLoading = useAuthStore((s) => s.setLoading);
-
+  const [isLoading, setIsLoading] = useState(false); // 로컬 상태로 로딩 관리
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
 
   useEffect(() => {
@@ -52,26 +48,44 @@ export default function LoginClient({
       return;
     }
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const res = await apiLogin(email, pw);
 
       if (res.data?.accessToken) {
-        // Force re-authentication to sync server state with client
-        await initialize(true);
-        
+        // 성공! 백엔드에서 쿠키를 설정했습니다.
+        // 가장 확실한 다음 단계는 목적지로 전체 페이지를 이동하는 것입니다.
+        // 이렇게 하면 대상 페이지의 레이아웃/페이지에서 올바른 인증 확인이 트리거됩니다.
         const returnTo = searchParams.get('returnTo');
-        const redirectUrl = returnTo || `/${lang}/studio`;
-        router.replace(redirectUrl);
+        const redirectUrl = returnTo
+          ? decodeURIComponent(returnTo)
+          : `/${lang}/studio`;
+
+        console.log(`로그인 성공. 리디렉션: ${redirectUrl}`);
+
+        // 여기서 initialize()를 호출할 필요 없이, 리디렉션이 모든 것을 처리합니다.
+        window.location.href = redirectUrl;
       } else {
         setErr(res.msg || translations.loginErrorInvalidPassword);
-        setLoading(false);
+        setIsLoading(false);
       }
     } catch (e: any) {
       setErr(e.message || translations.loginErrorInvalidPassword);
-      setLoading(false);
+      setIsLoading(false);
     }
+  }
+
+  // Show loading only during login process
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow mx-auto mb-4"></div>
+          <p className="text-slate-400">Logging in...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

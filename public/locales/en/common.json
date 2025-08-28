@@ -383,5 +383,23 @@
   "pricingFeature2": "Standard generation speed",
   "pricingFeature3": "Community support",
   "pricingFeature4": "Priority generation queue",
-  "pricingFeature5": "Dedicated account manager"
+  "pricingFeature5": "Dedicated account manager",
+
+  "checkoutTitle": "Secure Checkout",
+  "checkoutSubtitle": "You are one step away from unlocking amazing features.",
+  "orderSummary": "Order Summary",
+  "plan": "Plan",
+  "total": "Total",
+  "changePlan": "Change Plan",
+  "paymentDetails": "Payment Details",
+  "creditCard": "Credit or Debit Card",
+  "securePayment": "All transactions are secure and encrypted.",
+  "pay": "Pay",
+  "loginRequiredForPayment": "Please log in to proceed with the payment.",
+  "planNotAvailableError": "Selected plan is not available for purchase.",
+  "paymentEnvError": "Payment environment variables are not set.",
+  "billingKeyError": "Billing key issuing failed",
+  "userCancelled": "User cancelled.",
+  "subscriptionIdError": "Subscription creation failed to return a subscription ID.",
+  "genericError": "An error occurred"
 }

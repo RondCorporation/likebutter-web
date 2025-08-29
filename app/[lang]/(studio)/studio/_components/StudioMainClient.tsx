@@ -1,12 +1,12 @@
 'use client';
 
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, memo } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserDropdown from '@/components/UserDropdown';
 
-function StudioMainClient({
+const StudioMainClient = memo(function StudioMainClient({
   children,
   lang,
 }: {
@@ -64,6 +64,6 @@ function StudioMainClient({
       </main>
     </section>
   );
-}
+});
 
 export default StudioMainClient;

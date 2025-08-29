@@ -36,6 +36,13 @@ export default function MarketingHeader() {
     window.location.href = `/${newLang}`;
   };
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const supportMenuItems = [
     { label: t('customerCenter'), href: `/${lang}/support` },
     { label: t('faq'), href: `/${lang}/faq` },
@@ -46,7 +53,7 @@ export default function MarketingHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-24" role="banner">
       {/* Top Bar */}
-      <div className="bg-slate-900/50 text-white h-8">
+      <div className="bg-black text-white h-8">
         <div className="container mx-auto flex justify-end items-center px-4 sm:px-6 h-full text-sm">
           <div className="flex items-center gap-4">
             {/* Custom Language Dropdown */}
@@ -135,13 +142,24 @@ export default function MarketingHeader() {
               className="hidden md:flex gap-6"
               aria-label={t('mainNavigation')}
             >
-{/* 서비스 소개는 랜딩 페이지 내 섹션으로 이동 */}
-              <Link
-                href={`/${lang}/pricing`}
-                className="text-sm hover:text-accent"
+              <button
+                onClick={() => scrollToSection('about')}
+                className="text-sm hover:text-accent cursor-pointer"
+              >
+                {t('navServiceIntro')}
+              </button>
+              <button
+                onClick={() => scrollToSection('pricing')}
+                className="text-sm hover:text-accent cursor-pointer"
               >
                 {t('navPricing')}
-              </Link>
+              </button>
+              <button
+                onClick={() => scrollToSection('demo')}
+                className="text-sm hover:text-accent cursor-pointer"
+              >
+                {t('navLiveDemo')}
+              </button>
             </nav>
           </div>
           <div className="flex items-center gap-4">

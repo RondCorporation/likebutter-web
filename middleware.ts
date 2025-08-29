@@ -30,6 +30,9 @@ export function middleware(request: NextRequest) {
       '/next.svg',
       '/vercel.svg',
       '/window.svg',
+      '/card-1.png',
+      '/card-2.png',
+      '/card-3.png',
     ].includes(pathname)
   ) {
     return;

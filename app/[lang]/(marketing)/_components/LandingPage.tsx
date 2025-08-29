@@ -1,45 +1,38 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Play, ArrowDown, Check } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import CardCarousel from '@/app/_components/CardCarousel';
 import { useScrollContext } from '../_context/ScrollContext';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image';
+import { getPlansOnClient } from '@/app/_lib/apis/subscription.api.client';
+import { Plan } from '@/app/_types/plan';
 
 // Reusable Page Section Component
 const PageSection = ({
   children,
   className = '',
-  verticalAlign = 'center',
-  wide = false,
+  id,
+  noPadding = false,
+  style,
 }: {
   children: React.ReactNode;
   className?: string;
-  verticalAlign?: 'center' | 'top';
-  wide?: boolean;
+  id?: string;
+  noPadding?: boolean;
+  style?: React.CSSProperties;
 }) => {
-  const alignmentClasses = {
-    center: 'justify-center',
-    top: 'justify-start',
-  };
-  const paddingClasses = {
-    center: 'pt-24',
-    top: 'pt-32',
-  };
-  const containerClasses = wide
-    ? 'w-full'
-    : 'container mx-auto px-4 sm:px-6 max-w-screen-xl';
-
   return (
-    <section className={`h-screen snap-start ${className}`}>
-      <div
-        className={`${containerClasses} h-full flex flex-col ${alignmentClasses[verticalAlign]} items-center ${paddingClasses[verticalAlign]}`}
-        style={{ boxSizing: 'border-box' }}
-      >
-        {children}
-      </div>
+    <section id={id} className={className} style={style}>
+      {noPadding ? (
+        children
+      ) : (
+        <div className="container mx-auto px-4 sm:px-6 max-w-screen-xl">
+          {children}
+        </div>
+      )}
     </section>
   );
 };
@@ -49,69 +42,84 @@ export default function LandingPage() {
   const pathname = usePathname();
   const lang = pathname.split('/')[1];
   const { sectionRefs } = useScrollContext();
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
+    'yearly'
+  );
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const cards = [
-    { 
-      title: t('cardAIImage'), 
-      subtitle: t('cardAIImageDesc'),
-      gradient: 'from-purple-600 to-blue-500',
-      icon: '🎨'
-    },
-    { 
-      title: t('cardVoiceSynthesis'), 
-      subtitle: t('cardVoiceSynthesisDesc'),
-      gradient: 'from-pink-500 to-orange-400',
-      icon: '🎵'
-    },
-    { 
-      title: t('cardVideoEditing'), 
-      subtitle: t('cardVideoEditingDesc'),
-      gradient: 'from-green-400 to-teal-500',
-      icon: '🎬'
-    },
-    { 
-      title: t('cardCreativeTools'), 
-      subtitle: t('cardCreativeToolsDesc'),
-      gradient: 'from-yellow-400 to-red-500',
-      icon: '✨'
-    },
-  ];
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-  const BUTTER_SERIES = [
-    {
-      name: 'ButterGen',
-      icon: '🎨',
-      gradient: 'from-purple-500 to-pink-500',
-      description: [t('butterGenDesc1'), t('butterGenDesc2')],
-      link: `/${lang}/studio/butter-gen`,
+  // Fetch plans data
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await getPlansOnClient();
+        if (response.status === 200 && response.data) {
+          setPlans(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch plans:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+  const handleContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Contact form submitted:', { email, message });
+  };
+
+  // Process plans data
+  const processedPlans = plans.reduce(
+    (acc: { [key: string]: { monthly?: Plan; yearly?: Plan } }, plan) => {
+      if (!acc[plan.planType]) {
+        acc[plan.planType] = {};
+      }
+      if (plan.billingCycle === 'MONTHLY') {
+        acc[plan.planType].monthly = plan;
+      } else if (plan.billingCycle === 'YEARLY') {
+        acc[plan.planType].yearly = plan;
+      }
+      return acc;
     },
-    {
-      name: 'ButterCover',
-      icon: '🎵',
-      gradient: 'from-blue-500 to-teal-500',
-      description: [t('butterCoverDesc1'), t('butterCoverDesc2')],
-      link: `/${lang}/studio/butter-cover`,
-    },
-    {
-      name: 'ButterTalks',
-      icon: '💬',
-      gradient: 'from-green-500 to-emerald-500',
-      description: [t('butterTalksDesc1'), t('butterTalksDesc2')],
-      link: `/${lang}/studio/butter-talks`,
-    },
-    {
-      name: 'ButterBrush',
-      icon: '✨',
-      gradient: 'from-orange-500 to-red-500',
-      description: [t('butterBrushDesc1'), t('butterBrushDesc2')],
-      link: `/${lang}/studio/butter-brush`,
-    },
-  ];
+    {}
+  );
+
+  const isKorean = lang === 'ko';
+  const currency = isKorean ? '₩' : '$';
+
+  const getPrice = (planType: string, cycle: 'monthly' | 'yearly') => {
+    const plan = processedPlans[planType]?.[cycle];
+    if (!plan) return 0;
+    return isKorean ? plan.priceKrw : plan.priceUsd;
+  };
+
+  const getYearlyMonthlyPrice = (planType: string) => {
+    const yearlyPlan = processedPlans[planType]?.yearly;
+    if (!yearlyPlan) return 0;
+    const yearlyPrice = isKorean ? yearlyPlan.priceKrw : yearlyPlan.priceUsd;
+    return Math.floor(yearlyPrice / 12);
+  };
+
+  const formatPrice = (price: number) => {
+    return price.toLocaleString(isKorean ? 'ko-KR' : 'en-US');
+  };
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'likebutter',
+    name: 'LikeButter',
     url: 'https://www.likebutter.dev',
   };
 
@@ -122,190 +130,467 @@ export default function LandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main>
+      <main className="font-pretendard">
+        {/* Section 1: Hero with YouTube Background */}
         <div
           ref={(el) => {
             sectionRefs.current[0] = el;
           }}
           data-section-index={0}
         >
-          <PageSection className="relative overflow-hidden">
-            {/* Animated Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-pink-900/20 animate-pulse"></div>
-            <div className="absolute inset-0">
-              <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-butter-yellow/5 rounded-full blur-3xl animate-bounce" style={{animationDelay: '0s', animationDuration: '6s'}}></div>
-              <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-butter-orange/5 rounded-full blur-3xl animate-bounce" style={{animationDelay: '2s', animationDuration: '8s'}}></div>
-              <div className="absolute bottom-1/4 left-1/3 w-56 h-56 bg-purple-500/5 rounded-full blur-3xl animate-bounce" style={{animationDelay: '4s', animationDuration: '7s'}}></div>
+          <PageSection
+            id="hero"
+            className="relative overflow-hidden bg-black h-screen flex items-center justify-center"
+            noPadding
+          >
+            {/* YouTube Background */}
+            <div className="absolute inset-0 w-full h-full">
+              <iframe
+                src="https://www.youtube.com/embed/WMweEpGlu_U?autoplay=1&mute=1&loop=1&playlist=WMweEpGlu_U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
+                className="w-full h-full object-cover scale-125"
+                allow="autoplay; encrypted-media"
+                style={{ border: 'none', pointerEvents: 'none' }}
+              />
             </div>
-            
-            <div className="text-center relative z-10 px-4">
-              <div className="mb-6">
-                <p className="text-3xl sm:text-4xl md:text-6xl font-light text-slate-200 animate-fade-in leading-tight">
-                  {t('heroTitle_soft')}
-                </p>
-                <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold bg-gradient-to-r from-white via-butter-yellow to-butter-orange bg-clip-text text-transparent mt-2 animate-fade-in-up leading-tight">
-                  {t('heroTitle_main')}
-                </h1>
+
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-black/60"></div>
+
+            {/* Content */}
+            <div className="relative z-10 text-left max-w-4xl container mx-auto px-4 sm:px-6">
+              <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight font-archivo-black">
+                LikeButter
+              </h1>
+              <div className="text-2xl md:text-3xl text-white/90 mb-12 leading-relaxed">
+                <p>{t('heroTitleLine1')}</p>
+                <p>{t('heroTitleLine2')}</p>
               </div>
-              
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up w-full max-w-md sm:max-w-none mx-auto" style={{animationDelay: '0.5s'}}>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-6 items-start">
                 <Link
                   href={`/${lang}/signup`}
-                  className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-all will-change-transform duration-300 hover:-translate-y-2 hover:shadow-butter-yellow/40 hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-butter-yellow w-full sm:w-auto justify-center"
+                  className="inline-flex items-center gap-3 rounded-full bg-[#FFD93B] px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
                 >
-                  <Sparkles size={18} className="group-hover:rotate-12 transition-transform duration-300 flex-shrink-0" />
-                  <span className="truncate">{t('getStarted')}</span>
+                  {t('heroCtaMain')}
                 </Link>
-                <Link
-                  href={`/${lang}/pricing`}
-                  className="group inline-flex items-center gap-2 rounded-full bg-white/20 backdrop-blur-sm px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white border border-white/30 transition-all duration-300 hover:bg-white/30 hover:border-white/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white w-full sm:w-auto justify-center"
+                <button
+                  onClick={() => scrollToSection('demo')}
+                  className="inline-flex items-center gap-3 rounded-full border-2 border-[#FFD93B] text-[#FFD93B] px-8 py-4 text-lg font-bold bg-transparent transition-all duration-300 hover:bg-[#FFD93B] hover:text-black"
                 >
-                  <span className="truncate">{t('viewPricing')}</span>
-                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0" />
-                </Link>
+                  <Play size={20} />
+                  {t('heroCtaDemo')}
+                </button>
               </div>
+            </div>
+
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 flex flex-col items-center gap-2">
+              <span className="text-sm">{t('heroScroll')}</span>
+              <ArrowDown size={20} className="animate-bounce" />
             </div>
           </PageSection>
         </div>
 
+        {/* Section 2: About Like Butter */}
         <div
           ref={(el) => {
             sectionRefs.current[1] = el;
           }}
           data-section-index={1}
         >
-          <PageSection wide={true} className="[&_*]:snap-none">
-            <CardCarousel slides={cards} />
+          <PageSection id="about" className="bg-black text-white py-32">
+            <div>
+              <div className="max-w-4xl mb-8">
+                <p className="text-[#FFD93B] text-lg font-medium mb-4 tracking-wide">
+                  ABOUT LIKE BUTTER.
+                </p>
+                <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                  {t('sectionAboutTitle')
+                    .split('\n')
+                    .map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i === 0 && <br />}
+                      </span>
+                    ))}
+                </h2>
+                <p className="text-xl text-white/80 leading-relaxed">
+                  {t('sectionAboutDesc')
+                    .split('\n')
+                    .map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i === 0 && <br />}
+                      </span>
+                    ))}
+                </p>
+              </div>
+
+              {/* Cards Section */}
+              <div className="mt-24">
+                <div className="flex justify-end items-end gap-8">
+                  {/* Card 1 - Butter Talks */}
+                  <div className="transform transition-transform duration-300 hover:scale-105">
+                    <Image
+                      src="/card-1.png"
+                      alt="Butter Talks"
+                      width={300}
+                      height={400}
+                      className="rounded-2xl shadow-2xl"
+                      priority
+                    />
+                  </div>
+
+                  {/* Card 2 - Butter Cover */}
+                  <div className="transform transition-transform duration-300 hover:scale-105 -translate-y-8">
+                    <Image
+                      src="/card-2.png"
+                      alt="Butter Cover"
+                      width={300}
+                      height={400}
+                      className="rounded-2xl shadow-2xl"
+                      priority
+                    />
+                  </div>
+
+                  {/* Card 3 - Butter Brush */}
+                  <div className="transform transition-transform duration-300 hover:scale-105">
+                    <Image
+                      src="/card-3.png"
+                      alt="Butter Brush"
+                      width={300}
+                      height={400}
+                      className="rounded-2xl shadow-2xl"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </PageSection>
         </div>
 
+        {/* Section 3: Live Demo */}
         <div
           ref={(el) => {
             sectionRefs.current[2] = el;
           }}
           data-section-index={2}
         >
-          <PageSection verticalAlign="top">
-            <motion.div 
-              className="w-full"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              <motion.h2 
-                className="text-4xl md:text-5xl font-bold text-left"
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                {t('fandomParadigm')}
-              </motion.h2>
-              <motion.div 
-                className="mt-12 aspect-video w-full"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                viewport={{ once: true }}
-                whileHover={{ scale: 1.02 }}
-              >
-                <video
-                  className="h-full w-full object-cover rounded-2xl shadow-2xl"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  src="/hero-bg.mp4"
-                  poster="/hero-poster.jpg"
-                  preload="none"
-                />
-              </motion.div>
-            </motion.div>
-          </PageSection>
+          <PageSection
+            id="demo"
+            className="relative text-white py-32 overflow-hidden"
+            style={{ backgroundColor: '#131313' }}
+            noPadding
+          >
+            <div className="relative container mx-auto px-4 sm:px-6 max-w-screen-xl h-full">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start h-full">
+                <div className="max-w-lg">
+                  <p className="text-[#FFD93B] text-lg font-medium mb-4 tracking-wide">
+                    LIVE DEMO.
+                  </p>
+                  <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                    {t('sectionDemoTitle')
+                      .split('\n')
+                      .map((line, i) => (
+                        <span key={i}>
+                          {line}
+                          {i === 0 && <br />}
+                        </span>
+                      ))}
+                  </h2>
+                  <p className="text-xl text-white/80 leading-relaxed">
+                    {t('sectionDemoDesc')
+                      .split('\n')
+                      .map((line, i) => (
+                        <span key={i}>
+                          {line}
+                          {i === 0 && <br />}
+                        </span>
+                      ))}
+                  </p>
+                </div>
+
+                {/* Mobile Mockup Placeholder - positioned to overlap with gradient */}                <div className="relative lg:self-end">
+                  <div
+                    className="rounded-2xl aspect-[9/16] max-w-sm mx-auto flex items-center justify-center border border-gray-600 shadow-2xl transform translate-y-16"
+                    style={{ backgroundColor: '#2a2a2a' }}
+                  >
+                    <div className="text-center text-gray-500">
+                      <h3 className="text-2xl font-bold mb-2 text-gray-400">
+                        COMING SOON
+                      </h3>
+                      <p className="text-sm">{t('sectionDemoComingSoon')}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Gradient overlay on top of all content */}            <div
+              className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black z-10 pointer-events-none"
+              aria-hidden="true"
+            />          </PageSection>
         </div>
 
+        {/* Section 4: Pricing */}
         <div
           ref={(el) => {
             sectionRefs.current[3] = el;
           }}
           data-section-index={3}
         >
-          <PageSection verticalAlign="top">
-            <motion.div 
-              className="w-full"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true, margin: "-100px" }}
-            >
-              <motion.h2 
-                className="text-4xl md:text-5xl font-bold text-left mb-12"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                {t('butterSeriesTitle')}
-              </motion.h2>
-              <div className="grid gap-6 sm:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-2">
-                {BUTTER_SERIES.map((service, index) => (
-                  <motion.div
-                    key={service.name}
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 * index }}
-                    viewport={{ once: true }}
-                    whileHover={{ scale: 1.05, rotateY: 5 }}
-                    style={{ transformStyle: "preserve-3d" }}
-                  >
-                    <Link href={service.link}>
-                      <div className="group relative overflow-hidden bg-slate-800/50 rounded-2xl p-6 sm:p-8 h-full flex flex-col justify-between transition-all will-change-transform duration-500 cursor-pointer border border-slate-700/50 hover:border-slate-600">
-                        <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
-                        <div className="relative z-10">
-                          <motion.div 
-                            className="flex items-center gap-3 sm:gap-4 mb-4"
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <motion.div 
-                              className="text-3xl sm:text-4xl"
-                              whileHover={{ rotate: 10, scale: 1.1 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              {service.icon}
-                            </motion.div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-butter-yellow transition-colors duration-300">
-                              {service.name}
-                            </h3>
-                          </motion.div>
-                          <ul className="space-y-3 text-slate-200 group-hover:text-slate-100 transition-colors duration-300">
-                            {service.description.map((desc, i) => (
-                              <motion.li 
-                                key={i} 
-                                className="flex items-start gap-2"
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.4, delay: 0.3 + (i * 0.1) }}
-                                viewport={{ once: true }}
-                              >
-                                <span className="text-butter-orange mt-1 flex-shrink-0">•</span>
-                                <span>{desc}</span>
-                              </motion.li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="relative z-10 flex justify-end mt-6">
-                          <div className="p-2 rounded-full bg-butter-yellow/10 group-hover:bg-butter-yellow/20 transition-colors duration-300">
-                            <ArrowRight size={24} className="text-butter-yellow group-hover:translate-x-1 transition-transform duration-300" />
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
+          <PageSection id="pricing" className="bg-black text-white py-32">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-12">
+                <p className="text-[#FFD93B] text-lg font-medium mb-4 tracking-wide">
+                  PLAN.
+                </p>
+                <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                  {t('sectionPricingTitle')
+                    .split('\n')
+                    .map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i === 0 && <br />}
+                      </span>
+                    ))}
+                </h2>
               </div>
-            </motion.div>
+
+              {/* Billing Toggle */}
+              <div className="flex justify-center mb-12">
+                <div className="bg-gray-800 rounded-full p-1 flex">
+                  <button
+                    onClick={() => setBillingCycle('monthly')}
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
+                      billingCycle === 'monthly'
+                        ? 'bg-[#FFD93B] text-black'
+                        : 'text-white hover:text-[#FFD93B]'
+                    }`}
+                  >
+                    {t('monthly')}
+                  </button>
+                  <button
+                    onClick={() => setBillingCycle('yearly')}
+                    className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
+                      billingCycle === 'yearly'
+                        ? 'bg-[#FFD93B] text-black'
+                        : 'text-white hover:text-[#FFD93B]'
+                    }`}
+                  >
+                    {t('yearly')} <span className="ml-1 text-xs">(-20%)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Pricing Cards */}
+              {loading ? (
+                <div className="text-center">로딩 중...</div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Free Plan */}
+                  <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold mb-2">
+                        {t('planFreeName')}
+                      </h3>
+                      <p className="text-gray-400 mb-6">{t('planFreeDesc')}</p>
+                      <div className="text-5xl font-bold text-[#FFD93B]">
+                        Free<span className="text-lg text-gray-400">/월</span>
+                      </div>
+                    </div>
+                    <ul className="space-y-4 mb-8">
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>월 300 크레딧</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>표준 속도</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>워터마크 포함</span>
+                      </li>
+                    </ul>
+                    <Link
+                      href={`/${lang}/signup`}
+                      className="w-full block text-center rounded-full bg-gray-600 hover:bg-gray-500 px-8 py-4 text-lg font-bold transition-colors duration-300"
+                    >
+                      {t('planFreeCta')}
+                    </Link>
+                  </div>
+
+                  {/* Creator Plan */}
+                  <div className="bg-gray-800 rounded-2xl p-8 border-2 border-[#FFD93B] relative overflow-hidden scale-105">
+                    <div className="absolute top-4 right-4 bg-[#FFD93B] text-black px-3 py-1 rounded-full text-sm font-bold">
+                      추천
+                    </div>
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold mb-2">
+                        {t('planCreatorName')}
+                      </h3>
+                      <p className="text-gray-400 mb-6">
+                        {t('planCreatorDesc')}
+                      </p>
+                      <div className="text-5xl font-bold text-[#FFD93B]">
+                        {currency}
+                        {formatPrice(
+                          billingCycle === 'yearly'
+                            ? getYearlyMonthlyPrice('CREATOR')
+                            : getPrice('CREATOR', 'monthly')
+                        )}
+                        <span className="text-lg text-gray-400">/월</span>
+                      </div>
+                      {billingCycle === 'yearly' && (
+                        <p className="text-sm text-green-400 mt-2">
+                          연간 결제시 20% 할인!
+                        </p>
+                      )}
+                    </div>
+                    <ul className="space-y-4 mb-8">
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>월 4,000 크레딧</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>빠른 생성 속도</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>워터마크 없음</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>크레딧 이월</span>
+                      </li>
+                    </ul>
+                    <Link
+                      href={`/${lang}/billing?plan=basic&billing=${billingCycle}`}
+                      className="w-full block text-center rounded-full bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-8 py-4 text-lg font-bold transition-colors duration-300"
+                    >
+                      {t('planCreatorCta')}
+                    </Link>
+                  </div>
+
+                  {/* Professional Plan */}
+                  <div className="bg-gray-800 rounded-2xl p-8 border border-gray-700">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold mb-2">
+                        {t('planProfessionalName')}
+                      </h3>
+                      <p className="text-gray-400 mb-6">
+                        {t('planProfessionalDesc')}
+                      </p>
+                      <div className="text-5xl font-bold text-[#FFD93B]">
+                        {currency}
+                        {formatPrice(
+                          billingCycle === 'yearly'
+                            ? getYearlyMonthlyPrice('PROFESSIONAL')
+                            : getPrice('PROFESSIONAL', 'monthly')
+                        )}
+                        <span className="text-lg text-gray-400">/월</span>
+                      </div>
+                      {billingCycle === 'yearly' && (
+                        <p className="text-sm text-green-400 mt-2">
+                          연간 결제시 20% 할인!
+                        </p>
+                      )}
+                    </div>
+                    <ul className="space-y-4 mb-8">
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>월 12,000 크레딧</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>우선 생성 속도</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>워터마크 없음</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>무제한 크레딧 이월</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <Check className="text-[#FFD93B] w-5 h-5" />
+                        <span>추가 크레딧 구매</span>
+                      </li>
+                    </ul>
+                    <Link
+                      href={`/${lang}/billing?plan=pro&billing=${billingCycle}`}
+                      className="w-full block text-center rounded-full bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg font-bold transition-colors duration-300"
+                    >
+                      {t('planProfessionalCta')}
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </PageSection>
+        </div>
+
+        {/* Section 5: Contact Us */}
+        <div
+          ref={(el) => {
+            sectionRefs.current[4] = el;
+          }}
+          data-section-index={4}
+        >
+          <PageSection className="bg-black text-white py-32">
+            <div className="flex justify-center">
+              <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black p-12 rounded-3xl max-w-6xl w-full">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  {/* Left side - Title */}
+                  <div>
+                    <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                      CONTACT US.
+                    </h2>
+                    <p className="text-xl font-medium">
+                      {t('sectionContactTitle')}
+                    </p>
+                  </div>
+
+                  {/* Right side - Form */}
+                  <div>
+                    <form onSubmit={handleContactSubmit} className="space-y-6">
+                      <div>
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder={t('contactFormEmail')}
+                          className="w-full px-6 py-4 rounded-full text-lg border-0 focus:outline-none focus:ring-4 focus:ring-black/20"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <textarea
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          placeholder={t('contactFormMessage')}
+                          rows={4}
+                          className="w-full px-6 py-4 rounded-2xl text-lg border-0 focus:outline-none focus:ring-4 focus:ring-black/20 resize-none"
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
+                      >
+                        {t('contactFormSubmit')}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </PageSection>
         </div>
       </main>

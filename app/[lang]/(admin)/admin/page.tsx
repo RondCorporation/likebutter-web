@@ -2,8 +2,18 @@ import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { apiServer } from '@/app/_lib/apiServer';
 import { User } from '@/app/_types/api';
+import dynamic from 'next/dynamic';
 
-import AdminDashboardClient from './_components/AdminDashboardClient';
+const AdminDashboardClient = dynamic(
+  () => import('./_components/AdminDashboardClient'),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </div>
+    ),
+  }
+);
 
 async function getUserProfile(): Promise<User | null> {
   try {

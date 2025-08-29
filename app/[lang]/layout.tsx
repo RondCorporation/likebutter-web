@@ -1,5 +1,6 @@
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
+import { Archivo_Black } from 'next/font/google';
 import '../globals.css';
 import { ReactNode } from 'react';
 import { i18n } from '@/i18n.config.mjs';
@@ -9,6 +10,12 @@ import { LayoutClient } from './_components/LayoutClient';
 import initTranslations from '../_lib/i18n-server';
 import TranslationsProvider from '../_components/TranslationsProvider';
 import { User } from '@/app/_types/api';
+
+const archivoBlack = Archivo_Black({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-archivo-black',
+});
 
 export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
@@ -30,7 +37,7 @@ export default async function RootLayout({
     <html
       lang={lang}
       dir={dir(lang)}
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${archivoBlack.variable}`}
     >
       <body>
         <TranslationsProvider

@@ -36,6 +36,8 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
           const queryString = searchParams.toString();
           const currentUrl = pathname + (queryString ? `?${queryString}` : '');
           const returnToParam = encodeURIComponent(currentUrl);
+          
+          
           router.replace(`/${lang}/login?returnTo=${returnToParam}`);
           return;
         }
@@ -46,6 +48,8 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
         const queryString = searchParams.toString();
         const currentUrl = pathname + (queryString ? `?${queryString}` : '');
         const returnToParam = encodeURIComponent(currentUrl);
+        
+        
         router.replace(`/${lang}/login?returnTo=${returnToParam}`);
         return;
       } finally {

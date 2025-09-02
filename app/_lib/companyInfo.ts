@@ -21,7 +21,7 @@ export const COMPANY_INFO = {
 
   // 연락처
   contact: {
-    business: 'biz@likebutter.ai',
+    business: 'biz@rondcorp.ai',
     support: 'info@rondcorp.com',
     phone: '+82 10-5231-1263',
   },

@@ -150,46 +150,61 @@ const PlanCard = ({
 
   return (
     <div
-      className={`flex h-full flex-col rounded-2xl p-8 ${
+      className={`flex h-full flex-col rounded-3xl p-8 transition-all duration-300 hover:scale-[1.02] ${
         plan.isPopular
-          ? 'bg-slate-800/80 border-2 border-butter-yellow shadow-2xl shadow-butter-yellow/20'
-          : 'bg-slate-800/50 border border-slate-700'
+          ? 'bg-gradient-to-br from-slate-800/90 to-slate-900/90 border-2 border-butter-yellow shadow-2xl shadow-butter-yellow/25 relative overflow-hidden'
+          : 'bg-gradient-to-br from-slate-800/60 to-slate-900/60 border border-slate-700/50 hover:border-slate-600'
       } ${isCurrent ? 'ring-2 ring-butter-yellow ring-offset-4 ring-offset-black' : ''}`}
     >
+      {plan.isPopular && (
+        <div className="absolute top-0 right-0 bg-gradient-to-r from-butter-yellow to-butter-orange text-black text-xs font-bold px-4 py-1 rounded-bl-2xl">
+          인기
+        </div>
+      )}
+      
       <div className="flex-grow">
-        <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
-        <p className="mt-2 text-slate-300 h-12">{plan.description}</p>
-        <div className="mt-6">
-          <span className="text-5xl font-extrabold text-white">
-            {formatPrice(price)}
-          </span>
+        <div className="mb-6">
+          <h3 className="text-3xl font-bold text-white mb-2">{plan.name}</h3>
+          <p className="text-slate-300 text-base leading-relaxed">{plan.description}</p>
+        </div>
+        
+        <div className="mb-8 pb-6 border-b border-slate-700/50">
+          <div className="flex items-baseline gap-1">
+            <span className="text-5xl font-black text-white">
+              {formatPrice(price)}
+            </span>
+            {!plan.isCustom && (
+              <span className="text-xl font-medium text-slate-400">/mo</span>
+            )}
+          </div>
           {!plan.isCustom && (
-            <>
-              <span className="text-lg font-medium text-slate-400">/mo</span>
-              <div className="mt-2 text-sm text-slate-400">
-                {billingCycle === 'monthly' 
-                  ? translations.servicePeriodMonthly 
-                  : translations.servicePeriodYearly
-                }
-              </div>
-            </>
+            <div className="mt-3 text-sm text-slate-400">
+              {billingCycle === 'monthly' 
+                ? translations.servicePeriodMonthly 
+                : translations.servicePeriodYearly
+              }
+            </div>
           )}
         </div>
-        <ul className="mt-8 space-y-4">
+        
+        <ul className="space-y-4 mb-8">
           {features.map((feature, index) => (
-            <li key={index} className="flex items-center gap-3">
-              <CheckCircle2 className="h-6 w-6 text-butter-yellow" />
-              <span className="text-slate-200">{feature}</span>
+            <li key={index} className="flex items-start gap-3">
+              <div className="mt-0.5">
+                <CheckCircle2 className="h-5 w-5 text-butter-yellow" />
+              </div>
+              <span className="text-slate-200 leading-relaxed">{feature}</span>
             </li>
           ))}
         </ul>
       </div>
-      <div className="mt-10">
+      
+      <div className="mt-auto">
         {getButton()}
         {!plan.isCustom && !isCurrent && !isDowngrade && (
-          <div className="mt-3 text-center text-xs text-slate-400">
+          <div className="mt-4 text-center text-xs text-slate-500 space-y-1">
             <div>{billingCycle === 'monthly' ? translations.monthlyBilling : translations.yearlyBilling}</div>
-            <div className="mt-1">{translations.autoRenewing}</div>
+            <div>{translations.autoRenewing}</div>
           </div>
         )}
       </div>
@@ -207,6 +222,7 @@ function PricingClientContent({
   const searchParams = useSearchParams();
   const selectedPlanParam = searchParams.get('plan'); // basic, pro, enterprise
   const billingParam = searchParams.get('billing'); // monthly, yearly
+  
   
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     (billingParam as 'monthly' | 'yearly') || 'yearly'
@@ -351,90 +367,136 @@ function PricingClientContent({
   const isYearlySubscription = activePlanKey.includes('YEARLY');
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-16 text-white">
-      <div className="text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-          {activeSubscription ? translations.managePlan : translations.title}
-        </h1>
-        <p className="mt-4 text-lg md:text-xl text-slate-300">
-          {activeSubscription 
-            ? `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다` 
-            : translations.subtitle}
-        </p>
+    <div className="min-h-screen bg-black">
+      {/* Header Navigation */}
+      <div className="bg-slate-900/50 border-b border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-4">
+              <Link 
+                href={`/${lang}/studio`}
+                className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                스튜디오로 돌아가기
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* 현재 구독 상태 표시 */}
-      {activeSubscription && currentPlan && (
-        <div className="mt-8 max-w-2xl mx-auto">
-          <div className="bg-slate-800/60 border border-butter-yellow/30 rounded-2xl p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-semibold text-butter-yellow">
-                  현재 플랜: {currentPlan.name}
-                </h3>
-                <p className="text-slate-300 mt-1">
-                  {isYearlySubscription ? translations.yearlyBilling : translations.monthlyBilling}<br/>
-                  만료일: {new Date(activeSubscription.endDate).toLocaleDateString('ko-KR')} | {translations.autoRenewing}
-                </p>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-white">
-                  {isYearlySubscription 
-                    ? (typeof currentPlan.priceYearly === 'number' ? `₩${currentPlan.priceYearly.toLocaleString()}/년` : currentPlan.priceYearly)
-                    : (typeof currentPlan.priceMonthly === 'number' ? `₩${currentPlan.priceMonthly.toLocaleString()}/월` : currentPlan.priceMonthly)
-                  }
+      <div className="container mx-auto px-4 sm:px-6 py-16 text-white">
+        <div className="text-center max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white">
+            {activeSubscription ? '플랜 관리' : translations.title}
+          </h1>
+          <p className="mt-4 text-lg md:text-xl text-slate-300">
+            {activeSubscription 
+              ? `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다` 
+              : translations.subtitle}
+          </p>
+        </div>
+
+        {/* 현재 구독 상태 표시 */}
+        {activeSubscription && currentPlan && (
+          <div className="mt-12 max-w-4xl mx-auto">
+            <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-butter-yellow/20 rounded-3xl p-8 shadow-2xl shadow-butter-yellow/5">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-butter-yellow/20 rounded-full">
+                      <Shield className="h-5 w-5 text-butter-yellow" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-butter-yellow">
+                      현재 플랜
+                    </h3>
+                  </div>
+                  <h4 className="text-3xl font-extrabold text-white mb-2">
+                    {currentPlan.name}
+                  </h4>
+                  <div className="flex flex-col gap-2 text-slate-300">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="h-4 w-4" />
+                      <span>
+                        {isYearlySubscription ? '연간 결제' : '월간 결제'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span>
+                        만료일: {new Date(activeSubscription.endDate).toLocaleDateString('ko-KR')} 
+                        <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full">
+                          자동갱신
+                        </span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-sm text-slate-400">
-                  상태: {activeSubscription.status === 'ACTIVE' ? '활성' : activeSubscription.status}
+                <div className="text-center md:text-right">
+                  <div className="text-4xl font-black text-white mb-2">
+                    {isYearlySubscription 
+                      ? (typeof currentPlan.priceYearly === 'number' ? `₩${currentPlan.priceYearly.toLocaleString()}` : currentPlan.priceYearly)
+                      : (typeof currentPlan.priceMonthly === 'number' ? `₩${currentPlan.priceMonthly.toLocaleString()}` : currentPlan.priceMonthly)
+                    }
+                    <span className="text-lg text-slate-400 ml-1">
+                      /{isYearlySubscription ? '년' : '월'}
+                    </span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 text-green-300 text-sm rounded-full">
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    활성
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 추천 플랜 섹션 */}
-      {activeSubscription && personalizedPlans.length > 1 && (
-        <div className="mt-12 text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">
-            더 나은 플랜으로 업그레이드하세요
-          </h2>
-          <p className="text-slate-300">
-            현재 플랜보다 더 많은 기능을 이용할 수 있는 플랜을 확인해보세요
-          </p>
-        </div>
-      )}
+        {/* 추천 플랜 섹션 */}
+        {activeSubscription && personalizedPlans.length > 1 && (
+          <div className="mt-16 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              🚀 더 나은 플랜으로 업그레이드하세요
+            </h2>
+            <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+              현재 플랜보다 더 많은 기능을 이용할 수 있는 플랜을 확인해보세요
+            </p>
+          </div>
+        )}
 
-      <div className="mt-10 flex items-center justify-center gap-4">
-        <span
-          className={`font-medium transition ${
-            billingCycle === 'monthly' ? 'text-butter-yellow' : 'text-slate-400'
-          }`}
-        >
-          {translations.monthly}
-        </span>
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            type="checkbox"
-            className="peer sr-only"
-            checked={billingCycle === 'yearly'}
-            onChange={() =>
-              setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')
-            }
-          />
-          <div className="peer h-7 w-14 rounded-full bg-slate-700 after:absolute after:left-[4px] after:top-[4px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:content[''] after:transition-all peer-checked:bg-butter-yellow peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
-        </label>
-        <span
-          className={`font-medium transition ${
-            billingCycle === 'yearly' ? 'text-butter-yellow' : 'text-slate-400'
-          }`}
-        >
-          {translations.yearly}
-          <span className="ml-2 rounded-full bg-green-500/20 px-2 py-1 text-xs font-semibold text-green-300">
-            {translations.save20}
-          </span>
-        </span>
-      </div>
+        {/* 플랜이 있을 때만 토글 표시 */}
+        {personalizedPlans.length > 0 && (
+          <div className="mt-12 flex items-center justify-center gap-4">
+            <span
+              className={`text-lg font-semibold transition ${
+                billingCycle === 'monthly' ? 'text-butter-yellow' : 'text-slate-400'
+              }`}
+            >
+              {translations.monthly}
+            </span>
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input
+                type="checkbox"
+                className="peer sr-only"
+                checked={billingCycle === 'yearly'}
+                onChange={() =>
+                  setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')
+                }
+              />
+              <div className="peer h-8 w-16 rounded-full bg-slate-700 after:absolute after:left-[4px] after:top-[4px] after:h-6 after:w-6 after:rounded-full after:border after:border-slate-300 after:bg-white after:content[''] after:transition-all peer-checked:bg-butter-yellow peer-checked:after:translate-x-full peer-checked:after:border-white shadow-lg"></div>
+            </label>
+            <span
+              className={`text-lg font-semibold transition ${
+                billingCycle === 'yearly' ? 'text-butter-yellow' : 'text-slate-400'
+              }`}
+            >
+              {translations.yearly}
+              <span className="ml-3 rounded-full bg-gradient-to-r from-green-400 to-green-500 px-3 py-1 text-sm font-bold text-white shadow-lg">
+                {translations.save20}
+              </span>
+            </span>
+          </div>
+        )}
 
       <div className={`mt-16 grid gap-8 ${personalizedPlans.length === 1 ? 'justify-center max-w-md mx-auto' : personalizedPlans.length === 2 ? 'sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-1 lg:grid-cols-3'}`}>
         {personalizedPlans.map((plan) => {
@@ -485,34 +547,7 @@ function PricingClientContent({
           })}
       </div>
 
-      {/* 무료 사용자에게 프리미엄 기능 안내 */}
-      {!activeSubscription && (
-        <div className="mt-16 max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-butter-yellow/10 to-butter-orange/10 border border-butter-yellow/30 rounded-2xl p-8 text-center">
-            <h3 className="text-2xl font-bold text-butter-yellow mb-4">
-              🎯 프리미엄 기능을 경험해보세요
-            </h3>
-            <p className="text-slate-300 text-lg mb-6">
-              더 빠른 AI 처리, 무제한 생성, 고품질 결과물과 함께<br />
-              Like-Butter의 모든 기능을 마음껏 활용하세요
-            </p>
-            <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="bg-slate-800/50 rounded-lg p-4">
-                <div className="text-butter-yellow font-semibold mb-2">⚡ 빠른 처리속도</div>
-                <div className="text-slate-300">우선순위 처리로 더 빠른 결과</div>
-              </div>
-              <div className="bg-slate-800/50 rounded-lg p-4">
-                <div className="text-butter-yellow font-semibold mb-2">🎨 고품질 결과물</div>
-                <div className="text-slate-300">프리미엄 AI 모델 액세스</div>
-              </div>
-              <div className="bg-slate-800/50 rounded-lg p-4">
-                <div className="text-butter-yellow font-semibold mb-2">📈 무제한 사용</div>
-                <div className="text-slate-300">일일 한도 없이 자유롭게</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

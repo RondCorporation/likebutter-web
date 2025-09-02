@@ -86,6 +86,7 @@ function SocialButtonsContent({
     localStorage.setItem('lastUsedSocialLogin', provider.toLowerCase());
 
     const returnTo = searchParams.get('returnTo');
+    
     if (returnTo) {
       // returnTo is already URL-encoded, decode it first
       const decodedReturnTo = decodeURIComponent(returnTo);
@@ -93,9 +94,9 @@ function SocialButtonsContent({
       const absoluteReturnTo = decodedReturnTo.startsWith('/')
         ? decodedReturnTo
         : `/${decodedReturnTo}`;
+      
+      // Store in localStorage for redirect after OAuth
       localStorage.setItem('oauthReturnTo', absoluteReturnTo);
-    } else {
-      localStorage.removeItem('oauthReturnTo');
     }
 
     if (provider === 'Facebook' || provider === 'X') {
@@ -103,7 +104,11 @@ function SocialButtonsContent({
       alert(
         `${provider} login is currently unavailable. Please try another method.`
       );
+      return;
     }
+
+    // No need to modify OAuth URL - just use original href
+    // localStorage will handle the redirect path
   };
 
   return (

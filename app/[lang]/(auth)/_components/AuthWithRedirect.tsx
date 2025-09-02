@@ -40,7 +40,16 @@ function AuthWithRedirectContent({ children }: { children: ReactNode }) {
 
           // 리디렉션 URL을 결정합니다.
           const lang = pathname.split('/')[1] || 'ko';
-          const returnTo = searchParams.get('returnTo');
+          let returnTo = searchParams.get('returnTo');
+          
+          // /login/success 페이지에서는 localStorage도 확인
+          if (!returnTo && pathname.includes('/login/success')) {
+            returnTo = localStorage.getItem('oauthReturnTo');
+            if (returnTo) {
+              localStorage.removeItem('oauthReturnTo');
+            }
+          }
+          
           // 'returnTo' 파라미터가 있으면 사용하고, 없으면 /studio 페이지로 기본 설정합니다.
           const redirectUrl = returnTo ? decodeURIComponent(returnTo) : `/${lang}/studio`;
           

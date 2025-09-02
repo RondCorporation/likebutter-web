@@ -39,8 +39,8 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
       toast.error(t('loginRequiredForPayment'));
       router.push(
         `/${lang}/login?returnTo=${encodeURIComponent(
-          window.location.pathname + window.location.search,
-        )}`,
+          window.location.pathname + window.location.search
+        )}`
       );
       return;
     }
@@ -70,7 +70,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
         throw new Error(
           `${t('billingKeyError')}: ${
             issueResponse?.message || t('userCancelled')
-          }`,
+          }`
         );
       }
 
@@ -79,7 +79,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
 
       if (createSubResponse.data?.subscriptionId) {
         const detailsResponse = await getSubscriptionDetails(
-          createSubResponse.data.subscriptionId,
+          createSubResponse.data.subscriptionId
         );
         const latestPayment = detailsResponse.data?.paymentHistory?.[0];
 
@@ -140,7 +140,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
             </div>
             <div className="mt-8">
               <Link
-                href={`/${lang}/pricing`}
+                href={`/${lang}/billing`}
                 className="flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-butter-yellow"
               >
                 <ArrowLeft size={16} />

@@ -214,7 +214,7 @@ export default function SubscriptionManager() {
 
   const goToPricing = () => {
     closeSettings();
-    router.push(`/${lang}/pricing`);
+    router.push(`/${lang}/billing`);
   };
 
   if (isLoading) {

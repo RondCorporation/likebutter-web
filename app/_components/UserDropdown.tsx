@@ -72,14 +72,14 @@ export default function UserDropdown() {
             <LayoutGrid size={16} /> {t('dropdownStudio')}
           </Link>
           <Link
-            href={`/${lang}/pricing`}
+            href={`/${lang}/billing`}
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <CreditCard size={16} /> {t('dropdownSubscription')}
           </Link>
           <Link
-            href={`/${lang}/pricing/history`}
+            href={`/${lang}/billing/history`}
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >

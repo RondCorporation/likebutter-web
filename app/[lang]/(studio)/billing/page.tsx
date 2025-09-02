@@ -74,7 +74,7 @@ export default async function BillingPage({ params, searchParams }: Props) {
         : processedPlans[planType]?.monthly;
 
     if (!planData) {
-      return redirect(`/${lang}/pricing`);
+      return redirect(`/${lang}/billing`);
     }
 
     const isKorean = lang === 'ko';
@@ -90,13 +90,13 @@ export default async function BillingPage({ params, searchParams }: Props) {
     const priceFormatted =
       billingCycleQuery === 'yearly'
         ? `${currency}${pricePerMonth.toLocaleString(
-            isKorean ? 'ko-KR' : 'en-US',
+            isKorean ? 'ko-KR' : 'en-US'
           )}/mo`
         : `${currency}${price.toLocaleString(isKorean ? 'ko-KR' : 'en-US')}/mo`;
 
     const planForCheckout = {
       name: t(
-        planType === 'CREATOR' ? 'planCreatorName' : 'planProfessionalName',
+        planType === 'CREATOR' ? 'planCreatorName' : 'planProfessionalName'
       ),
       priceFormatted,
       features: PLAN_FEATURES_MAP[planType].map((featureKey) => t(featureKey)),

@@ -268,7 +268,10 @@ function PricingClientContent({
 
   const handlePayment = async (plan: Plan) => {
     if (!isAuthenticated || !user) {
-      const returnToParam = encodeURIComponent(`/${lang}/billing`);
+      // searchParams를 사용하여 현재 쿼리 파라미터를 포함한 returnTo 생성
+      const queryString = searchParams.toString();
+      const currentUrl = `/${lang}/billing${queryString ? `?${queryString}` : ''}`;
+      const returnToParam = encodeURIComponent(currentUrl);
       router.push(`/${lang}/login?returnTo=${returnToParam}`);
       return;
     }

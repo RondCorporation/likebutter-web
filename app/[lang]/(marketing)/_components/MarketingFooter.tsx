@@ -20,15 +20,19 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
 
     // Unified footer styling for all marketing pages
     const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start' : 'pt-20'}`;
-    
-    const footerContentClasses = isSnapSection 
-      ? 'h-[calc(100%-4rem)] rounded-t-[3rem] pt-16 pb-8' 
+
+    const footerContentClasses = isSnapSection
+      ? 'h-[calc(100%-4rem)] rounded-t-[3rem] pt-16 pb-8'
       : 'pt-20 pb-12';
 
     return (
       <footer className={footerClasses} ref={ref} {...props}>
-        <div className={`w-full ${isSnapSection ? 'h-full flex flex-col justify-end' : ''}`}>
-          <div className={`w-full bg-gradient-to-br from-[#0A1929] via-[#0D2136] to-[#112740] ${footerContentClasses}`}>
+        <div
+          className={`w-full ${isSnapSection ? 'h-full flex flex-col justify-end' : ''}`}
+        >
+          <div
+            className={`w-full bg-gradient-to-br from-[#0A1929] via-[#0D2136] to-[#112740] ${footerContentClasses}`}
+          >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
               {/* Logo Section */}
               <div className="text-center mb-16">
@@ -49,7 +53,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                   </h3>
                   <nav className="flex flex-col space-y-3 text-sm">
                     <Link
-                      href={`/${lang}/pricing`}
+                      href={`/${lang}/billing`}
                       className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
                     >
                       {t('navPricing')}
@@ -132,19 +136,25 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                       <span>{t('companyCEO')}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block mb-1">사업자등록번호</span>
+                      <span className="text-slate-500 block mb-1">
+                        사업자등록번호
+                      </span>
                       <span>{t('companyBusinessNumber')}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block mb-1">사업장 주소</span>
+                      <span className="text-slate-500 block mb-1">
+                        사업장 주소
+                      </span>
                       <span>{t('companyFullAddress')}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block mb-1">고객센터</span>
+                      <span className="text-slate-500 block mb-1">
+                        고객센터
+                      </span>
                       <div className="space-y-1">
                         <div>
                           <span className="text-slate-400">전화: </span>
-                          <a 
+                          <a
                             href={`tel:${COMPANY_INFO.contact.phone}`}
                             className="hover:text-accent transition-colors duration-200"
                           >
@@ -153,7 +163,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                         </div>
                         <div>
                           <span className="text-slate-400">이메일: </span>
-                          <a 
+                          <a
                             href={`mailto:${COMPANY_INFO.contact.support}`}
                             className="hover:text-accent transition-colors duration-200"
                           >
@@ -171,10 +181,12 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                 <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                   <div className="text-sm text-slate-500 text-center md:text-left">
                     <p>
-                      © {new Date().getFullYear()} {t('companyName')}. {t('footerRights')}
+                      © {new Date().getFullYear()} {t('companyName')}.{' '}
+                      {t('footerRights')}
                     </p>
                     <p className="mt-1">
-                      {t('companyBusinessType')} | {t('companyTaxType')} | {t('companyStatus')}
+                      {t('companyBusinessType')} | {t('companyTaxType')} |{' '}
+                      {t('companyStatus')}
                     </p>
                   </div>
                   <div className="text-sm text-slate-500">

@@ -2,8 +2,8 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import PortOne from '@portone/browser-sdk/v2';
 import toast from 'react-hot-toast';
+import { loadPortone } from '@/lib/portone';
 import {
   createSubscription,
   registerBillingKey,
@@ -14,7 +14,13 @@ import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
 import { Subscription } from '@/app/_types/subscription';
 import { useUIStore } from '@/app/_stores/uiStore';
-import { CheckCircle2, Shield, CreditCard, Clock, ArrowLeft } from 'lucide-react';
+import {
+  CheckCircle2,
+  Shield,
+  CreditCard,
+  Clock,
+  ArrowLeft,
+} from 'lucide-react';
 import Link from 'next/link';
 
 type Plan = {
@@ -161,13 +167,15 @@ const PlanCard = ({
           인기
         </div>
       )}
-      
+
       <div className="flex-grow">
         <div className="mb-6">
           <h3 className="text-3xl font-bold text-white mb-2">{plan.name}</h3>
-          <p className="text-slate-300 text-base leading-relaxed">{plan.description}</p>
+          <p className="text-slate-300 text-base leading-relaxed">
+            {plan.description}
+          </p>
         </div>
-        
+
         <div className="mb-8 pb-6 border-b border-slate-700/50">
           <div className="flex items-baseline gap-1">
             <span className="text-5xl font-black text-white">
@@ -179,14 +187,13 @@ const PlanCard = ({
           </div>
           {!plan.isCustom && (
             <div className="mt-3 text-sm text-slate-400">
-              {billingCycle === 'monthly' 
-                ? translations.servicePeriodMonthly 
-                : translations.servicePeriodYearly
-              }
+              {billingCycle === 'monthly'
+                ? translations.servicePeriodMonthly
+                : translations.servicePeriodYearly}
             </div>
           )}
         </div>
-        
+
         <ul className="space-y-4 mb-8">
           {features.map((feature, index) => (
             <li key={index} className="flex items-start gap-3">
@@ -198,12 +205,16 @@ const PlanCard = ({
           ))}
         </ul>
       </div>
-      
+
       <div className="mt-auto">
         {getButton()}
         {!plan.isCustom && !isCurrent && !isDowngrade && (
           <div className="mt-4 text-center text-xs text-slate-500 space-y-1">
-            <div>{billingCycle === 'monthly' ? translations.monthlyBilling : translations.yearlyBilling}</div>
+            <div>
+              {billingCycle === 'monthly'
+                ? translations.monthlyBilling
+                : translations.yearlyBilling}
+            </div>
             <div>{translations.autoRenewing}</div>
           </div>
         )}
@@ -222,17 +233,16 @@ function PricingClientContent({
   const searchParams = useSearchParams();
   const selectedPlanParam = searchParams.get('plan'); // basic, pro, enterprise
   const billingParam = searchParams.get('billing'); // monthly, yearly
-  
-  
+
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     (billingParam as 'monthly' | 'yearly') || 'yearly'
   );
   const [isLoading, setIsLoading] = useState(false);
   const [activeSubscription, setActiveSubscription] =
     useState<Subscription | null>(null);
-  const [currentStep, setCurrentStep] = useState<'selection' | 'checkout' | 'confirmation'>(
-    selectedPlanParam ? 'checkout' : 'selection'
-  );
+  const [currentStep, setCurrentStep] = useState<
+    'selection' | 'checkout' | 'confirmation'
+  >(selectedPlanParam ? 'checkout' : 'selection');
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { openSettings } = useUIStore();
@@ -263,11 +273,15 @@ function PricingClientContent({
   const getPersonalizedPlans = () => {
     if (!activeSubscription || activePlanKey === 'FREE') {
       // 무료 사용자: 모든 유료 플랜 표시
-      return plans.filter(p => p.key !== 'Free' && (p.isCustom || p.planKeyMonthly || p.planKeyYearly));
+      return plans.filter(
+        (p) =>
+          p.key !== 'Free' &&
+          (p.isCustom || p.planKeyMonthly || p.planKeyYearly)
+      );
     }
 
     // 현재 구독이 있는 사용자: 현재 플랜 + 업그레이드 가능한 플랜만 표시
-    return plans.filter(p => {
+    return plans.filter((p) => {
       if (p.key === 'Free') return false;
       if (!p.isCustom && !p.planKeyMonthly && !p.planKeyYearly) return false;
 
@@ -298,6 +312,10 @@ function PricingClientContent({
     }
 
     setIsLoading(true);
+    // 사용자 경험 향상을 위해 결제 준비 중이라는 토스트를 띄워줍니다.
+    const loadingToastId = toast.loading(
+      translations.paymentPreparing || '결제 준비 중...'
+    );
 
     try {
       const planKey =
@@ -311,6 +329,9 @@ function PricingClientContent({
       if (!storeId || !channelKey) {
         throw new Error('Payment environment variables are not set.');
       }
+
+      const PortOne = await loadPortone();
+      toast.dismiss(loadingToastId);
 
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
@@ -346,6 +367,7 @@ function PricingClientContent({
         );
       }
     } catch (error: any) {
+      toast.dismiss(loadingToastId); // 에러 발생 시에도 로딩 토스트를 닫아줍니다.
       toast.error(`An error occurred: ${error.message}`);
     } finally {
       setIsLoading(false);
@@ -355,11 +377,12 @@ function PricingClientContent({
   // 현재 플랜 정보 표시용 함수
   const getCurrentPlanInfo = () => {
     if (!activeSubscription) return null;
-    
-    const currentPlan = plans.find(p => 
-      p.planKeyMonthly === activePlanKey || p.planKeyYearly === activePlanKey
+
+    const currentPlan = plans.find(
+      (p) =>
+        p.planKeyMonthly === activePlanKey || p.planKeyYearly === activePlanKey
     );
-    
+
     return currentPlan;
   };
 
@@ -373,7 +396,7 @@ function PricingClientContent({
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <Link 
+              <Link
                 href={`/${lang}/studio`}
                 className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
               >
@@ -391,8 +414,8 @@ function PricingClientContent({
             {activeSubscription ? '플랜 관리' : translations.title}
           </h1>
           <p className="mt-4 text-lg md:text-xl text-slate-300">
-            {activeSubscription 
-              ? `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다` 
+            {activeSubscription
+              ? `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다`
               : translations.subtitle}
           </p>
         </div>
@@ -424,7 +447,10 @@ function PricingClientContent({
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
                       <span>
-                        만료일: {new Date(activeSubscription.endDate).toLocaleDateString('ko-KR')} 
+                        만료일:{' '}
+                        {new Date(
+                          activeSubscription.endDate
+                        ).toLocaleDateString('ko-KR')}
                         <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full">
                           자동갱신
                         </span>
@@ -434,10 +460,13 @@ function PricingClientContent({
                 </div>
                 <div className="text-center md:text-right">
                   <div className="text-4xl font-black text-white mb-2">
-                    {isYearlySubscription 
-                      ? (typeof currentPlan.priceYearly === 'number' ? `₩${currentPlan.priceYearly.toLocaleString()}` : currentPlan.priceYearly)
-                      : (typeof currentPlan.priceMonthly === 'number' ? `₩${currentPlan.priceMonthly.toLocaleString()}` : currentPlan.priceMonthly)
-                    }
+                    {isYearlySubscription
+                      ? typeof currentPlan.priceYearly === 'number'
+                        ? `₩${currentPlan.priceYearly.toLocaleString()}`
+                        : currentPlan.priceYearly
+                      : typeof currentPlan.priceMonthly === 'number'
+                        ? `₩${currentPlan.priceMonthly.toLocaleString()}`
+                        : currentPlan.priceMonthly}
                     <span className="text-lg text-slate-400 ml-1">
                       /{isYearlySubscription ? '년' : '월'}
                     </span>
@@ -469,7 +498,9 @@ function PricingClientContent({
           <div className="mt-12 flex items-center justify-center gap-4">
             <span
               className={`text-lg font-semibold transition ${
-                billingCycle === 'monthly' ? 'text-butter-yellow' : 'text-slate-400'
+                billingCycle === 'monthly'
+                  ? 'text-butter-yellow'
+                  : 'text-slate-400'
               }`}
             >
               {translations.monthly}
@@ -480,14 +511,18 @@ function PricingClientContent({
                 className="peer sr-only"
                 checked={billingCycle === 'yearly'}
                 onChange={() =>
-                  setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')
+                  setBillingCycle(
+                    billingCycle === 'monthly' ? 'yearly' : 'monthly'
+                  )
                 }
               />
               <div className="peer h-8 w-16 rounded-full bg-slate-700 after:absolute after:left-[4px] after:top-[4px] after:h-6 after:w-6 after:rounded-full after:border after:border-slate-300 after:bg-white after:content[''] after:transition-all peer-checked:bg-butter-yellow peer-checked:after:translate-x-full peer-checked:after:border-white shadow-lg"></div>
             </label>
             <span
               className={`text-lg font-semibold transition ${
-                billingCycle === 'yearly' ? 'text-butter-yellow' : 'text-slate-400'
+                billingCycle === 'yearly'
+                  ? 'text-butter-yellow'
+                  : 'text-slate-400'
               }`}
             >
               {translations.yearly}
@@ -498,8 +533,10 @@ function PricingClientContent({
           </div>
         )}
 
-      <div className={`mt-16 grid gap-8 ${personalizedPlans.length === 1 ? 'justify-center max-w-md mx-auto' : personalizedPlans.length === 2 ? 'sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-1 lg:grid-cols-3'}`}>
-        {personalizedPlans.map((plan) => {
+        <div
+          className={`mt-16 grid gap-8 ${personalizedPlans.length === 1 ? 'justify-center max-w-md mx-auto' : personalizedPlans.length === 2 ? 'sm:grid-cols-1 lg:grid-cols-2 max-w-4xl mx-auto' : 'sm:grid-cols-1 lg:grid-cols-3'}`}
+        >
+          {personalizedPlans.map((plan) => {
             const monthlyPlanRank = planRanks[plan.planKeyMonthly] ?? -1;
             const yearlyPlanRank = planRanks[plan.planKeyYearly] ?? -1;
             const currentPlanRank =
@@ -515,7 +552,9 @@ function PricingClientContent({
             const isDowngrade =
               activeSubscription && currentPlanRank < activePlanRank;
             const isUpgrade =
-              activeSubscription && currentPlanRank > activePlanRank && !isCurrent;
+              activeSubscription &&
+              currentPlanRank > activePlanRank &&
+              !isCurrent;
 
             const planFeatures = features
               .filter((f) => f.category === translations.featureCategoryCore)
@@ -545,8 +584,7 @@ function PricingClientContent({
               />
             );
           })}
-      </div>
-
+        </div>
       </div>
     </div>
   );
@@ -554,11 +592,13 @@ function PricingClientContent({
 
 export default function PricingClient(props: Props) {
   return (
-    <Suspense fallback={
-      <div className="container mx-auto px-4 sm:px-6 py-16 text-white flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="container mx-auto px-4 sm:px-6 py-16 text-white flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
+        </div>
+      }
+    >
       <PricingClientContent {...props} />
     </Suspense>
   );

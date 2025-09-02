@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import PortOne from '@portone/browser-sdk/v2';
 import toast from 'react-hot-toast';
+import { loadPortone } from '@/lib/portone';
 import {
   createSubscription,
   registerBillingKey,
@@ -46,8 +46,15 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
     }
 
     setIsLoading(true);
+    const loadingToastId = toast.loading(
+      t('paymentPreparing') || '결제 준비 중...'
+    );
 
     try {
+      // ⬇️ --- 핵심 수정 사항 --- ⬇️
+      const PortOne = await loadPortone();
+      toast.dismiss(loadingToastId);
+
       // 3. Use the planKey from props
       const { planKey } = plan;
       if (!planKey) {
@@ -92,6 +99,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
         throw new Error(t('subscriptionIdError'));
       }
     } catch (error: any) {
+      toast.dismiss(loadingToastId);
       toast.error(`${t('genericError')}: ${error.message}`);
     } finally {
       setIsLoading(false);

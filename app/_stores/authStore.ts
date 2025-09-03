@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { getMe } from '@/app/_lib/apis/user.api';
 import { clearSession } from '@/app/_lib/apis/auth.api';
-import { ApiResponse, User, Subscription } from '@/app/_types/api';
+import { User } from '@/app/_types/api';
 
 export interface LoginResponse {
   accessToken: { value: string };
@@ -46,7 +46,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ isLoading: false });
       return;
     }
-    
+
     set({ isLoading: true });
 
     try {
@@ -56,9 +56,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isAuthenticated: true,
       });
     } catch (error) {
-      // This is an expected failure if the user is not logged in.
-      // The auth-failure event will handle the logout process.
-      // No need to log an error here.
       set({
         user: null,
         isAuthenticated: false,
@@ -75,10 +72,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-
   logout: () => {
     // 자동 로그아웃의 경우 토큰이 이미 만료되었으므로 clearSession 사용
-    clearSession().catch((err) => console.warn('Failed to clear session:', err));
+    clearSession().catch((err) =>
+      console.warn('Failed to clear session:', err)
+    );
     set({
       user: null,
       isAuthenticated: false,

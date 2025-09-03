@@ -7,7 +7,6 @@ import AuthInitializer from '@/app/_components/AuthInitializer';
 import AuthGuard from '@/app/_components/AuthGuard';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
-import { AuthProvider } from '@/app/_contexts/AuthContext';
 
 interface AdminLayoutClientProps {
   children: ReactNode;
@@ -15,8 +14,7 @@ interface AdminLayoutClientProps {
 
 export default function AdminLayoutClient({ children }: AdminLayoutClientProps) {
   return (
-    <AuthProvider shouldInitializeAuth={true}>
-      <AuthInitializer 
+    <AuthInitializer 
         preloadedUser={null} 
         skipInitialization={false}
         showLoader={true}
@@ -40,6 +38,5 @@ export default function AdminLayoutClient({ children }: AdminLayoutClientProps) 
           </AuthGuard>
         </>
       </AuthInitializer>
-    </AuthProvider>
   );
 }

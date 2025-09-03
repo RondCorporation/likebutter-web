@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
-import { AuthProvider } from '@/app/_contexts/AuthContext';
+import AuthInitializer from '@/app/_components/AuthInitializer';
 import AuthWithRedirect from './AuthWithRedirect';
 
 interface AuthLayoutClientProps {
@@ -14,7 +14,7 @@ interface AuthLayoutClientProps {
 
 export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
   return (
-    <AuthProvider shouldInitializeAuth={false}>
+    <AuthInitializer preloadedUser={null} skipInitialization={true} showLoader={false}>
       <>
         <ServerErrorDisplay />
         <ConditionalSettingsModal />
@@ -33,6 +33,6 @@ export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
           </div>
         </AuthWithRedirect>
       </>
-    </AuthProvider>
+    </AuthInitializer>
   );
 }

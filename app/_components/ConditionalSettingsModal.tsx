@@ -1,12 +1,12 @@
 'use client';
 
-import { useAuthContext } from '@/app/_contexts/AuthContext';
+import { useAuthStore } from '@/stores/authStore';
 import SettingsModal from './SettingsModal';
 
 export default function ConditionalSettingsModal() {
-  const { shouldInitializeAuth } = useAuthContext();
+  const { isInitialized } = useAuthStore();
 
-  if (!shouldInitializeAuth) {
+  if (!isInitialized) {
     return null;
   }
 

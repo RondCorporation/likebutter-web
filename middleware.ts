@@ -19,24 +19,15 @@ function getLocale(request: NextRequest): string {
   return matchLocale(languages, i18n.locales, i18n.defaultLocale);
 }
 
+const PUBLIC_FILE = /\.(.*)$/;
+
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   if (
-    [
-      '/favicon.ico',
-      '/file.svg',
-      '/globe.svg',
-      '/next.svg',
-      '/vercel.svg',
-      '/window.svg',
-      '/card_1_ko.png',
-      '/card_2_ko.png',
-      '/card_3_ko.png',
-      '/card_1_en.png',
-      '/card_2_en.png',
-      '/card_3_en.png',
-    ].includes(pathname)
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/') ||
+    PUBLIC_FILE.test(pathname)
   ) {
     return;
   }
@@ -58,5 +49,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|assets|images|sw.js).*)'],
+  matcher: ['/((?!api|_next|assets|images|sw.js|favicon.ico).*)'],
 };

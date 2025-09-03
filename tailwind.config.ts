@@ -16,6 +16,7 @@ export default {
       },
       animation: {
         'subtle-pulse': 'subtle-pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fadeIn': 'fadeIn 0.15s ease-out forwards',
       },
       keyframes: {
         'subtle-pulse': {
@@ -26,6 +27,16 @@ export default {
           '50%': {
             backgroundSize: '120% 120%',
             backgroundPosition: 'center',
+          },
+        },
+        'fadeIn': {
+          from: { 
+            opacity: '0', 
+            transform: 'translateY(-10px)' 
+          },
+          to: { 
+            opacity: '1', 
+            transform: 'translateY(0)' 
           },
         },
       },

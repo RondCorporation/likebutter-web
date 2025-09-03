@@ -5,7 +5,6 @@ import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
-import { AuthProvider } from '@/app/_contexts/AuthContext';
 import AuthInitializer from '@/app/_components/AuthInitializer';
 
 interface MarketingLayoutClientProps {
@@ -14,8 +13,7 @@ interface MarketingLayoutClientProps {
 
 export function MarketingLayoutClient({ children }: MarketingLayoutClientProps) {
   return (
-    <AuthProvider shouldInitializeAuth={true}>
-      <AuthInitializer
+    <AuthInitializer
         preloadedUser={null}
         skipInitialization={false}
         showLoader={false}
@@ -37,6 +35,5 @@ export function MarketingLayoutClient({ children }: MarketingLayoutClientProps) 
           </div>
         </>
       </AuthInitializer>
-    </AuthProvider>
   );
 }

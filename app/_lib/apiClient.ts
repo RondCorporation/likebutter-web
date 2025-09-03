@@ -101,7 +101,9 @@ export async function apiFetch<T>(
         response = await performRequest(newToken);
       } else {
         window.dispatchEvent(new CustomEvent('auth-failure'));
-        throw new Error('Authentication failed: Token refresh was unsuccessful.');
+        throw new Error(
+          'Authentication failed: Token refresh was unsuccessful.'
+        );
       }
     }
 
@@ -123,7 +125,7 @@ export async function apiFetch<T>(
     if (!error.message.includes('Authentication failed')) {
       console.error(`API Fetch Error for ${url} (client):`, error.message);
     }
-    
+
     if (error.message.includes('Failed to fetch')) {
       useUIStore
         .getState()

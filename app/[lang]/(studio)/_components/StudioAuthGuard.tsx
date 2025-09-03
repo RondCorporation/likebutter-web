@@ -36,8 +36,7 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
           const queryString = searchParams.toString();
           const currentUrl = pathname + (queryString ? `?${queryString}` : '');
           const returnToParam = encodeURIComponent(currentUrl);
-          
-          
+
           router.replace(`/${lang}/login?returnTo=${returnToParam}`);
           return;
         }
@@ -48,8 +47,7 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
         const queryString = searchParams.toString();
         const currentUrl = pathname + (queryString ? `?${queryString}` : '');
         const returnToParam = encodeURIComponent(currentUrl);
-        
-        
+
         router.replace(`/${lang}/login?returnTo=${returnToParam}`);
         return;
       } finally {
@@ -83,11 +81,13 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
 
 export default function StudioAuthGuard({ children }: StudioAuthGuardProps) {
   return (
-    <Suspense fallback={
-      <div className="flex h-screen w-full items-center justify-center bg-black">
-        <LoaderCircle size={40} className="animate-spin text-accent" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex h-screen w-full items-center justify-center bg-black">
+          <LoaderCircle size={40} className="animate-spin text-accent" />
+        </div>
+      }
+    >
       <StudioAuthGuardContent>{children}</StudioAuthGuardContent>
     </Suspense>
   );

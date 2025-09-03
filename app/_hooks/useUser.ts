@@ -5,7 +5,8 @@ import { getMe } from '@/lib/apis/user.api';
 import { User } from '@/types/api';
 
 export function useUser() {
-  const { data, error, isLoading, mutate } = useSWR('/users/me', 
+  const { data, error, isLoading, mutate } = useSWR(
+    '/users/me',
     async () => {
       const response = await getMe();
       return response.data;

@@ -8,7 +8,6 @@ import AuthInitializer from '@/app/_components/AuthInitializer';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import { User } from '@/app/_types/api';
 import { usePathname } from 'next/navigation';
-import { AuthProvider } from '@/app/_contexts/AuthContext';
 
 export function LayoutClient({
   children,
@@ -74,25 +73,23 @@ export function LayoutClient({
 
   // Fallback for other routes
   return (
-    <AuthProvider shouldInitializeAuth={true}>
-      <AuthInitializer preloadedUser={preloadedUser}>
-        <>
-          <ServerErrorDisplay />
-          <ConditionalSettingsModal />
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                background: '#333',
-                color: '#fff',
-              },
-            }}
-          />
-          <div className="flex min-h-screen flex-col">
-            <main className="flex-grow">{children}</main>
-          </div>
-        </>
-      </AuthInitializer>
-    </AuthProvider>
+    <AuthInitializer preloadedUser={preloadedUser}>
+      <>
+        <ServerErrorDisplay />
+        <ConditionalSettingsModal />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
+        <div className="flex min-h-screen flex-col">
+          <main className="flex-grow">{children}</main>
+        </div>
+      </>
+    </AuthInitializer>
   );
 }

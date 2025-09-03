@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import { getPaymentHistory } from '@/app/_lib/apis/payment.api.client';
 import { PaymentHistoryResponse } from '@/app/_types/payment';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import '@/app/_lib/i18n-client';
 
 export default function PaymentReceiptPage() {
-  const params = use(useParams());
+  const params = useParams();
   const { lang, paymentId } = params;
   const { t } = useTranslation('common');
 

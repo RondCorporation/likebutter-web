@@ -31,7 +31,8 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
           className={`w-full ${isSnapSection ? 'h-full flex flex-col justify-end' : ''}`}
         >
           <div
-            className={`w-full bg-gradient-to-br from-[#0A1929] via-[#0D2136] to-[#112740] ${footerContentClasses}`}
+            className={`w-full ${footerContentClasses}`}
+            style={{ backgroundColor: '#131313' }}
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
               {/* Logo Section */}

@@ -276,7 +276,7 @@ export default function LandingPage() {
                     {/* Card 1 - Butter Talks */}
                     <div className="transform transition-transform duration-300 hover:scale-105">
                       <Image
-                        src="/card-1.png"
+                        src={`/card_1_${lang}.png`}
                         alt="Butter Talks"
                         width={302}
                         height={418}
@@ -288,7 +288,7 @@ export default function LandingPage() {
                     {/* Card 2 - Butter Cover */}
                     <div className="transform transition-transform duration-300 hover:scale-105 md:-translate-y-8">
                       <Image
-                        src="/card-2.png"
+                        src={`/card_2_${lang}.png`}
                         alt="Butter Cover"
                         width={302}
                         height={418}
@@ -300,7 +300,7 @@ export default function LandingPage() {
                     {/* Card 3 - Butter Brush */}
                     <div className="transform transition-transform duration-300 hover:scale-105">
                       <Image
-                        src="/card-3.png"
+                        src={`/card_3_${lang}.png`}
                         alt="Butter Brush"
                         width={302}
                         height={418}
@@ -340,16 +340,13 @@ export default function LandingPage() {
                   <div></div> {/* Empty space for layout balance */}
                   <div className="flex justify-center lg:justify-end">
                     <div
-                      className="w-[300px] md:w-[400px] lg:w-[488px] h-[460px] md:h-[600px] lg:h-[757px] flex items-center justify-center border border-gray-600 shadow-2xl rounded-[28px]"
+                      className="w-[300px] md:w-[400px] lg:w-[488px] h-[460px] md:h-[600px] lg:h-[757px] flex items-center justify-center shadow-2xl rounded-[28px]"
                       style={{ backgroundColor: '#2a2a2a' }}
                     >
                       <div className="text-center text-gray-500">
                         <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-400">
                           COMING SOON
                         </h3>
-                        <p className="text-sm md:text-base px-4">
-                          {t('sectionDemoComingSoon')}
-                        </p>
                       </div>
                     </div>
                   </div>
@@ -413,130 +410,187 @@ export default function LandingPage() {
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                     {/* Free Plan */}
-                    <div className="bg-[#1A1A1A] rounded-[20px] p-6 border border-[#313131]">
-                      <div className="text-center mb-8">
-                        <h3 className="text-white text-xl font-bold mb-4">
-                          {t('planFreeName')}
-                        </h3>
-                        <p className="text-gray-300 text-sm mb-8 whitespace-pre-line leading-relaxed">
-                          {t('planFreeDesc')}
-                        </p>
-                        <div className="text-[#FFD93B] text-3xl font-bold mb-8">
-                          Free<span className="text-gray-400 text-lg">/월</span>
+                    <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
+                      <div className="p-6 flex-1">
+                        <div className="text-center">
+                          <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
+                            {t('planFreeName')}
+                          </h3>
+                          <div className="h-[80px] flex items-center justify-center">
+                            <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
+                              {t('planFreeDesc')}
+                            </p>
+                          </div>
+                          <div className="h-[72px] flex flex-col items-center justify-center">
+                            <div className="text-[#FFD93B] text-3xl font-bold mb-2">
+                              Free
+                              <span className="text-gray-400 text-lg">/월</span>
+                            </div>
+                            <div className="h-[20px]"></div>
+                          </div>
+                        </div>
+                        <div className="h-[120px] mt-4">
+                          <ul className="space-y-3 text-sm">
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                {t('planFreeFeature1')}
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                {t('planFreeFeature2')}
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                {t('planFreeFeature3')}
+                              </span>
+                            </li>
+                          </ul>
                         </div>
                       </div>
-                      <ul className="space-y-3 mb-8 text-sm">
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">{t('planFreeFeature1')}</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">{t('planFreeFeature2')}</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">{t('planFreeFeature3')}</span>
-                        </li>
-                      </ul>
-                      <Link
-                        href={`/${lang}/signup`}
-                        className="w-full block text-center rounded-[8px] bg-[#4A4A4A] hover:bg-[#555555] px-6 py-3 text-white font-medium transition-colors duration-300"
-                      >
-                        {t('planFreeCta')}
-                      </Link>
+                      <div className="p-6 pt-0">
+                        <Link
+                          href={`/${lang}/signup`}
+                          className="w-full block text-center rounded-[8px] bg-[#4A4A4A] hover:bg-[#555555] px-6 py-3 text-white font-medium transition-colors duration-300"
+                        >
+                          {t('planFreeCta')}
+                        </Link>
+                      </div>
                     </div>
 
                     {/* Creator Plan */}
-                    <div className="bg-[#1A1A1A] rounded-[20px] p-6 border-2 border-[#FFD93B]">
-                      <div className="text-center mb-8">
-                        <h3 className="text-white text-xl font-bold mb-4">
-                          {t('planCreatorName')}
-                        </h3>
-                        <p className="text-gray-300 text-sm mb-8 whitespace-pre-line leading-relaxed">
-                          {t('planCreatorDesc')}
-                        </p>
-                        <div className="text-[#FFD93B] text-3xl font-bold mb-2">
-                          80,000원<span className="text-gray-400 text-lg">/월</span>
+                    <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
+                      <div className="p-6 flex-1">
+                        <div className="text-center">
+                          <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
+                            {t('planCreatorName')}
+                          </h3>
+                          <div className="h-[80px] flex items-center justify-center">
+                            <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
+                              {t('planCreatorDesc')}
+                            </p>
+                          </div>
+                          <div className="h-[72px] flex flex-col items-center justify-center">
+                            <div className="text-[#FFD93B] text-3xl font-bold mb-2">
+                              80,000원
+                              <span className="text-gray-400 text-lg">/월</span>
+                            </div>
+                            <p className="text-gray-500 text-sm">
+                              100,000원(50% 할인)
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-gray-500 text-sm">
-                          100,000원(50% 할인)
-                        </p>
+                        <div className="h-[120px] mt-4">
+                          <ul className="space-y-3 text-sm">
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                {t('planCreatorFeature1')}
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                {t('planCreatorFeature2')}
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                {t('planCreatorFeature3')}
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <ul className="space-y-3 mb-8 text-sm">
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">{t('planCreatorFeature1')}</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">{t('planCreatorFeature2')}</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">{t('planCreatorFeature3')}</span>
-                        </li>
-                      </ul>
-                      <Link
-                        href={`/${lang}/billing?plan=basic&billing=${billingCycle}`}
-                        className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
-                      >
-                        {t('planCreatorCta')}
-                      </Link>
+                      <div className="p-6 pt-0">
+                        <Link
+                          href={`/${lang}/billing?plan=basic&billing=${billingCycle}`}
+                          className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
+                        >
+                          {t('planCreatorCta')}
+                        </Link>
+                      </div>
                     </div>
 
                     {/* Professional Plan */}
-                    <div className="bg-[#1A1A1A] rounded-[20px] p-6 border-2 border-[#FFD93B]">
-                      <div className="text-center mb-8">
-                        <h3 className="text-white text-xl font-bold mb-4">
-                          {t('planProfessionalName')}
-                        </h3>
-                        <p className="text-gray-300 text-sm mb-8 whitespace-pre-line leading-relaxed">
-                          {t('planProfessionalDesc')}
-                        </p>
-                        <div className="text-[#FFD93B] text-3xl font-bold mb-2">
-                          {currency}
-                          {formatPrice(
-                            billingCycle === 'yearly'
-                              ? getYearlyMonthlyPrice('PROFESSIONAL')
-                              : getPrice('PROFESSIONAL', 'monthly')
-                          )}
-                          <span className="text-gray-400 text-lg">/월</span>
+                    <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
+                      <div className="p-6 flex-1">
+                        <div className="text-center">
+                          <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
+                            {t('planProfessionalName')}
+                          </h3>
+                          <div className="h-[80px] flex items-center justify-center">
+                            <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
+                              {t('planProfessionalDesc')}
+                            </p>
+                          </div>
+                          <div className="h-[72px] flex flex-col items-center justify-center">
+                            <div className="text-[#FFD93B] text-3xl font-bold mb-2">
+                              {currency}
+                              {formatPrice(
+                                billingCycle === 'yearly'
+                                  ? getYearlyMonthlyPrice('PROFESSIONAL')
+                                  : getPrice('PROFESSIONAL', 'monthly')
+                              )}
+                              <span className="text-gray-400 text-lg">/월</span>
+                            </div>
+                            {billingCycle === 'yearly' ? (
+                              <p className="text-gray-500 text-sm">
+                                연간 결제시 20% 할인!
+                              </p>
+                            ) : (
+                              <div className="h-[20px]"></div>
+                            )}
+                          </div>
                         </div>
-                        {billingCycle === 'yearly' && (
-                          <p className="text-gray-500 text-sm">
-                            연간 결제시 20% 할인!
-                          </p>
-                        )}
+                        <div className="h-[200px] mt-4">
+                          <ul className="space-y-3 text-sm">
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                월 12,000 크레딧
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                우선 생성 속도
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                워터마크 없음
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                무제한 크레딧 이월
+                              </span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
+                              <span className="text-gray-300">
+                                추가 크레딧 구매
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <ul className="space-y-3 mb-8 text-sm">
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">월 12,000 크레딧</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">우선 생성 속도</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">워터마크 없음</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">무제한 크레딧 이월</span>
-                        </li>
-                        <li className="flex items-center gap-3">
-                          <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                          <span className="text-gray-300">추가 크레딧 구매</span>
-                        </li>
-                      </ul>
-                      <Link
-                        href={`/${lang}/billing?plan=pro&billing=${billingCycle}`}
-                        className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
-                      >
-                        {t('planProfessionalCta')}
-                      </Link>
+                      <div className="p-6 pt-0">
+                        <Link
+                          href={`/${lang}/billing?plan=pro&billing=${billingCycle}`}
+                          className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
+                        >
+                          {t('planProfessionalCta')}
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -554,44 +608,46 @@ export default function LandingPage() {
         >
           <PageSection className="bg-black text-white">
             <div className="flex justify-center">
-              <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black p-12 rounded-3xl max-w-6xl w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full h-[320px]">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 h-full">
                   {/* Left side - Title */}
-                  <div>
-                    <h2 className="text-4xl md:text-5xl font-bold mb-4">
-                      CONTACT US.
-                    </h2>
-                    <p className="text-xl font-medium">
+                  <div className="pt-[38px] pl-[83px] pr-8">
+                    <h2 className="text-[23px] font-bold mb-4">CONTACT US.</h2>
+                    <p className="text-[36px] font-bold whitespace-pre-line">
                       {t('sectionContactTitle')}
                     </p>
                   </div>
 
                   {/* Right side - Form */}
-                  <div>
-                    <form onSubmit={handleContactSubmit} className="space-y-6">
+                  <div className="pt-[38px] pl-8 pr-[83px] pb-12">
+                    <form
+                      onSubmit={handleContactSubmit}
+                      className="space-y-4 h-full flex flex-col"
+                    >
                       <div>
                         <input
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder={t('contactFormEmail')}
-                          className="w-full px-6 py-4 rounded-full text-lg border-0 focus:outline-none focus:ring-4 focus:ring-black/20"
+                          className="w-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 placeholder-[#B1B1B1]"
+                          style={{ fontSize: '14px' }}
                           required
                         />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <textarea
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           placeholder={t('contactFormMessage')}
-                          rows={4}
-                          className="w-full px-6 py-4 rounded-2xl text-lg border-0 focus:outline-none focus:ring-4 focus:ring-black/20 resize-none"
+                          className="w-full h-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
+                          style={{ fontSize: '14px' }}
                           required
                         />
                       </div>
                       <button
                         type="submit"
-                        className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-full text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
+                        className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-[8px] text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
                       >
                         {t('contactFormSubmit')}
                       </button>

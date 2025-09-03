@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #001123;
+  --background: #000000;
   --foreground: #ffffff;
   --accent: #ffd93b;
 }
@@ -80,7 +80,8 @@
   }
 
   @keyframes bounceSubtle {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
@@ -103,7 +104,7 @@
     .animate-fade-in-up {
       animation-duration: 0.8s;
     }
-    
+
     .animate-bounce-subtle {
       animation-duration: 2s;
     }
@@ -133,7 +134,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #001123;
+    --background: #000000;
     --foreground: #ededed;
   }
 }

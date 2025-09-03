@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { getPaymentHistory } from '@/app/_lib/apis/payment.api.client';
 import { PaymentHistoryResponse } from '@/app/_types/payment';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import '@/app/_lib/i18n-client';
 
 export default function PaymentReceiptPage() {
-  const params = useParams();
+  const params = use(useParams());
   const { lang, paymentId } = params;
   const { t } = useTranslation('common');
 
@@ -103,7 +103,7 @@ export default function PaymentReceiptPage() {
 
         <div className="mt-10 text-center">
           <Link
-            href={`/${lang}/studio/history/payments`}
+            href={`/${lang}/billing/history`}
             className="text-accent hover:underline"
           >
             {t('receipt.backToList')}

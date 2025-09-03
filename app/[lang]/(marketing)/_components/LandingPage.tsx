@@ -1,14 +1,17 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { Play, ArrowDown, Check } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useScrollContext } from '../_context/ScrollContext';
 import Image from 'next/image';
-import { getPlansOnClient } from '@/app/_lib/apis/subscription.api.client';
 import { Plan } from '@/app/_types/plan';
+import { useTranslation } from 'react-i18next';
+
+type LandingPageProps = {
+  lang: string;
+  plans: Plan[];
+};
 
 // Enhanced Page Section Component with viewport fitting
 const PageSection = ({
@@ -88,18 +91,15 @@ const SectionHeader = ({
   </div>
 );
 
-export default function LandingPage() {
+export default function LandingPage({ lang, plans }: LandingPageProps) {
   const { t } = useTranslation();
-  const pathname = usePathname();
-  const lang = pathname.split('/')[1];
   const { sectionRefs } = useScrollContext();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
   );
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Set viewport height CSS variable for mobile browsers
   useEffect(() => {
@@ -119,23 +119,7 @@ export default function LandingPage() {
     }
   };
 
-  // Fetch plans data
-  useEffect(() => {
-    const fetchPlans = async () => {
-      try {
-        const response = await getPlansOnClient();
-        if (response.status === 200 && response.data) {
-          setPlans(response.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch plans:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPlans();
-  }, []);
+  // Plans data is now passed as props from server-side rendering
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -405,10 +389,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 {/* Pricing Cards */}
-                {loading ? (
-                  <div className="text-center">로딩 중...</div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                     {/* Free Plan */}
                     <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
                       <div className="p-6 flex-1">
@@ -476,12 +457,21 @@ export default function LandingPage() {
                           </div>
                           <div className="h-[72px] flex flex-col items-center justify-center">
                             <div className="text-[#FFD93B] text-3xl font-bold mb-2">
-                              80,000원
+                              {currency}
+                              {formatPrice(
+                                billingCycle === 'yearly'
+                                  ? getYearlyMonthlyPrice('CREATOR')
+                                  : getPrice('CREATOR', 'monthly')
+                              )}
                               <span className="text-gray-400 text-lg">/월</span>
                             </div>
-                            <p className="text-gray-500 text-sm">
-                              100,000원(50% 할인)
-                            </p>
+                            {billingCycle === 'yearly' ? (
+                              <p className="text-gray-500 text-sm">
+                                연간 결제시 20% 할인!
+                              </p>
+                            ) : (
+                              <div className="h-[20px]"></div>
+                            )}
                           </div>
                         </div>
                         <div className="h-[120px] mt-4">
@@ -593,7 +583,6 @@ export default function LandingPage() {
                       </div>
                     </div>
                   </div>
-                )}
               </div>
             </div>
           </PageSection>

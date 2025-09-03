@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { getMe } from '@/app/_lib/apis/user.api';
-import { logout as apiLogout } from '@/app/_lib/apis/auth.api';
+import { clearSession } from '@/app/_lib/apis/auth.api';
 import { ApiResponse, User, Subscription } from '@/app/_types/api';
 
 export interface LoginResponse {
@@ -20,10 +20,7 @@ interface AuthState {
   hydrate: (preloadedUser: User) => void;
 }
 
-const deleteAccessTokenCookie = () => {
-  if (typeof window === 'undefined') return;
-  document.cookie = 'accessToken=; path=/; max-age=-1;';
-};
+// 수동 쿠키 삭제 함수 제거 - 백엔드 API에서 처리
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
@@ -80,8 +77,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
 
   logout: () => {
-    apiLogout().catch((err) => console.warn('Server-side logout failed:', err));
-    deleteAccessTokenCookie();
+    // 자동 로그아웃의 경우 토큰이 이미 만료되었으므로 clearSession 사용
+    clearSession().catch((err) => console.warn('Failed to clear session:', err));
     set({
       user: null,
       isAuthenticated: false,

@@ -6,6 +6,7 @@ import '@/app/_lib/i18n-client';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
 import { AuthProvider } from '@/app/_contexts/AuthContext';
+import AuthInitializer from '@/app/_components/AuthInitializer';
 
 interface MarketingLayoutClientProps {
   children: ReactNode;
@@ -13,23 +14,29 @@ interface MarketingLayoutClientProps {
 
 export function MarketingLayoutClient({ children }: MarketingLayoutClientProps) {
   return (
-    <AuthProvider shouldInitializeAuth={false}>
-      <>
-        <ServerErrorDisplay />
-        <ConditionalSettingsModal />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
-        <div className="flex min-h-screen flex-col">
-          <main className="flex-grow">{children}</main>
-        </div>
-      </>
+    <AuthProvider shouldInitializeAuth={true}>
+      <AuthInitializer
+        preloadedUser={null}
+        skipInitialization={false}
+        showLoader={false}
+      >
+        <>
+          <ServerErrorDisplay />
+          <ConditionalSettingsModal />
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: '#333',
+                color: '#fff',
+              },
+            }}
+          />
+          <div className="flex min-h-screen flex-col">
+            <main className="flex-grow">{children}</main>
+          </div>
+        </>
+      </AuthInitializer>
     </AuthProvider>
   );
 }

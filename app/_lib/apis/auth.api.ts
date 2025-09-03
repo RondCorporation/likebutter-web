@@ -30,3 +30,7 @@ export const signup = (signupData: any): Promise<ApiResponse<any>> => {
 export const logout = (): Promise<ApiResponse<any>> => {
   return apiFetch('/auth/logout', { method: 'DELETE' }, true);
 };
+
+export const clearSession = (): Promise<ApiResponse<any>> => {
+  return apiFetch('/auth/clear-session', { method: 'DELETE' }, false);
+};

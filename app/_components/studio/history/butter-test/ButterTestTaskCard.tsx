@@ -33,7 +33,6 @@ export default function ButterTestTaskCard({
         }));
       }
     } catch (err) {
-      console.error(`Failed to fetch details for task ${task.taskId}`, err);
     } finally {
       setIsLoading(false);
     }

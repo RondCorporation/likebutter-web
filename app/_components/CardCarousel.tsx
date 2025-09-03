@@ -2,10 +2,10 @@
 import { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-type Slide = { 
-  title: string; 
+type Slide = {
+  title: string;
   subtitle?: string;
-  gradient: string; 
+  gradient: string;
   icon?: string;
 };
 
@@ -14,7 +14,6 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const isTransitioning = useRef(false); // Ref to prevent rapid transitions
 
-  // Create a "looped" slide deck for seamless scrolling
   const extendedSlides = useMemo(() => {
     if (slides.length === 0) return [];
     const first = slides[0];
@@ -22,19 +21,21 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
     return [last, ...slides, first];
   }, [slides]);
 
-  const scrollToCard = useCallback((index: number, behavior: 'smooth' | 'auto' = 'smooth') => {
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.children[index] as HTMLElement;
-    if (card) {
-      track.scrollTo({
-        left: card.offsetLeft - (track.offsetWidth - card.offsetWidth) / 2,
-        behavior,
-      });
-    }
-  }, []);
+  const scrollToCard = useCallback(
+    (index: number, behavior: 'smooth' | 'auto' = 'smooth') => {
+      const track = trackRef.current;
+      if (!track) return;
+      const card = track.children[index] as HTMLElement;
+      if (card) {
+        track.scrollTo({
+          left: card.offsetLeft - (track.offsetWidth - card.offsetWidth) / 2,
+          behavior,
+        });
+      }
+    },
+    []
+  );
 
-  // Set initial position to the first "real" slide without animation
   useEffect(() => {
     setTimeout(() => {
       scrollToCard(1, 'auto');
@@ -44,8 +45,13 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
   const handleNav = (direction: 'prev' | 'next') => {
     if (isTransitioning.current) return;
 
-    const newIndex = direction === 'prev' ? activeIndex - 1 + 1 : activeIndex + 1 + 1;
-    setActiveIndex((prev) => (direction === 'prev' ? (prev - 1 + slides.length) % slides.length : (prev + 1) % slides.length));
+    const newIndex =
+      direction === 'prev' ? activeIndex - 1 + 1 : activeIndex + 1 + 1;
+    setActiveIndex((prev) =>
+      direction === 'prev'
+        ? (prev - 1 + slides.length) % slides.length
+        : (prev + 1) % slides.length
+    );
     scrollToCard(newIndex);
 
     isTransitioning.current = true;
@@ -61,7 +67,6 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
     }, 500); // Corresponds to the CSS transition duration
   };
 
-  // Use Intersection Observer to update active index on user scroll
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -70,7 +75,10 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
-            const realIndex = parseInt(entry.target.getAttribute('data-real-index')!, 10);
+            const realIndex = parseInt(
+              entry.target.getAttribute('data-real-index')!,
+              10
+            );
             setActiveIndex(realIndex);
           }
         });
@@ -82,7 +90,6 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
     return () => observer.disconnect();
   }, [slides.length, extendedSlides.length]);
 
-  // Handle the scroll "snap" back for infinite loop effect
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
@@ -93,22 +100,26 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
         if (isTransitioning.current) return;
-        
+
         const scrollLeft = track.scrollLeft;
         const cardWidth = (track.children[1] as HTMLElement).offsetWidth;
         const gap = 16; // Assuming gap-4 -> 1rem -> 16px
-        
-        // Check if scrolled to the first clone (the last item)
+
         if (scrollLeft < cardWidth / 2) {
           isTransitioning.current = true;
           scrollToCard(slides.length, 'auto');
-          setTimeout(() => { isTransitioning.current = false; }, 50);
-        }
-        // Check if scrolled to the last clone (the first item)
-        else if (scrollLeft > (cardWidth + gap) * slides.length - cardWidth / 2) {
+          setTimeout(() => {
+            isTransitioning.current = false;
+          }, 50);
+        } else if (
+          scrollLeft >
+          (cardWidth + gap) * slides.length - cardWidth / 2
+        ) {
           isTransitioning.current = true;
           scrollToCard(1, 'auto');
-          setTimeout(() => { isTransitioning.current = false; }, 50);
+          setTimeout(() => {
+            isTransitioning.current = false;
+          }, 50);
         }
       }, 150);
     };
@@ -123,14 +134,14 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
         ref={trackRef}
         className="flex items-center overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar py-10"
         style={{
-          // This padding shows the peeking cards on the edges
           paddingLeft: 'calc(50% - (88% / 2))',
           paddingRight: 'calc(50% - (88% / 2))',
         }}
         aria-live="polite"
       >
         {extendedSlides.map((slide, i) => {
-          const realIndex = i - 1 < 0 ? slides.length - 1 : (i - 1) % slides.length;
+          const realIndex =
+            i - 1 < 0 ? slides.length - 1 : (i - 1) % slides.length;
           const isActive = activeIndex === realIndex;
 
           return (
@@ -148,11 +159,14 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
             >
               {/* Glass morphism overlay */}
               <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
-              
+
               {/* Animated background elements */}
               <div className="absolute top-4 right-4 w-16 h-16 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-              <div className="absolute bottom-8 left-8 w-12 h-12 bg-white/10 rounded-full blur-lg animate-pulse" style={{animationDelay: '1s'}}></div>
-              
+              <div
+                className="absolute bottom-8 left-8 w-12 h-12 bg-white/10 rounded-full blur-lg animate-pulse"
+                style={{ animationDelay: '1s' }}
+              ></div>
+
               <div className="text-center px-8 relative z-10">
                 {slide.icon && (
                   <div className="text-6xl md:text-7xl mb-6 transform hover:scale-110 transition-transform duration-300 animate-bounce-subtle">
@@ -168,7 +182,7 @@ export default function CardCarousel({ slides }: { slides: Slide[] }) {
                   </p>
                 )}
               </div>
-              
+
               {/* Shimmer effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full animate-shimmer"></div>
             </div>

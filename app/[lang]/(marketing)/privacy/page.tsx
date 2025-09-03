@@ -40,7 +40,6 @@ async function getPrivacyContent(lang: 'en' | 'ko'): Promise<string> {
     }
     return text;
   } catch (error) {
-    console.error(`Failed to load privacy policy for ${lang}:`, error);
     return 'Error: Could not load the privacy policy. Please try again later.';
   }
 }

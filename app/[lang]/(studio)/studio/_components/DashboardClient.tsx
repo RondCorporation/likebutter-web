@@ -52,7 +52,6 @@ const DashboardClient = memo(function DashboardClient() {
         }
       } catch (err: any) {
         setTasksError(err.message || 'Failed to load task data.');
-        console.error(err);
       } finally {
         setTasksLoading(false);
       }

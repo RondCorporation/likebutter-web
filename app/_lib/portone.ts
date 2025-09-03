@@ -21,7 +21,6 @@ export function loadPortone(): Promise<typeof PortOne> {
     import('@portone/browser-sdk/v2')
       .then((module) => {
         if (module.default) {
-          console.log('✅ PortOne SDK loaded successfully.');
           resolve(module.default);
         } else {
           // 모듈은 로드되었으나 default export가 없는 경우

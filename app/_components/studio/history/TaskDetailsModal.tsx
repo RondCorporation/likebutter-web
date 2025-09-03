@@ -33,7 +33,6 @@ export default function TaskDetailsModal({
             setError(response.msg || 'Failed to load task details.');
           }
         } catch (e) {
-          console.error('Failed to fetch task details:', e);
           if (e instanceof Error) {
             setError(e.message);
           } else {

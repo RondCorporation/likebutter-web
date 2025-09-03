@@ -29,12 +29,10 @@ function AuthWithRedirectContent({ children }: { children: ReactNode }) {
         // 사용자 데이터 가져오기를 시도합니다.
         // `getMe` 함수는 내부적으로 `apiFetch`를 사용하며,
         // 이 함수는 초기 액세스 토큰이 만료되었을 경우 쿠키를 통해 자동으로 토큰을 갱신합니다.
-        console.log("인증 페이지에서 사용자 세션을 확인합니다...");
         const response = await getMe();
 
         if (response.data) {
           // 성공: 토큰이 유효하거나 성공적으로 갱신되었습니다.
-          console.log("이미 인증된 사용자입니다. 리디렉션합니다...");
           hydrate(response.data); // 전역 auth 스토어에 최신 사용자 데이터를 채웁니다.
           setAuthStatus('authenticated');
 
@@ -64,7 +62,6 @@ function AuthWithRedirectContent({ children }: { children: ReactNode }) {
       } catch (error) {
         // 실패: `getMe` 호출이 실패했습니다. 이는 신규 사용자나 로그아웃한 사용자에게
         // 예상되는 결과이며, 토큰이 없거나 유효하지 않기 때문입니다.
-        console.log("인증되지 않은 사용자입니다. 인증 페이지를 표시합니다.");
         setAuthStatus('unauthenticated');
       }
     };

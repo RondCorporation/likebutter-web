@@ -38,7 +38,6 @@ async function getTermsContent(lang: 'en' | 'ko'): Promise<string> {
     }
     return text;
   } catch (error) {
-    console.error(`Failed to load terms of service for ${lang}:`, error);
     return 'Error: Could not load the terms of service. Please try again later.';
   }
 }

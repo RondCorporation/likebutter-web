@@ -2,7 +2,11 @@
 
 import { useEffect, useReducer, useCallback } from 'react';
 import { Task } from '@/types/task';
-import { getTaskHistory, getTaskStatus, getBatchTaskStatus } from '@/lib/apis/task.api';
+import {
+  getTaskHistory,
+  getTaskStatus,
+  getBatchTaskStatus,
+} from '@/lib/apis/task.api';
 
 interface HistoryState {
   tasks: Task[];
@@ -177,13 +181,19 @@ export function useTaskHistory() {
       dispatch({ type: 'POLLING_START' });
 
       try {
-        const taskIds = tasksToCheck.map(task => task.taskId);
+        const taskIds = tasksToCheck.map((task) => task.taskId);
         const response = await getBatchTaskStatus(taskIds);
-        
+
         if (response.data) {
-          response.data.forEach(updatedTask => {
-            const currentTask = tasksToCheck.find(t => t.taskId === updatedTask.taskId);
-            if (currentTask && (updatedTask.status !== currentTask.status || !currentTask.details)) {
+          response.data.forEach((updatedTask) => {
+            const currentTask = tasksToCheck.find(
+              (t) => t.taskId === updatedTask.taskId
+            );
+            if (
+              currentTask &&
+              (updatedTask.status !== currentTask.status ||
+                !currentTask.details)
+            ) {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
                 payload: updatedTask as Task,
@@ -192,7 +202,6 @@ export function useTaskHistory() {
           });
         }
       } catch (error) {
-        console.error('Failed to poll batch task status, will retry on next interval:', error);
       } finally {
         dispatch({ type: 'POLLING_END' });
       }

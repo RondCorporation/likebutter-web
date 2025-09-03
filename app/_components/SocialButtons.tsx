@@ -86,16 +86,13 @@ function SocialButtonsContent({
     localStorage.setItem('lastUsedSocialLogin', provider.toLowerCase());
 
     const returnTo = searchParams.get('returnTo');
-    
+
     if (returnTo) {
-      // returnTo is already URL-encoded, decode it first
       const decodedReturnTo = decodeURIComponent(returnTo);
-      // Ensure the path is absolute and properly formatted
       const absoluteReturnTo = decodedReturnTo.startsWith('/')
         ? decodedReturnTo
         : `/${decodedReturnTo}`;
-      
-      // Store in localStorage for redirect after OAuth
+
       localStorage.setItem('oauthReturnTo', absoluteReturnTo);
     }
 
@@ -106,9 +103,6 @@ function SocialButtonsContent({
       );
       return;
     }
-
-    // No need to modify OAuth URL - just use original href
-    // localStorage will handle the redirect path
   };
 
   return (

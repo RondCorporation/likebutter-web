@@ -258,7 +258,6 @@ function PricingClientContent({
             setActiveSubscription(activeSub);
           }
         } catch (error) {
-          console.error('Failed to fetch user subscription:', error);
         }
       }
     };

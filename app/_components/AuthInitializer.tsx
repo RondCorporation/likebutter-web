@@ -53,12 +53,10 @@ export default function AuthInitializer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted, skipInitialization]);
 
-  // Skip auth initialization for marketing pages
   if (skipInitialization) {
     return <>{children}</>;
   }
 
-  // hydration 방지를 위한 마운트 체크
   if (!isMounted) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-black">

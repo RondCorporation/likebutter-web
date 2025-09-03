@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import AuthInitializer from '@/app/_components/AuthInitializer';
-import AuthGuard from '@/app/_components/AuthGuard';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
 import { AuthProvider } from '@/app/_contexts/AuthContext';
@@ -24,11 +23,13 @@ function StudioContent({ children }: { children: ReactNode }) {
   );
 }
 
-export default function StudioLayoutClient({ children }: StudioLayoutClientProps) {
+export default function StudioLayoutClient({
+  children,
+}: StudioLayoutClientProps) {
   return (
     <AuthProvider shouldInitializeAuth={true}>
-      <AuthInitializer 
-        preloadedUser={null} 
+      <AuthInitializer
+        preloadedUser={null}
         skipInitialization={false}
         showLoader={true}
       >

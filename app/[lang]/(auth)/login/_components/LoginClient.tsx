@@ -62,8 +62,6 @@ function LoginClientContent({
           ? decodeURIComponent(returnTo)
           : `/${lang}/studio`;
 
-        console.log(`로그인 성공. 리디렉션: ${redirectUrl}`);
-
         // 여기서 initialize()를 호출할 필요 없이, 리디렉션이 모든 것을 처리합니다.
         window.location.href = redirectUrl;
       } else {

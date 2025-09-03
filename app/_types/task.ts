@@ -6,7 +6,6 @@ export type GenerationStatus =
 
 export type ActionType = 'BUTTER_GEN' | 'BUTTER_TEST';
 
-// ================= BUTTER_GEN Types =================
 interface ButterGenRequestDetails {
   sourceImageUrl: string;
   prompt: string;
@@ -23,7 +22,6 @@ export interface ButterGenDetails {
   error?: string;
 }
 
-// ================= BUTTER_TEST Types =================
 interface ButterTestRequestDetails {
   prompt: string;
 }
@@ -39,7 +37,6 @@ export interface ButterTestDetails {
   error?: string;
 }
 
-// ================= Discriminated Union for Tasks =================
 type ActionMap = {
   BUTTER_GEN: { details?: ButterGenDetails };
   BUTTER_TEST: { details?: ButterTestDetails };
@@ -53,7 +50,6 @@ export type Task = {
   [K in ActionType]: { actionType: K } & ActionMap[K];
 }[ActionType];
 
-// ================= API Response Types =================
 export interface Page<T> {
   content: T[];
   pageable: {

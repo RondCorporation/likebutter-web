@@ -1,16 +1,55 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Play, ArrowDown, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useScrollContext } from '../_context/ScrollContext';
 import Image from 'next/image';
 import { Plan } from '@/app/_types/plan';
 import { useTranslation } from 'react-i18next';
+import { motion, useInView } from 'framer-motion';
 
 type LandingPageProps = {
   lang: string;
   plans: Plan[];
+};
+
+// Animated element component for scroll-triggered animations
+const AnimatedElement = ({
+  children,
+  delay = 0,
+  duration = 0.6,
+  direction = 'up',
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  duration?: number;
+  direction?: 'up' | 'down' | 'left' | 'right' | 'scale';
+  className?: string;
+}) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '0px' });
+
+  const variants = {
+    up: { y: 50, opacity: 0 },
+    down: { y: -50, opacity: 0 },
+    left: { x: 50, opacity: 0 },
+    right: { x: -50, opacity: 0 },
+    scale: { scale: 0.8, opacity: 0 },
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={variants[direction]}
+      animate={isInView ? { x: 0, y: 0, scale: 1, opacity: 1 } : variants[direction]}
+      transition={{ duration, delay, ease: 'easeOut' }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 };
 
 // Enhanced Page Section Component with viewport fitting
@@ -61,32 +100,38 @@ const SectionHeader = ({
   subtitle?: string;
 }) => (
   <div className="space-y-6 text-left">
-    {/* Yellow Text - Figma: 24px, Bold, #FFD93B */}
-    <p className="text-[#FFD93B] text-2xl font-bold font-pretendard leading-[1.5] whitespace-nowrap">
-      {yellowText}
-    </p>
-    {/* Title - Figma: 48px, Bold, #FFFFFF */}
-    <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold font-pretendard leading-[1.5]">
-      {title.split('\n').map((line, i) => (
-        <span key={i}>
-          {line}
-          {i < title.split('\n').length - 1 && <br />}
-        </span>
-      ))}
-    </h2>
-    {/* Subtitle - Figma: 16px, Regular, #94A3B8, Arial */}
-    {subtitle && (
-      <p
-        className="text-slate-400 text-base font-normal leading-6"
-        style={{ fontFamily: 'Arial, sans-serif' }}
-      >
-        {subtitle.split('\n').map((line, i) => (
+    <AnimatedElement direction="up" delay={0.05} duration={0.3}>
+      {/* Yellow Text - Figma: 24px, Bold, #FFD93B */}
+      <p className="text-[#FFD93B] text-2xl font-bold font-pretendard leading-[1.5] whitespace-nowrap">
+        {yellowText}
+      </p>
+    </AnimatedElement>
+    <AnimatedElement direction="up" delay={0.1} duration={0.3}>
+      {/* Title - Figma: 48px, Bold, #FFFFFF */}
+      <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold font-pretendard leading-[1.5]">
+        {title.split('\n').map((line, i) => (
           <span key={i}>
             {line}
-            {i < subtitle.split('\n').length - 1 && <br />}
+            {i < title.split('\n').length - 1 && <br />}
           </span>
         ))}
-      </p>
+      </h2>
+    </AnimatedElement>
+    {/* Subtitle - Figma: 16px, Regular, #94A3B8, Arial */}
+    {subtitle && (
+      <AnimatedElement direction="up" delay={0.15} duration={0.3}>
+        <p
+          className="text-slate-400 text-base font-normal leading-6"
+          style={{ fontFamily: 'Arial, sans-serif' }}
+        >
+          {subtitle.split('\n').map((line, i) => (
+            <span key={i}>
+              {line}
+              {i < subtitle.split('\n').length - 1 && <br />}
+            </span>
+          ))}
+        </p>
+      </AnimatedElement>
     )}
   </div>
 );
@@ -204,16 +249,31 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
             {/* Content */}
             <div className="relative z-10 text-left max-w-4xl container mx-auto px-4 sm:px-6">
-              <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight font-archivo-black">
+              <motion.h1 
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight font-archivo-black"
+              >
                 LikeButter
-              </h1>
-              <div className="text-2xl md:text-3xl text-white/90 mb-12 leading-relaxed">
+              </motion.h1>
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
+                className="text-2xl md:text-3xl text-white/90 mb-12 leading-relaxed"
+              >
                 <p>{t('heroTitleLine1')}</p>
                 <p>{t('heroTitleLine2')}</p>
-              </div>
+              </motion.div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-6 items-start">
+              <motion.div 
+                initial={{ y: 15, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.3, delay: 0.2, ease: 'easeOut' }}
+                className="flex flex-col sm:flex-row gap-6 items-start"
+              >
                 <Link
                   href={`/${lang}/signup`}
                   className="inline-flex items-center gap-3 rounded-full bg-[#FFD93B] px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
@@ -227,7 +287,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                   <Play size={20} />
                   {t('heroCtaDemo')}
                 </button>
-              </div>
+              </motion.div>
             </div>
 
             {/* Scroll Indicator */}
@@ -258,40 +318,58 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                 <div className="w-full">
                   <div className="flex flex-col md:flex-row justify-center md:justify-end items-center md:items-end gap-4 md:gap-6 lg:gap-8">
                     {/* Card 1 - Butter Talks */}
-                    <div className="transform transition-transform duration-300 hover:scale-105">
-                      <Image
-                        src={`/card_1_${lang}.png`}
-                        alt="Butter Talks"
-                        width={302}
-                        height={418}
-                        className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
-                        priority
-                      />
-                    </div>
+                    <AnimatedElement direction="up" delay={0.2} duration={0.4}>
+                      <motion.div 
+                        className="transform transition-transform duration-300 hover:scale-105"
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Image
+                          src={`/card_1_${lang}.png`}
+                          alt="Butter Talks"
+                          width={302}
+                          height={418}
+                          className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
+                          priority
+                        />
+                      </motion.div>
+                    </AnimatedElement>
 
                     {/* Card 2 - Butter Cover */}
-                    <div className="transform transition-transform duration-300 hover:scale-105 md:-translate-y-8">
-                      <Image
-                        src={`/card_2_${lang}.png`}
-                        alt="Butter Cover"
-                        width={302}
-                        height={418}
-                        className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
-                        priority
-                      />
-                    </div>
+                    <AnimatedElement direction="up" delay={0.3} duration={0.4}>
+                      <motion.div 
+                        className="transform transition-transform duration-300 hover:scale-105 md:-translate-y-8"
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Image
+                          src={`/card_2_${lang}.png`}
+                          alt="Butter Cover"
+                          width={302}
+                          height={418}
+                          className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
+                          priority
+                        />
+                      </motion.div>
+                    </AnimatedElement>
 
                     {/* Card 3 - Butter Brush */}
-                    <div className="transform transition-transform duration-300 hover:scale-105">
-                      <Image
-                        src={`/card_3_${lang}.png`}
-                        alt="Butter Brush"
-                        width={302}
-                        height={418}
-                        className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
-                        priority
-                      />
-                    </div>
+                    <AnimatedElement direction="up" delay={0.4} duration={0.4}>
+                      <motion.div 
+                        className="transform transition-transform duration-300 hover:scale-105"
+                        whileHover={{ y: -10, scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                      >
+                        <Image
+                          src={`/card_3_${lang}.png`}
+                          alt="Butter Brush"
+                          width={302}
+                          height={418}
+                          className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
+                          priority
+                        />
+                      </motion.div>
+                    </AnimatedElement>
                   </div>
                 </div>
               </div>
@@ -323,16 +401,20 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
                   <div></div> {/* Empty space for layout balance */}
                   <div className="flex justify-center lg:justify-end">
-                    <div
-                      className="w-[300px] md:w-[400px] lg:w-[488px] h-[460px] md:h-[600px] lg:h-[757px] flex items-center justify-center shadow-2xl rounded-[28px]"
-                      style={{ backgroundColor: '#2a2a2a' }}
-                    >
-                      <div className="text-center text-gray-500">
-                        <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-400">
-                          COMING SOON
-                        </h3>
-                      </div>
-                    </div>
+                    <AnimatedElement direction="right" delay={0.2} duration={0.4}>
+                      <motion.div
+                        className="w-[300px] md:w-[400px] lg:w-[488px] h-[460px] md:h-[600px] lg:h-[757px] flex items-center justify-center shadow-2xl rounded-[28px]"
+                        style={{ backgroundColor: '#2a2a2a' }}
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      >
+                        <div className="text-center text-gray-500">
+                          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-400">
+                            COMING SOON
+                          </h3>
+                        </div>
+                      </motion.div>
+                    </AnimatedElement>
                   </div>
                 </div>
               </div>
@@ -391,7 +473,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                 {/* Pricing Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
                     {/* Free Plan */}
-                    <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
+                    <AnimatedElement direction="up" delay={0.4}>
+                      <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
@@ -442,9 +525,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         </Link>
                       </div>
                     </div>
+                    </AnimatedElement>
 
                     {/* Creator Plan */}
-                    <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
+                    <AnimatedElement direction="up" delay={0.5}>
+                      <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
@@ -506,9 +591,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         </Link>
                       </div>
                     </div>
+                    </AnimatedElement>
 
                     {/* Professional Plan */}
-                    <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
+                    <AnimatedElement direction="up" delay={0.6}>
+                      <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
@@ -582,6 +669,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         </Link>
                       </div>
                     </div>
+                    </AnimatedElement>
                   </div>
               </div>
             </div>
@@ -597,7 +685,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
         >
           <PageSection className="bg-black text-white">
             <div className="flex justify-center">
-              <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full h-[320px]">
+              <AnimatedElement direction="scale" delay={0.2} duration={0.5}>
+                <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full h-[320px]">
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 h-full">
                   {/* Left side - Title */}
                   <div className="pt-[38px] pl-[83px] pr-8">
@@ -644,6 +733,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                   </div>
                 </div>
               </div>
+              </AnimatedElement>
             </div>
           </PageSection>
         </div>

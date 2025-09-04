@@ -22,7 +22,7 @@ function LoginClientContent({
   const [err, setErr] = useState('');
   const searchParams = useSearchParams();
 
-  const [isLoading, setIsLoading] = useState(false); // 로컬 상태로 로딩 관리
+  const [isLoading, setIsLoading] = useState(false);
   const [lastUsedProvider, setLastUsedProvider] = useState<string | null>(null);
 
   useEffect(() => {
@@ -54,15 +54,11 @@ function LoginClientContent({
       const res = await apiLogin(email, pw);
 
       if (res.data?.accessToken) {
-        // 성공! 백엔드에서 쿠키를 설정했습니다.
-        // 가장 확실한 다음 단계는 목적지로 전체 페이지를 이동하는 것입니다.
-        // 이렇게 하면 대상 페이지의 레이아웃/페이지에서 올바른 인증 확인이 트리거됩니다.
         const returnTo = searchParams.get('returnTo');
         const redirectUrl = returnTo
           ? decodeURIComponent(returnTo)
           : `/${lang}/studio`;
 
-        // 여기서 initialize()를 호출할 필요 없이, 리디렉션이 모든 것을 처리합니다.
         window.location.href = redirectUrl;
       } else {
         setErr(res.msg || translations.loginErrorInvalidPassword);
@@ -197,11 +193,13 @@ export default function LoginClient({
   translations: any;
 }) {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
+        </div>
+      }
+    >
       <LoginClientContent lang={lang} translations={translations} />
     </Suspense>
   );

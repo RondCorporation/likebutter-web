@@ -257,8 +257,7 @@ function PricingClientContent({
               subscriptions.find((sub) => sub.status === 'ACTIVE') || null;
             setActiveSubscription(activeSub);
           }
-        } catch (error) {
-        }
+        } catch (error) {}
       }
     };
 
@@ -390,7 +389,6 @@ function PricingClientContent({
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Header Navigation */}
       <div className="bg-slate-900/50 border-b border-slate-800">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
@@ -419,7 +417,6 @@ function PricingClientContent({
           </p>
         </div>
 
-        {/* 현재 구독 상태 표시 */}
         {activeSubscription && currentPlan && (
           <div className="mt-12 max-w-4xl mx-auto">
             <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-butter-yellow/20 rounded-3xl p-8 shadow-2xl shadow-butter-yellow/5">
@@ -480,7 +477,6 @@ function PricingClientContent({
           </div>
         )}
 
-        {/* 추천 플랜 섹션 */}
         {activeSubscription && personalizedPlans.length > 1 && (
           <div className="mt-16 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">
@@ -492,7 +488,6 @@ function PricingClientContent({
           </div>
         )}
 
-        {/* 플랜이 있을 때만 토글 표시 */}
         {personalizedPlans.length > 0 && (
           <div className="mt-12 flex items-center justify-center gap-4">
             <span

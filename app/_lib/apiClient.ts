@@ -27,7 +27,6 @@ async function refreshToken(): Promise<boolean> {
     return refreshPromise;
   }
 
-  console.log('[AUTH] Attempting to refresh token...');
   refreshPromise = (async (): Promise<boolean> => {
     try {
       const res = await fetch(`${API_URL}/auth/reissue`, {
@@ -36,17 +35,10 @@ async function refreshToken(): Promise<boolean> {
       });
 
       if (!res.ok) {
-        // This is an expected failure if the refresh token is invalid or expired.
-        // It should not be logged as an error.
-        console.log(`[AUTH] Token refresh failed with status: ${res.status}.`);
         return false;
       }
-
-      console.log('[AUTH] Token refresh successful.');
       return true;
     } catch (error) {
-      // This indicates a network or server error, which is worth logging.
-      console.warn('[AUTH] Network error during token refresh:', error);
       return false;
     } finally {
       refreshPromise = null;
@@ -92,8 +84,6 @@ export async function apiFetch<T>(
     let response = await performRequest(initialToken);
 
     if (response.status === 401 && withAuth) {
-      console.log(`[AUTH] Unauthorized for ${url}. Refreshing token...`);
-
       const refreshSuccessful = await refreshToken();
 
       if (refreshSuccessful) {
@@ -121,11 +111,6 @@ export async function apiFetch<T>(
 
     return json;
   } catch (error: any) {
-    // Log only unexpected errors. Auth failures are handled and thrown intentionally.
-    if (!error.message.includes('Authentication failed')) {
-      console.error(`API Fetch Error for ${url} (client):`, error.message);
-    }
-
     if (error.message.includes('Failed to fetch')) {
       useUIStore
         .getState()

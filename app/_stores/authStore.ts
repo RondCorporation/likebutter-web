@@ -20,8 +20,6 @@ interface AuthState {
   hydrate: (preloadedUser: User) => void;
 }
 
-// 수동 쿠키 삭제 함수 제거 - 백엔드 API에서 처리
-
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isInitialized: false,
@@ -60,7 +58,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user: null,
         isAuthenticated: false,
       });
-      // Re-throw error only when force is true to handle login flow failures
       if (force) {
         throw error;
       }
@@ -73,10 +70,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: () => {
-    // 자동 로그아웃의 경우 토큰이 이미 만료되었으므로 clearSession 사용
-    clearSession().catch((err) =>
-      console.warn('Failed to clear session:', err)
-    );
+    clearSession().catch(() => {});
     set({
       user: null,
       isAuthenticated: false,

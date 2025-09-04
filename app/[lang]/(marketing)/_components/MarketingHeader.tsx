@@ -7,7 +7,11 @@ import Logo from '@/app/_components/Logo';
 import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuthUser, useIsInitialized, useAuthLoading } from '@/hooks/useAuthStore';
+import {
+  useAuthUser,
+  useIsInitialized,
+  useAuthLoading,
+} from '@/hooks/useAuthStore';
 import UserDropdown from '@/components/UserDropdown';
 
 export default function MarketingHeader() {
@@ -17,17 +21,17 @@ export default function MarketingHeader() {
   const user = useAuthUser();
   const isInitialized = useIsInitialized();
   const isLoading = useAuthLoading();
-  
-  // 쿠키에서 accessToken 확인하여 초기 로딩 상태 개선
+
   const [hasTokenCookie, setHasTokenCookie] = useState<boolean | null>(null);
-  
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const cookies = document.cookie.split(';');
-      const accessTokenCookie = cookies.find(cookie => 
+      const accessTokenCookie = cookies.find((cookie) =>
         cookie.trim().startsWith('accessToken=')
       );
-      const hasToken = accessTokenCookie && accessTokenCookie.split('=')[1]?.trim() !== '';
+      const hasToken =
+        accessTokenCookie && accessTokenCookie.split('=')[1]?.trim() !== '';
       setHasTokenCookie(!!hasToken);
     }
   }, []);
@@ -57,7 +61,6 @@ export default function MarketingHeader() {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-24" role="banner">
@@ -139,16 +142,17 @@ export default function MarketingHeader() {
           </div>
           <div className="flex items-center gap-4">
             {(() => {
-              // 인증이 완전히 초기화되고 사용자가 있으면 프로필 표시
               if (isInitialized && user) {
                 return <UserDropdown />;
               }
-              
-              // 인증이 초기화되고 사용자가 없으면 로그인/회원가입 버튼
+
               if (isInitialized && !user) {
                 return (
                   <>
-                    <Link href={`/${lang}/login`} className="hover:text-accent text-sm">
+                    <Link
+                      href={`/${lang}/login`}
+                      className="hover:text-accent text-sm"
+                    >
                       {t('login')}
                     </Link>
                     <Link
@@ -160,19 +164,18 @@ export default function MarketingHeader() {
                   </>
                 );
               }
-              
-              // 초기화 중이면서 쿠키에 토큰이 있으면 프로필 자리에 빈 공간
+
               if (!isInitialized && hasTokenCookie) {
-                return (
-                  <div className="w-[120px] h-[32px]" /> // UserDropdown 크기만큼 자리 확보
-                );
+                return <div className="w-[120px] h-[32px]" />;
               }
-              
-              // 초기화 중이면서 쿠키에 토큰이 없으면 로그인/회원가입 버튼
+
               if (!isInitialized && hasTokenCookie === false) {
                 return (
                   <>
-                    <Link href={`/${lang}/login`} className="hover:text-accent text-sm">
+                    <Link
+                      href={`/${lang}/login`}
+                      className="hover:text-accent text-sm"
+                    >
                       {t('login')}
                     </Link>
                     <Link
@@ -184,8 +187,7 @@ export default function MarketingHeader() {
                   </>
                 );
               }
-              
-              // 쿠키 확인 중이면 빈 공간
+
               return <div className="w-[120px] h-[32px]" />;
             })()}
           </div>

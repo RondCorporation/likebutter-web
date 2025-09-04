@@ -43,7 +43,9 @@ const AnimatedElement = ({
     <motion.div
       ref={ref}
       initial={variants[direction]}
-      animate={isInView ? { x: 0, y: 0, scale: 1, opacity: 1 } : variants[direction]}
+      animate={
+        isInView ? { x: 0, y: 0, scale: 1, opacity: 1 } : variants[direction]
+      }
       transition={{ duration, delay, ease: 'easeOut' }}
       className={className}
     >
@@ -168,7 +170,6 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Contact form submitted:', { email, message });
   };
 
   // Process plans data
@@ -249,7 +250,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
             {/* Content */}
             <div className="relative z-10 text-left max-w-4xl container mx-auto px-4 sm:px-6">
-              <motion.h1 
+              <motion.h1
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -257,7 +258,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               >
                 LikeButter
               </motion.h1>
-              <motion.div 
+              <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
@@ -268,7 +269,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               </motion.div>
 
               {/* CTA Buttons */}
-              <motion.div 
+              <motion.div
                 initial={{ y: 15, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.3, delay: 0.2, ease: 'easeOut' }}
@@ -319,10 +320,14 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                   <div className="flex flex-col md:flex-row justify-center md:justify-end items-center md:items-end gap-4 md:gap-6 lg:gap-8">
                     {/* Card 1 - Butter Talks */}
                     <AnimatedElement direction="up" delay={0.2} duration={0.4}>
-                      <motion.div 
+                      <motion.div
                         className="transform transition-transform duration-300 hover:scale-105"
                         whileHover={{ y: -10, scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 17,
+                        }}
                       >
                         <Image
                           src={`/card_1_${lang}.png`}
@@ -337,10 +342,14 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
                     {/* Card 2 - Butter Cover */}
                     <AnimatedElement direction="up" delay={0.3} duration={0.4}>
-                      <motion.div 
+                      <motion.div
                         className="transform transition-transform duration-300 hover:scale-105 md:-translate-y-8"
                         whileHover={{ y: -10, scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 17,
+                        }}
                       >
                         <Image
                           src={`/card_2_${lang}.png`}
@@ -355,10 +364,14 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
                     {/* Card 3 - Butter Brush */}
                     <AnimatedElement direction="up" delay={0.4} duration={0.4}>
-                      <motion.div 
+                      <motion.div
                         className="transform transition-transform duration-300 hover:scale-105"
                         whileHover={{ y: -10, scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 17,
+                        }}
                       >
                         <Image
                           src={`/card_3_${lang}.png`}
@@ -401,12 +414,20 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
                   <div></div> {/* Empty space for layout balance */}
                   <div className="flex justify-center lg:justify-end">
-                    <AnimatedElement direction="right" delay={0.2} duration={0.4}>
+                    <AnimatedElement
+                      direction="right"
+                      delay={0.2}
+                      duration={0.4}
+                    >
                       <motion.div
                         className="w-[300px] md:w-[400px] lg:w-[488px] h-[460px] md:h-[600px] lg:h-[757px] flex items-center justify-center shadow-2xl rounded-[28px]"
                         style={{ backgroundColor: '#2a2a2a' }}
                         whileHover={{ scale: 1.02 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 300,
+                          damping: 20,
+                        }}
                       >
                         <div className="text-center text-gray-500">
                           <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-400">
@@ -472,9 +493,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                 </div>
                 {/* Pricing Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-                    {/* Free Plan */}
-                    <AnimatedElement direction="up" delay={0.4}>
-                      <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
+                  {/* Free Plan */}
+                  <AnimatedElement direction="up" delay={0.4}>
+                    <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
@@ -525,11 +546,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         </Link>
                       </div>
                     </div>
-                    </AnimatedElement>
+                  </AnimatedElement>
 
-                    {/* Creator Plan */}
-                    <AnimatedElement direction="up" delay={0.5}>
-                      <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
+                  {/* Creator Plan */}
+                  <AnimatedElement direction="up" delay={0.5}>
+                    <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
@@ -591,11 +612,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         </Link>
                       </div>
                     </div>
-                    </AnimatedElement>
+                  </AnimatedElement>
 
-                    {/* Professional Plan */}
-                    <AnimatedElement direction="up" delay={0.6}>
-                      <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
+                  {/* Professional Plan */}
+                  <AnimatedElement direction="up" delay={0.6}>
+                    <div className="bg-transparent rounded-[20px] border-2 border-[#FFD93B] flex flex-col h-full">
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
@@ -669,8 +690,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         </Link>
                       </div>
                     </div>
-                    </AnimatedElement>
-                  </div>
+                  </AnimatedElement>
+                </div>
               </div>
             </div>
           </PageSection>
@@ -687,52 +708,54 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
             <div className="flex justify-center">
               <AnimatedElement direction="scale" delay={0.2} duration={0.5}>
                 <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full h-[320px]">
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 h-full">
-                  {/* Left side - Title */}
-                  <div className="pt-[38px] pl-[83px] pr-8">
-                    <h2 className="text-[23px] font-bold mb-4">CONTACT US.</h2>
-                    <p className="text-[36px] font-bold whitespace-pre-line">
-                      {t('sectionContactTitle')}
-                    </p>
-                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 h-full">
+                    {/* Left side - Title */}
+                    <div className="pt-[38px] pl-[83px] pr-8">
+                      <h2 className="text-[23px] font-bold mb-4">
+                        CONTACT US.
+                      </h2>
+                      <p className="text-[36px] font-bold whitespace-pre-line">
+                        {t('sectionContactTitle')}
+                      </p>
+                    </div>
 
-                  {/* Right side - Form */}
-                  <div className="pt-[38px] pl-8 pr-[83px] pb-12">
-                    <form
-                      onSubmit={handleContactSubmit}
-                      className="space-y-4 h-full flex flex-col"
-                    >
-                      <div>
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder={t('contactFormEmail')}
-                          className="w-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 placeholder-[#B1B1B1]"
-                          style={{ fontSize: '14px' }}
-                          required
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <textarea
-                          value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                          placeholder={t('contactFormMessage')}
-                          className="w-full h-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
-                          style={{ fontSize: '14px' }}
-                          required
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-[8px] text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
+                    {/* Right side - Form */}
+                    <div className="pt-[38px] pl-8 pr-[83px] pb-12">
+                      <form
+                        onSubmit={handleContactSubmit}
+                        className="space-y-4 h-full flex flex-col"
                       >
-                        {t('contactFormSubmit')}
-                      </button>
-                    </form>
+                        <div>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder={t('contactFormEmail')}
+                            className="w-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 placeholder-[#B1B1B1]"
+                            style={{ fontSize: '14px' }}
+                            required
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <textarea
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder={t('contactFormMessage')}
+                            className="w-full h-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
+                            style={{ fontSize: '14px' }}
+                            required
+                          />
+                        </div>
+                        <button
+                          type="submit"
+                          className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-[8px] text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
+                        >
+                          {t('contactFormSubmit')}
+                        </button>
+                      </form>
+                    </div>
                   </div>
                 </div>
-              </div>
               </AnimatedElement>
             </div>
           </PageSection>

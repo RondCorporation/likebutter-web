@@ -1,6 +1,7 @@
 import { Task } from '@/types/task';
 import ButterGenTaskCard from './butter-gen/ButterGenTaskCard';
 import ButterTestTaskCard from './butter-test/ButterTestTaskCard';
+import ButterCoverTaskCard from './butter-cover/ButterCoverTaskCard';
 
 interface Props {
   task: Task;
@@ -13,6 +14,8 @@ export default function TaskCard({ task, onClick }: Props) {
       return <ButterGenTaskCard task={task} onClick={onClick} />;
     case 'BUTTER_TEST':
       return <ButterTestTaskCard task={task} onClick={onClick} />;
+    case 'BUTTER_COVER':
+      return <ButterCoverTaskCard task={task} onClick={onClick} />;
     default:
       const exhaustiveCheck: never = task;
       return (

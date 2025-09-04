@@ -4,7 +4,16 @@ export type GenerationStatus =
   | 'COMPLETED'
   | 'FAILED';
 
-export type ActionType = 'BUTTER_GEN' | 'BUTTER_TEST';
+// Pipeline status for ButterCover tasks
+export type PipelineStatus =
+  | 'PENDING'
+  | 'AUDIO_SEPARATION_IN_PROGRESS'
+  | 'AUDIO_SEPARATION_COMPLETED'
+  | 'AI_COVER_GENERATION_IN_PROGRESS'
+  | 'COMPLETED'
+  | 'FAILED';
+
+export type ActionType = 'BUTTER_GEN' | 'BUTTER_TEST' | 'BUTTER_COVER';
 
 interface ButterGenRequestDetails {
   sourceImageUrl: string;
@@ -37,9 +46,61 @@ export interface ButterTestDetails {
   error?: string;
 }
 
+// ButterCover types based on API specification
+interface ButterCoverRequestDetails {
+  voiceModel: string;
+  pitchAdjust?: number;
+  separatorModel?: string;
+  outputFormat?: string;
+  saveIntermediate?: boolean;
+  // Advanced AI Cover parameters
+  indexRate?: number;
+  filterRadius?: number;
+  rmsMixRate?: number;
+  protect?: number;
+  f0Method?: string;
+  crepeHopLength?: number;
+  // Reverb parameters
+  reverbRmSize?: number;
+  reverbWet?: number;
+  reverbDry?: number;
+  reverbDamping?: number;
+  // Gain parameters
+  mainGain?: number;
+  instGain?: number;
+  pitchChangeAll?: number;
+}
+
+interface ButterCoverResultDetails {
+  audioKey?: string;
+  downloadUrl?: string;
+  filename?: string;
+  voiceModel?: string;
+  pitchAdjust?: number;
+  outputFormat?: string;
+  fileSize?: number;
+  executionTime?: number;
+}
+
+interface ButterCoverIntermediateResult {
+  vocalsUrl?: string;
+  instrumentalsUrl?: string;
+}
+
+export interface ButterCoverDetails {
+  request: ButterCoverRequestDetails;
+  result?: ButterCoverResultDetails;
+  separationJobId?: string;
+  coverGenerationJobId?: string;
+  intermediateResult?: ButterCoverIntermediateResult;
+  error?: string;
+  errorMessage?: string;
+}
+
 type ActionMap = {
   BUTTER_GEN: { details?: ButterGenDetails };
   BUTTER_TEST: { details?: ButterTestDetails };
+  BUTTER_COVER: { details?: ButterCoverDetails };
 };
 
 export type Task = {
@@ -82,6 +143,9 @@ export interface Page<T> {
 export interface TaskStatusResponse {
   taskId: number;
   status: GenerationStatus;
+  pipelineStatus?: PipelineStatus;
+  createdAt: string;
+  updatedAt: string;
   details: any;
 }
 

@@ -196,7 +196,13 @@ export function useTaskHistory() {
             ) {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
-                payload: updatedTask as Task,
+                payload: {
+                  ...currentTask,
+                  status: updatedTask.status,
+                  details: updatedTask.details,
+                  ...(updatedTask.pipelineStatus && { pipelineStatus: updatedTask.pipelineStatus }),
+                  ...(updatedTask.updatedAt && { updatedAt: updatedTask.updatedAt }),
+                },
               });
             }
           });

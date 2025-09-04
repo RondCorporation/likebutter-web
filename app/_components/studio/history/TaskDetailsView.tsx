@@ -1,6 +1,7 @@
 import { Task } from '@/types/task';
 import ButterGenDetailsView from './butter-gen/ButterGenDetailsView';
 import ButterTestDetailsView from './butter-test/ButterTestDetailsView';
+import ButterCoverDetailsView from './butter-cover/ButterCoverDetailsView';
 
 export default function TaskDetailsView({ task }: { task: Task }) {
   switch (task.actionType) {
@@ -8,6 +9,8 @@ export default function TaskDetailsView({ task }: { task: Task }) {
       return <ButterGenDetailsView details={task.details} />;
     case 'BUTTER_TEST':
       return <ButterTestDetailsView details={task.details} />;
+    case 'BUTTER_COVER':
+      return <ButterCoverDetailsView details={task.details} />;
     default:
       const exhaustiveCheck: never = task;
       return <p>Details for this task type are not available.</p>;

@@ -68,9 +68,26 @@ export const createButterTestTask = (
 
 export interface ButterCoverRequest {
   voiceModel: string;
-  pitchChange?: number;
-  useUvr?: boolean;
+  pitchAdjust?: number;
+  separatorModel?: string;
   outputFormat?: string;
+  saveIntermediate?: boolean;
+  // Advanced AI Cover parameters
+  indexRate?: number;
+  filterRadius?: number;
+  rmsMixRate?: number;
+  protect?: number;
+  f0Method?: string;
+  crepeHopLength?: number;
+  // Reverb parameters
+  reverbRmSize?: number;
+  reverbWet?: number;
+  reverbDry?: number;
+  reverbDamping?: number;
+  // Gain parameters
+  mainGain?: number;
+  instGain?: number;
+  pitchChangeAll?: number;
 }
 
 export const createButterCoverTask = (

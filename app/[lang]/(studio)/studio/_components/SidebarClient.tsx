@@ -11,9 +11,6 @@ import {
   ChevronDown,
   ChevronUp,
   Music,
-  Brush,
-  Clapperboard,
-  MessageCircle,
   UsersRound,
   TestTube,
   X,
@@ -59,21 +56,6 @@ export default function StudioSidebar({
       href: `/${lang}/studio/butter-cover`,
       label: t('studioToolButterCover'),
       icon: Music,
-    },
-    {
-      href: `/${lang}/studio/butter-talks`,
-      label: t('studioToolButterTalks'),
-      icon: MessageCircle,
-    },
-    {
-      href: `/${lang}/studio/butter-art`,
-      label: t('studioToolButterBrush'),
-      icon: Brush,
-    },
-    {
-      href: `/${lang}/studio/butter-cuts`,
-      label: t('studioToolButterCuts'),
-      icon: Clapperboard,
     },
   ];
 

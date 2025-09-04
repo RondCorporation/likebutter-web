@@ -23,9 +23,6 @@ const StudioMainClient = memo(function StudioMainClient({
       [`/${lang}/studio/butter-gen`]: t('studioTitleButterGen'),
       [`/${lang}/studio/butter-test`]: t('studioTitleButterTest'),
       [`/${lang}/studio/butter-cover`]: t('studioTitleButterCover'),
-      [`/${lang}/studio/butter-art`]: t('studioTitleButterBrush'),
-      [`/${lang}/studio/butter-cuts`]: t('studioTitleButterCuts'),
-      [`/${lang}/studio/butter-talks`]: t('studioTitleButterTalks'),
     };
 
     let title = PAGE_TITLES[pathname] || 'Studio';

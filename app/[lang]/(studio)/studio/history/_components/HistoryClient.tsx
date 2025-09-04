@@ -9,6 +9,8 @@ import CompletedTasks from '@/components/studio/history/CompletedTasks';
 import TaskDetailsModal from '@/components/studio/history/TaskDetailsModal';
 import { LoaderCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import StudioButton from '@/components/shared/StudioButton';
+import StudioToolCard from '@/components/shared/StudioToolCard';
 
 export default function HistoryClient() {
   const {
@@ -36,50 +38,60 @@ export default function HistoryClient() {
   };
 
   return (
-    <>
-      <HistoryFilters onFilterChange={setFilters} />
+    <div className="space-y-8">
+      <StudioToolCard>
+        <HistoryFilters onFilterChange={setFilters} />
+      </StudioToolCard>
 
       {isLoading &&
         inProgressTasks.length === 0 &&
         completedTasks.length === 0 && (
-          <div className="flex justify-center items-center py-20">
-            <LoaderCircle size={40} className="animate-spin text-accent" />
-          </div>
+          <StudioToolCard>
+            <div className="flex justify-center items-center py-20">
+              <LoaderCircle size={40} className="animate-spin text-butter-yellow" />
+            </div>
+          </StudioToolCard>
         )}
 
       {error && (
-        <p className="text-center text-red-400">
-          {t('historyError', { error })}
-        </p>
+        <StudioToolCard className="border-red-400/30 bg-red-400/5">
+          <p className="text-center text-red-400">
+            {t('historyError', { error })}
+          </p>
+        </StudioToolCard>
       )}
 
       {!isLoading &&
         inProgressTasks.length === 0 &&
         completedTasks.length === 0 &&
         !error && (
-          <div className="text-center py-16 text-slate-500">
-            <p>{t('historyNoTasks')}</p>
-          </div>
+          <StudioToolCard>
+            <div className="text-center py-16 text-slate-400">
+              <p className="text-lg">{t('historyNoTasks')}</p>
+            </div>
+          </StudioToolCard>
         )}
 
       <InProgressTasks tasks={inProgressTasks} onTaskClick={openModal} />
       <CompletedTasks tasks={completedTasks} onTaskClick={openModal} />
 
       {hasMore && (
-        <div className="mt-8 text-center">
-          <button
+        <div className="flex justify-center">
+          <StudioButton
             onClick={loadMore}
             disabled={isLoading}
-            className="rounded-md bg-slate-700 px-6 py-2 text-sm font-semibold text-white transition hover:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
+            loading={isLoading}
+            variant="secondary"
+            size="md"
           >
             {isLoading ? t('historyLoading') : t('historyLoadMore')}
-          </button>
+          </StudioButton>
         </div>
       )}
 
       {selectedTask && (
         <TaskDetailsModal task={selectedTask} onClose={closeModal} />
       )}
-    </>
+    </div>
   );
 }

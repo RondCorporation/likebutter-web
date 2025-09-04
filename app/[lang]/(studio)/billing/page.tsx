@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import initTranslations from '@/app/_lib/i18n-server';
-import PricingClient from './_components/PricingClient';
-import CheckoutClient from './_components/CheckoutClient';
+import SimpleBillingClient from './_components/SimpleBillingClient';
+import CheckoutOverlay from './_components/CheckoutOverlay';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
 import { getPlansOnServer } from '@/app/_lib/apis/subscription.api.server';
 import { Plan } from '@/app/_types/plan';
@@ -105,7 +105,7 @@ export default async function BillingPage({ params, searchParams }: Props) {
       planKey: planData.planKey,
     };
 
-    return <CheckoutClient lang={lang} plan={planForCheckout} />;
+    return <CheckoutOverlay lang={lang} plan={planForCheckout} />;
   }
 
   const isKorean = lang === 'ko';
@@ -120,107 +120,12 @@ export default async function BillingPage({ params, searchParams }: Props) {
     return processedPlans[planType]?.[cycle]?.planKey || '';
   };
 
-  const plans = [
-    {
-      key: 'Free',
-      name: t('planFreeName'),
-      description: t('planFreeDesc'),
-      priceMonthly: 0,
-      priceYearly: 0,
-      cta: t('planFreeCta'),
-      href: `/${lang}/signup`,
-      isPopular: false,
-      isCustom: false,
-      planKeyMonthly: '',
-      planKeyYearly: '',
-      priceYearlyTotal: 0,
-    },
-    {
-      key: 'Creator',
-      name: t('planCreatorName'),
-      description: t('planCreatorDesc'),
-      priceMonthly: getPrice('CREATOR', 'monthly'),
-      priceYearly: getPrice('CREATOR', 'yearly') / 12,
-      cta: t('planCreatorCta'),
-      href: '#',
-      isPopular: true,
-      isCustom: false,
-      planKeyMonthly: getPlanKey('CREATOR', 'monthly'),
-      planKeyYearly: getPlanKey('CREATOR', 'yearly'),
-      priceYearlyTotal: getPrice('CREATOR', 'yearly'),
-    },
-    {
-      key: 'Professional',
-      name: t('planProfessionalName'),
-      description: t('planProfessionalDesc'),
-      priceMonthly: getPrice('PROFESSIONAL', 'monthly'),
-      priceYearly: getPrice('PROFESSIONAL', 'yearly') / 12,
-      cta: t('planProfessionalCta'),
-      href: '#',
-      isPopular: false,
-      isCustom: false,
-      planKeyMonthly: getPlanKey('PROFESSIONAL', 'monthly'),
-      planKeyYearly: getPlanKey('PROFESSIONAL', 'yearly'),
-      priceYearlyTotal: getPrice('PROFESSIONAL', 'yearly'),
-    },
-    {
-      key: 'Enterprise',
-      name: t('planEnterpriseName'),
-      description: t('planEnterpriseDesc'),
-      priceMonthly: t('planEnterprisePrice'),
-      priceYearly: t('planEnterprisePrice'),
-      cta: t('planEnterpriseCta'),
-      href: 'mailto:enterprise@likebutter.com',
-      isPopular: false,
-      isCustom: true,
-      planKeyMonthly: '',
-      planKeyYearly: '',
-      priceYearlyTotal: 0,
-    },
-  ];
-
-  const features = [
-    {
-      category: t('featureCategoryCore'),
-      name: t('featureMonthlyCredits'),
-      values: {
-        [t('planFreeName')]: t('value300'),
-        [t('planCreatorName')]: t('value4000'),
-        [t('planProfessionalName')]: t('value12000'),
-        [t('planEnterpriseName')]: t('valueCustom'),
-      },
-    },
-  ];
-
-  const translations = {
-    title: t('pricingTitle'),
-    subtitle: t('pricingSubtitle'),
-    monthly: t('monthly'),
-    yearly: t('yearly'),
-    save20: t('save20'),
-    billedAs: t('billedAs'),
-    serviceTerms: t('serviceTerms'),
-    monthlyBilling: t('monthlyBilling'),
-    yearlyBilling: t('yearlyBilling'),
-    servicePeriodMonthly: t('servicePeriodMonthly'),
-    servicePeriodYearly: t('servicePeriodYearly'),
-    autoRenewing: t('autoRenewing'),
-    goToStudio: t('goToStudio'),
-    paymentAlert: t('paymentAlert'),
-    currentPlan: t('currentPlan'),
-    downgradeNotAvailable: t('downgradeNotAvailable'),
-    upgradePlan: t('upgradePlan'),
-    processing: t('processing'),
-  };
-
+  // Show simple pricing overlay
   return (
-    <PricingClient
+    <SimpleBillingClient
       lang={lang}
-      plans={plans}
-      features={features}
-      translations={translations}
+      plans={apiPlans || []}
       currency={currency}
-      apiPlans={apiPlans || []}
     />
   );
 }

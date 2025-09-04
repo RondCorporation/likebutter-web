@@ -3,7 +3,10 @@
 import { useReducer, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, LoaderCircle, TestTube } from 'lucide-react';
+import { Sparkles, TestTube } from 'lucide-react';
+import StudioToolCard from '@/components/shared/StudioToolCard';
+import StudioButton from '@/components/shared/StudioButton';
+import StudioInput from '@/components/shared/StudioInput';
 import { createButterTestTask } from '@/app/_lib/apis/task.api';
 import { ApiResponse } from '@/app/_types/api';
 
@@ -74,55 +77,65 @@ export default function ButterTestClient() {
   const isGenerationDisabled = state.isLoading || !prompt;
 
   return (
-    <>
-      <div className="mb-6">
-        <label
-          htmlFor="art-prompt"
-          className="mb-3 block text-lg font-medium text-slate-200"
+    <div className="space-y-8">
+      <StudioToolCard>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="rounded-full bg-butter-yellow/20 p-2">
+              <TestTube className="h-5 w-5 text-butter-yellow" />
+            </div>
+            <h3 className="text-lg font-semibold text-white">
+              {t('butterTestStep1')}
+            </h3>
+          </div>
+          <StudioInput
+            variant="textarea"
+            value={prompt}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
+            placeholder={t('butterTestPromptPlaceholder')}
+            rows={6}
+            className="resize-none"
+            error={state.error || undefined}
+          />
+        </div>
+      </StudioToolCard>
+
+      <div className="flex justify-center">
+        <StudioButton
+          onClick={handleSubmit}
+          disabled={isGenerationDisabled}
+          loading={state.isLoading}
+          icon={<TestTube size={18} />}
+          size="lg"
+          className="w-full max-w-md"
         >
-          {t('butterTestStep1')}
-        </label>
-        <textarea
-          id="art-prompt"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder={t('butterTestPromptPlaceholder')}
-          rows={4}
-          className="w-full rounded-md border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-slate-500 focus:border-accent focus:ring-0"
-        />
+          {state.isLoading ? t('butterTestButtonLoading') : t('butterTestButton')}
+        </StudioButton>
       </div>
 
-      <button
-        disabled={isGenerationDisabled}
-        onClick={handleSubmit}
-        className="flex w-full items-center justify-center gap-2 rounded-md bg-accent py-3 text-base font-medium text-black transition hover:brightness-90 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400"
-      >
-        {state.isLoading ? (
-          <LoaderCircle size={18} className="animate-spin" />
-        ) : (
-          <TestTube size={18} />
-        )}
-        {state.isLoading ? t('butterTestButtonLoading') : t('butterTestButton')}
-      </button>
-
-      <div className="mt-6 text-center text-sm">
-        {state.error && <p className="text-red-400">{state.error}</p>}
-        {state.result && state.result.data && (
-          <div className="rounded-md border border-green-500/30 bg-green-500/10 p-4 text-green-300">
-            <p className="font-semibold">{t('butterGenSuccessTitle')}</p>
-            <p>
-              {t('butterGenSuccessTaskId')} {state.result.data.taskId} |{' '}
+      {state.result && state.result.data && (
+        <StudioToolCard className="border-butter-yellow/30 bg-butter-yellow/5">
+          <div className="text-center">
+            <div className="mb-4 flex justify-center">
+              <div className="rounded-full bg-butter-yellow/20 p-3">
+                <TestTube className="h-6 w-6 text-butter-yellow" />
+              </div>
+            </div>
+            <h4 className="mb-2 text-lg font-semibold text-white">
+              {t('butterGenSuccessTitle')}
+            </h4>
+            <p className="mb-4 text-slate-300">
+              {t('butterGenSuccessTaskId')} {state.result.data.taskId} • {' '}
               {t('butterGenSuccessStatus')} {state.result.data.status}
             </p>
-            <Link
-              href="/studio/history"
-              className="mt-2 inline-block underline"
-            >
-              {t('butterGenSuccessLink')}
+            <Link href="/studio/history">
+              <StudioButton variant="secondary" size="sm">
+                {t('butterGenSuccessLink')}
+              </StudioButton>
             </Link>
           </div>
-        )}
-      </div>
-    </>
+        </StudioToolCard>
+      )}
+    </div>
   );
 }

@@ -15,7 +15,7 @@ export function useLogout() {
       } catch (clearError) {}
     } finally {
       logoutStore();
-      router.replace('/login');
+      router.replace('/');
     }
   };
 

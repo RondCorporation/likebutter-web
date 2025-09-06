@@ -13,40 +13,86 @@ export type PipelineStatus =
   | 'COMPLETED'
   | 'FAILED';
 
-export type ActionType = 'BUTTER_GEN' | 'BUTTER_TEST' | 'BUTTER_COVER';
+export type ActionType = 'BUTTER_COVER' | 'DIGITAL_GOODS' | 'DREAM_CONTI' | 'FANMEETING_STUDIO' | 'PHOTO_EDITOR';
 
-interface ButterGenRequestDetails {
-  sourceImageUrl: string;
-  prompt: string;
+// Digital Goods types
+interface DigitalGoodsRequestDetails {
+  style: string;
+  customPrompt?: string;
+  title?: string;
+  subtitle?: string;
+  accentColor?: string;
+  productName?: string;
+  brandName?: string;
+  sourceImageKey: string;
 }
 
-interface ButterGenResultDetails {
-  imageUrl?: string;
+interface DigitalGoodsResultDetails {
+  imageKey: string;
 }
 
-export interface ButterGenDetails {
-  request: ButterGenRequestDetails;
-  result?: ButterGenResultDetails;
-  jobId?: string;
-  error?: string;
+export interface DigitalGoodsDetails {
+  request: DigitalGoodsRequestDetails;
+  result?: DigitalGoodsResultDetails;
 }
 
-interface ButterTestRequestDetails {
-  prompt: string;
+// Dream Conti types
+interface DreamContiRequestDetails {
+  dreamPrompt: string;
+  continuationStyle: string;
+  imageCount: number;
+  sourceImageKey: string;
 }
 
-interface ButterTestResultDetails {
-  imageUrl?: string;
+interface DreamContiResultDetails {
+  imageKey: string;
 }
 
-export interface ButterTestDetails {
-  request: ButterTestRequestDetails;
-  result?: ButterTestResultDetails;
-  jobId?: string;
-  error?: string;
+export interface DreamContiDetails {
+  request: DreamContiRequestDetails;
+  result?: DreamContiResultDetails;
 }
 
-// ButterCover types based on API specification
+// Fanmeeting Studio types
+interface FanmeetingStudioRequestDetails {
+  fanImageKey: string;
+  idolImageKey: string;
+  studioStyle: string;
+  lightingMode: string;
+  backgroundMusic: string;
+}
+
+interface FanmeetingStudioResultDetails {
+  imageKey: string;
+}
+
+export interface FanmeetingStudioDetails {
+  request: FanmeetingStudioRequestDetails;
+  result?: FanmeetingStudioResultDetails;
+}
+
+// Photo Editor types
+interface PhotoEditorRequestDetails {
+  editType: string;
+  enhanceQuality: boolean;
+  applyFilter: string;
+  brightness: number;
+  contrast: number;
+  saturation: number;
+  sourceImageKey: string;
+}
+
+interface PhotoEditorResultDetails {
+  originalImageKey: string;
+  editedImageKey: string;
+}
+
+export interface PhotoEditorDetails {
+  request: PhotoEditorRequestDetails;
+  result?: PhotoEditorResultDetails;
+}
+
+// ButterCover types based on updated API specification
 interface ButterCoverRequestDetails {
   voiceModel: string;
   pitchAdjust?: number;
@@ -69,38 +115,26 @@ interface ButterCoverRequestDetails {
   mainGain?: number;
   instGain?: number;
   pitchChangeAll?: number;
+  sourceAudioKey: string;
 }
 
 interface ButterCoverResultDetails {
-  audioKey?: string;
-  downloadUrl?: string;
-  filename?: string;
-  voiceModel?: string;
-  pitchAdjust?: number;
-  outputFormat?: string;
-  fileSize?: number;
-  executionTime?: number;
-}
-
-interface ButterCoverIntermediateResult {
-  vocalsUrl?: string;
-  instrumentalsUrl?: string;
+  audioKey: string;
+  vocalsKey?: string;
+  instrumentalsKey?: string;
 }
 
 export interface ButterCoverDetails {
   request: ButterCoverRequestDetails;
   result?: ButterCoverResultDetails;
-  separationJobId?: string;
-  coverGenerationJobId?: string;
-  intermediateResult?: ButterCoverIntermediateResult;
-  error?: string;
-  errorMessage?: string;
 }
 
 type ActionMap = {
-  BUTTER_GEN: { details?: ButterGenDetails };
-  BUTTER_TEST: { details?: ButterTestDetails };
   BUTTER_COVER: { details?: ButterCoverDetails };
+  DIGITAL_GOODS: { details?: DigitalGoodsDetails };
+  DREAM_CONTI: { details?: DreamContiDetails };
+  FANMEETING_STUDIO: { details?: FanmeetingStudioDetails };
+  PHOTO_EDITOR: { details?: PhotoEditorDetails };
 };
 
 export type Task = {

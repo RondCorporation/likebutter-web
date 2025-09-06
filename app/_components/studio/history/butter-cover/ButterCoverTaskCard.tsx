@@ -87,29 +87,10 @@ export default function ButterCoverTaskCard({ task, onClick }: Props) {
 
       {/* Result Info */}
       {details?.result && (
-        <div className="mt-3 space-y-1 border-t border-white/10 pt-3">
-          {details.result.filename && (
-            <div className="text-sm text-slate-400">
-              File: {details.result.filename}
-            </div>
-          )}
-          {details.result.fileSize && (
-            <div className="text-sm text-slate-400">
-              Size: {(details.result.fileSize / 1024 / 1024).toFixed(1)} MB
-            </div>
-          )}
-          {details.result.executionTime && (
-            <div className="text-sm text-slate-400">
-              Duration: {details.result.executionTime.toFixed(1)}s
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Error Message */}
-      {details?.error && (
-        <div className="mt-3 rounded bg-red-500/20 p-2 text-sm text-red-400">
-          {details.error}
+        <div className="mt-3 border-t border-white/10 pt-3">
+          <div className="flex items-center gap-2 text-sm text-green-400">
+            <span>AI voice cover completed successfully</span>
+          </div>
         </div>
       )}
 

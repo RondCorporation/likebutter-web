@@ -11,8 +11,10 @@ import {
   ChevronDown,
   ChevronUp,
   Music,
-  UsersRound,
-  TestTube,
+  Package,
+  Moon,
+  Heart,
+  ImageIcon,
   X,
 } from 'lucide-react';
 import { useAssets } from '@/hooks/useAssets';
@@ -43,19 +45,29 @@ export default function StudioSidebar({
 
   const BUTTER_TOOLS = [
     {
-      href: `/${lang}/studio/butter-gen`,
-      label: t('studioToolButterGen'),
-      icon: UsersRound,
-    },
-    {
-      href: `/${lang}/studio/butter-test`,
-      label: t('studioToolButterTest'),
-      icon: TestTube,
-    },
-    {
       href: `/${lang}/studio/butter-cover`,
-      label: t('studioToolButterCover'),
+      label: 'Butter Cover',
       icon: Music,
+    },
+    {
+      href: `/${lang}/studio/digital-goods`,
+      label: 'Digital Goods',
+      icon: Package,
+    },
+    {
+      href: `/${lang}/studio/dream-conti`,
+      label: 'Dream Conti',
+      icon: Moon,
+    },
+    {
+      href: `/${lang}/studio/fanmeeting-studio`,
+      label: 'Fanmeeting Studio',
+      icon: Heart,
+    },
+    {
+      href: `/${lang}/studio/photo-editor`,
+      label: 'Photo Editor',
+      icon: ImageIcon,
     },
   ];
 

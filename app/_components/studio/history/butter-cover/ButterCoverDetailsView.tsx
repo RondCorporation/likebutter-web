@@ -1,4 +1,5 @@
 import { ButterCoverDetails } from '@/types/task';
+import { Music, Download } from 'lucide-react';
 
 interface Props {
   details?: ButterCoverDetails;
@@ -10,10 +11,13 @@ export default function ButterCoverDetailsView({ details }: Props) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Request Details */}
       <div>
-        <h4 className="mb-2 font-semibold text-slate-200">Request Configuration</h4>
+        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
+          <Music className="h-5 w-5" />
+          Voice Cover Configuration
+        </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
           <div>
             <label className="text-sm font-medium text-slate-400">Voice Model</label>
@@ -49,8 +53,8 @@ export default function ButterCoverDetailsView({ details }: Props) {
         details.request.rmsMixRate !== undefined ||
         details.request.protect !== undefined) && (
         <div>
-          <h4 className="mb-2 font-semibold text-slate-200">Advanced Settings</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 rounded-lg bg-slate-800/50 p-4">
+          <h4 className="mb-3 font-semibold text-slate-200">Advanced AI Settings</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-slate-800/50 p-4">
             {details.request.indexRate !== undefined && (
               <div>
                 <label className="text-sm font-medium text-slate-400">Index Rate</label>
@@ -78,117 +82,85 @@ export default function ButterCoverDetailsView({ details }: Props) {
                 <p className="text-slate-200">{details.request.protect}</p>
               </div>
             )}
-            
-            {details.request.f0Method && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">F0 Method</label>
-                <p className="text-slate-200 uppercase">{details.request.f0Method}</p>
-              </div>
-            )}
-            
-            {details.request.mainGain !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">Main Gain</label>
-                <p className="text-slate-200">{details.request.mainGain}dB</p>
-              </div>
-            )}
           </div>
         </div>
       )}
 
-      {/* Intermediate Results */}
-      {details.intermediateResult && (
+      {/* Reverb Settings */}
+      {(details.request.reverbRmSize !== undefined ||
+        details.request.reverbWet !== undefined ||
+        details.request.reverbDry !== undefined ||
+        details.request.reverbDamping !== undefined) && (
         <div>
-          <h4 className="mb-2 font-semibold text-slate-200">Intermediate Files</h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            {details.intermediateResult.vocalsUrl && (
-              <div className="mb-2">
-                <label className="text-sm font-medium text-slate-400">Vocals</label>
-                <p className="text-slate-200 break-all">{details.intermediateResult.vocalsUrl}</p>
+          <h4 className="mb-3 font-semibold text-slate-200">Reverb Settings</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-slate-800/50 p-4">
+            {details.request.reverbRmSize !== undefined && (
+              <div>
+                <label className="text-sm font-medium text-slate-400">Room Size</label>
+                <p className="text-slate-200">{details.request.reverbRmSize}</p>
               </div>
             )}
-            {details.intermediateResult.instrumentalsUrl && (
+            
+            {details.request.reverbWet !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Instrumentals</label>
-                <p className="text-slate-200 break-all">{details.intermediateResult.instrumentalsUrl}</p>
+                <label className="text-sm font-medium text-slate-400">Wet</label>
+                <p className="text-slate-200">{details.request.reverbWet}</p>
+              </div>
+            )}
+            
+            {details.request.reverbDry !== undefined && (
+              <div>
+                <label className="text-sm font-medium text-slate-400">Dry</label>
+                <p className="text-slate-200">{details.request.reverbDry}</p>
+              </div>
+            )}
+            
+            {details.request.reverbDamping !== undefined && (
+              <div>
+                <label className="text-sm font-medium text-slate-400">Damping</label>
+                <p className="text-slate-200">{details.request.reverbDamping}</p>
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Result */}
+      {/* Results */}
       {details.result && (
         <div>
-          <h4 className="mb-2 font-semibold text-slate-200">Generated Result</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
-            {details.result.filename && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">Filename</label>
-                <p className="text-slate-200">{details.result.filename}</p>
-              </div>
-            )}
-            
-            {details.result.fileSize && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">File Size</label>
-                <p className="text-slate-200">{(details.result.fileSize / 1024 / 1024).toFixed(2)} MB</p>
-              </div>
-            )}
-            
-            {details.result.executionTime && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">Execution Time</label>
-                <p className="text-slate-200">{details.result.executionTime.toFixed(1)} seconds</p>
-              </div>
-            )}
-            
-            {details.result.downloadUrl && (
-              <div className="col-span-full">
-                <label className="text-sm font-medium text-slate-400">Download</label>
-                <div className="mt-1">
-                  <a 
-                    href={details.result.downloadUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-accent/90"
-                  >
-                    Download AI Cover
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Job IDs */}
-      {(details.separationJobId || details.coverGenerationJobId) && (
-        <div>
-          <h4 className="mb-2 font-semibold text-slate-200">Job Information</h4>
+          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
+            <Download className="h-5 w-5" />
+            Generated Files
+          </h4>
           <div className="rounded-lg bg-slate-800/50 p-4">
-            {details.separationJobId && (
-              <div className="mb-2">
-                <label className="text-sm font-medium text-slate-400">Audio Separation Job ID</label>
-                <p className="text-slate-200 font-mono text-sm">{details.separationJobId}</p>
-              </div>
-            )}
-            {details.coverGenerationJobId && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">AI Cover Generation Job ID</label>
-                <p className="text-slate-200 font-mono text-sm">{details.coverGenerationJobId}</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Error */}
-      {(details.error || details.errorMessage) && (
-        <div>
-          <h4 className="mb-2 font-semibold text-red-400">Error</h4>
-          <div className="rounded-lg bg-red-500/20 p-4">
-            <p className="text-red-300">{details.error || details.errorMessage}</p>
+            <div className="space-y-3">
+              {details.result.audioKey && (
+                <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
+                  <div>
+                    <div className="font-medium text-slate-200">AI Voice Cover</div>
+                    <div className="text-sm text-slate-400">Main processed audio file</div>
+                  </div>
+                </div>
+              )}
+              
+              {details.result.vocalsKey && (
+                <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
+                  <div>
+                    <div className="font-medium text-slate-200">Vocals Track</div>
+                    <div className="text-sm text-slate-400">Separated vocal track</div>
+                  </div>
+                </div>
+              )}
+              
+              {details.result.instrumentalsKey && (
+                <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
+                  <div>
+                    <div className="font-medium text-slate-200">Instrumental Track</div>
+                    <div className="text-sm text-slate-400">Separated instrumental track</div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -4,14 +4,17 @@ import { useReducer, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import {
-  Sparkles,
+  ImageIcon,
   UploadCloud,
   X,
+  Sliders,
 } from 'lucide-react';
 import StudioToolCard from '@/components/shared/StudioToolCard';
 import StudioButton from '@/components/shared/StudioButton';
 import StudioInput from '@/components/shared/StudioInput';
-import { createButterGenTask } from '@/app/_lib/apis/task.api';
+import StudioSelect from '@/components/shared/StudioSelect';
+import StudioSlider from '@/components/shared/StudioSlider';
+import { createPhotoEditorTask } from '@/app/_lib/apis/task.api';
 import { ApiResponse } from '@/app/_types/api';
 import Image from 'next/image';
 
@@ -53,11 +56,34 @@ function apiSubmitReducer(state: State, action: Action): State {
   }
 }
 
-export default function ButterGenClient() {
+const editTypes = [
+  { value: 'background_removal', label: 'Background Removal' },
+  { value: 'enhance_quality', label: 'Enhance Quality' },
+  { value: 'color_correction', label: 'Color Correction' },
+  { value: 'noise_reduction', label: 'Noise Reduction' },
+  { value: 'artistic_filter', label: 'Artistic Filter' },
+];
+
+const filters = [
+  { value: 'none', label: 'None' },
+  { value: 'vintage', label: 'Vintage' },
+  { value: 'sepia', label: 'Sepia' },
+  { value: 'black_white', label: 'Black & White' },
+  { value: 'warm', label: 'Warm' },
+  { value: 'cool', label: 'Cool' },
+  { value: 'dramatic', label: 'Dramatic' },
+];
+
+export default function PhotoEditorClient() {
   const { t } = useTranslation();
   const [sourceImage, setSourceImage] = useState<File | null>(null);
-  const [prompt, setPrompt] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [editType, setEditType] = useState('background_removal');
+  const [enhanceQuality, setEnhanceQuality] = useState(true);
+  const [applyFilter, setApplyFilter] = useState('none');
+  const [brightness, setBrightness] = useState(1.0);
+  const [contrast, setContrast] = useState(1.0);
+  const [saturation, setSaturation] = useState(1.0);
   const [state, dispatch] = useReducer(apiSubmitReducer, initialState);
 
   useEffect(() => {
@@ -97,25 +123,26 @@ export default function ButterGenClient() {
   };
 
   const handleSubmit = async () => {
-    if (!prompt || !sourceImage) {
+    if (!sourceImage) {
       dispatch({
         type: 'SUBMIT_ERROR',
-        payload: t('butterGenErrorPrompt'),
+        payload: 'Please upload an image to edit',
       });
       return;
     }
     dispatch({ type: 'SUBMIT_START' });
 
-    const formData = new FormData();
-    const requestPayload = { prompt };
-    formData.append(
-      'request',
-      new Blob([JSON.stringify(requestPayload)], { type: 'application/json' })
-    );
-    formData.append('sourceImage', sourceImage);
+    const request = {
+      editType,
+      enhanceQuality,
+      applyFilter,
+      brightness,
+      contrast,
+      saturation,
+    };
 
     try {
-      const response = await createButterGenTask(formData);
+      const response = await createPhotoEditorTask(sourceImage, request);
       dispatch({ type: 'SUBMIT_SUCCESS', payload: response });
     } catch (e: any) {
       dispatch({
@@ -125,7 +152,7 @@ export default function ButterGenClient() {
     }
   };
 
-  const isGenerationDisabled = state.isLoading || !prompt || !sourceImage;
+  const isGenerationDisabled = state.isLoading || !sourceImage;
 
   return (
     <div className="space-y-8">
@@ -134,11 +161,11 @@ export default function ButterGenClient() {
         <StudioToolCard>
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">
-              {t('butterGenStep1')}
+              Upload Image to Edit
             </h3>
             <div
               className="relative flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-600 bg-slate-900/50 text-center transition-all duration-300 hover:border-butter-yellow/50 hover:bg-slate-800/50"
-              onClick={() => document.getElementById('face-upload')?.click()}
+              onClick={() => document.getElementById('image-upload')?.click()}
             >
               {previewUrl ? (
                 <>
@@ -164,10 +191,10 @@ export default function ButterGenClient() {
                 <div className="flex flex-col items-center text-slate-400">
                   <UploadCloud className="mb-4 h-12 w-12 text-butter-yellow/70" />
                   <p className="mb-2 font-semibold text-slate-200">
-                    {t('butterGenUploadLabel')}
+                    Click to upload image
                   </p>
                   <p className="text-sm text-slate-400">
-                    {t('butterGenUploadPlaceholder')}
+                    Upload your photo to edit
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
                     PNG, JPG, WEBP up to 5MB
@@ -175,7 +202,7 @@ export default function ButterGenClient() {
                 </div>
               )}
               <input
-                id="face-upload"
+                id="image-upload"
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
                 onChange={handleFileChange}
@@ -185,21 +212,84 @@ export default function ButterGenClient() {
           </div>
         </StudioToolCard>
 
-        {/* Right Column: Prompt */}
+        {/* Right Column: Edit Settings */}
         <StudioToolCard>
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white">
-              {t('butterGenStep2')}
+          <div className="space-y-6">
+            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+              <Sliders size={20} />
+              Edit Settings
             </h3>
-            <StudioInput
-              variant="textarea"
-              value={prompt}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPrompt(e.target.value)}
-              placeholder={t('butterGenPromptPlaceholder')}
-              rows={10}
-              className="resize-none"
-              error={state.error || undefined}
-            />
+            
+            {/* Edit Type */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">Edit Type</label>
+              <StudioSelect
+                value={editType}
+                onChange={setEditType}
+                options={editTypes}
+              />
+            </div>
+
+            {/* Quality Enhancement */}
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={enhanceQuality}
+                  onChange={(e) => setEnhanceQuality(e.target.checked)}
+                  className="rounded"
+                />
+                Enhance Quality
+              </label>
+            </div>
+
+            {/* Filter */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-300">Apply Filter</label>
+              <StudioSelect
+                value={applyFilter}
+                onChange={setApplyFilter}
+                options={filters}
+              />
+            </div>
+
+            {/* Adjustments */}
+            <div className="space-y-4">
+              <h4 className="text-sm font-medium text-slate-300">Adjustments</h4>
+              
+              <div className="space-y-2">
+                <label className="text-sm text-slate-400">Brightness: {brightness.toFixed(1)}</label>
+                <StudioSlider
+                  min={0.5}
+                  max={2.0}
+                  step={0.1}
+                  value={brightness}
+                  onChange={setBrightness}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm text-slate-400">Contrast: {contrast.toFixed(1)}</label>
+                <StudioSlider
+                  min={0.5}
+                  max={2.0}
+                  step={0.1}
+                  value={contrast}
+                  onChange={setContrast}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm text-slate-400">Saturation: {saturation.toFixed(1)}</label>
+                <StudioSlider
+                  min={0.0}
+                  max={2.0}
+                  step={0.1}
+                  value={saturation}
+                  onChange={setSaturation}
+                />
+              </div>
+            </div>
           </div>
         </StudioToolCard>
       </div>
@@ -210,11 +300,11 @@ export default function ButterGenClient() {
           onClick={handleSubmit}
           disabled={isGenerationDisabled}
           loading={state.isLoading}
-          icon={<Sparkles size={18} />}
+          icon={<ImageIcon size={18} />}
           size="lg"
           className="w-full max-w-md"
         >
-          {state.isLoading ? t('butterGenButtonLoading') : t('butterGenButton')}
+          {state.isLoading ? 'Processing...' : 'Edit Photo'}
         </StudioButton>
       </div>
 
@@ -224,21 +314,29 @@ export default function ButterGenClient() {
           <div className="text-center">
             <div className="mb-4 flex justify-center">
               <div className="rounded-full bg-butter-yellow/20 p-3">
-                <Sparkles className="h-6 w-6 text-butter-yellow" />
+                <ImageIcon className="h-6 w-6 text-butter-yellow" />
               </div>
             </div>
             <h4 className="mb-2 text-lg font-semibold text-white">
-              {t('butterGenSuccessTitle')}
+              Photo Edit Started!
             </h4>
             <p className="mb-4 text-slate-300">
-              {t('butterGenSuccessTaskId')} {state.result.data.taskId} • {' '}
-              {t('butterGenSuccessStatus')} {state.result.data.status}
+              Task ID: {state.result.data.taskId} • Status: {state.result.data.status}
             </p>
             <Link href="/studio/history">
               <StudioButton variant="secondary" size="sm">
-                {t('butterGenSuccessLink')}
+                View in History
               </StudioButton>
             </Link>
+          </div>
+        </StudioToolCard>
+      )}
+
+      {/* Error Display */}
+      {state.error && (
+        <StudioToolCard className="border-red-500/30 bg-red-500/5">
+          <div className="text-center">
+            <p className="text-red-400">{state.error}</p>
           </div>
         </StudioToolCard>
       )}

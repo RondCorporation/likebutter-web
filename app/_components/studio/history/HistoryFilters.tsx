@@ -18,9 +18,11 @@ export default function HistoryFilters({ onFilterChange }: Props) {
 
   const ACTION_TYPE_OPTIONS: { label: string; value: ActionType | '' }[] = [
     { label: t('historyFilterTypeAll'), value: '' },
-    { label: t('historyFilterTypeButterGen'), value: 'BUTTER_GEN' },
-    { label: t('historyFilterTypeButterTest'), value: 'BUTTER_TEST' },
-    { label: t('historyFilterTypeButterCover'), value: 'BUTTER_COVER' },
+    { label: 'Butter Cover', value: 'BUTTER_COVER' },
+    { label: 'Digital Goods', value: 'DIGITAL_GOODS' },
+    { label: 'Dream Conti', value: 'DREAM_CONTI' },
+    { label: 'Fanmeeting Studio', value: 'FANMEETING_STUDIO' },
+    { label: 'Photo Editor', value: 'PHOTO_EDITOR' },
   ];
 
   return (

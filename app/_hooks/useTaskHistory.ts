@@ -143,7 +143,11 @@ export function useTaskHistory() {
       dispatch({ type: 'FETCH_START', forLoadMore: isLoadMore });
 
       try {
-        const response = await getTaskHistory(pageToFetch, filters);
+        // First load gets full details (summary=false), subsequent loads can be summary only
+        const response = await getTaskHistory(pageToFetch, {
+          ...filters,
+          summary: false, // Always get full details for better UX
+        });
         if (response.data) {
           dispatch({
             type: isLoadMore ? 'FETCH_MORE_SUCCESS' : 'FETCH_SUCCESS',
@@ -181,33 +185,31 @@ export function useTaskHistory() {
       dispatch({ type: 'POLLING_START' });
 
       try {
-        const taskIds = tasksToCheck.map((task) => task.taskId);
-        const response = await getBatchTaskStatus(taskIds);
-
-        if (response.data) {
-          response.data.forEach((updatedTask) => {
-            const currentTask = tasksToCheck.find(
-              (t) => t.taskId === updatedTask.taskId
-            );
-            if (
-              currentTask &&
-              (updatedTask.status !== currentTask.status ||
-                !currentTask.details)
-            ) {
+        // Poll each in-progress task individually using the new /tasks/me/{taskId} endpoint
+        const updatePromises = tasksToCheck.map(async (task) => {
+          try {
+            const response = await getTaskStatus(task.taskId);
+            if (response.data && response.data.status !== task.status) {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
                 payload: {
-                  ...currentTask,
-                  status: updatedTask.status,
-                  details: updatedTask.details,
-                  ...(updatedTask.pipelineStatus && { pipelineStatus: updatedTask.pipelineStatus }),
-                  ...(updatedTask.updatedAt && { updatedAt: updatedTask.updatedAt }),
-                },
+                  taskId: response.data.taskId,
+                  status: response.data.status,
+                  createdAt: response.data.createdAt,
+                  actionType: task.actionType,
+                  details: response.data.details,
+                } as Task,
               });
             }
-          });
-        }
+          } catch (error) {
+            // Continue with other tasks even if one fails
+            console.warn(`Failed to update task ${task.taskId}:`, error);
+          }
+        });
+
+        await Promise.all(updatePromises);
       } catch (error) {
+        console.warn('Polling error:', error);
       } finally {
         dispatch({ type: 'POLLING_END' });
       }

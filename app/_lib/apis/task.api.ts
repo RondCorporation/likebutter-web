@@ -14,12 +14,13 @@ interface TaskCreationResponse {
 
 export const getTaskHistory = (
   page: number,
-  filters: { status?: string; actionType?: string; size?: number }
+  filters: { status?: string; actionType?: string; size?: number; summary?: boolean }
 ): Promise<ApiResponse<Page<Task>>> => {
   const params = new URLSearchParams({
     page: page.toString(),
     size: (filters.size || 10).toString(),
     sort: 'createdAt,desc',
+    summary: (filters.summary || false).toString(),
   });
   if (filters.status) params.append('status', filters.status);
   if (filters.actionType) params.append('actionType', filters.actionType);
@@ -30,7 +31,7 @@ export const getTaskHistory = (
 export const getTaskStatus = (
   taskId: number
 ): Promise<ApiResponse<TaskStatusResponse>> => {
-  return apiFetch<TaskStatusResponse>(`/tasks/${taskId}/status`);
+  return apiFetch<TaskStatusResponse>(`/tasks/me/${taskId}`);
 };
 
 export const getBatchTaskStatus = (
@@ -42,21 +43,61 @@ export const getBatchTaskStatus = (
   });
 };
 
-export const createButterGenTask = (
-  formData: FormData
+// Digital Goods task creation
+export interface DigitalGoodsRequest {
+  style: string;
+  customPrompt?: string;
+  title?: string;
+  subtitle?: string;
+  accentColor?: string;
+  productName?: string;
+  brandName?: string;
+}
+
+export const createDigitalGoodsTask = (
+  image: File,
+  request: DigitalGoodsRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
-  return apiFetch<TaskCreationResponse>('/tasks/butter-gen', {
+  const formData = new FormData();
+  formData.append('image', image);
+  
+  // Add form fields individually
+  Object.entries(request).forEach(([key, value]) => {
+    if (value !== undefined) {
+      formData.append(key, value);
+    }
+  });
+
+  return apiFetch<TaskCreationResponse>('/tasks/digital-goods', {
     method: 'POST',
     body: formData,
   });
 };
 
-export const createButterTestTask = (
-  prompt: string
+// Photo Editor task creation (replacing Butter Gen functionality)
+export interface PhotoEditorRequest {
+  editType: string;
+  enhanceQuality: boolean;
+  applyFilter: string;
+  brightness: number;
+  contrast: number;
+  saturation: number;
+}
+
+export const createPhotoEditorTask = (
+  image: File,
+  request: PhotoEditorRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
-  return apiFetch<TaskCreationResponse>('/tasks/butter-test', {
+  const formData = new FormData();
+  formData.append('image', image);
+  formData.append(
+    'request',
+    new Blob([JSON.stringify(request)], { type: 'application/json' })
+  );
+
+  return apiFetch<TaskCreationResponse>('/tasks/photo-editor', {
     method: 'POST',
-    body: { prompt },
+    body: formData,
   });
 };
 

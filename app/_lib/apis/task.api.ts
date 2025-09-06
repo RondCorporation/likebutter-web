@@ -42,12 +42,6 @@ export const getBatchTaskStatus = (
   });
 };
 
-export const getTaskImageUrl = (
-  taskId: number
-): Promise<ApiResponse<TaskImageUrlResponse>> => {
-  return apiFetch<TaskImageUrlResponse>(`/tasks/${taskId}/image`);
-};
-
 export const createButterGenTask = (
   formData: FormData
 ): Promise<ApiResponse<TaskCreationResponse>> => {

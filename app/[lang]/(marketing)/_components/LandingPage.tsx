@@ -59,14 +59,12 @@ const PageSection = ({
   children,
   className = '',
   id,
-  noPadding = false,
   fitViewport = false,
   style,
 }: {
   children: React.ReactNode;
   className?: string;
   id?: string;
-  noPadding?: boolean;
   fitViewport?: boolean;
   style?: React.CSSProperties;
 }) => {
@@ -80,18 +78,11 @@ const PageSection = ({
       className={`${containerClasses} ${className}`}
       style={style}
     >
-      {noPadding ? (
-        children
-      ) : (
-        <div className="container mx-auto px-4 md:px-8 lg:px-16 max-w-[80rem]">
-          {children}
-        </div>
-      )}
+      <div className="container mx-auto max-w-[80rem]">{children}</div>
     </section>
   );
 };
 
-// Section Header Component for consistent typography
 const SectionHeader = ({
   yellowText,
   title,
@@ -109,8 +100,7 @@ const SectionHeader = ({
       </p>
     </AnimatedElement>
     <AnimatedElement direction="up" delay={0.1} duration={0.3}>
-      {/* Title - Figma: 48px, Bold, #FFFFFF */}
-      <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold font-pretendard leading-[1.5]">
+      <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold font-pretendard leading-[1.5] md:leading-[1.5] lg:leading-[1.5]">
         {title.split('\n').map((line, i) => (
           <span key={i}>
             {line}
@@ -119,7 +109,6 @@ const SectionHeader = ({
         ))}
       </h2>
     </AnimatedElement>
-    {/* Subtitle - Figma: 16px, Regular, #94A3B8, Arial */}
     {subtitle && (
       <AnimatedElement direction="up" delay={0.15} duration={0.3}>
         <p
@@ -230,10 +219,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           }}
           data-section-index={0}
         >
-          <PageSection
+          <section
             id="hero"
             className="relative overflow-hidden bg-black h-screen flex items-center justify-center"
-            noPadding
           >
             {/* YouTube Background */}
             <div className="absolute inset-0 w-full h-full">
@@ -248,47 +236,51 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
             {/* Dark overlay for text readability */}
             <div className="absolute inset-0 bg-black/60"></div>
 
-            {/* Content */}
-            <div className="relative z-10 text-left max-w-4xl container mx-auto px-4 sm:px-6">
-              <motion.h1
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
-                className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight font-archivo-black"
-              >
-                LikeButter
-              </motion.h1>
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
-                className="text-2xl md:text-3xl text-white/90 mb-12 leading-relaxed"
-              >
-                <p>{t('heroTitleLine1')}</p>
-                <p>{t('heroTitleLine2')}</p>
-              </motion.div>
+            {/* Content Container with max-width */}
+            <div className="relative z-10 w-full">
+              <div className="container mx-auto max-w-[80rem]">
+                <div className="text-left max-w-4xl">
+                  <motion.h1
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                    className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight font-archivo-black"
+                  >
+                    LikeButter
+                  </motion.h1>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
+                    className="text-2xl md:text-3xl text-white/90 mb-12 leading-relaxed"
+                  >
+                    <p>{t('heroTitleLine1')}</p>
+                    <p>{t('heroTitleLine2')}</p>
+                  </motion.div>
 
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ y: 15, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.2, ease: 'easeOut' }}
-                className="flex flex-col sm:flex-row gap-6 items-start"
-              >
-                <Link
-                  href={`/${lang}/signup`}
-                  className="inline-flex items-center gap-3 rounded-full bg-[#FFD93B] px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
-                >
-                  {t('heroCtaMain')}
-                </Link>
-                <button
-                  onClick={() => scrollToSection('demo')}
-                  className="inline-flex items-center gap-3 rounded-full border-2 border-[#FFD93B] text-[#FFD93B] px-8 py-4 text-lg font-bold bg-transparent transition-all duration-300 hover:bg-[#FFD93B] hover:text-black"
-                >
-                  <Play size={20} />
-                  {t('heroCtaDemo')}
-                </button>
-              </motion.div>
+                  {/* CTA Buttons */}
+                  <motion.div
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.3, delay: 0.2, ease: 'easeOut' }}
+                    className="flex flex-col sm:flex-row gap-6 items-start"
+                  >
+                    <Link
+                      href={`/${lang}/signup`}
+                      className="inline-flex items-center gap-3 rounded-full bg-[#FFD93B] px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
+                    >
+                      {t('heroCtaMain')}
+                    </Link>
+                    <button
+                      onClick={() => scrollToSection('demo')}
+                      className="inline-flex items-center gap-3 rounded-full border-2 border-[#FFD93B] text-[#FFD93B] px-8 py-4 text-lg font-bold bg-transparent transition-all duration-300 hover:bg-[#FFD93B] hover:text-black"
+                    >
+                      <Play size={20} />
+                      {t('heroCtaDemo')}
+                    </button>
+                  </motion.div>
+                </div>
+              </div>
             </div>
 
             {/* Scroll Indicator */}
@@ -296,7 +288,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               <span className="text-sm">{t('heroScroll')}</span>
               <ArrowDown size={20} className="animate-bounce" />
             </div>
-          </PageSection>
+          </section>
         </div>
 
         {/* Section 2: About Like Butter */}

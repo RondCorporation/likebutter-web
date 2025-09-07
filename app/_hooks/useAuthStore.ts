@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/app/_stores/authStore';
 
 // 개별 상태를 위한 선택자들
 export const useAuthUser = () => useAuthStore(state => state.user);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useUIStore } from '@/stores/uiStore';
+import { useUIStore } from '@/app/_stores/uiStore';
 import { useCallback } from 'react';
 
 // 개별 상태를 위한 선택자들

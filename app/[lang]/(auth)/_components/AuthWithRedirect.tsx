@@ -1,63 +1,49 @@
 'use client';
 
-import { useEffect, useState, ReactNode, Suspense } from 'react';
+import { useEffect, ReactNode, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { getMe } from '@/lib/apis/user.api';
 import { LoaderCircle } from 'lucide-react';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/app/_stores/authStore';
 
 function AuthWithRedirectContent({ children }: { children: ReactNode }) {
-  const [authStatus, setAuthStatus] = useState<
-    'checking' | 'authenticated' | 'unauthenticated'
-  >('checking');
-
+  const { isAuthenticated, isInitialized, isLoading } = useAuthStore();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { hydrate } = useAuthStore.getState();
 
   useEffect(() => {
-    const verifyUserSession = async () => {
-      try {
-        const response = await getMe();
+    // 스토어 초기화가 끝날 때까지 기다립니다.
+    if (!isInitialized || isLoading) return;
 
-        if (response.data) {
-          hydrate(response.data);
-          setAuthStatus('authenticated');
+    // 초기화 후, 인증 상태라면 리디렉션합니다.
+    if (isAuthenticated) {
+      const lang = pathname.split('/')[1] || 'ko';
+      let returnTo = searchParams.get('returnTo');
 
-          const lang = pathname.split('/')[1] || 'ko';
-          let returnTo = searchParams.get('returnTo');
-
-          if (!returnTo && pathname.includes('/login/success')) {
-            returnTo = localStorage.getItem('oauthReturnTo');
-            if (returnTo) {
-              localStorage.removeItem('oauthReturnTo');
-            }
-          }
-
-          const redirectUrl = returnTo
-            ? decodeURIComponent(returnTo)
-            : `/${lang}/studio`;
-
-          window.location.replace(redirectUrl);
-        } else {
-          setAuthStatus('unauthenticated');
+      if (!returnTo && pathname.includes('/login/success')) {
+        returnTo = localStorage.getItem('oauthReturnTo');
+        if (returnTo) {
+          localStorage.removeItem('oauthReturnTo');
         }
-      } catch (error) {
-        setAuthStatus('unauthenticated');
       }
-    };
 
-    verifyUserSession();
-  }, [pathname, searchParams, hydrate]);
+      const redirectUrl = returnTo
+        ? decodeURIComponent(returnTo)
+        : `/${lang}/studio`;
 
-  if (authStatus !== 'unauthenticated') {
+      window.location.replace(redirectUrl);
+    }
+  }, [isInitialized, isLoading, isAuthenticated, pathname, searchParams]);
+  
+  // 인증 상태 확인 중이거나, 리디렉션이 필요한 상태일 때 로더를 보여줍니다.
+  if (!isInitialized || isLoading || isAuthenticated) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-black">
         <LoaderCircle size={40} className="animate-spin text-accent" />
       </div>
     );
   }
-
+  
+  // 인증되지 않았음이 확실할 때만 로그인/회원가입 폼을 보여줍니다.
   return <>{children}</>;
 }
 

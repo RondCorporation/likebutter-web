@@ -13,12 +13,12 @@ import {
   LayoutGrid,
   History,
 } from 'lucide-react';
-import { useLogout } from '@/hooks/useLogout';
-import { useAuthUser } from '@/hooks/useAuthStore';
-import { useOpenSettings } from '@/hooks/useUIStore';
+import { useLogout } from '@/app/_hooks/useLogout';
+import { useAuth } from '@/app/_hooks/useAuth';
+import { useOpenSettings } from '@/app/_hooks/useUIStore';
 
 export default function UserDropdown() {
-  const user = useAuthUser();
+  const { displayName, userEmail } = useAuth();
   const logout = useLogout();
   const openSettings = useOpenSettings();
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +41,7 @@ export default function UserDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dropdownRef]);
 
-  if (!user) return null;
+  if (!displayName) return null;
 
   const handleAction = (action: () => void | Promise<void>) => {
     setIsOpen(false);
@@ -55,7 +55,7 @@ export default function UserDropdown() {
         className="flex items-center gap-2 rounded-md border border-accent/40 px-4 py-1 text-sm text-accent transition hover:bg-accent/10"
       >
         <User size={16} />
-        <span>{user.name}</span>
+        <span>{displayName}</span>
         <ChevronDown
           size={14}
           className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}

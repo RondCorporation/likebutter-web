@@ -1,16 +1,15 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback, memo } from 'react';
+import { useMemo, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Task } from '@/app/_types/task';
 import { PlanKey } from '@/app/_types/subscription';
 import { CreditCard, Sparkles } from 'lucide-react';
 import InProgressTasks from '@/components/studio/history/InProgressTasks';
 import CompletedTasks from '@/components/studio/history/CompletedTasks';
 import { useRouter } from 'next/navigation';
-import { getTaskHistory } from '@/lib/apis/task.api';
 import { useUser } from '@/hooks/useUser';
 import { useSubscriptions } from '@/hooks/useSubscriptions';
+import { useTaskHistorySWR } from '@/hooks/useTaskHistorySWR';
 
 const planNames: Record<PlanKey, string> = {
   FREE: 'Free',
@@ -29,38 +28,23 @@ const DashboardClient = memo(function DashboardClient() {
   const { user, isLoading: userLoading, isError: userError } = useUser();
   const { activeSubscription, isLoading: subscriptionLoading, isError: subscriptionError } = useSubscriptions();
 
-  const [inProgressTasks, setInProgressTasks] = useState<Task[]>([]);
-  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
-  const [tasksLoading, setTasksLoading] = useState(true);
-  const [tasksError, setTasksError] = useState<string | null>(null);
+  // SWR로 task 데이터 페칭 (in-progress tasks for dashboard preview)
+  const {
+    inProgressTasks,
+    completedTasks,
+    isLoading: tasksLoading,
+    error: tasksError
+  } = useTaskHistorySWR({
+    page: 0,
+    filters: { status: '', actionType: '' }, // Get all tasks, then filter
+    enablePolling: true
+  });
 
-  useEffect(() => {
-    const fetchTasksData = async () => {
-      try {
-        setTasksLoading(true);
-        const [inProgressTasksResponse, completedTasksResponse] = await Promise.all([
-          getTaskHistory(0, { status: 'IN_PROGRESS', size: 3 }),
-          getTaskHistory(0, { status: 'COMPLETED', size: 3 }),
-        ]);
+  // Dashboard only shows first 3 items of each category
+  const dashboardInProgressTasks = useMemo(() => inProgressTasks.slice(0, 3), [inProgressTasks]);
+  const dashboardCompletedTasks = useMemo(() => completedTasks.slice(0, 3), [completedTasks]);
 
-        if (inProgressTasksResponse.data) {
-          setInProgressTasks(inProgressTasksResponse.data.content);
-        }
-
-        if (completedTasksResponse.data) {
-          setCompletedTasks(completedTasksResponse.data.content);
-        }
-      } catch (err: any) {
-        setTasksError(err.message || 'Failed to load task data.');
-      } finally {
-        setTasksLoading(false);
-      }
-    };
-
-    fetchTasksData();
-  }, []);
-
-  const handleTaskClick = useCallback((task: Task) => {
+  const handleTaskClick = useMemo(() => (task: any) => {
     router.push(`/studio/history?taskId=${task.taskId}`);
   }, [router]);
 
@@ -99,23 +83,23 @@ const DashboardClient = memo(function DashboardClient() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-12">
           {/* In-Progress Tasks */}
-          {inProgressTasks.length > 0 && (
+          {dashboardInProgressTasks.length > 0 && (
             <InProgressTasks
-              tasks={inProgressTasks}
+              tasks={dashboardInProgressTasks}
               onTaskClick={handleTaskClick}
             />
           )}
 
           {/* Recently Completed Tasks */}
-          {completedTasks.length > 0 && (
+          {dashboardCompletedTasks.length > 0 && (
             <CompletedTasks
-              tasks={completedTasks}
+              tasks={dashboardCompletedTasks}
               onTaskClick={handleTaskClick}
             />
           )}
 
           {/* Placeholder for when there are no tasks */}
-          {inProgressTasks.length === 0 && completedTasks.length === 0 && (
+          {dashboardInProgressTasks.length === 0 && dashboardCompletedTasks.length === 0 && (
             <div className="text-center py-16 border-2 border-dashed border-slate-700 rounded-lg">
               <h3 className="text-xl font-semibold">
                 {t('dashboardNoTasksTitle')}

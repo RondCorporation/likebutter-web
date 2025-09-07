@@ -8,6 +8,8 @@ import AuthInitializer from '@/app/_components/AuthInitializer';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import { User } from '@/app/_types/api';
 import { usePathname } from 'next/navigation';
+import { SWRProvider } from '@/app/_providers/SWRProvider';
+import PerformanceMonitor from '@/app/_components/PerformanceMonitor';
 
 export function LayoutClient({
   children,
@@ -52,7 +54,8 @@ export function LayoutClient({
   // If route groups handle their own auth, skip initialization here
   if (routeInfo.hasRouteGroupLayout) {
     return (
-      <>
+      <SWRProvider>
+        <PerformanceMonitor />
         <ServerErrorDisplay />
         <ConditionalSettingsModal />
         <Toaster
@@ -67,29 +70,32 @@ export function LayoutClient({
         <div className="flex min-h-screen flex-col">
           <main className="flex-grow">{children}</main>
         </div>
-      </>
+      </SWRProvider>
     );
   }
 
   // Fallback for other routes
   return (
-    <AuthInitializer preloadedUser={preloadedUser}>
-      <>
-        <ServerErrorDisplay />
-        <ConditionalSettingsModal />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
-        <div className="flex min-h-screen flex-col">
-          <main className="flex-grow">{children}</main>
-        </div>
-      </>
-    </AuthInitializer>
+    <SWRProvider>
+      <PerformanceMonitor />
+      <AuthInitializer preloadedUser={preloadedUser}>
+        <>
+          <ServerErrorDisplay />
+          <ConditionalSettingsModal />
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: '#333',
+                color: '#fff',
+              },
+            }}
+          />
+          <div className="flex min-h-screen flex-col">
+            <main className="flex-grow">{children}</main>
+          </div>
+        </>
+      </AuthInitializer>
+    </SWRProvider>
   );
 }

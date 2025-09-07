@@ -1,4 +1,5 @@
 import { Task, ButterCoverDetails, PipelineStatus } from '@/types/task';
+import { memo } from 'react';
 import StatusBadge from '../StatusBadge';
 import { useTranslation } from 'react-i18next';
 import { Music, Download, Clock, Volume2, Settings } from 'lucide-react';
@@ -39,7 +40,7 @@ function getPipelineStatusIcon(pipelineStatus?: PipelineStatus) {
   }
 }
 
-export default function ButterCoverTaskCard({ task, onClick }: Props) {
+const ButterCoverTaskCard = memo(({ task, onClick }: Props) => {
   const { t } = useTranslation();
   const details = task.details as ButterCoverDetails | undefined;
 
@@ -99,4 +100,8 @@ export default function ButterCoverTaskCard({ task, onClick }: Props) {
       </div>
     </div>
   );
-}
+});
+
+ButterCoverTaskCard.displayName = 'ButterCoverTaskCard';
+
+export default ButterCoverTaskCard;

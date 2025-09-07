@@ -180,42 +180,75 @@ export function useTaskHistory() {
 
     if (tasksToCheck.length === 0) return;
 
-    const interval = setInterval(async () => {
+    // Smart polling with exponential backoff
+    let pollInterval = 5000; // Start with 5 seconds
+    const maxInterval = 30000; // Max 30 seconds
+    
+    let timeoutId: NodeJS.Timeout;
+    
+    const poll = async () => {
       if (state.isPolling) return;
       dispatch({ type: 'POLLING_START' });
 
       try {
-        // Poll each in-progress task individually using the new /tasks/me/{taskId} endpoint
-        const updatePromises = tasksToCheck.map(async (task) => {
-          try {
-            const response = await getTaskStatus(task.taskId);
-            if (response.data && response.data.status !== task.status) {
+        const taskIds = tasksToCheck.map(t => t.taskId);
+        
+        // Use batch API instead of individual calls
+        const response = await getBatchTaskStatus(taskIds);
+        
+        if (response.data && Array.isArray(response.data)) {
+          // Update only changed tasks
+          response.data.forEach(updatedTask => {
+            const existingTask = state.tasks.find(t => t.taskId === updatedTask.taskId);
+            if (existingTask && existingTask.status !== updatedTask.status) {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
                 payload: {
-                  taskId: response.data.taskId,
-                  status: response.data.status,
-                  createdAt: response.data.createdAt,
-                  actionType: task.actionType,
-                  details: response.data.details,
+                  taskId: updatedTask.taskId,
+                  status: updatedTask.status,
+                  createdAt: updatedTask.createdAt,
+                  actionType: existingTask.actionType, // Keep original actionType
+                  details: updatedTask.details,
                 } as Task,
               });
             }
-          } catch (error) {
-            // Continue with other tasks even if one fails
-            console.warn(`Failed to update task ${task.taskId}:`, error);
+          });
+          
+          // If tasks completed, reset poll interval for next batch
+          const stillInProgress = response.data.filter(
+            t => t.status === 'PENDING' || t.status === 'PROCESSING'
+          );
+          
+          if (stillInProgress.length === 0) {
+            pollInterval = 5000; // Reset to fast polling
+          } else if (stillInProgress.length === tasksToCheck.length) {
+            // No status changes, increase interval (exponential backoff)
+            pollInterval = Math.min(pollInterval * 1.5, maxInterval);
+          } else {
+            // Some changes, reset to medium interval
+            pollInterval = 10000;
           }
-        });
-
-        await Promise.all(updatePromises);
+        }
       } catch (error) {
         console.warn('Polling error:', error);
+        // On error, increase polling interval to reduce server load
+        pollInterval = Math.min(pollInterval * 2, maxInterval);
       } finally {
         dispatch({ type: 'POLLING_END' });
       }
-    }, 10000);
-
-    return () => clearInterval(interval);
+      
+      // Schedule next poll with dynamic interval
+      timeoutId = setTimeout(poll, pollInterval);
+    };
+    
+    // Start first poll immediately
+    poll();
+    
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [state.tasks, state.isPolling]);
 
   const loadMore = () => {

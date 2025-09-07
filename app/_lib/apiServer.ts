@@ -8,7 +8,7 @@ const API_URL =
 
 async function apiFetch<T>(
   url: string,
-  opts: Omit<RequestInit, 'body'> & { body?: any } = {},
+  opts: RequestInit & { body?: any } = {},
   withAuth = true
 ): Promise<ApiResponse<T>> {
   const performRequest = async (token: string | null): Promise<Response> => {
@@ -35,7 +35,8 @@ async function apiFetch<T>(
     const config: RequestInit = {
       ...opts,
       headers,
-      cache: 'no-store',
+      // Only force no-store if not explicitly set
+      cache: opts.cache || 'no-store',
     };
 
     if (opts.body && !isMultipart) {
@@ -75,12 +76,12 @@ async function apiFetch<T>(
 }
 
 export const apiServer = {
-  get: <T>(url: string, withAuth = true) =>
-    apiFetch<T>(url, { method: 'GET' }, withAuth),
-  post: <T>(url: string, body: any, withAuth = true) =>
-    apiFetch<T>(url, { method: 'POST', body }, withAuth),
-  put: <T>(url: string, body: any, withAuth = true) =>
-    apiFetch<T>(url, { method: 'PUT', body }, withAuth),
-  delete: <T>(url: string, withAuth = true) =>
-    apiFetch<T>(url, { method: 'DELETE' }, withAuth),
+  get: <T>(url: string, opts?: RequestInit, withAuth = true) =>
+    apiFetch<T>(url, { method: 'GET', ...opts }, withAuth),
+  post: <T>(url: string, body: any, opts?: RequestInit, withAuth = true) =>
+    apiFetch<T>(url, { method: 'POST', body, ...opts }, withAuth),
+  put: <T>(url: string, body: any, opts?: RequestInit, withAuth = true) =>
+    apiFetch<T>(url, { method: 'PUT', body, ...opts }, withAuth),
+  delete: <T>(url: string, opts?: RequestInit, withAuth = true) =>
+    apiFetch<T>(url, { method: 'DELETE', ...opts }, withAuth),
 };

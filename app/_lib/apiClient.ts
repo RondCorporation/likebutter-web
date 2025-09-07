@@ -22,6 +22,9 @@ export const getAccessToken = () => {
 
 let refreshPromise: Promise<boolean> | null = null;
 
+// Request deduplication map for GET requests
+const pendingRequests = new Map<string, Promise<ApiResponse<any>>>();
+
 async function refreshToken(): Promise<boolean> {
   if (refreshPromise) {
     return refreshPromise;
@@ -54,7 +57,18 @@ export async function apiFetch<T>(
   opts: Omit<RequestInit, 'body'> & { body?: any } = {},
   withAuth = true
 ): Promise<ApiResponse<T>> {
-  const performRequest = async (token: string | null) => {
+  const method = opts.method || 'GET';
+  const isGetRequest = method === 'GET';
+  
+  // Create request key for deduplication (only for GET requests)
+  const requestKey = isGetRequest ? `${method}-${url}-${withAuth}` : null;
+  
+  // Check for pending GET request and return existing promise
+  if (requestKey && pendingRequests.has(requestKey)) {
+    return pendingRequests.get(requestKey) as Promise<ApiResponse<T>>;
+  }
+
+  const performRequest = async (token: string | null): Promise<Response> => {
     const isMultipart = opts.body instanceof FormData;
     const headers: HeadersInit = isMultipart
       ? {}
@@ -79,47 +93,62 @@ export async function apiFetch<T>(
     return fetch(`${API_URL}${url}`, config);
   };
 
-  try {
-    const initialToken = getCookie('accessToken');
-    let response = await performRequest(initialToken);
+  // Create the main request promise
+  const requestPromise = (async (): Promise<ApiResponse<T>> => {
+    try {
+      const initialToken = getCookie('accessToken');
+      let response = await performRequest(initialToken);
 
-    if (response.status === 401 && withAuth) {
-      const refreshSuccessful = await refreshToken();
+      if (response.status === 401 && withAuth) {
+        const refreshSuccessful = await refreshToken();
 
-      if (refreshSuccessful) {
-        const newToken = getCookie('accessToken');
-        response = await performRequest(newToken);
-      } else {
-        window.dispatchEvent(new CustomEvent('auth-failure'));
+        if (refreshSuccessful) {
+          const newToken = getCookie('accessToken');
+          response = await performRequest(newToken);
+        } else {
+          window.dispatchEvent(new CustomEvent('auth-failure'));
+          throw new Error(
+            'Authentication failed: Token refresh was unsuccessful.'
+          );
+        }
+      }
+
+      const text = await response.text();
+      const json: ApiResponse<T> = text
+        ? JSON.parse(text)
+        : { status: response.status, msg: response.statusText };
+
+      if (!response.ok) {
         throw new Error(
-          'Authentication failed: Token refresh was unsuccessful.'
+          json.msg ??
+            `Request failed: ${response.statusText} (${response.status})`
         );
       }
-    }
 
-    const text = await response.text();
-    const json: ApiResponse<T> = text
-      ? JSON.parse(text)
-      : { status: response.status, msg: response.statusText };
-
-    if (!response.ok) {
-      throw new Error(
-        json.msg ??
-          `Request failed: ${response.statusText} (${response.status})`
-      );
+      return json;
+    } catch (error: any) {
+      if (error.message.includes('Failed to fetch')) {
+        useUIStore
+          .getState()
+          .setServerError(
+            'Unable to connect to the service. Please try again later.'
+          );
+      }
+      throw error;
+    } finally {
+      // Clean up pending request after completion
+      if (requestKey) {
+        pendingRequests.delete(requestKey);
+      }
     }
+  })();
 
-    return json;
-  } catch (error: any) {
-    if (error.message.includes('Failed to fetch')) {
-      useUIStore
-        .getState()
-        .setServerError(
-          'Unable to connect to the service. Please try again later.'
-        );
-    }
-    throw error;
+  // Store GET request promise for deduplication
+  if (requestKey) {
+    pendingRequests.set(requestKey, requestPromise);
   }
+
+  return requestPromise;
 }
 
 export const apiClient = {

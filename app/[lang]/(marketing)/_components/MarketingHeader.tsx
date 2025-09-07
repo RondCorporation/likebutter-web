@@ -7,20 +7,14 @@ import Logo from '@/app/_components/Logo';
 import { usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  useAuthUser,
-  useIsInitialized,
-  useAuthLoading,
-} from '@/hooks/useAuthStore';
-import UserDropdown from '@/components/UserDropdown';
+import { useAuth } from '@/app/_hooks/useAuth';
+import UserDropdown from '@/app/_components/UserDropdown';
 
 export default function MarketingHeader() {
   const { t, i18n } = useTranslation();
   const pathname = usePathname();
   const lang = pathname.split('/')[1];
-  const user = useAuthUser();
-  const isInitialized = useIsInitialized();
-  const isLoading = useAuthLoading();
+  const { isAuthenticated, isInitialized, isLoading, hasBasicInfo } = useAuth();
 
   const [hasTokenCookie, setHasTokenCookie] = useState<boolean | null>(null);
 
@@ -142,11 +136,12 @@ export default function MarketingHeader() {
           </div>
           <div className="flex items-center gap-4">
             {(() => {
-              if (isInitialized && user) {
+              // JWT 기반 인증 상태 체크
+              if (isInitialized && isAuthenticated && hasBasicInfo) {
                 return <UserDropdown />;
               }
 
-              if (isInitialized && !user) {
+              if (isInitialized && !isAuthenticated) {
                 return (
                   <>
                     <Link

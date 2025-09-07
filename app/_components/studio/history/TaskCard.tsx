@@ -1,4 +1,5 @@
 import { Task } from '@/types/task';
+import { memo } from 'react';
 import ButterCoverTaskCard from './butter-cover/ButterCoverTaskCard';
 import DigitalGoodsTaskCard from './digital-goods/DigitalGoodsTaskCard';
 import DreamContiTaskCard from './dream-conti/DreamContiTaskCard';
@@ -10,7 +11,7 @@ interface Props {
   onClick: () => void;
 }
 
-export default function TaskCard({ task, onClick }: Props) {
+const TaskCard = memo(({ task, onClick }: Props) => {
   switch (task.actionType) {
     case 'BUTTER_COVER':
       return <ButterCoverTaskCard task={task} onClick={onClick} />;
@@ -30,4 +31,15 @@ export default function TaskCard({ task, onClick }: Props) {
         </div>
       );
   }
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison function for better memoization
+  return (
+    prevProps.task.taskId === nextProps.task.taskId &&
+    prevProps.task.status === nextProps.task.status &&
+    prevProps.task.details === nextProps.task.details
+  );
+});
+
+TaskCard.displayName = 'TaskCard';
+
+export default TaskCard;

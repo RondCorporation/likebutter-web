@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTaskHistory } from '@/hooks/useTaskHistory';
+import { useTaskHistoryWithPagination } from '@/hooks/useTaskHistoryWithPagination';
 import { Task } from '@/types/task';
 import HistoryFilters from '@/components/studio/history/HistoryFilters';
 import InProgressTasks from '@/components/studio/history/InProgressTasks';
@@ -22,7 +22,7 @@ export default function HistoryClient() {
     totalPages,
     loadMore,
     setFilters,
-  } = useTaskHistory();
+  } = useTaskHistoryWithPagination();
   const { t } = useTranslation();
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);

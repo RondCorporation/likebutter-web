@@ -1,5 +1,16 @@
-import ButterCoverClient from './_components/ButterCoverClient';
+import dynamic from 'next/dynamic';
 import initTranslations from '@/app/_lib/i18n-server';
+
+const ButterCoverClient = dynamic(
+  () => import('./_components/ButterCoverClient'),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-butter-yellow"></div>
+      </div>
+    )
+  }
+);
 
 export default async function ButterCoverPage({
   params,

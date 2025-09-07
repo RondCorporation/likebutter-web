@@ -8,6 +8,13 @@ import Image from 'next/image';
 import { Plan } from '@/app/_types/plan';
 import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+// Dynamic import with no SSR to prevent hydration layout shift
+const RotatingHeroSection = dynamic(() => import('./RotatingHeroSection'), {
+  ssr: false,
+  loading: () => <div className="h-screen bg-black" />,
+});
 
 type LandingPageProps = {
   lang: string;
@@ -212,83 +219,14 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
       />
 
       <main className="font-pretendard">
-        {/* Section 1: Hero with YouTube Background */}
+        {/* Section 1: Rotating Hero Section */}
         <div
           ref={(el) => {
             sectionRefs.current[0] = el;
           }}
           data-section-index={0}
         >
-          <section
-            id="hero"
-            className="relative overflow-hidden bg-black h-screen flex items-center justify-center"
-          >
-            {/* YouTube Background */}
-            <div className="absolute inset-0 w-full h-full">
-              <iframe
-                src="https://www.youtube.com/embed/WMweEpGlu_U?autoplay=1&mute=1&loop=1&playlist=WMweEpGlu_U&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1"
-                className="w-full h-full object-cover scale-125"
-                allow="autoplay; encrypted-media"
-                style={{ border: 'none', pointerEvents: 'none' }}
-              />
-            </div>
-
-            {/* Dark overlay for text readability */}
-            <div className="absolute inset-0 bg-black/60"></div>
-
-            {/* Content Container with max-width */}
-            <div className="relative z-10 w-full">
-              <div className="container mx-auto max-w-[80rem]">
-                <div className="text-left max-w-4xl">
-                  <motion.h1
-                    initial={{ y: 30, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, ease: 'easeOut' }}
-                    className="text-6xl md:text-8xl font-bold text-white mb-6 tracking-tight font-archivo-black"
-                  >
-                    LikeButter
-                  </motion.h1>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.4, delay: 0.1, ease: 'easeOut' }}
-                    className="text-2xl md:text-3xl text-white/90 mb-12 leading-relaxed"
-                  >
-                    <p>{t('heroTitleLine1')}</p>
-                    <p>{t('heroTitleLine2')}</p>
-                  </motion.div>
-
-                  {/* CTA Buttons */}
-                  <motion.div
-                    initial={{ y: 15, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.3, delay: 0.2, ease: 'easeOut' }}
-                    className="flex flex-col sm:flex-row gap-6 items-start"
-                  >
-                    <Link
-                      href={`/${lang}/signup`}
-                      className="inline-flex items-center gap-3 rounded-full bg-[#FFD93B] px-8 py-4 text-lg font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
-                    >
-                      {t('heroCtaMain')}
-                    </Link>
-                    <button
-                      onClick={() => scrollToSection('demo')}
-                      className="inline-flex items-center gap-3 rounded-full border-2 border-[#FFD93B] text-[#FFD93B] px-8 py-4 text-lg font-bold bg-transparent transition-all duration-300 hover:bg-[#FFD93B] hover:text-black"
-                    >
-                      <Play size={20} />
-                      {t('heroCtaDemo')}
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-
-            {/* Scroll Indicator */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 flex flex-col items-center gap-2">
-              <span className="text-sm">{t('heroScroll')}</span>
-              <ArrowDown size={20} className="animate-bounce" />
-            </div>
-          </section>
+          <RotatingHeroSection lang={lang} />
         </div>
 
         {/* Section 2: About Like Butter */}

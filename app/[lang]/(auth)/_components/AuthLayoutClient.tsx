@@ -16,8 +16,8 @@ export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
   return (
     <AuthInitializer
       preloadedUser={null}
-      skipInitialization={true}
-      showLoader={false}
+      skipInitialization={false}
+      showLoader={true}
     >
       <>
         <ServerErrorDisplay />

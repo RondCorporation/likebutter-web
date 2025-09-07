@@ -260,6 +260,12 @@ export default function RotatingHeroSection({
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60 z-10"></div>
 
+      {/* Gradient overlay for smooth transition to next section */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-black z-30 pointer-events-none"
+        aria-hidden="true"
+      />
+
       {/* Content */}
       <section className="relative z-20 h-full flex items-center justify-center">
         <div className="container mx-auto max-w-[80rem]">

@@ -9,9 +9,7 @@ interface MarketingLayoutProps {
 export default function MarketingLayout({ children }: MarketingLayoutProps) {
   return (
     <MarketingLayoutClient>
-      <MarketingLayoutContent>
-        {children}
-      </MarketingLayoutContent>
+      <MarketingLayoutContent>{children}</MarketingLayoutContent>
     </MarketingLayoutClient>
   );
 }

@@ -20,12 +20,13 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   const {
     page = 0,
     filters = { status: '', actionType: '' },
-    enablePolling = true
+    enablePolling = true,
   } = options;
 
   // SWR key for task history data
-  const taskHistoryKey = useMemo(() => 
-    `/tasks/me?page=${page}&status=${filters.status}&actionType=${filters.actionType}`,
+  const taskHistoryKey = useMemo(
+    () =>
+      `/tasks/me?page=${page}&status=${filters.status}&actionType=${filters.actionType}`,
     [page, filters.status, filters.actionType]
   );
 
@@ -34,13 +35,14 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
     data: taskHistoryData,
     error: taskHistoryError,
     isLoading: isTaskHistoryLoading,
-    mutate: mutateTaskHistory
+    mutate: mutateTaskHistory,
   } = useSWR(
     taskHistoryKey,
-    () => getTaskHistory(page, {
-      ...filters,
-      summary: false // Always get full details
-    }).then(res => res.data),
+    () =>
+      getTaskHistory(page, {
+        ...filters,
+        summary: false, // Always get full details
+      }).then((res) => res.data),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: true,
@@ -50,8 +52,14 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   );
 
   // Extract tasks from paginated data
-  const tasks = useMemo(() => taskHistoryData?.content || [], [taskHistoryData]);
-  const totalPages = useMemo(() => taskHistoryData?.totalPages || 1, [taskHistoryData]);
+  const tasks = useMemo(
+    () => taskHistoryData?.content || [],
+    [taskHistoryData]
+  );
+  const totalPages = useMemo(
+    () => taskHistoryData?.totalPages || 1,
+    [taskHistoryData]
+  );
 
   // Categorize tasks
   const { inProgressTasks, completedTasks } = useMemo(() => {
@@ -61,7 +69,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
     const completed = tasks.filter(
       (t: Task) => t.status === 'COMPLETED' || t.status === 'FAILED'
     );
-    
+
     return { inProgressTasks: inProgress, completedTasks: completed };
   }, [tasks]);
 
@@ -69,28 +77,29 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   const [isPolling, setIsPolling] = useState(false);
 
   // Smart polling with SWR for in-progress tasks
-  const inProgressTaskIds = useMemo(() => 
-    inProgressTasks.map(task => task.taskId), 
+  const inProgressTaskIds = useMemo(
+    () => inProgressTasks.map((task) => task.taskId),
     [inProgressTasks]
   );
 
   const shouldPoll = enablePolling && inProgressTaskIds.length > 0;
 
   // Batch status checking with SWR
-  const {
-    data: batchStatusData,
-    mutate: mutateBatchStatus
-  } = useSWR(
-    shouldPoll ? `/tasks/batch/status?ids=${inProgressTaskIds.join(',')}` : null,
-    () => getBatchTaskStatus(inProgressTaskIds).then(res => res.data),
+  const { data: batchStatusData, mutate: mutateBatchStatus } = useSWR(
+    shouldPoll
+      ? `/tasks/batch/status?ids=${inProgressTaskIds.join(',')}`
+      : null,
+    () => getBatchTaskStatus(inProgressTaskIds).then((res) => res.data),
     {
       refreshInterval: shouldPoll ? 10000 : 0, // Poll every 10 seconds
       revalidateOnFocus: false,
       onSuccess: (data) => {
         if (data && Array.isArray(data)) {
           // Check if any task status changed
-          const hasStatusChange = data.some(updatedTask => {
-            const existingTask = tasks.find(t => t.taskId === updatedTask.taskId);
+          const hasStatusChange = data.some((updatedTask) => {
+            const existingTask = tasks.find(
+              (t) => t.taskId === updatedTask.taskId
+            );
             return existingTask && existingTask.status !== updatedTask.status;
           });
 
@@ -99,7 +108,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
             mutateTaskHistory();
           }
         }
-      }
+      },
     }
   );
 
@@ -110,7 +119,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
 
   // Paginated tasks state for load more functionality
   const [allTasks, setAllTasks] = useState<Task[]>([]);
-  
+
   // Update allTasks when new data comes in
   useEffect(() => {
     if (tasks.length > 0) {
@@ -119,9 +128,9 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
         setAllTasks(tasks);
       } else {
         // Subsequent pages - append new tasks
-        setAllTasks(prev => {
-          const existingIds = new Set(prev.map(t => t.taskId));
-          const newTasks = tasks.filter(t => !existingIds.has(t.taskId));
+        setAllTasks((prev) => {
+          const existingIds = new Set(prev.map((t) => t.taskId));
+          const newTasks = tasks.filter((t) => !existingIds.has(t.taskId));
           return [...prev, ...newTasks];
         });
       }
@@ -135,13 +144,16 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
     return page + 1;
   }, [page]);
 
-  // Set filters function  
-  const setFilters = useCallback((newFilters: Partial<TaskHistoryFilters>) => {
-    // Reset accumulated tasks when filters change
-    setAllTasks([]);
-    // Return new filters for parent to handle
-    return { ...filters, ...newFilters };
-  }, [filters]);
+  // Set filters function
+  const setFilters = useCallback(
+    (newFilters: Partial<TaskHistoryFilters>) => {
+      // Reset accumulated tasks when filters change
+      setAllTasks([]);
+      // Return new filters for parent to handle
+      return { ...filters, ...newFilters };
+    },
+    [filters]
+  );
 
   // Force refresh function
   const refreshTasks = useCallback(() => {
@@ -159,7 +171,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
     const completed = allTasks.filter(
       (t: Task) => t.status === 'COMPLETED' || t.status === 'FAILED'
     );
-    
+
     return { allInProgressTasks: inProgress, allCompletedTasks: completed };
   }, [allTasks]);
 
@@ -168,24 +180,24 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
     tasks,
     inProgressTasks,
     completedTasks,
-    
+
     // Data - accumulated for pagination
     allTasks,
     allInProgressTasks,
     allCompletedTasks,
     totalPages,
-    
+
     // Loading states
     isLoading: isTaskHistoryLoading,
     isPolling,
-    
+
     // Error state
     error: taskHistoryError?.message || null,
-    
+
     // Current state
     page,
     filters,
-    
+
     // Actions
     loadMore,
     setFilters,

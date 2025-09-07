@@ -10,8 +10,8 @@ interface MarketingLayoutContentProps {
   children: ReactNode;
 }
 
-export default function MarketingLayoutContent({ 
-  children 
+export default function MarketingLayoutContent({
+  children,
 }: MarketingLayoutContentProps) {
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const pathname = usePathname();
@@ -22,9 +22,7 @@ export default function MarketingLayoutContent({
     return (
       <ScrollContext.Provider value={{ sectionRefs }}>
         <MarketingHeader />
-        <div
-          className="bg-black text-white"
-        >
+        <div className="bg-black text-white">
           {children}
           <MarketingFooter
             ref={(el) => {

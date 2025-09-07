@@ -6,7 +6,7 @@ type Props = {
 
 export default async function StudioBillingPage({ params }: Props) {
   const { lang } = await params;
-  
+
   // Permanent redirect to the main billing page to avoid confusion
   permanentRedirect(`/${lang}/billing`);
 }

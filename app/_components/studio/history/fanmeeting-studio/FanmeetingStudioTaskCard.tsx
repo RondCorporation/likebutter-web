@@ -20,7 +20,9 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-2">
           <Heart className="h-5 w-5 text-accent" />
-          <h4 className="text-sm font-semibold text-white">Fanmeeting Studio</h4>
+          <h4 className="text-sm font-semibold text-white">
+            Fanmeeting Studio
+          </h4>
         </div>
         <StatusBadge status={task.status} />
       </div>
@@ -37,7 +39,9 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
       {details?.request?.lightingMode && (
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
           <Lightbulb className="h-4 w-4" />
-          <span>Lighting: {details.request.lightingMode.replace('_', ' ')}</span>
+          <span>
+            Lighting: {details.request.lightingMode.replace('_', ' ')}
+          </span>
         </div>
       )}
 
@@ -45,7 +49,9 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
       {details?.request?.backgroundMusic && (
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
           <Music className="h-4 w-4" />
-          <span>Music: {details.request.backgroundMusic.replace('_', ' ')}</span>
+          <span>
+            Music: {details.request.backgroundMusic.replace('_', ' ')}
+          </span>
         </div>
       )}
 

@@ -73,7 +73,7 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
   const [separatorModel, setSeparatorModel] = useState<string>('');
   const [outputFormat, setOutputFormat] = useState<string>('mp3');
   const [saveIntermediate, setSaveIntermediate] = useState<boolean>(false);
-  
+
   // Advanced settings
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
   const [indexRate, setIndexRate] = useState<number>(0.75);
@@ -82,13 +82,13 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
   const [protect, setProtect] = useState<number>(0.33);
   const [f0Method, setF0Method] = useState<string>('rmvpe');
   const [crepeHopLength, setCrepeHopLength] = useState<number>(128);
-  
+
   // Reverb settings
   const [reverbRmSize, setReverbRmSize] = useState<number>(0.15);
   const [reverbWet, setReverbWet] = useState<number>(0.2);
   const [reverbDry, setReverbDry] = useState<number>(0.8);
   const [reverbDamping, setReverbDamping] = useState<number>(0.7);
-  
+
   // Gain settings
   const [mainGain, setMainGain] = useState<number>(0);
   const [instGain, setInstGain] = useState<number>(0);
@@ -197,7 +197,9 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
                 <p className="mb-1 font-semibold text-slate-300">
                   {dictionary.butterCoverUploadPlaceholder}
                 </p>
-                <p className="text-xs text-slate-500">MP3, WAV, M4A, FLAC up to 50MB</p>
+                <p className="text-xs text-slate-500">
+                  MP3, WAV, M4A, FLAC up to 50MB
+                </p>
               </div>
             )}
             <input
@@ -230,7 +232,10 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
           </div>
 
           <div>
-            <label htmlFor="pitch-adjust" className="mb-2 block font-medium text-slate-300">
+            <label
+              htmlFor="pitch-adjust"
+              className="mb-2 block font-medium text-slate-300"
+            >
               Pitch Adjust: {pitchAdjust} semitones
             </label>
             <input
@@ -246,7 +251,10 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
           </div>
 
           <div>
-            <label htmlFor="output-format" className="mb-2 block font-medium text-slate-300">
+            <label
+              htmlFor="output-format"
+              className="mb-2 block font-medium text-slate-300"
+            >
               Output Format
             </label>
             <CustomSelect
@@ -260,7 +268,10 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
           </div>
 
           <div className="flex items-center justify-between">
-            <label htmlFor="save-intermediate" className="font-medium text-slate-300">
+            <label
+              htmlFor="save-intermediate"
+              className="font-medium text-slate-300"
+            >
               Save Intermediate Files
             </label>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -288,15 +299,21 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
             <Settings className="h-5 w-5" />
             Advanced Settings
           </div>
-          {showAdvanced ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+          {showAdvanced ? (
+            <ChevronUp className="h-5 w-5" />
+          ) : (
+            <ChevronDown className="h-5 w-5" />
+          )}
         </button>
 
         {showAdvanced && (
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* AI Cover Generation Parameters */}
             <div className="space-y-4">
-              <h4 className="font-medium text-slate-300">AI Cover Parameters</h4>
-              
+              <h4 className="font-medium text-slate-300">
+                AI Cover Parameters
+              </h4>
+
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-400">
                   Index Rate: {indexRate.toFixed(2)}
@@ -383,7 +400,9 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
                     max="512"
                     step="64"
                     value={crepeHopLength}
-                    onChange={(e) => setCrepeHopLength(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setCrepeHopLength(parseInt(e.target.value))
+                    }
                     className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-accent"
                   />
                 </div>
@@ -393,7 +412,7 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
             {/* Reverb Parameters */}
             <div className="space-y-4">
               <h4 className="font-medium text-slate-300">Reverb Settings</h4>
-              
+
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-400">
                   Room Size: {reverbRmSize.toFixed(2)}
@@ -458,7 +477,7 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
             {/* Gain Parameters */}
             <div className="space-y-4">
               <h4 className="font-medium text-slate-300">Gain Settings</h4>
-              
+
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-400">
                   Main Vocal Gain: {mainGain}dB
@@ -505,7 +524,10 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
               </div>
 
               <div>
-                <label htmlFor="separator-model" className="mb-2 block text-sm font-medium text-slate-400">
+                <label
+                  htmlFor="separator-model"
+                  className="mb-2 block text-sm font-medium text-slate-400"
+                >
                   Separator Model (Optional)
                 </label>
                 <input
@@ -533,7 +555,9 @@ export default function ButterCoverClient({ dictionary }: { dictionary: any }) {
         ) : (
           <Sparkles size={18} />
         )}
-        {state.isLoading ? dictionary.butterGenButtonLoading : dictionary.butterCoverButton}
+        {state.isLoading
+          ? dictionary.butterGenButtonLoading
+          : dictionary.butterCoverButton}
       </button>
 
       {/* Result/Error Display */}

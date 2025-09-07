@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, ReactNode, use } from 'react';
-import AuthGuard from '@/components/AuthGuard';
+import StudioAuthGuard from '../_components/StudioAuthGuard';
 import StudioSidebar from './_components/SidebarClient';
 import StudioMainClient from './_components/StudioMainClient';
 import { Menu } from 'lucide-react';
@@ -16,7 +16,7 @@ export default function StudioLayout({ children, params }: Props) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <AuthGuard>
+    <StudioAuthGuard>
       <div className="flex h-screen bg-black text-white relative">
         {/* Overlay for mobile */}
         {isSidebarOpen && (
@@ -32,10 +32,7 @@ export default function StudioLayout({ children, params }: Props) {
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
-          <StudioSidebar
-            lang={lang}
-            onClose={() => setSidebarOpen(false)}
-          />
+          <StudioSidebar lang={lang} onClose={() => setSidebarOpen(false)} />
         </div>
 
         {/* Main Content Wrapper */}
@@ -56,6 +53,6 @@ export default function StudioLayout({ children, params }: Props) {
           <StudioMainClient lang={lang}>{children}</StudioMainClient>
         </div>
       </div>
-    </AuthGuard>
+    </StudioAuthGuard>
   );
 }

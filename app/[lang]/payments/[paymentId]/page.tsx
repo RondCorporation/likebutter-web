@@ -13,7 +13,9 @@ export default function PaymentReceiptPage() {
   const { lang, paymentId } = params;
   const { t } = useTranslation('common');
 
-  const [payment, setPayment] = useState<PaymentHistoryResponse | undefined>(undefined);
+  const [payment, setPayment] = useState<PaymentHistoryResponse | undefined>(
+    undefined
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 

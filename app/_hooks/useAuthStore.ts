@@ -1,16 +1,33 @@
 'use client';
 
-import { useAuthStore } from '@/app/_stores/authStore';
+// ⚠️ DEPRECATED: This file is deprecated. Use useAuth hook instead.
+// This file is kept temporarily for backward compatibility but will be removed.
+// 
+// Migration guide:
+// - Replace useAuthUser() with useAuth().user
+// - Replace useAuthLoading() with useAuth().isLoading
+// - Replace useIsAuthenticated() with useAuth().isAuthenticated
+// - Replace useIsInitialized() with useAuth().isInitialized
 
-// 개별 상태를 위한 선택자들
-export const useAuthUser = () => useAuthStore(state => state.user);
-export const useAuthLoading = () => useAuthStore(state => state.isLoading);
-export const useIsAuthenticated = () => useAuthStore(state => state.isAuthenticated);
-export const useIsInitialized = () => useAuthStore(state => state.isInitialized);
+import { useAuth } from './useAuth';
 
-// 개별 액션 훅들 - 각각을 분리하여 안정적인 참조 유지
-export const useSetUser = () => useAuthStore(state => state.setUser);
-export const useSetLoading = () => useAuthStore(state => state.setLoading);
-export const useAuthLogout = () => useAuthStore(state => state.logout);
-export const useAuthInitialize = () => useAuthStore(state => state.initialize);
-export const useAuthHydrate = () => useAuthStore(state => state.hydrate);
+// Deprecated hooks - use useAuth() instead
+export const useAuthUser = () => {
+  console.warn('useAuthUser is deprecated. Use useAuth().user instead');
+  return useAuth().user;
+};
+
+export const useAuthLoading = () => {
+  console.warn('useAuthLoading is deprecated. Use useAuth().isLoading instead');
+  return useAuth().isLoading;
+};
+
+export const useIsAuthenticated = () => {
+  console.warn('useIsAuthenticated is deprecated. Use useAuth().isAuthenticated instead');
+  return useAuth().isAuthenticated;
+};
+
+export const useIsInitialized = () => {
+  console.warn('useIsInitialized is deprecated. Use useAuth().isInitialized instead');
+  return useAuth().isInitialized;
+};

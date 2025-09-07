@@ -20,7 +20,9 @@ export default function DreamContiTaskCard({ task, onClick }: Props) {
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-2">
           <Moon className="h-5 w-5 text-accent" />
-          <h4 className="text-sm font-semibold text-white">Dream Continuation</h4>
+          <h4 className="text-sm font-semibold text-white">
+            Dream Continuation
+          </h4>
         </div>
         <StatusBadge status={task.status} />
       </div>
@@ -28,9 +30,7 @@ export default function DreamContiTaskCard({ task, onClick }: Props) {
       {/* Dream Prompt */}
       {details?.request?.dreamPrompt && (
         <div className="mb-2 text-sm text-slate-300">
-          <div className="line-clamp-2">
-            "{details.request.dreamPrompt}"
-          </div>
+          <div className="line-clamp-2">"{details.request.dreamPrompt}"</div>
         </div>
       )}
 

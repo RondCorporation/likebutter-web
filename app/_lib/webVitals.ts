@@ -18,7 +18,7 @@ export function initWebVitals() {
   onCLS(onPerfEntry);
   onINP(onPerfEntry); // INP replaces FID in newer versions
   onLCP(onPerfEntry);
-  
+
   // 추가 성능 지표
   onFCP(onPerfEntry);
   onTTFB(onPerfEntry);
@@ -32,17 +32,17 @@ function onPerfEntry(metric: any) {
     delta: Math.round(metric.delta),
     id: metric.id,
   };
-  
+
   // 개발 환경에서는 콘솔 로깅
   if (process.env.NODE_ENV === 'development') {
     console.log('🔍 Web Vital:', webVitalMetric);
   }
-  
+
   // 프로덕션에서는 분석 서비스로 전송
   if (process.env.NODE_ENV === 'production') {
     sendToAnalytics(webVitalMetric);
   }
-  
+
   // 성능 경고 알림
   showPerformanceWarnings(webVitalMetric);
 }
@@ -64,7 +64,7 @@ function sendToAnalytics(metric: WebVitalMetric) {
       },
     });
   }
-  
+
   // 사용자 정의 분석 API로 전송 (선택사항)
   // fetch('/api/analytics/web-vitals', {
   //   method: 'POST',
@@ -79,7 +79,7 @@ function sendToAnalytics(metric: WebVitalMetric) {
 function showPerformanceWarnings(metric: WebVitalMetric) {
   if (metric.rating === 'poor') {
     console.warn(`⚠️ Poor ${metric.name}: ${metric.value}ms`);
-    
+
     // 특정 메트릭별 개선 제안
     const suggestions = getPerformanceSuggestions(metric.name, metric.value);
     if (suggestions.length > 0) {
@@ -91,9 +91,12 @@ function showPerformanceWarnings(metric: WebVitalMetric) {
 /**
  * 성능 개선 제안 생성
  */
-function getPerformanceSuggestions(metricName: string, value: number): string[] {
+function getPerformanceSuggestions(
+  metricName: string,
+  value: number
+): string[] {
   const suggestions: string[] = [];
-  
+
   switch (metricName) {
     case 'LCP': // Largest Contentful Paint
       if (value > 2500) {
@@ -102,7 +105,7 @@ function getPerformanceSuggestions(metricName: string, value: number): string[] 
         suggestions.push('Consider server-side rendering');
       }
       break;
-      
+
     case 'INP': // Interaction to Next Paint (replaces FID)
       if (value > 200) {
         suggestions.push('Reduce JavaScript bundle size');
@@ -111,7 +114,7 @@ function getPerformanceSuggestions(metricName: string, value: number): string[] 
         suggestions.push('Optimize event handlers');
       }
       break;
-      
+
     case 'CLS': // Cumulative Layout Shift
       if (value > 0.1) {
         suggestions.push('Set dimensions for images and videos');
@@ -119,7 +122,7 @@ function getPerformanceSuggestions(metricName: string, value: number): string[] 
         suggestions.push('Avoid inserting content above existing content');
       }
       break;
-      
+
     case 'FCP': // First Contentful Paint
       if (value > 1800) {
         suggestions.push('Optimize critical rendering path');
@@ -127,7 +130,7 @@ function getPerformanceSuggestions(metricName: string, value: number): string[] 
         suggestions.push('Preload important resources');
       }
       break;
-      
+
     case 'TTFB': // Time to First Byte
       if (value > 800) {
         suggestions.push('Optimize server response time');
@@ -136,7 +139,7 @@ function getPerformanceSuggestions(metricName: string, value: number): string[] 
       }
       break;
   }
-  
+
   return suggestions;
 }
 
@@ -151,10 +154,10 @@ export function getPerformanceInsights(): {
   // 로컬 스토리지에서 수집된 메트릭 가져오기
   const metrics: WebVitalMetric[] = [];
   const recommendations: string[] = [];
-  
+
   // 전체 성능 점수 계산 (0-100)
   const overallScore = calculateOverallScore(metrics);
-  
+
   return {
     metrics,
     overallScore,
@@ -164,27 +167,31 @@ export function getPerformanceInsights(): {
 
 function calculateOverallScore(metrics: WebVitalMetric[]): number {
   if (metrics.length === 0) return 0;
-  
+
   const weights = {
     LCP: 0.25,
-    INP: 0.25,  // Updated from FID to INP
+    INP: 0.25, // Updated from FID to INP
     CLS: 0.25,
     FCP: 0.125,
     TTFB: 0.125,
   };
-  
+
   let totalScore = 0;
   let totalWeight = 0;
-  
-  metrics.forEach(metric => {
+
+  metrics.forEach((metric) => {
     const weight = weights[metric.name as keyof typeof weights] || 0;
     if (weight > 0) {
-      const score = metric.rating === 'good' ? 100 : 
-                   metric.rating === 'needs-improvement' ? 60 : 30;
+      const score =
+        metric.rating === 'good'
+          ? 100
+          : metric.rating === 'needs-improvement'
+            ? 60
+            : 30;
       totalScore += score * weight;
       totalWeight += weight;
     }
   });
-  
+
   return totalWeight > 0 ? Math.round(totalScore / totalWeight) : 0;
 }

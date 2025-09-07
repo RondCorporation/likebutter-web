@@ -13,7 +13,12 @@ export type PipelineStatus =
   | 'COMPLETED'
   | 'FAILED';
 
-export type ActionType = 'BUTTER_COVER' | 'DIGITAL_GOODS' | 'DREAM_CONTI' | 'FANMEETING_STUDIO' | 'PHOTO_EDITOR';
+export type ActionType =
+  | 'BUTTER_COVER'
+  | 'DIGITAL_GOODS'
+  | 'DREAM_CONTI'
+  | 'FANMEETING_STUDIO'
+  | 'PHOTO_EDITOR';
 
 // Digital Goods types
 interface DigitalGoodsRequestDetails {

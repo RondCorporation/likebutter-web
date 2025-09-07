@@ -56,8 +56,7 @@ const PLAN_FEATURES_MAP: { [key: string]: string[] } = {
 export default async function BillingPage({ params, searchParams }: Props) {
   const { lang } = await params;
   const resolvedSearchParams = await searchParams;
-  
-  
+
   const { t } = await initTranslations(lang, ['common']);
 
   const { data: apiPlans } = (await getPlansOnServer().catch(() => ({

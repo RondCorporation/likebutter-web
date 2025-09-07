@@ -6,9 +6,5 @@ interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
-  return (
-    <AuthLayoutClient>
-      {children}
-    </AuthLayoutClient>
-  );
+  return <AuthLayoutClient>{children}</AuthLayoutClient>;
 }

@@ -20,27 +20,39 @@ export default function ButterCoverDetailsView({ details }: Props) {
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
           <div>
-            <label className="text-sm font-medium text-slate-400">Voice Model</label>
+            <label className="text-sm font-medium text-slate-400">
+              Voice Model
+            </label>
             <p className="text-slate-200">{details.request.voiceModel}</p>
           </div>
-          
+
           {details.request.pitchAdjust !== undefined && (
             <div>
-              <label className="text-sm font-medium text-slate-400">Pitch Adjust</label>
-              <p className="text-slate-200">{details.request.pitchAdjust} semitones</p>
+              <label className="text-sm font-medium text-slate-400">
+                Pitch Adjust
+              </label>
+              <p className="text-slate-200">
+                {details.request.pitchAdjust} semitones
+              </p>
             </div>
           )}
-          
+
           {details.request.outputFormat && (
             <div>
-              <label className="text-sm font-medium text-slate-400">Output Format</label>
-              <p className="text-slate-200 uppercase">{details.request.outputFormat}</p>
+              <label className="text-sm font-medium text-slate-400">
+                Output Format
+              </label>
+              <p className="text-slate-200 uppercase">
+                {details.request.outputFormat}
+              </p>
             </div>
           )}
-          
+
           {details.request.separatorModel && (
             <div>
-              <label className="text-sm font-medium text-slate-400">Separator Model</label>
+              <label className="text-sm font-medium text-slate-400">
+                Separator Model
+              </label>
               <p className="text-slate-200">{details.request.separatorModel}</p>
             </div>
           )}
@@ -48,37 +60,47 @@ export default function ButterCoverDetailsView({ details }: Props) {
       </div>
 
       {/* Advanced Settings */}
-      {(details.request.indexRate !== undefined || 
+      {(details.request.indexRate !== undefined ||
         details.request.filterRadius !== undefined ||
         details.request.rmsMixRate !== undefined ||
         details.request.protect !== undefined) && (
         <div>
-          <h4 className="mb-3 font-semibold text-slate-200">Advanced AI Settings</h4>
+          <h4 className="mb-3 font-semibold text-slate-200">
+            Advanced AI Settings
+          </h4>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-slate-800/50 p-4">
             {details.request.indexRate !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Index Rate</label>
+                <label className="text-sm font-medium text-slate-400">
+                  Index Rate
+                </label>
                 <p className="text-slate-200">{details.request.indexRate}</p>
               </div>
             )}
-            
+
             {details.request.filterRadius !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Filter Radius</label>
+                <label className="text-sm font-medium text-slate-400">
+                  Filter Radius
+                </label>
                 <p className="text-slate-200">{details.request.filterRadius}</p>
               </div>
             )}
-            
+
             {details.request.rmsMixRate !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">RMS Mix Rate</label>
+                <label className="text-sm font-medium text-slate-400">
+                  RMS Mix Rate
+                </label>
                 <p className="text-slate-200">{details.request.rmsMixRate}</p>
               </div>
             )}
-            
+
             {details.request.protect !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Protect</label>
+                <label className="text-sm font-medium text-slate-400">
+                  Protect
+                </label>
                 <p className="text-slate-200">{details.request.protect}</p>
               </div>
             )}
@@ -96,29 +118,39 @@ export default function ButterCoverDetailsView({ details }: Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-slate-800/50 p-4">
             {details.request.reverbRmSize !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Room Size</label>
+                <label className="text-sm font-medium text-slate-400">
+                  Room Size
+                </label>
                 <p className="text-slate-200">{details.request.reverbRmSize}</p>
               </div>
             )}
-            
+
             {details.request.reverbWet !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Wet</label>
+                <label className="text-sm font-medium text-slate-400">
+                  Wet
+                </label>
                 <p className="text-slate-200">{details.request.reverbWet}</p>
               </div>
             )}
-            
+
             {details.request.reverbDry !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Dry</label>
+                <label className="text-sm font-medium text-slate-400">
+                  Dry
+                </label>
                 <p className="text-slate-200">{details.request.reverbDry}</p>
               </div>
             )}
-            
+
             {details.request.reverbDamping !== undefined && (
               <div>
-                <label className="text-sm font-medium text-slate-400">Damping</label>
-                <p className="text-slate-200">{details.request.reverbDamping}</p>
+                <label className="text-sm font-medium text-slate-400">
+                  Damping
+                </label>
+                <p className="text-slate-200">
+                  {details.request.reverbDamping}
+                </p>
               </div>
             )}
           </div>
@@ -137,26 +169,38 @@ export default function ButterCoverDetailsView({ details }: Props) {
               {details.result.audioKey && (
                 <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
                   <div>
-                    <div className="font-medium text-slate-200">AI Voice Cover</div>
-                    <div className="text-sm text-slate-400">Main processed audio file</div>
+                    <div className="font-medium text-slate-200">
+                      AI Voice Cover
+                    </div>
+                    <div className="text-sm text-slate-400">
+                      Main processed audio file
+                    </div>
                   </div>
                 </div>
               )}
-              
+
               {details.result.vocalsKey && (
                 <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
                   <div>
-                    <div className="font-medium text-slate-200">Vocals Track</div>
-                    <div className="text-sm text-slate-400">Separated vocal track</div>
+                    <div className="font-medium text-slate-200">
+                      Vocals Track
+                    </div>
+                    <div className="text-sm text-slate-400">
+                      Separated vocal track
+                    </div>
                   </div>
                 </div>
               )}
-              
+
               {details.result.instrumentalsKey && (
                 <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
                   <div>
-                    <div className="font-medium text-slate-200">Instrumental Track</div>
-                    <div className="text-sm text-slate-400">Separated instrumental track</div>
+                    <div className="font-medium text-slate-200">
+                      Instrumental Track
+                    </div>
+                    <div className="text-sm text-slate-400">
+                      Separated instrumental track
+                    </div>
                   </div>
                 </div>
               )}

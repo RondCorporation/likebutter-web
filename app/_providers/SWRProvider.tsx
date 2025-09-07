@@ -13,9 +13,5 @@ interface SWRProviderProps {
  * 최적화된 캐싱 및 성능 설정 제공
  */
 export function SWRProvider({ children }: SWRProviderProps) {
-  return (
-    <SWRConfig value={swrConfig}>
-      {children}
-    </SWRConfig>
-  );
+  return <SWRConfig value={swrConfig}>{children}</SWRConfig>;
 }

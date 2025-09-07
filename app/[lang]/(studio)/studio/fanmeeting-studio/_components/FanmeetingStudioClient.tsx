@@ -167,7 +167,8 @@ export default function FanmeetingStudioClient() {
     setTimeout(() => {
       dispatch({
         type: 'SUBMIT_ERROR',
-        payload: 'Fanmeeting Studio API endpoint is not yet available. Coming soon!',
+        payload:
+          'Fanmeeting Studio API endpoint is not yet available. Coming soon!',
       });
     }, 2000);
   };
@@ -213,8 +214,12 @@ export default function FanmeetingStudioClient() {
                 ) : (
                   <div className="flex flex-col items-center text-slate-400">
                     <UploadCloud className="mb-3 h-10 w-10 text-butter-yellow/70" />
-                    <p className="mb-1 font-semibold text-slate-200">Upload Fan Photo</p>
-                    <p className="text-xs text-slate-500">PNG, JPG, WEBP up to 5MB</p>
+                    <p className="mb-1 font-semibold text-slate-200">
+                      Upload Fan Photo
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      PNG, JPG, WEBP up to 5MB
+                    </p>
                   </div>
                 )}
                 <input
@@ -262,8 +267,12 @@ export default function FanmeetingStudioClient() {
                 ) : (
                   <div className="flex flex-col items-center text-slate-400">
                     <UploadCloud className="mb-3 h-10 w-10 text-butter-yellow/70" />
-                    <p className="mb-1 font-semibold text-slate-200">Upload Idol Photo</p>
-                    <p className="text-xs text-slate-500">PNG, JPG, WEBP up to 5MB</p>
+                    <p className="mb-1 font-semibold text-slate-200">
+                      Upload Idol Photo
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      PNG, JPG, WEBP up to 5MB
+                    </p>
                   </div>
                 )}
                 <input
@@ -285,7 +294,7 @@ export default function FanmeetingStudioClient() {
               <Sparkles size={20} />
               Studio Settings
             </h3>
-            
+
             {/* Studio Style */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
@@ -330,11 +339,14 @@ export default function FanmeetingStudioClient() {
               <div className="flex items-start gap-3">
                 <Heart className="h-5 w-5 text-butter-yellow/70 mt-0.5 flex-shrink-0" />
                 <div>
-                  <h4 className="text-sm font-medium text-slate-200 mb-1">About Fanmeeting Studio</h4>
+                  <h4 className="text-sm font-medium text-slate-200 mb-1">
+                    About Fanmeeting Studio
+                  </h4>
                   <p className="text-xs text-slate-400">
-                    Create magical fanmeeting moments! Upload photos of both the fan and idol, 
-                    then choose your perfect studio setting, lighting, and music to create a 
-                    personalized fanmeeting experience.
+                    Create magical fanmeeting moments! Upload photos of both the
+                    fan and idol, then choose your perfect studio setting,
+                    lighting, and music to create a personalized fanmeeting
+                    experience.
                   </p>
                 </div>
               </div>
@@ -369,7 +381,8 @@ export default function FanmeetingStudioClient() {
             Coming Soon!
           </h4>
           <p className="text-slate-300">
-            Fanmeeting Studio feature is currently in development. Get ready for amazing fan interactions!
+            Fanmeeting Studio feature is currently in development. Get ready for
+            amazing fan interactions!
           </p>
         </div>
       </StudioToolCard>

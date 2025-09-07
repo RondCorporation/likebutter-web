@@ -33,7 +33,7 @@ function AuthWithRedirectContent({ children }: { children: ReactNode }) {
       window.location.replace(redirectUrl);
     }
   }, [isInitialized, isLoading, isAuthenticated, pathname, searchParams]);
-  
+
   // 인증 상태 확인 중이거나, 리디렉션이 필요한 상태일 때 로더를 보여줍니다.
   if (!isInitialized || isLoading || isAuthenticated) {
     return (
@@ -42,7 +42,7 @@ function AuthWithRedirectContent({ children }: { children: ReactNode }) {
       </div>
     );
   }
-  
+
   // 인증되지 않았음이 확실할 때만 로그인/회원가입 폼을 보여줍니다.
   return <>{children}</>;
 }

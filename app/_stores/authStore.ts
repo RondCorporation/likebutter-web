@@ -41,7 +41,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   initialize: async (force = false) => {
     const state = get();
-    
+
     // Check if already initialized (but allow force refresh)
     if (state.isInitialized && !force) {
       set({ isLoading: false });
@@ -53,7 +53,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       // 서버 세션 확인 - 가장 확실한 방법
       const { data: user } = await getMe();
-      
+
       if (user) {
         // 성공적으로 사용자 정보를 가져온 경우
         set({
@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         isInitialized: true,
         isLoading: false,
       });
-      
+
       if (force) {
         throw error;
       }
@@ -84,7 +84,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   logout: () => {
     clearSession().catch(() => {});
-    
+
     set({
       user: null,
       isAuthenticated: false,

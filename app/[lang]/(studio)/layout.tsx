@@ -6,9 +6,5 @@ interface StudioLayoutProps {
 }
 
 export default function StudioLayout({ children }: StudioLayoutProps) {
-  return (
-    <StudioLayoutClient>
-      {children}
-    </StudioLayoutClient>
-  );
+  return <StudioLayoutClient>{children}</StudioLayoutClient>;
 }

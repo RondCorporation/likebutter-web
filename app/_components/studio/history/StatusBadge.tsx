@@ -1,17 +1,22 @@
 import { GenerationStatus, PipelineStatus } from '@/types/task';
 
-export default function StatusBadge({ status, pipelineStatus }: { 
+export default function StatusBadge({
+  status,
+  pipelineStatus,
+}: {
   status: GenerationStatus;
   pipelineStatus?: PipelineStatus;
 }) {
   const baseClasses = 'px-2 py-1 text-xs font-semibold rounded-full';
-  
+
   // Handle pipeline status for ButterCover tasks
   if (pipelineStatus) {
     switch (pipelineStatus) {
       case 'AUDIO_SEPARATION_IN_PROGRESS':
         return (
-          <span className={`${baseClasses} bg-blue-500/20 text-blue-300 animate-pulse`}>
+          <span
+            className={`${baseClasses} bg-blue-500/20 text-blue-300 animate-pulse`}
+          >
             Separating
           </span>
         );
@@ -23,7 +28,9 @@ export default function StatusBadge({ status, pipelineStatus }: {
         );
       case 'AI_COVER_GENERATION_IN_PROGRESS':
         return (
-          <span className={`${baseClasses} bg-purple-500/20 text-purple-300 animate-pulse`}>
+          <span
+            className={`${baseClasses} bg-purple-500/20 text-purple-300 animate-pulse`}
+          >
             Generating
           </span>
         );

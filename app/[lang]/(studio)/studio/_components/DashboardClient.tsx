@@ -26,31 +26,47 @@ const DashboardClient = memo(function DashboardClient() {
 
   // SWR 훅을 사용한 데이터 페칭
   const { user, isLoading: userLoading, isError: userError } = useUser();
-  const { activeSubscription, isLoading: subscriptionLoading, isError: subscriptionError } = useSubscriptions();
+  const {
+    activeSubscription,
+    isLoading: subscriptionLoading,
+    isError: subscriptionError,
+  } = useSubscriptions();
 
   // SWR로 task 데이터 페칭 (in-progress tasks for dashboard preview)
   const {
     inProgressTasks,
     completedTasks,
     isLoading: tasksLoading,
-    error: tasksError
+    error: tasksError,
   } = useTaskHistorySWR({
     page: 0,
     filters: { status: '', actionType: '' }, // Get all tasks, then filter
-    enablePolling: true
+    enablePolling: true,
   });
 
   // Dashboard only shows first 3 items of each category
-  const dashboardInProgressTasks = useMemo(() => inProgressTasks.slice(0, 3), [inProgressTasks]);
-  const dashboardCompletedTasks = useMemo(() => completedTasks.slice(0, 3), [completedTasks]);
+  const dashboardInProgressTasks = useMemo(
+    () => inProgressTasks.slice(0, 3),
+    [inProgressTasks]
+  );
+  const dashboardCompletedTasks = useMemo(
+    () => completedTasks.slice(0, 3),
+    [completedTasks]
+  );
 
-  const handleTaskClick = useMemo(() => (task: any) => {
-    router.push(`/studio/history?taskId=${task.taskId}`);
-  }, [router]);
+  const handleTaskClick = useMemo(
+    () => (task: any) => {
+      router.push(`/studio/history?taskId=${task.taskId}`);
+    },
+    [router]
+  );
 
   const creditUsage = useMemo(() => 0, []);
   const creditLimit = useMemo(() => 100, []);
-  const creditPercentage = useMemo(() => (creditUsage / creditLimit) * 100, [creditUsage, creditLimit]);
+  const creditPercentage = useMemo(
+    () => (creditUsage / creditLimit) * 100,
+    [creditUsage, creditLimit]
+  );
 
   const planName = useMemo(() => {
     return activeSubscription ? planNames[activeSubscription.planKey] : 'Free';
@@ -64,11 +80,12 @@ const DashboardClient = memo(function DashboardClient() {
   }
 
   if (hasError) {
-    return <div className="text-red-500 text-center p-8">
-      {tasksError || 'Failed to load dashboard data'}
-    </div>;
+    return (
+      <div className="text-red-500 text-center p-8">
+        {tasksError || 'Failed to load dashboard data'}
+      </div>
+    );
   }
-
 
   return (
     <div className="space-y-12">
@@ -99,16 +116,17 @@ const DashboardClient = memo(function DashboardClient() {
           )}
 
           {/* Placeholder for when there are no tasks */}
-          {dashboardInProgressTasks.length === 0 && dashboardCompletedTasks.length === 0 && (
-            <div className="text-center py-16 border-2 border-dashed border-slate-700 rounded-lg">
-              <h3 className="text-xl font-semibold">
-                {t('dashboardNoTasksTitle')}
-              </h3>
-              <p className="text-slate-400 mt-2">
-                {t('dashboardNoTasksSubtitle')}
-              </p>
-            </div>
-          )}
+          {dashboardInProgressTasks.length === 0 &&
+            dashboardCompletedTasks.length === 0 && (
+              <div className="text-center py-16 border-2 border-dashed border-slate-700 rounded-lg">
+                <h3 className="text-xl font-semibold">
+                  {t('dashboardNoTasksTitle')}
+                </h3>
+                <p className="text-slate-400 mt-2">
+                  {t('dashboardNoTasksSubtitle')}
+                </p>
+              </div>
+            )}
         </div>
 
         {/* Side Column */}
@@ -122,9 +140,7 @@ const DashboardClient = memo(function DashboardClient() {
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <span>{t('dashboardPlan')}</span>
-                  <span className="font-semibold text-accent">
-                    {planName}
-                  </span>
+                  <span className="font-semibold text-accent">{planName}</span>
                 </div>
               </div>
               <div>

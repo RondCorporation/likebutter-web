@@ -9,7 +9,7 @@ import { Metadata } from 'next';
 import { LayoutClient } from './_components/LayoutClient';
 import initTranslations from '../_lib/i18n-server';
 import TranslationsProvider from '../_components/TranslationsProvider';
-import { User } from '@/app/_types/api';
+import { getMeOnServer } from '../_lib/apiServer';
 
 const archivoBlack = Archivo_Black({
   subsets: ['latin'],
@@ -33,6 +33,9 @@ export default async function RootLayout({
   const { lang } = await params;
   const { resources } = await initTranslations(lang, i18nNamespaces);
 
+  // 서버에서 사용자 정보를 미리 가져옵니다
+  const preloadedUser = await getMeOnServer();
+
   return (
     <html
       lang={lang}
@@ -45,7 +48,8 @@ export default async function RootLayout({
           locale={lang}
           resources={resources}
         >
-          <LayoutClient preloadedUser={null}>{children}</LayoutClient>
+          {/* 가져온 사용자 정보를 preloadedUser prop으로 전달합니다 */}
+          <LayoutClient preloadedUser={preloadedUser}>{children}</LayoutClient>
         </TranslationsProvider>
       </body>
     </html>

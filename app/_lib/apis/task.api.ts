@@ -14,7 +14,12 @@ interface TaskCreationResponse {
 
 export const getTaskHistory = (
   page: number,
-  filters: { status?: string; actionType?: string; size?: number; summary?: boolean }
+  filters: {
+    status?: string;
+    actionType?: string;
+    size?: number;
+    summary?: boolean;
+  }
 ): Promise<ApiResponse<Page<Task>>> => {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -60,7 +65,7 @@ export const createDigitalGoodsTask = (
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
   formData.append('image', image);
-  
+
   // Add form fields individually
   Object.entries(request).forEach(([key, value]) => {
     if (value !== undefined) {

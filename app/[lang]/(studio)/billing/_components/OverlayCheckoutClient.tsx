@@ -25,7 +25,10 @@ type OverlayCheckoutClientProps = {
   plan: PlanForCheckout;
 };
 
-export default function OverlayCheckoutClient({ lang, plan }: OverlayCheckoutClientProps) {
+export default function OverlayCheckoutClient({
+  lang,
+  plan,
+}: OverlayCheckoutClientProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
@@ -107,9 +110,7 @@ export default function OverlayCheckoutClient({ lang, plan }: OverlayCheckoutCli
         <h1 className="text-3xl font-bold text-white mb-4">
           {t('checkoutTitle')}
         </h1>
-        <p className="text-lg text-slate-300">
-          {t('checkoutSubtitle')}
-        </p>
+        <p className="text-lg text-slate-300">{t('checkoutSubtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -118,15 +119,17 @@ export default function OverlayCheckoutClient({ lang, plan }: OverlayCheckoutCli
           <h2 className="text-xl font-bold text-butter-yellow mb-6">
             {t('orderSummary')}
           </h2>
-          
+
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-slate-300">{t('plan')}:</span>
-              <span className="text-lg font-semibold text-white">{plan.name}</span>
+              <span className="text-lg font-semibold text-white">
+                {plan.name}
+              </span>
             </div>
-            
+
             <div className="border-t border-slate-700"></div>
-            
+
             <ul className="space-y-3 pt-2">
               {plan.features.map((feature, index) => (
                 <li key={index} className="flex items-center gap-3">
@@ -135,9 +138,9 @@ export default function OverlayCheckoutClient({ lang, plan }: OverlayCheckoutCli
                 </li>
               ))}
             </ul>
-            
+
             <div className="border-t border-slate-700"></div>
-            
+
             <div className="flex items-center justify-between pt-2">
               <span className="text-lg text-slate-300">{t('total')}:</span>
               <span className="text-2xl font-bold text-butter-yellow">
@@ -152,7 +155,7 @@ export default function OverlayCheckoutClient({ lang, plan }: OverlayCheckoutCli
           <h2 className="text-xl font-bold text-white mb-6">
             {t('paymentDetails')}
           </h2>
-          
+
           <div className="space-y-4 mb-8">
             <div className="flex items-center gap-3 rounded-lg bg-slate-700/50 p-3">
               <CreditCard className="h-5 w-5 text-butter-yellow" />
@@ -160,21 +163,19 @@ export default function OverlayCheckoutClient({ lang, plan }: OverlayCheckoutCli
                 {t('creditCard')}
               </span>
             </div>
-            
+
             <div className="flex items-center gap-3 text-sm text-slate-400">
               <Shield className="h-4 w-4 text-green-400" />
               <span>{t('securePayment')}</span>
             </div>
           </div>
-          
+
           <button
             onClick={handlePayment}
             disabled={isLoading}
             className="w-full rounded-xl bg-gradient-to-r from-butter-yellow to-butter-orange px-6 py-4 text-lg font-semibold text-black shadow-lg transition-all duration-200 hover:shadow-butter-yellow/20 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
           >
-            {isLoading
-              ? t('processing')
-              : `${t('pay')} ${plan.priceFormatted}`}
+            {isLoading ? t('processing') : `${t('pay')} ${plan.priceFormatted}`}
           </button>
         </div>
       </div>

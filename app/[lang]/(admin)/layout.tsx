@@ -6,9 +6,5 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  return (
-    <AdminLayoutClient>
-      {children}
-    </AdminLayoutClient>
-  );
+  return <AdminLayoutClient>{children}</AdminLayoutClient>;
 }

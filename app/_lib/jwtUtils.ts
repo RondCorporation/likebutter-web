@@ -23,34 +23,34 @@ export function extractUserFromJWT(token: string): {
 } {
   try {
     const payload = jwtDecode<JWTPayload>(token);
-    
+
     // 토큰 만료 확인
     const now = Math.floor(Date.now() / 1000);
     const isExpired = payload.exp < now;
-    
+
     if (isExpired) {
       return {
         isAuthenticated: false,
         userInfo: null,
-        isExpired: true
+        isExpired: true,
       };
     }
-    
+
     // JWT에서 기본 사용자 정보 추출
     return {
       isAuthenticated: true,
       userInfo: {
         id: payload.sub,
         email: payload.email,
-        roles: payload.roles || []
+        roles: payload.roles || [],
       },
-      isExpired: false
+      isExpired: false,
     };
   } catch (error) {
     return {
       isAuthenticated: false,
       userInfo: null,
-      isExpired: true
+      isExpired: true,
     };
   }
 }
@@ -60,7 +60,7 @@ export function extractUserFromJWT(token: string): {
  */
 export function getJWTFromCookie(): string | null {
   if (typeof window === 'undefined') return null;
-  
+
   const match = document.cookie.match(new RegExp(`(^| )accessToken=([^;]+)`));
   return match ? match[2] : null;
 }

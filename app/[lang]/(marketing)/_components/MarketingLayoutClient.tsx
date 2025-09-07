@@ -11,29 +11,31 @@ interface MarketingLayoutClientProps {
   children: ReactNode;
 }
 
-export function MarketingLayoutClient({ children }: MarketingLayoutClientProps) {
+export function MarketingLayoutClient({
+  children,
+}: MarketingLayoutClientProps) {
   return (
     <AuthInitializer
-        preloadedUser={null}
-        skipInitialization={false}
-        showLoader={false}
-      >
-        <>
-          <ServerErrorDisplay />
-          <ConditionalSettingsModal />
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                background: '#333',
-                color: '#fff',
-              },
-            }}
-          />
-          <div className="flex min-h-screen flex-col">
-            <main className="flex-grow">{children}</main>
-          </div>
-        </>
-      </AuthInitializer>
+      preloadedUser={null}
+      skipInitialization={false}
+      showLoader={false}
+    >
+      <>
+        <ServerErrorDisplay />
+        <ConditionalSettingsModal />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
+        <div className="flex min-h-screen flex-col">
+          <main className="flex-grow">{children}</main>
+        </div>
+      </>
+    </AuthInitializer>
   );
 }

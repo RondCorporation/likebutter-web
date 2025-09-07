@@ -30,7 +30,7 @@ export default function CheckoutOverlay({ lang, plan }: CheckoutOverlayProps) {
   };
 
   return (
-    <StudioOverlay 
+    <StudioOverlay
       title={`${plan.name} 구독`}
       onClose={handleClose}
       backUrl={isAuthenticated ? `/${lang}/studio/history` : `/${lang}`}

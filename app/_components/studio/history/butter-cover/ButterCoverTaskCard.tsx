@@ -54,8 +54,8 @@ const ButterCoverTaskCard = memo(({ task, onClick }: Props) => {
           <Music className="h-5 w-5 text-accent" />
           <h4 className="text-sm font-semibold text-white">AI Voice Cover</h4>
         </div>
-        <StatusBadge 
-          status={task.status} 
+        <StatusBadge
+          status={task.status}
           pipelineStatus={(task as any).pipelineStatus}
         />
       </div>
@@ -77,13 +77,11 @@ const ButterCoverTaskCard = memo(({ task, onClick }: Props) => {
       )}
 
       {/* Advanced Settings Indicator */}
-      {details?.request && (
-        Object.keys(details.request).length > 2 && (
-          <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-            <Settings className="h-4 w-4" />
-            <span>Advanced settings applied</span>
-          </div>
-        )
+      {details?.request && Object.keys(details.request).length > 2 && (
+        <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
+          <Settings className="h-4 w-4" />
+          <span>Advanced settings applied</span>
+        </div>
       )}
 
       {/* Result Info */}

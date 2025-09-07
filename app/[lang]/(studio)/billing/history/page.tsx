@@ -42,38 +42,40 @@ export default function PaymentHistoryPage() {
       key: 'paidAt',
       title: t('paymentHistory.date'),
       width: '180px',
-      render: (value: string) => new Date(value).toLocaleDateString()
+      render: (value: string) => new Date(value).toLocaleDateString(),
     },
     {
       key: 'orderName',
       title: t('paymentHistory.order'),
-      width: '200px'
+      width: '200px',
     },
     {
       key: 'planName',
       title: t('paymentHistory.plan'),
-      width: '150px'
+      width: '150px',
     },
     {
       key: 'amount',
       title: t('paymentHistory.amount'),
       width: '150px',
-      render: (value: number, row: PaymentHistoryResponse) => 
-        `${value.toLocaleString()} ${row.currency}`
+      render: (value: number, row: PaymentHistoryResponse) =>
+        `${value.toLocaleString()} ${row.currency}`,
     },
     {
       key: 'status',
       title: t('paymentHistory.status'),
       width: '100px',
       render: (value: string) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          value === 'PAID' 
-            ? 'bg-green-400/20 text-green-400' 
-            : 'bg-red-400/20 text-red-400'
-        }`}>
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            value === 'PAID'
+              ? 'bg-green-400/20 text-green-400'
+              : 'bg-red-400/20 text-red-400'
+          }`}
+        >
           {value}
         </span>
-      )
+      ),
     },
     {
       key: 'actions',
@@ -81,22 +83,22 @@ export default function PaymentHistoryPage() {
       width: '120px',
       render: (_: any, row: PaymentHistoryResponse) => (
         <Link href={`/${lang}/payments/${row.paymentId}`}>
-          <StudioButton 
-            variant="ghost" 
-            size="sm" 
+          <StudioButton
+            variant="ghost"
+            size="sm"
             icon={<Eye size={14} />}
             className="text-butter-yellow hover:text-butter-yellow/80"
           >
             영수증
           </StudioButton>
         </Link>
-      )
-    }
+      ),
+    },
   ];
 
   return (
-    <StudioOverlay 
-      title={t('paymentHistory.title')} 
+    <StudioOverlay
+      title={t('paymentHistory.title')}
       backUrl={`/${lang}/studio/history`}
     >
       <div className="space-y-6">
@@ -105,7 +107,7 @@ export default function PaymentHistoryPage() {
             {error}
           </div>
         )}
-        
+
         <DataTable
           columns={columns}
           data={payments}

@@ -14,7 +14,11 @@ interface AuthLayoutClientProps {
 
 export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
   return (
-    <AuthInitializer preloadedUser={null} skipInitialization={true} showLoader={false}>
+    <AuthInitializer
+      preloadedUser={null}
+      skipInitialization={true}
+      showLoader={false}
+    >
       <>
         <ServerErrorDisplay />
         <ConditionalSettingsModal />

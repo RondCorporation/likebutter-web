@@ -150,7 +150,9 @@ export default function DreamContiClient() {
             </h3>
             <div
               className="relative flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-600 bg-slate-900/50 text-center transition-all duration-300 hover:border-butter-yellow/50 hover:bg-slate-800/50"
-              onClick={() => document.getElementById('dream-image-upload')?.click()}
+              onClick={() =>
+                document.getElementById('dream-image-upload')?.click()
+              }
             >
               {previewUrl ? (
                 <>
@@ -204,14 +206,18 @@ export default function DreamContiClient() {
               <Moon size={20} />
               Dream Settings
             </h3>
-            
+
             {/* Dream Prompt */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Dream Prompt</label>
+              <label className="text-sm font-medium text-slate-300">
+                Dream Prompt
+              </label>
               <StudioInput
                 variant="textarea"
                 value={dreamPrompt}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDreamPrompt(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setDreamPrompt(e.target.value)
+                }
                 placeholder="Describe your dream continuation... Flying through colorful clouds, walking in an enchanted forest, swimming in a galaxy of stars..."
                 rows={4}
                 className="resize-none"
@@ -221,7 +227,9 @@ export default function DreamContiClient() {
 
             {/* Continuation Style */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Continuation Style</label>
+              <label className="text-sm font-medium text-slate-300">
+                Continuation Style
+              </label>
               <StudioSelect
                 value={continuationStyle}
                 onChange={setContinuationStyle}
@@ -231,7 +239,9 @@ export default function DreamContiClient() {
 
             {/* Image Count */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Number of Images</label>
+              <label className="text-sm font-medium text-slate-300">
+                Number of Images
+              </label>
               <div className="grid grid-cols-3 gap-2">
                 {imageCounts.map((count) => (
                   <button
@@ -255,10 +265,13 @@ export default function DreamContiClient() {
               <div className="flex items-start gap-3">
                 <Moon className="h-5 w-5 text-butter-yellow/70 mt-0.5 flex-shrink-0" />
                 <div>
-                  <h4 className="text-sm font-medium text-slate-200 mb-1">About Dream Conti</h4>
+                  <h4 className="text-sm font-medium text-slate-200 mb-1">
+                    About Dream Conti
+                  </h4>
                   <p className="text-xs text-slate-400">
-                    Create a series of connected images that continue your dream narrative. 
-                    Upload a starting image and describe where you want your dream to go next.
+                    Create a series of connected images that continue your dream
+                    narrative. Upload a starting image and describe where you
+                    want your dream to go next.
                   </p>
                 </div>
               </div>
@@ -277,7 +290,9 @@ export default function DreamContiClient() {
           size="lg"
           className="w-full max-w-md"
         >
-          {state.isLoading ? 'Creating Dream Continuation...' : 'Continue Dream'}
+          {state.isLoading
+            ? 'Creating Dream Continuation...'
+            : 'Continue Dream'}
         </StudioButton>
       </div>
 
@@ -293,7 +308,8 @@ export default function DreamContiClient() {
             Coming Soon!
           </h4>
           <p className="text-slate-300">
-            Dream Conti feature is currently in development. Stay tuned for magical dream continuations!
+            Dream Conti feature is currently in development. Stay tuned for
+            magical dream continuations!
           </p>
         </div>
       </StudioToolCard>

@@ -48,7 +48,10 @@ export default function HistoryClient() {
         completedTasks.length === 0 && (
           <StudioToolCard>
             <div className="flex justify-center items-center py-20">
-              <LoaderCircle size={40} className="animate-spin text-butter-yellow" />
+              <LoaderCircle
+                size={40}
+                className="animate-spin text-butter-yellow"
+              />
             </div>
           </StudioToolCard>
         )}

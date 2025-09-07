@@ -27,24 +27,24 @@ export default function StudioLayoutClient({
 }: StudioLayoutClientProps) {
   return (
     <AuthInitializer
-        preloadedUser={null}
-        skipInitialization={false}
-        showLoader={true}
-      >
-        <>
-          <ServerErrorDisplay />
-          <ConditionalSettingsModal />
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                background: '#333',
-                color: '#fff',
-              },
-            }}
-          />
-          <StudioContent>{children}</StudioContent>
-        </>
-      </AuthInitializer>
+      preloadedUser={null}
+      skipInitialization={false}
+      showLoader={true}
+    >
+      <>
+        <ServerErrorDisplay />
+        <ConditionalSettingsModal />
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              background: '#333',
+              color: '#fff',
+            },
+          }}
+        />
+        <StudioContent>{children}</StudioContent>
+      </>
+    </AuthInitializer>
   );
 }

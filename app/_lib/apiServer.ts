@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { ApiResponse } from '@/app/_types/api';
+import { ApiResponse, User } from '@/app/_types/api';
 
 const API_URL =
   process.env.NODE_ENV === 'development'
@@ -84,4 +84,18 @@ export const apiServer = {
     apiFetch<T>(url, { method: 'PUT', body, ...opts }, withAuth),
   delete: <T>(url: string, opts?: RequestInit, withAuth = true) =>
     apiFetch<T>(url, { method: 'DELETE', ...opts }, withAuth),
+};
+
+/**
+ * 서버 컴포넌트에서 사용자 정보를 사전 로딩하는 함수
+ * 사용자가 로그인되어 있으면 User 객체를, 그렇지 않으면 null을 반환합니다.
+ */
+export const getMeOnServer = async (): Promise<User | null> => {
+  try {
+    const { data: user } = await apiServer.get<User>('/users/me');
+    return user || null;
+  } catch (error) {
+    // 로그인되지 않은 상태에서는 에러가 발생하는 것이 정상이므로 null을 반환합니다.
+    return null;
+  }
 };

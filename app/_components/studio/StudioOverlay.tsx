@@ -20,7 +20,7 @@ export default function StudioOverlay({
   isOpen = true,
   onClose,
   backUrl = '/studio/history',
-  className = ''
+  className = '',
 }: StudioOverlayProps) {
   const router = useRouter();
 
@@ -75,11 +75,11 @@ export default function StudioOverlay({
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ 
-              type: "spring", 
+            transition={{
+              type: 'spring',
               duration: 0.3,
               stiffness: 300,
-              damping: 30
+              damping: 30,
             }}
             className={`relative w-full max-w-6xl max-h-[90vh] mx-4 bg-black border border-slate-700 rounded-2xl shadow-2xl overflow-hidden ${className}`}
           >
@@ -90,7 +90,7 @@ export default function StudioOverlay({
                   <h2 className="text-xl font-semibold text-white">{title}</h2>
                 )}
               </div>
-              
+
               <button
                 onClick={handleClose}
                 className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
@@ -102,9 +102,7 @@ export default function StudioOverlay({
 
             {/* Scrollable Content */}
             <div className="overflow-y-auto max-h-[calc(90vh-80px)] custom-scrollbar">
-              <div className="p-6">
-                {children}
-              </div>
+              <div className="p-6">{children}</div>
             </div>
           </motion.div>
         </div>

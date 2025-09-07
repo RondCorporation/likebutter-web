@@ -8,11 +8,11 @@ export const getPlansOnServer = unstable_cache(
   async (): Promise<ApiResponse<Plan[]>> => {
     return apiServer.get<Plan[]>(
       '/plans',
-      { 
-        next: { 
+      {
+        next: {
           revalidate: 3600, // 1 hour cache
-          tags: ['plans'] 
-        } 
+          tags: ['plans'],
+        },
       },
       false
     );
@@ -20,6 +20,6 @@ export const getPlansOnServer = unstable_cache(
   ['plans'],
   {
     revalidate: 3600, // 1 hour
-    tags: ['plans']
+    tags: ['plans'],
   }
 );

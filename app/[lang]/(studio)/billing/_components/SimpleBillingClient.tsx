@@ -26,24 +26,34 @@ interface SimplePlan {
 }
 
 // Convert API plans to SimplePricingView format
-const convertPlansFormat = (apiPlans: Plan[], currency: string, t: any): SimplePlan[] => {
+const convertPlansFormat = (
+  apiPlans: Plan[],
+  currency: string,
+  t: any
+): SimplePlan[] => {
   const planTypeMap: { [key: string]: string } = {
-    'CREATOR': 'planCreatorName',
-    'PROFESSIONAL': 'planProfessionalName'
+    CREATOR: 'planCreatorName',
+    PROFESSIONAL: 'planProfessionalName',
   };
 
   const planDescMap: { [key: string]: string } = {
-    'CREATOR': 'planCreatorDesc', 
-    'PROFESSIONAL': 'planProfessionalDesc'
+    CREATOR: 'planCreatorDesc',
+    PROFESSIONAL: 'planProfessionalDesc',
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    'CREATOR': ['pricingFeature1', 'pricingFeature2', 'pricingFeature3'],
-    'PROFESSIONAL': ['pricingFeature1', 'pricingFeature2', 'pricingFeature3', 'pricingFeature4']
+    CREATOR: ['pricingFeature1', 'pricingFeature2', 'pricingFeature3'],
+    PROFESSIONAL: [
+      'pricingFeature1',
+      'pricingFeature2',
+      'pricingFeature3',
+      'pricingFeature4',
+    ],
   };
 
-  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } = {};
-  
+  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } =
+    {};
+
   apiPlans.forEach((plan) => {
     if (!processedPlans[plan.planType]) {
       processedPlans[plan.planType] = {};
@@ -64,20 +74,29 @@ const convertPlansFormat = (apiPlans: Plan[], currency: string, t: any): SimpleP
       priceYearly: 'Free',
       features: [
         t('planFreeFeature1'),
-        t('planFreeFeature2'), 
-        t('planFreeFeature3')
+        t('planFreeFeature2'),
+        t('planFreeFeature3'),
       ],
       isPopular: false,
-      cta: t('planFreeCta')
-    }
+      cta: t('planFreeCta'),
+    },
   ];
 
   Object.entries(processedPlans).forEach(([planType, cycles]) => {
     if (cycles.monthly || cycles.yearly) {
       const isKorean = currency === '₩';
-      const monthlyPrice = cycles.monthly ? (isKorean ? cycles.monthly.priceKrw : cycles.monthly.priceUsd) : 0;
-      const yearlyPrice = cycles.yearly ? (isKorean ? cycles.yearly.priceKrw : cycles.yearly.priceUsd) : 0;
-      const yearlyMonthlyPrice = yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
+      const monthlyPrice = cycles.monthly
+        ? isKorean
+          ? cycles.monthly.priceKrw
+          : cycles.monthly.priceUsd
+        : 0;
+      const yearlyPrice = cycles.yearly
+        ? isKorean
+          ? cycles.yearly.priceKrw
+          : cycles.yearly.priceUsd
+        : 0;
+      const yearlyMonthlyPrice =
+        yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
 
       result.push({
         key: planType.toLowerCase(),
@@ -85,9 +104,11 @@ const convertPlansFormat = (apiPlans: Plan[], currency: string, t: any): SimpleP
         description: t(planDescMap[planType] || `${planType} plan`),
         priceMonthly: monthlyPrice as number | string,
         priceYearly: yearlyMonthlyPrice as number | string,
-        features: (featuresMap[planType] || []).map(featureKey => t(featureKey)),
+        features: (featuresMap[planType] || []).map((featureKey) =>
+          t(featureKey)
+        ),
         isPopular: planType === 'CREATOR',
-        cta: t('planCreatorCta')
+        cta: t('planCreatorCta'),
       });
     }
   });
@@ -95,10 +116,10 @@ const convertPlansFormat = (apiPlans: Plan[], currency: string, t: any): SimpleP
   return result;
 };
 
-export default function SimpleBillingClient({ 
-  lang, 
-  plans: apiPlans, 
-  currency 
+export default function SimpleBillingClient({
+  lang,
+  plans: apiPlans,
+  currency,
 }: SimpleBillingClientProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -106,21 +127,24 @@ export default function SimpleBillingClient({
 
   const plans = convertPlansFormat(apiPlans, currency, t);
 
-  const handlePlanSelect = async (planKey: string, billingCycle: 'monthly' | 'yearly') => {
+  const handlePlanSelect = async (
+    planKey: string,
+    billingCycle: 'monthly' | 'yearly'
+  ) => {
     if (planKey === 'free') {
       router.push(`/${lang}/signup`);
       return;
     }
 
     setLoading(true);
-    
+
     try {
       // For now, just show a toast. In real implementation, this would handle payment
       toast.success(`${planKey} ${billingCycle} 플랜을 선택하셨습니다.`);
-      
+
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Redirect to checkout or success page
       router.push(`/${lang}/billing?plan=${planKey}&billing=${billingCycle}`);
     } catch (error) {
@@ -131,10 +155,7 @@ export default function SimpleBillingClient({
   };
 
   return (
-    <StudioOverlay 
-      title="요금제 선택" 
-      backUrl={`/${lang}/studio/history`}
-    >
+    <StudioOverlay title="요금제 선택" backUrl={`/${lang}/studio/history`}>
       <SimplePricingView
         plans={plans}
         onPlanSelect={handlePlanSelect}

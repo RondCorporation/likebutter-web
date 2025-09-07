@@ -59,10 +59,10 @@ export async function apiFetch<T>(
 ): Promise<ApiResponse<T>> {
   const method = opts.method || 'GET';
   const isGetRequest = method === 'GET';
-  
+
   // Create request key for deduplication (only for GET requests)
   const requestKey = isGetRequest ? `${method}-${url}-${withAuth}` : null;
-  
+
   // Check for pending GET request and return existing promise
   if (requestKey && pendingRequests.has(requestKey)) {
     return pendingRequests.get(requestKey) as Promise<ApiResponse<T>>;

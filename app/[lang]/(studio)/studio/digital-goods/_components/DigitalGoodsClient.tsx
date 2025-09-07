@@ -3,14 +3,7 @@
 import { useReducer, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import {
-  Package,
-  UploadCloud,
-  X,
-  Palette,
-  Type,
-  Sparkles,
-} from 'lucide-react';
+import { Package, UploadCloud, X, Palette, Type, Sparkles } from 'lucide-react';
 import StudioToolCard from '@/components/shared/StudioToolCard';
 import StudioButton from '@/components/shared/StudioButton';
 import StudioInput from '@/components/shared/StudioInput';
@@ -224,10 +217,12 @@ export default function DigitalGoodsClient() {
               <Sparkles size={20} />
               Digital Goods Settings
             </h3>
-            
+
             {/* Style Selection */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Style</label>
+              <label className="text-sm font-medium text-slate-300">
+                Style
+              </label>
               <StudioSelect
                 value={style}
                 onChange={setStyle}
@@ -237,11 +232,15 @@ export default function DigitalGoodsClient() {
 
             {/* Custom Prompt */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300">Custom Prompt (Optional)</label>
+              <label className="text-sm font-medium text-slate-300">
+                Custom Prompt (Optional)
+              </label>
               <StudioInput
                 variant="textarea"
                 value={customPrompt}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCustomPrompt(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setCustomPrompt(e.target.value)
+                }
                 placeholder="Add custom instructions for your digital goods..."
                 rows={3}
                 className="resize-none"
@@ -251,18 +250,26 @@ export default function DigitalGoodsClient() {
             {/* Title and Subtitle */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Title</label>
+                <label className="text-sm font-medium text-slate-300">
+                  Title
+                </label>
                 <StudioInput
                   value={title}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setTitle(e.target.value)
+                  }
                   placeholder="Product title"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Subtitle</label>
+                <label className="text-sm font-medium text-slate-300">
+                  Subtitle
+                </label>
                 <StudioInput
                   value={subtitle}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSubtitle(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSubtitle(e.target.value)
+                  }
                   placeholder="Product subtitle"
                 />
               </div>
@@ -290,7 +297,9 @@ export default function DigitalGoodsClient() {
                       className="h-4 w-4 rounded-full"
                       style={{ backgroundColor: color.color }}
                     />
-                    <span className="text-slate-300">{color.label.split(' ')[0]}</span>
+                    <span className="text-slate-300">
+                      {color.label.split(' ')[0]}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -299,18 +308,26 @@ export default function DigitalGoodsClient() {
             {/* Product and Brand Name */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Product Name</label>
+                <label className="text-sm font-medium text-slate-300">
+                  Product Name
+                </label>
                 <StudioInput
                   value={productName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProductName(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setProductName(e.target.value)
+                  }
                   placeholder="Product name"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300">Brand Name</label>
+                <label className="text-sm font-medium text-slate-300">
+                  Brand Name
+                </label>
                 <StudioInput
                   value={brandName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBrandName(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setBrandName(e.target.value)
+                  }
                   placeholder="Brand name"
                 />
               </div>
@@ -329,7 +346,9 @@ export default function DigitalGoodsClient() {
           size="lg"
           className="w-full max-w-md"
         >
-          {state.isLoading ? 'Creating Digital Goods...' : 'Create Digital Goods'}
+          {state.isLoading
+            ? 'Creating Digital Goods...'
+            : 'Create Digital Goods'}
         </StudioButton>
       </div>
 
@@ -346,7 +365,8 @@ export default function DigitalGoodsClient() {
               Digital Goods Creation Started!
             </h4>
             <p className="mb-4 text-slate-300">
-              Task ID: {state.result.data.taskId} • Status: {state.result.data.status}
+              Task ID: {state.result.data.taskId} • Status:{' '}
+              {state.result.data.status}
             </p>
             <Link href="/studio/history">
               <StudioButton variant="secondary" size="sm">

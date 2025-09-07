@@ -28,7 +28,14 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
 
       router.replace(`/${lang}/login?returnTo=${returnToParam}`);
     }
-  }, [isInitialized, isLoading, isAuthenticated, router, pathname, searchParams]);
+  }, [
+    isInitialized,
+    isLoading,
+    isAuthenticated,
+    router,
+    pathname,
+    searchParams,
+  ]);
 
   // 로딩 중이거나 아직 인증되지 않았다면 로더를 표시합니다.
   if (!isInitialized || isLoading || !isAuthenticated) {
@@ -38,7 +45,7 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
       </div>
     );
   }
-  
+
   // 인증이 확인된 경우에만 자식 컴포넌트를 렌더링합니다.
   return <>{children}</>;
 }

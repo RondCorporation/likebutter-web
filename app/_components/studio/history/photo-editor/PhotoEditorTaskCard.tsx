@@ -34,12 +34,13 @@ export default function PhotoEditorTaskCard({ task, onClick }: Props) {
       )}
 
       {/* Filter */}
-      {details?.request?.applyFilter && details.request.applyFilter !== 'none' && (
-        <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-          <Filter className="h-4 w-4" />
-          <span>Filter: {details.request.applyFilter.replace('_', ' ')}</span>
-        </div>
-      )}
+      {details?.request?.applyFilter &&
+        details.request.applyFilter !== 'none' && (
+          <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
+            <Filter className="h-4 w-4" />
+            <span>Filter: {details.request.applyFilter.replace('_', ' ')}</span>
+          </div>
+        )}
 
       {/* Adjustments */}
       {details?.request && (

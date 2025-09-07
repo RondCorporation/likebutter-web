@@ -204,7 +204,9 @@ export default function SettingsModal() {
                 }`}
               >
                 <Icon size={20} />
-                <span>{t(`settingsTab${id.charAt(0).toUpperCase() + id.slice(1)}`)}</span>
+                <span>
+                  {t(`settingsTab${id.charAt(0).toUpperCase() + id.slice(1)}`)}
+                </span>
               </button>
             ))}
           </div>

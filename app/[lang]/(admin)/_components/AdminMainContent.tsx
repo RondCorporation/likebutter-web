@@ -10,9 +10,9 @@ interface AdminMainContentProps {
   onSidebarToggle: () => void;
 }
 
-export default function AdminMainContent({ 
-  children, 
-  onSidebarToggle 
+export default function AdminMainContent({
+  children,
+  onSidebarToggle,
 }: AdminMainContentProps) {
   const pathname = usePathname();
 
@@ -20,10 +20,10 @@ export default function AdminMainContent({
     const PAGE_TITLES: { [key: string]: string } = {
       '/admin': '대시보드',
       '/admin/users': '전체 사용자',
-      '/admin/accounts': '계정 관리', 
+      '/admin/accounts': '계정 관리',
       '/admin/subscriptions': '구독 관리',
       '/admin/payments': '결제 내역',
-      '/admin/tasks': '작업 관리'
+      '/admin/tasks': '작업 관리',
     };
 
     // Remove language prefix and find matching title
@@ -58,9 +58,7 @@ export default function AdminMainContent({
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto bg-black/50 p-6">
-        <div className="mx-auto max-w-7xl">
-          {children}
-        </div>
+        <div className="mx-auto max-w-7xl">{children}</div>
       </main>
     </div>
   );

@@ -1,16 +1,10 @@
 import { apiFetch } from '../apiClient';
 import { ApiResponse } from '@/app/_types/api';
-import { Plan } from '@/app/_types/plan';
 import {
   CreateSubscriptionResponse,
   Subscription,
   SubscriptionDetails,
 } from '@/app/_types/subscription';
-
-// Payment APIs - Client-side implementations
-export const getPlansOnClient = (): Promise<ApiResponse<Plan[]>> => {
-  return apiFetch<Plan[]>('/plans', {}, false);
-};
 
 export const registerBillingKey = (
   billingKey: string

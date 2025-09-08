@@ -22,7 +22,6 @@ class PortonePerformanceTracker {
   endTiming(operation: keyof PortonePerformanceMetrics): number {
     const startTime = this.startTimes[operation];
     if (!startTime) {
-      console.warn(`No start time recorded for operation: ${operation}`);
       return 0;
     }
 
@@ -30,7 +29,6 @@ class PortonePerformanceTracker {
     this.metrics[operation] = duration;
     delete this.startTimes[operation];
 
-    console.debug(`${operation}: ${duration.toFixed(2)}ms`);
     return duration;
   }
 
@@ -61,49 +59,39 @@ class PortonePerformanceTracker {
     return connection?.effectiveType || connection?.type;
   }
 
-  // Log performance metrics to console (development)
+  // Log performance metrics to console (development only)
   logMetrics(): void {
     const metrics = this.getCompleteMetrics();
-
-    console.group('🚀 PortOne Performance Metrics');
-
-    if (typeof metrics.sdkLoadTime === 'number') {
-      console.log(`⏱️  SDK Load Time: ${metrics.sdkLoadTime.toFixed(2)}ms`);
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.group('🚀 PortOne Performance Metrics');
+      
+      if (typeof metrics.sdkLoadTime === 'number') {
+        console.log(`⏱️  SDK Load Time: ${metrics.sdkLoadTime.toFixed(2)}ms`);
+      }
+      
+      if (typeof metrics.billingKeyRequestTime === 'number') {
+        console.log(`🔑 Billing Key Request: ${metrics.billingKeyRequestTime.toFixed(2)}ms`);
+      }
+      
+      if (typeof metrics.totalPaymentTime === 'number') {
+        console.log(`💳 Total Payment Time: ${metrics.totalPaymentTime.toFixed(2)}ms`);
+      }
+      
+      if (metrics.connectionType) {
+        console.log(`🌐 Connection Type: ${metrics.connectionType}`);
+      }
+      
+      console.log(`🕐 Timestamp: ${new Date(metrics.timestamp || 0).toISOString()}`);
+      console.groupEnd();
     }
-
-    if (typeof metrics.billingKeyRequestTime === 'number') {
-      console.log(
-        `🔑 Billing Key Request: ${metrics.billingKeyRequestTime.toFixed(2)}ms`
-      );
-    }
-
-    if (typeof metrics.totalPaymentTime === 'number') {
-      console.log(
-        `💳 Total Payment Time: ${metrics.totalPaymentTime.toFixed(2)}ms`
-      );
-    }
-
-    if (metrics.connectionType) {
-      console.log(`🌐 Connection Type: ${metrics.connectionType}`);
-    }
-
-    console.log(
-      `🕐 Timestamp: ${new Date(metrics.timestamp || 0).toISOString()}`
-    );
-    console.groupEnd();
 
     this.sendToAnalytics(metrics);
   }
 
-  // Send metrics to analytics (placeholder for future implementation)
+  // Send metrics to analytics
   private sendToAnalytics(metrics: Partial<PortonePerformanceMetrics>): void {
-    // In production, you might want to send this to your analytics service
-    // For now, we just log it in development
-    if (process.env.NODE_ENV === 'development') {
-      console.debug('📊 Would send to analytics:', metrics);
-    }
-
-    // Example: Send to your analytics service
+    // Future: Send to your analytics service
     // analytics.track('portone_performance', metrics);
   }
 
@@ -125,33 +113,11 @@ class PortonePerformanceTracker {
       totalPayment: 10000, // 10 seconds
     };
 
-    if (
-      typeof sdkLoadTime === 'number' &&
-      sdkLoadTime > thresholds.sdkLoadTime
-    ) {
-      console.warn(`⚠️ Slow SDK loading: ${sdkLoadTime.toFixed(2)}ms`);
-      return true;
-    }
-
-    if (
-      typeof billingKeyRequestTime === 'number' &&
-      billingKeyRequestTime > thresholds.billingKeyRequest
-    ) {
-      console.warn(
-        `⚠️ Slow billing key request: ${billingKeyRequestTime.toFixed(2)}ms`
-      );
-      return true;
-    }
-
-    if (
-      typeof totalPaymentTime === 'number' &&
-      totalPaymentTime > thresholds.totalPayment
-    ) {
-      console.warn(`⚠️ Slow payment process: ${totalPaymentTime.toFixed(2)}ms`);
-      return true;
-    }
-
-    return false;
+    return (
+      (typeof sdkLoadTime === 'number' && sdkLoadTime > thresholds.sdkLoadTime) ||
+      (typeof billingKeyRequestTime === 'number' && billingKeyRequestTime > thresholds.billingKeyRequest) ||
+      (typeof totalPaymentTime === 'number' && totalPaymentTime > thresholds.totalPayment)
+    );
   }
 }
 

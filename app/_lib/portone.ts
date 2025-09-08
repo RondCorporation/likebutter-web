@@ -22,10 +22,12 @@ export function loadPortone(): Promise<typeof PortOne> {
         if (module.default) {
           portoneInstance = module.default;
           
-          // Performance logging
-          if (loadStartTime && typeof window !== 'undefined' && window.console) {
+          // Performance tracking
+          if (loadStartTime) {
             const loadTime = performance.now() - loadStartTime;
-            console.debug(`PortOne SDK loaded in ${loadTime.toFixed(2)}ms (legacy loader)`);
+            if (process.env.NODE_ENV === 'development') {
+              console.debug(`PortOne SDK loaded in ${loadTime.toFixed(2)}ms (legacy loader)`);
+            }
           }
           
           resolve(module.default);

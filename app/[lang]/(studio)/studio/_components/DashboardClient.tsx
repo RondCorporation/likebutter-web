@@ -32,7 +32,6 @@ const DashboardClient = memo(function DashboardClient() {
     isError: subscriptionError,
   } = useSubscriptions();
 
-  // SWR로 task 데이터 페칭 (in-progress tasks for dashboard preview)
   const {
     inProgressTasks,
     completedTasks,
@@ -40,7 +39,7 @@ const DashboardClient = memo(function DashboardClient() {
     error: tasksError,
   } = useTaskHistorySWR({
     page: 0,
-    filters: { status: '', actionType: '' }, // Get all tasks, then filter
+    filters: { status: '', actionType: '' },
     enablePolling: true,
   });
 

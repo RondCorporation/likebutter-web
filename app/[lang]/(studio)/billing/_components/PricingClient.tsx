@@ -385,7 +385,6 @@ function PricingClientContent({
       let PortOne = getPortone();
       
       if (!PortOne) {
-        console.debug('Falling back to dynamic SDK loading');
         PortOne = await loadPortone();
       }
 

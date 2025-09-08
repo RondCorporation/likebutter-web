@@ -163,7 +163,6 @@ export default function FanmeetingStudioClient() {
     }
     dispatch({ type: 'SUBMIT_START' });
 
-    // TODO: Replace with actual API call when endpoint is available
     setTimeout(() => {
       dispatch({
         type: 'SUBMIT_ERROR',

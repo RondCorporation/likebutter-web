@@ -10,6 +10,7 @@ import { User } from '@/app/_types/api';
 import { usePathname } from 'next/navigation';
 import { SWRProvider } from '@/app/_providers/SWRProvider';
 import PerformanceMonitor from '@/app/_components/PerformanceMonitor';
+import { PreloadPortoneProvider } from '@/components/portone/PreloadPortoneProvider';
 
 export function LayoutClient({
   children,
@@ -60,31 +61,8 @@ export function LayoutClient({
   if (routeInfo.hasRouteGroupLayout) {
     return (
       <SWRProvider>
-        <PerformanceMonitor />
-        <ServerErrorDisplay />
-        <ConditionalSettingsModal />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
-        <div className="flex min-h-screen flex-col">
-          <main className="flex-grow">{children}</main>
-        </div>
-      </SWRProvider>
-    );
-  }
-
-  // Fallback for other routes
-  return (
-    <SWRProvider>
-      <PerformanceMonitor />
-      <AuthInitializer preloadedUser={preloadedUser}>
-        <>
+        <PreloadPortoneProvider>
+          <PerformanceMonitor />
           <ServerErrorDisplay />
           <ConditionalSettingsModal />
           <Toaster
@@ -99,8 +77,35 @@ export function LayoutClient({
           <div className="flex min-h-screen flex-col">
             <main className="flex-grow">{children}</main>
           </div>
-        </>
-      </AuthInitializer>
+        </PreloadPortoneProvider>
+      </SWRProvider>
+    );
+  }
+
+  // Fallback for other routes
+  return (
+    <SWRProvider>
+      <PreloadPortoneProvider>
+        <PerformanceMonitor />
+        <AuthInitializer preloadedUser={preloadedUser}>
+          <>
+            <ServerErrorDisplay />
+            <ConditionalSettingsModal />
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                style: {
+                  background: '#333',
+                  color: '#fff',
+                },
+              }}
+            />
+            <div className="flex min-h-screen flex-col">
+              <main className="flex-grow">{children}</main>
+            </div>
+          </>
+        </AuthInitializer>
+      </PreloadPortoneProvider>
     </SWRProvider>
   );
 }

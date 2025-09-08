@@ -1,16 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { loadPortone } from '@/lib/portone';
+import { usePortonePreload } from '@/components/portone/PreloadPortoneProvider';
 import {
   createSubscription,
   registerBillingKey,
   getSubscriptionDetails,
 } from '@/app/_lib/apis/subscription.api.client';
 import { useAuthStore } from '@/stores/authStore';
-import { CheckCircle2, Shield, CreditCard, ArrowLeft } from 'lucide-react';
+import { CheckCircle2, Shield, CreditCard, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -33,6 +34,38 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  
+  // Use the preload context
+  const { 
+    preloadPortone, 
+    getPortone, 
+    isLoaded, 
+    isLoading: sdkIsLoading, 
+    error: sdkError 
+  } = usePortonePreload();
+
+  // Preload SDK when component mounts
+  useEffect(() => {
+    if (!isLoaded && !sdkIsLoading) {
+      preloadPortone()
+        .then(() => setSdkStatus('ready'))
+        .catch(() => setSdkStatus('error'));
+    } else if (isLoaded) {
+      setSdkStatus('ready');
+    }
+  }, [preloadPortone, isLoaded, sdkIsLoading]);
+
+  // Update SDK status based on preload context
+  useEffect(() => {
+    if (sdkError) {
+      setSdkStatus('error');
+    } else if (isLoaded) {
+      setSdkStatus('ready');
+    } else if (sdkIsLoading) {
+      setSdkStatus('loading');
+    }
+  }, [isLoaded, sdkIsLoading, sdkError]);
 
   const handlePayment = async () => {
     if (!isAuthenticated || !user) {
@@ -45,15 +78,26 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
       return;
     }
 
+    if (sdkStatus === 'error') {
+      toast.error(t('sdkLoadError') || 'SDK 로딩 중 오류가 발생했습니다.');
+      return;
+    }
+
     setIsLoading(true);
+    // ✨ 사용자에게 즉각적인 피드백 제공
     const loadingToastId = toast.loading(
-      t('paymentPreparing') || '결제 준비 중...'
+      t('openingPaymentWindow') || '결제 창을 열고 있습니다...'
     );
 
     try {
-      // ⬇️ --- 핵심 수정 사항 --- ⬇️
-      const PortOne = await loadPortone();
-      toast.dismiss(loadingToastId);
+      // ⬇️ --- 핵심 수정 사항: 사전 로딩된 인스턴스 사용 --- ⬇️
+      let PortOne = getPortone();
+      
+      // Fallback to dynamic loading if preload failed
+      if (!PortOne) {
+        console.debug('Falling back to dynamic SDK loading');
+        PortOne = await loadPortone();
+      }
 
       // 3. Use the planKey from props
       const { planKey } = plan;
@@ -67,11 +111,15 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
         throw new Error(t('paymentEnvError'));
       }
 
+      // 이 함수 호출이 실제 네트워크 통신을 유발하는 지점입니다.
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
         billingKeyMethod: 'CARD',
       });
+
+      // 성공적으로 UI가 닫히면 로딩 토스트를 제거합니다.
+      toast.dismiss(loadingToastId);
 
       if (!issueResponse || issueResponse.code) {
         throw new Error(
@@ -99,6 +147,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
         throw new Error(t('subscriptionIdError'));
       }
     } catch (error: any) {
+      // 에러 발생 시에도 즉시 토스트를 제거합니다.
       toast.dismiss(loadingToastId);
       toast.error(`${t('genericError')}: ${error.message}`);
     } finally {
@@ -200,13 +249,40 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
               <div className="mt-10">
                 <button
                   onClick={handlePayment}
-                  disabled={isLoading}
+                  disabled={isLoading || sdkStatus === 'loading'}
                   className="w-full rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-8 py-4 text-xl font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-transform duration-300 will-change-transform hover:-translate-y-1 hover:shadow-butter-yellow/40 disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {isLoading
-                    ? t('processing')
-                    : `${t('pay')} ${plan.priceFormatted}`}
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      {t('processing')}
+                    </div>
+                  ) : sdkStatus === 'loading' ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      SDK 준비 중...
+                    </div>
+                  ) : sdkStatus === 'error' ? (
+                    'SDK 로딩 오류'
+                  ) : (
+                    `${t('pay')} ${plan.priceFormatted}`
+                  )}
                 </button>
+                
+                {/* SDK Status Indicator */}
+                {sdkStatus === 'loading' && (
+                  <div className="mt-3 flex items-center justify-center gap-2 text-sm text-slate-400">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    결제 모듈 준비 중...
+                  </div>
+                )}
+                
+                {sdkStatus === 'ready' && (
+                  <div className="mt-3 flex items-center justify-center gap-2 text-sm text-green-400">
+                    <CheckCircle2 className="h-4 w-4" />
+                    결제 준비 완료
+                  </div>
+                )}
               </div>
             </div>
           </div>

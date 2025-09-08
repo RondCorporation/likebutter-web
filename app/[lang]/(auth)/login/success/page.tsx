@@ -12,9 +12,7 @@ function RedirectHandler() {
 
     const lang = pathname.split('/')[1] || 'en';
 
-    // Get redirect path from localStorage
     const returnTo = localStorage.getItem('oauthReturnTo');
-
     localStorage.removeItem('oauthReturnTo');
 
     const redirectUrl = returnTo || `/${lang}/studio`;
@@ -24,7 +22,7 @@ function RedirectHandler() {
     } else {
       window.location.replace(`/${lang}/studio`);
     }
-  }, [pathname]);
+  }, []);
 
   return <LoaderCircle className="h-12 w-12 animate-spin text-accent" />;
 }

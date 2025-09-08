@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { loadPortone } from '@/lib/portone';
+import { usePortonePreload } from '@/components/portone/PreloadPortoneProvider';
 import {
   createSubscription,
   registerBillingKey,
@@ -20,6 +21,7 @@ import {
   CreditCard,
   Clock,
   ArrowLeft,
+  Loader2,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -80,6 +82,7 @@ const PlanCard = ({
   onCtaClick,
   onUpgradeClick,
   features,
+  sdkStatus,
 }: {
   plan: Plan;
   billingCycle: 'monthly' | 'yearly';
@@ -92,6 +95,7 @@ const PlanCard = ({
   onCtaClick: (plan: Plan) => void;
   onUpgradeClick: () => void;
   features: string[];
+  sdkStatus: 'loading' | 'ready' | 'error';
 }) => {
   const formatPrice = (price: number | string) => {
     if (typeof price === 'string') return price;
@@ -142,17 +146,32 @@ const PlanCard = ({
     return (
       <button
         onClick={() => onCtaClick(plan)}
-        disabled={isLoading}
+        disabled={isLoading || sdkStatus === 'loading'}
         className={`w-full rounded-full px-8 py-3 text-lg font-semibold text-black transition-transform will-change-transform duration-300 hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-70 ${
           plan.isPopular
             ? 'bg-gradient-to-r from-butter-yellow to-butter-orange shadow-lg shadow-butter-yellow/20 hover:shadow-butter-yellow/40'
             : 'bg-white/30 text-white hover:bg-white/40'
         }`}
       >
-        {isLoading ? translations.processing : plan.cta}
+        {isLoading ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {translations.processing}
+          </div>
+        ) : sdkStatus === 'loading' ? (
+          <div className="flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            SDK 준비 중...
+          </div>
+        ) : sdkStatus === 'error' ? (
+          'SDK 로딩 오류'
+        ) : (
+          plan.cta
+        )}
       </button>
     );
   };
+
 
   return (
     <div
@@ -240,12 +259,41 @@ function PricingClientContent({
   const [isLoading, setIsLoading] = useState(false);
   const [activeSubscription, setActiveSubscription] =
     useState<Subscription | null>(null);
-  const [currentStep, setCurrentStep] = useState<
-    'selection' | 'checkout' | 'confirmation'
-  >(selectedPlanParam ? 'checkout' : 'selection');
+  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { openSettings } = useUIStore();
+
+  // Use the preload context
+  const { 
+    preloadPortone, 
+    getPortone, 
+    isLoaded, 
+    isLoading: sdkIsLoading, 
+    error: sdkError 
+  } = usePortonePreload();
+
+  // Preload SDK when component mounts
+  useEffect(() => {
+    if (!isLoaded && !sdkIsLoading) {
+      preloadPortone()
+        .then(() => setSdkStatus('ready'))
+        .catch(() => setSdkStatus('error'));
+    } else if (isLoaded) {
+      setSdkStatus('ready');
+    }
+  }, [preloadPortone, isLoaded, sdkIsLoading]);
+
+  // Update SDK status based on preload context
+  useEffect(() => {
+    if (sdkError) {
+      setSdkStatus('error');
+    } else if (isLoaded) {
+      setSdkStatus('ready');
+    } else if (sdkIsLoading) {
+      setSdkStatus('loading');
+    }
+  }, [isLoaded, sdkIsLoading, sdkError]);
 
   useEffect(() => {
     const fetchUserSubscription = async () => {
@@ -309,10 +357,15 @@ function PricingClientContent({
       return;
     }
 
+    if (sdkStatus === 'error') {
+      toast.error(translations.sdkLoadError || 'SDK 로딩 중 오류가 발생했습니다.');
+      return;
+    }
+
     setIsLoading(true);
-    // 사용자 경험 향상을 위해 결제 준비 중이라는 토스트를 띄워줍니다.
+    // ✨ 사용자에게 즉각적인 피드백 제공
     const loadingToastId = toast.loading(
-      translations.paymentPreparing || '결제 준비 중...'
+      translations.openingPaymentWindow || '결제 창을 열고 있습니다...'
     );
 
     try {
@@ -328,14 +381,23 @@ function PricingClientContent({
         throw new Error('Payment environment variables are not set.');
       }
 
-      const PortOne = await loadPortone();
-      toast.dismiss(loadingToastId);
+      // Use preloaded instance or fallback to dynamic loading
+      let PortOne = getPortone();
+      
+      if (!PortOne) {
+        console.debug('Falling back to dynamic SDK loading');
+        PortOne = await loadPortone();
+      }
 
+      // 이 함수 호출이 실제 네트워크 통신을 유발하는 지점입니다.
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
         billingKeyMethod: 'CARD',
       });
+
+      // 성공적으로 UI가 닫히면 로딩 토스트를 제거합니다.
+      toast.dismiss(loadingToastId);
 
       if (!issueResponse || issueResponse.code) {
         throw new Error(
@@ -365,7 +427,8 @@ function PricingClientContent({
         );
       }
     } catch (error: any) {
-      toast.dismiss(loadingToastId); // 에러 발생 시에도 로딩 토스트를 닫아줍니다.
+      // 에러 발생 시에도 즉시 토스트를 제거합니다.
+      toast.dismiss(loadingToastId);
       toast.error(`An error occurred: ${error.message}`);
     } finally {
       setIsLoading(false);
@@ -575,6 +638,7 @@ function PricingClientContent({
                 onCtaClick={handlePayment}
                 onUpgradeClick={() => openSettings('subscription')}
                 features={planFeatures}
+                sdkStatus={sdkStatus}
               />
             );
           })}

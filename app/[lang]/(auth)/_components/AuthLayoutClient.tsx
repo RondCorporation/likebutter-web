@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
@@ -13,6 +14,12 @@ interface AuthLayoutClientProps {
 }
 
 export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
+  const pathname = usePathname();
+
+  if (pathname.includes('/login/success')) {
+    return <>{children}</>;
+  }
+
   return (
     <AuthInitializer
       preloadedUser={null}

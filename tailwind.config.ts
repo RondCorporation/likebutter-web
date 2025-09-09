@@ -32,6 +32,7 @@ export default {
       animation: {
         'subtle-pulse': 'subtle-pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         fadeIn: 'fadeIn 0.15s ease-out forwards',
+        'slide-up': 'slide-up 0.3s ease-out forwards',
       },
       keyframes: {
         'subtle-pulse': {
@@ -54,6 +55,17 @@ export default {
             transform: 'translateY(0)',
           },
         },
+        'slide-up': {
+          from: {
+            transform: 'translateY(100%)',
+          },
+          to: {
+            transform: 'translateY(0)',
+          },
+        },
+      },
+      spacing: {
+        'safe-bottom': 'env(safe-area-inset-bottom)',
       },
       colors: {
         accent: 'var(--accent)',

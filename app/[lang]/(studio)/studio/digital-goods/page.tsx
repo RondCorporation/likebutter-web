@@ -12,11 +12,14 @@ const DigitalGoodsClient = dynamic(
   }
 );
 
-const DigitalGoodsStyleSidebar = dynamic(
-  () => import('./_components/DigitalGoodsStyleSidebar'),
+const DigitalGoodsWithSidebar = dynamic(
+  () => import('./_components/DigitalGoodsWithSidebar'),
   {
     loading: () => (
-      <div className="w-[260px] h-full bg-[#202020] border-r border-solid border-[#1a3353]"></div>
+      <div className="flex h-full w-full bg-studio-main">
+        <div className="w-[260px] h-full bg-studio-sidebar border-r border-solid border-studio-border"></div>
+        <div className="flex-1"></div>
+      </div>
     ),
   }
 );
@@ -28,10 +31,5 @@ export const metadata: Metadata = {
 };
 
 export default function DigitalGoodsPage() {
-  return (
-    <div className="flex h-full w-full bg-[#323232] overflow-hidden">
-      <DigitalGoodsStyleSidebar />
-      <DigitalGoodsClient />
-    </div>
-  );
+  return <DigitalGoodsWithSidebar />;
 }

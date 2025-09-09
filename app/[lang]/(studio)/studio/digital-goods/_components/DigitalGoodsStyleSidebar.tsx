@@ -68,7 +68,7 @@ export default function DigitalGoodsStyleSidebar() {
   }, []);
 
   return (
-    <div className="flex flex-col w-[260px] h-full items-start gap-10 pt-6 pb-3 px-3 relative bg-studio-sidebar border-r border-solid border-studio-border-light overflow-y-auto">
+    <div className="flex flex-col w-full md:w-[260px] h-full items-start gap-6 md:gap-10 pt-3 md:pt-6 pb-3 px-3 relative bg-studio-sidebar md:border-r border-solid border-studio-border-light overflow-y-auto">
       <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">
         {/* 스타일 프리셋 */}
         <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] w-full">

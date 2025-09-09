@@ -7,6 +7,7 @@ import SelectCard from './ui/SelectCard';
 import Badge from './ui/Badge';
 import PrimaryButton from './ui/PrimaryButton';
 import { useRouter } from 'next/navigation';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 
 interface ModelSelectPopupProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ export default function ModelSelectPopup({
   lang,
 }: ModelSelectPopupProps) {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
   const [selectedModel, setSelectedModel] = useState<string>('digital-goods');
 
@@ -43,23 +45,33 @@ export default function ModelSelectPopup({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className={`fixed inset-0 z-50 flex ${
+        isMobile ? 'items-end' : 'items-center justify-center'
+      } bg-black/70 backdrop-blur-sm`}
       onClick={onClose}
     >
       <div
-        className="w-[678px] bg-[#292c31] rounded-xl border border-solid border-[#4a4a4b] p-8 flex flex-col gap-8"
+        className={`${
+          isMobile
+            ? 'w-full h-[85vh] rounded-t-xl'
+            : 'w-[678px] rounded-xl'
+        } bg-studio-sidebar border border-solid border-studio-border ${
+          isMobile ? 'p-4' : 'p-8'
+        } flex flex-col gap-6 md:gap-8 ${
+          isMobile ? 'animate-slide-up' : ''
+        }`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between w-full">
-          <div className="flex-1 text-center font-bold text-white text-lg">
+          <div className="flex-1 text-center font-bold text-studio-text-primary text-lg">
             만들어보기
           </div>
-          <button onClick={onClose} className="text-white hover:text-gray-300">
-            <X size={20} />
+          <button onClick={onClose} className="text-studio-text-primary hover:text-studio-text-secondary">
+            <X size={isMobile ? 24 : 20} />
           </button>
         </div>
 
-        <div className="w-full border-b border-solid border-[#4a4a4b]">
+        <div className="w-full border-b border-solid border-studio-border">
           <button onClick={() => setActiveTab('image')}>
             <TabItem
               state={activeTab === 'image' ? 'selected' : 'default'}
@@ -74,15 +86,15 @@ export default function ModelSelectPopup({
           </button>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 flex-1 overflow-y-auto">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-white text-sm">이미지 생성하기</h3>
-            <span className="font-semibold text-[#89898b] text-sm cursor-pointer">
+            <h3 className="font-bold text-studio-text-primary text-sm">이미지 생성하기</h3>
+            <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
               How to use
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
             <SelectCard
               state={selectedModel === 'digital-goods' ? 'selected' : 'default'}
               title="디지털 굿즈"

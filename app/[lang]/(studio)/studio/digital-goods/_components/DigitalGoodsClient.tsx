@@ -57,28 +57,28 @@ export default function DigitalGoodsClient() {
 
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
-      <div className="flex items-center justify-between px-12 pb-0 pt-6">
+      <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6">
         <div className="flex-1 text-studio-text-primary text-xl font-bold leading-7 font-pretendard">
           디지털 굿즈
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center overflow-hidden rounded-md justify-center px-5 py-2.5 h-[38px] bg-studio-button-primary">
-            <div className="text-studio-header text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
+          <button className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary">
+            <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
               굿즈생성
             </div>
           </button>
 
-          <button className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-5 py-2.5 h-[38px] opacity-60">
-            <div className="text-studio-button-primary text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
+          <button className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] opacity-60">
+            <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
               저장하기
             </div>
           </button>
         </div>
       </div>
 
-      <div className="flex flex-1 items-start gap-6 self-stretch w-full px-12 pt-6 pb-12 overflow-hidden">
-        <div className="flex flex-col self-stretch w-[330px] bg-studio-border rounded-[20px] p-[15px] gap-[18px]">
+      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-4 md:pb-12 overflow-hidden">
+        <div className="flex flex-col w-full md:w-[330px] md:self-stretch bg-studio-border rounded-[20px] p-[15px] gap-[18px]">
           {/* 드래그 앤 드롭 영역 */}
           <div
             className={`flex flex-col aspect-square items-center justify-center bg-studio-content rounded-[20px] transition-colors ${
@@ -130,7 +130,7 @@ export default function DigitalGoodsClient() {
           />
         </div>
 
-        <div className="relative self-stretch flex-1 bg-studio-border rounded-[20px]">
+        <div className="relative w-full md:self-stretch md:flex-1 bg-studio-border rounded-[20px] min-h-[200px] md:min-h-0">
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
             <div className="flex flex-col items-center gap-4 relative self-stretch w-full flex-[0_0_auto]">
               <div className="flex flex-col w-[142px] items-center gap-3.5 relative flex-[0_0_auto]">

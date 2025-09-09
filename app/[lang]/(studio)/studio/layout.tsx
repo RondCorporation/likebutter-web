@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, ReactNode, use } from 'react';
+import { ReactNode, use } from 'react';
+import { Toaster } from 'react-hot-toast';
 import StudioAuthGuard from '../_components/StudioAuthGuard';
-import StudioSidebar from './_components/SidebarClient';
-import StudioMainClient from './_components/StudioMainClient';
-import { Menu } from 'lucide-react';
+import { Settings } from 'lucide-react';
+import StudioSidebar from './_components/StudioSidebar';
+import Logo from '@/components/Logo';
 
 type Props = {
   children: ReactNode;
@@ -13,45 +14,35 @@ type Props = {
 
 export default function StudioLayout({ children, params }: Props) {
   const { lang } = use(params);
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <StudioAuthGuard>
-      <div className="flex h-screen bg-black text-white relative">
-        {/* Overlay for mobile */}
-        {isSidebarOpen && (
-          <div
-            className="fixed inset-0 bg-black/60 z-30 md:hidden"
-            onClick={() => setSidebarOpen(false)}
-          ></div>
-        )}
+      <div className="flex flex-col min-h-screen w-full">
+        <div className="flex h-16 items-center justify-end gap-2.5 px-8 py-5 w-full bg-[#202020] border-b border-solid border-[#4a4a4b]">
+          <Logo className="relative flex-1 mt-[-3.00px] mb-[-1.00px] tracking-[0]" />
 
-        {/* Sidebar */}
-        <div
-          className={`fixed top-0 left-0 z-40 h-full w-64 bg-black transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
-            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <StudioSidebar lang={lang} onClose={() => setSidebarOpen(false)} />
+          <div className="inline-flex items-center justify-end gap-4 relative flex-[0_0_auto]">
+            <div className="inline-flex items-center overflow-hidden rounded-md justify-center relative">
+              <div
+                className="font-semibold w-fit mt-[-2.00px] tracking-[0] text-sm text-[#ffd83b] leading-[14px] whitespace-nowrap relative"
+                style={{ fontFamily: 'Pretendard, Helvetica' }}
+              >
+                Button text
+              </div>
+            </div>
+            <div className="inline-flex items-center justify-center gap-4 relative flex-[0_0_auto]">
+              <Settings className="w-6 h-6" color="#A8A8AA" />
+            </div>
+          </div>
         </div>
 
-        {/* Main Content Wrapper */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Mobile Header - This is part of the main content area now */}
-          <header className="md:hidden flex h-[73px] flex-shrink-0 items-center justify-between border-b border-white/10 px-4">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="text-white"
-              aria-label="Open sidebar"
-            >
-              <Menu size={24} />
-            </button>
-            {/* UserDropdown might be needed here if it's not in StudioMainClient */}
-          </header>
+        <div className="flex flex-1 w-full bg-[#323232] overflow-hidden">
+          <StudioSidebar lang={lang} />
 
-          {/* Pass children to StudioMainClient, which handles its own header for desktop */}
-          <StudioMainClient lang={lang}>{children}</StudioMainClient>
+          <div className="flex-1">{children}</div>
         </div>
+
+        <Toaster position="top-right" />
       </div>
     </StudioAuthGuard>
   );

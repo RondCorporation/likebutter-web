@@ -27,9 +27,9 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
   // 현재 선택된 메뉴 확인 - Digital Goods 페이지에서는 아무것도 선택되지 않음
   const getSelectedMenu = () => {
-    if (pathname === `/${lang}/studio2`) return 'home';
-    if (pathname === `/${lang}/studio2/vault`) return 'vault';
-    if (pathname === `/${lang}/studio2/help`) return 'help';
+    if (pathname === `/${lang}/studio`) return 'home';
+    if (pathname === `/${lang}/studio/vault`) return 'vault';
+    if (pathname === `/${lang}/studio/help`) return 'help';
     // digital-goods 페이지에서는 아무것도 선택되지 않음
     return '';
   };
@@ -58,7 +58,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
         {/* 홈 버튼 */}
         <div className="flex flex-col items-center gap-1">
-          <Link href={`/${lang}/studio2`}>
+          <Link href={`/${lang}/studio`}>
             <div
               className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-md transition-colors ${selectedMenu === 'home' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
             >

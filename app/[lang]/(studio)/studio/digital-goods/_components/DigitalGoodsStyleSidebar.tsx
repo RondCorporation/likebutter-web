@@ -13,7 +13,6 @@ export default function DigitalGoodsStyleSidebar() {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // 포스터, 스티커, 지브리, 피규어, 카툰
   const stylePresets = [
     { name: '포스터', width: 84, selected: true },
     { name: '스티커', width: 84, selected: false },

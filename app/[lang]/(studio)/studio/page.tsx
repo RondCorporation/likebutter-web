@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import DashboardClient from './_components/DashboardClient';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -6,5 +6,6 @@ type Props = {
 
 export default async function StudioPage({ params }: Props) {
   const { lang } = await params;
-  redirect(`/${lang}/studio/history`);
+  
+  return <DashboardClient />;
 }

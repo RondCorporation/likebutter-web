@@ -12,6 +12,15 @@ const DigitalGoodsClient = dynamic(
   }
 );
 
+const DigitalGoodsStyleSidebar = dynamic(
+  () => import('./_components/DigitalGoodsStyleSidebar'),
+  {
+    loading: () => (
+      <div className="w-[260px] h-full bg-[#202020] border-r border-solid border-[#1a3353]"></div>
+    ),
+  }
+);
+
 export const metadata: Metadata = {
   title: 'Digital Goods Creator - Like Butter Studio',
   description:
@@ -19,5 +28,10 @@ export const metadata: Metadata = {
 };
 
 export default function DigitalGoodsPage() {
-  return <DigitalGoodsClient />;
+  return (
+    <div className="flex h-full w-full bg-[#323232] overflow-hidden">
+      <DigitalGoodsStyleSidebar />
+      <DigitalGoodsClient />
+    </div>
+  );
 }

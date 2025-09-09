@@ -24,7 +24,7 @@ export default function ModelSelectPopup({
   const handleCreate = () => {
     switch (selectedModel) {
       case 'digital-goods':
-        router.push(`/${lang}/studio2/digital-goods`);
+        router.push(`/${lang}/studio/digital-goods`);
         break;
       case 'idol-editor':
         console.log('Idol Photo Editor page is not ready yet.');

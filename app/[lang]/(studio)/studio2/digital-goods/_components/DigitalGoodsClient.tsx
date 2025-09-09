@@ -81,7 +81,7 @@ export default function DigitalGoodsClient() {
         <div className="flex flex-col self-stretch w-[330px] bg-studio-border rounded-[20px] p-[15px] gap-[18px]">
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col flex-1 items-center justify-center bg-studio-content rounded-[20px] transition-colors ${
+            className={`flex flex-col aspect-square items-center justify-center bg-studio-content rounded-[20px] transition-colors ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
               isDragOver
@@ -105,7 +105,7 @@ export default function DigitalGoodsClient() {
                   파일을 여기다 끌어다 놓으세요
                 </div>
                 <div className="text-studio-text-muted text-xs font-pretendard">
-                  파일당 200mb 제한 (png,jpg,jpeg)
+                  파일당 200mb 제한 (png, jpg, jpeg)
                 </div>
               </div>
             )}
@@ -144,7 +144,7 @@ export default function DigitalGoodsClient() {
                   </div>
 
                   <div className="relative w-fit font-pretendard text-studio-text-muted text-xs text-center tracking-[0] leading-[18px] whitespace-nowrap">
-                    파일당 200mb 제한 (png,jpg,jpeg)
+                    파일당 200mb 제한 (png, jpg, jpeg)
                   </div>
                 </div>
               </div>

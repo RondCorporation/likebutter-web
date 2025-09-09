@@ -155,7 +155,7 @@ export default function SimpleBillingClient({
   };
 
   return (
-    <StudioOverlay title="요금제 선택" backUrl={`/${lang}/studio/history`}>
+    <StudioOverlay title="요금제 선택" backUrl={`/${lang}/studio`}>
       <SimplePricingView
         plans={plans}
         onPlanSelect={handlePlanSelect}

@@ -99,7 +99,7 @@ export default function PaymentHistoryPage() {
   return (
     <StudioOverlay
       title={t('paymentHistory.title')}
-      backUrl={`/${lang}/studio/history`}
+      backUrl={`/${lang}/studio`}
     >
       <div className="space-y-6">
         {error && (

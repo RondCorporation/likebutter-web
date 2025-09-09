@@ -46,7 +46,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
               </div>
 
               {/* Main Content Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 lg:gap-8 mb-16">
                 {/* Services Section */}
                 <div className="space-y-4">
                   <h3 className="font-bold text-lg text-white mb-6">
@@ -179,8 +179,8 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
 
               {/* Bottom Section */}
               <div className="border-t border-slate-700 pt-8">
-                <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                  <div className="text-sm text-slate-500 text-center md:text-left">
+                <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+                  <div className="text-sm text-slate-500 text-center lg:text-left">
                     <p>
                       © {new Date().getFullYear()} {t('companyName')}.{' '}
                       {t('footerRights')}
@@ -190,7 +190,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                       {t('companyStatus')}
                     </p>
                   </div>
-                  <div className="text-sm text-slate-500">
+                  <div className="text-sm text-slate-500 text-center lg:text-right">
                     <p>{t('companyBusinessSector')}</p>
                     <p>{t('companyBusinessDescription')}</p>
                   </div>

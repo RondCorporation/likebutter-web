@@ -23,7 +23,7 @@ export default function CheckoutOverlay({ lang, plan }: CheckoutOverlayProps) {
 
   const handleClose = () => {
     if (isAuthenticated) {
-      router.push(`/${lang}/studio/history`);
+      router.push(`/${lang}/studio`);
     } else {
       router.push(`/${lang}`);
     }
@@ -33,7 +33,7 @@ export default function CheckoutOverlay({ lang, plan }: CheckoutOverlayProps) {
     <StudioOverlay
       title={`${plan.name} 구독`}
       onClose={handleClose}
-      backUrl={isAuthenticated ? `/${lang}/studio/history` : `/${lang}`}
+      backUrl={isAuthenticated ? `/${lang}/studio` : `/${lang}`}
     >
       <OverlayCheckoutClient lang={lang} plan={plan} />
     </StudioOverlay>

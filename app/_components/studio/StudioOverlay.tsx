@@ -19,7 +19,7 @@ export default function StudioOverlay({
   title = '',
   isOpen = true,
   onClose,
-  backUrl = '/studio/history',
+  backUrl = '/studio',
   className = '',
 }: StudioOverlayProps) {
   const router = useRouter();

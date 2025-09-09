@@ -39,7 +39,7 @@ export default function HeroImageGallery({
 
   useEffect(() => {
     if (isReady && isVisible && onAnimationComplete) {
-      // Calculate the total animation time (last image delay + animation duration)
+      // Calculate the total animation time for desktop (5 columns) and mobile (3 columns)
       const totalAnimationTime = (5 - 1) * 150 + 600; // (columns - 1) * delay + duration
       const timer = setTimeout(onAnimationComplete, totalAnimationTime);
       return () => clearTimeout(timer);
@@ -101,6 +101,9 @@ export default function HeroImageGallery({
   ];
 
   const images = customImages || defaultImages;
+  
+  // Filter out image 7 for mobile
+  const mobileImages = images.filter(img => img.id !== 7);
 
   const getImagePosition = (column: number, row: number) => {
     const columnWidthWithGap = 330;
@@ -127,50 +130,121 @@ export default function HeroImageGallery({
     return { left: baseLeft, top };
   };
 
+  const getMobileImagePosition = (column: number, row: number) => {
+    const columnWidthWithGap = 280; // Smaller for mobile
+    const rowHeightWithGap = 360;   // Smaller for mobile
+    const baseLeft = (column - 1) * columnWidthWithGap;
+    const top = (row - 1) * rowHeightWithGap;
+    return { left: baseLeft, top };
+  };
+
+  // Remap images for mobile 3-column layout
+  const getMobileColumnRow = (imageId: number) => {
+    switch (imageId) {
+      case 1: return { column: 1, row: 1 };
+      case 2: return { column: 1, row: 2 };
+      case 3: return { column: 2, row: 1 };
+      case 4: return { column: 2, row: 2 };
+      case 5: return { column: 3, row: 1 };
+      case 6: return { column: 3, row: 2 };
+      default: return { column: 1, row: 1 };
+    }
+  };
+
   return (
-    <div
-      className="relative transition-opacity duration-300"
-      style={{
-        position: 'absolute',
-        width: '1650px',
-        height: '830px',
-        left: '50%',
-        transform: 'translateX(-810px)',
-        opacity: isReady ? 1 : 0,
-      }}
-      suppressHydrationWarning
-    >
-      {images.map((image) => {
-        const position = getImagePosition(image.column, image.row);
-        const delay = (image.column - 1) * 0.15;
-        return (
-          <motion.div
-            key={image.id}
-            className="absolute"
-            style={{ left: position.left, top: position.top }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={
-              isReady && isVisible
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 30 }
-            }
-            transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
-          >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              width={300}
-              height={400}
-              className="w-[300px] h-[400px] object-cover shadow-2xl min-w-[300px] flex-shrink-0"
-              style={{
-                filter: 'brightness(0.7) contrast(1.1)',
-                borderRadius: '20px',
-              }}
-              priority={image.id <= 6}
-            />
-          </motion.div>
-        );
-      })}
-    </div>
+    <>
+      {/* Desktop Layout (5 columns) */}
+      <div
+        className="hidden md:block relative transition-opacity duration-300"
+        style={{
+          position: 'absolute',
+          width: '1650px',
+          height: '830px',
+          left: '50%',
+          transform: 'translateX(-810px)',
+          opacity: isReady ? 1 : 0,
+        }}
+        suppressHydrationWarning
+      >
+        {images.map((image) => {
+          const position = getImagePosition(image.column, image.row);
+          const delay = (image.column - 1) * 0.15;
+          return (
+            <motion.div
+              key={image.id}
+              className="absolute"
+              style={{ left: position.left, top: position.top }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={
+                isReady && isVisible
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: 30 }
+              }
+              transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                width={300}
+                height={400}
+                className="w-[300px] h-[400px] object-cover shadow-2xl min-w-[300px] flex-shrink-0"
+                style={{
+                  filter: 'brightness(0.7) contrast(1.1)',
+                  borderRadius: '20px',
+                }}
+                priority={image.id <= 6}
+              />
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Mobile Layout (3 columns, image 7 excluded) */}
+      <div
+        className="md:hidden relative transition-opacity duration-300"
+        style={{
+          position: 'absolute',
+          width: '840px',
+          height: '720px',
+          left: '50%',
+          transform: 'translateX(-420px)',
+          opacity: isReady ? 1 : 0,
+        }}
+        suppressHydrationWarning
+      >
+        {mobileImages.map((image) => {
+          const mobileLayout = getMobileColumnRow(image.id);
+          const position = getMobileImagePosition(mobileLayout.column, mobileLayout.row);
+          const delay = (mobileLayout.column - 1) * 0.15;
+          return (
+            <motion.div
+              key={image.id}
+              className="absolute"
+              style={{ left: position.left, top: position.top }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={
+                isReady && isVisible
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: 30 }
+              }
+              transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                width={250}
+                height={330}
+                className="w-[250px] h-[330px] object-cover shadow-2xl min-w-[250px] flex-shrink-0"
+                style={{
+                  filter: 'brightness(0.7) contrast(1.1)',
+                  borderRadius: '20px',
+                }}
+                priority={image.id <= 6}
+              />
+            </motion.div>
+          );
+        })}
+      </div>
+    </>
   );
 }

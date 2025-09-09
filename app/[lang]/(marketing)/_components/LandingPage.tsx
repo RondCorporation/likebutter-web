@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, ArrowDown, Check } from 'lucide-react';
+import { Play, ArrowDown, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useScrollContext } from '../_context/ScrollContext';
 import Image from 'next/image';
@@ -143,6 +143,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
     'yearly'
   );
   const [loading, setLoading] = useState(false);
+  const [currentCard, setCurrentCard] = useState(0);
 
   // Set viewport height CSS variable for mobile browsers
   useEffect(() => {
@@ -204,6 +205,35 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
     return price.toLocaleString(isKorean ? 'ko-KR' : 'en-US');
   };
 
+  const cards = [
+    {
+      id: 1,
+      src: `card_1_${lang}.png`,
+      alt: 'Butter Talks',
+      delay: 0.2
+    },
+    {
+      id: 2,
+      src: `card_2_${lang}.png`,
+      alt: 'Butter Cover',
+      delay: 0.3
+    },
+    {
+      id: 3,
+      src: `card_3_${lang}.png`,
+      alt: 'Butter Brush',
+      delay: 0.4
+    }
+  ];
+
+  const nextCard = () => {
+    setCurrentCard((prev) => (prev + 1) % cards.length);
+  };
+
+  const prevCard = () => {
+    setCurrentCard((prev) => (prev - 1 + cards.length) % cards.length);
+  };
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -237,7 +267,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           data-section-index={1}
         >
           <PageSection id="about" fitViewport className="bg-black text-white">
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col px-4 md:px-0">
               <SectionHeader
                 yellowText="ABOUT LIKE BUTTER."
                 title={t('sectionAboutTitle')}
@@ -247,7 +277,110 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               {/* Cards Section */}
               <div className="mt-20 flex-1 flex items-end">
                 <div className="w-full">
-                  <div className="flex flex-col md:flex-row justify-center md:justify-end items-center md:items-end gap-4 md:gap-6 lg:gap-8">
+                  {/* Mobile: Infinite Peek Card Slider */}
+                  <div className="md:hidden relative">
+                    <div className="flex justify-center items-center relative overflow-hidden">
+                      {/* Left Arrow */}
+                      <button
+                        onClick={prevCard}
+                        className="absolute left-2 z-20 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors duration-300 shadow-lg"
+                        aria-label="Previous card"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+
+                      {/* Cards Container */}
+                      <div className="w-full flex justify-center relative">
+                        <div className="relative flex items-center justify-center">
+                          {/* Previous Card (Left Peek) - Only edge visible */}
+                          <div className="absolute -left-20 z-0 overflow-hidden">
+                            <motion.div
+                              className="opacity-60 transition-all duration-500"
+                              initial={false}
+                              animate={{ opacity: 0.6 }}
+                            >
+                              <Image
+                                src={`/${cards[(currentCard - 1 + cards.length) % cards.length].src}`}
+                                alt={cards[(currentCard - 1 + cards.length) % cards.length].alt}
+                                width={302}
+                                height={418}
+                                className="w-[240px] h-[320px] rounded-2xl shadow-lg object-cover"
+                                style={{ clipPath: 'inset(0 50% 0 0)' }}
+                              />
+                            </motion.div>
+                          </div>
+
+                          {/* Current Card (Center) */}
+                          <motion.div
+                            key={currentCard}
+                            className="z-10 relative"
+                            initial={{ opacity: 0.7, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ 
+                              duration: 0.5,
+                              type: 'spring',
+                              stiffness: 300,
+                              damping: 20,
+                            }}
+                            whileHover={{ y: -5, scale: 1.02 }}
+                          >
+                            <Image
+                              src={`/${cards[currentCard].src}`}
+                              alt={cards[currentCard].alt}
+                              width={302}
+                              height={418}
+                              className="w-[260px] h-[347px] rounded-2xl shadow-2xl object-cover"
+                              priority
+                            />
+                          </motion.div>
+
+                          {/* Next Card (Right Peek) - Only edge visible */}
+                          <div className="absolute -right-20 z-0 overflow-hidden">
+                            <motion.div
+                              className="opacity-60 transition-all duration-500"
+                              initial={false}
+                              animate={{ opacity: 0.6 }}
+                            >
+                              <Image
+                                src={`/${cards[(currentCard + 1) % cards.length].src}`}
+                                alt={cards[(currentCard + 1) % cards.length].alt}
+                                width={302}
+                                height={418}
+                                className="w-[240px] h-[320px] rounded-2xl shadow-lg object-cover"
+                                style={{ clipPath: 'inset(0 0 0 50%)' }}
+                              />
+                            </motion.div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right Arrow */}
+                      <button
+                        onClick={nextCard}
+                        className="absolute right-2 z-20 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-colors duration-300 shadow-lg"
+                        aria-label="Next card"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Card Indicators */}
+                    <div className="flex justify-center mt-6 space-x-2">
+                      {cards.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentCard(index)}
+                          className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                            index === currentCard ? 'bg-[#FFD93B]' : 'bg-gray-500'
+                          }`}
+                          aria-label={`Go to card ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Desktop: Original layout */}
+                  <div className="hidden md:flex justify-center md:justify-end items-center md:items-end gap-4 md:gap-6 lg:gap-8">
                     {/* Card 1 - Butter Talks */}
                     <AnimatedElement direction="up" delay={0.2} duration={0.4}>
                       <motion.div
@@ -264,7 +397,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           alt="Butter Talks"
                           width={302}
                           height={418}
-                          className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
+                          className="w-[280px] h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
                           priority
                         />
                       </motion.div>
@@ -273,7 +406,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                     {/* Card 2 - Butter Cover */}
                     <AnimatedElement direction="up" delay={0.3} duration={0.4}>
                       <motion.div
-                        className="transform transition-transform duration-300 hover:scale-105 md:-translate-y-8"
+                        className="transform transition-transform duration-300 hover:scale-105 -translate-y-8"
                         whileHover={{ y: -10, scale: 1.02 }}
                         transition={{
                           type: 'spring',
@@ -286,7 +419,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           alt="Butter Cover"
                           width={302}
                           height={418}
-                          className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
+                          className="w-[280px] h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
                           priority
                         />
                       </motion.div>
@@ -308,7 +441,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           alt="Butter Brush"
                           width={302}
                           height={418}
-                          className="w-[240px] h-[320px] md:w-[280px] md:h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
+                          className="w-[280px] h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
                           priority
                         />
                       </motion.div>
@@ -332,7 +465,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
             className="relative text-white overflow-hidden"
             style={{ backgroundColor: '#131313' }}
           >
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col px-4 md:px-0">
               <SectionHeader
                 yellowText="LIVE DEMO."
                 title={t('sectionDemoTitle')}
@@ -340,17 +473,17 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               />
 
               {/* Mobile Mockup Placeholder */}
-              <div className="mt-20 flex-1 flex items-center justify-center lg:justify-end">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
-                  <div></div> {/* Empty space for layout balance */}
-                  <div className="flex justify-center lg:justify-end">
+              <div className="mt-20 flex-1 flex flex-col lg:flex-row items-center justify-center">
+                <div className="w-full lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
+                  {/* Mobile: Mockup below text */}
+                  <div className="lg:hidden flex justify-center mt-8">
                     <AnimatedElement
-                      direction="right"
+                      direction="up"
                       delay={0.2}
                       duration={0.4}
                     >
                       <motion.div
-                        className="w-[300px] md:w-[400px] lg:w-[488px] h-[460px] md:h-[600px] lg:h-[757px] flex items-center justify-center shadow-2xl rounded-[28px]"
+                        className="w-[280px] h-[420px] flex items-center justify-center shadow-2xl rounded-[28px]"
                         style={{ backgroundColor: '#2a2a2a' }}
                         whileHover={{ scale: 1.02 }}
                         transition={{
@@ -360,7 +493,34 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         }}
                       >
                         <div className="text-center text-gray-500">
-                          <h3 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-400">
+                          <h3 className="text-lg font-bold mb-2 text-gray-400">
+                            COMING SOON
+                          </h3>
+                        </div>
+                      </motion.div>
+                    </AnimatedElement>
+                  </div>
+
+                  {/* Desktop: Original layout */}
+                  <div className="hidden lg:block"></div> {/* Empty space for layout balance */}
+                  <div className="hidden lg:flex justify-center lg:justify-end">
+                    <AnimatedElement
+                      direction="right"
+                      delay={0.2}
+                      duration={0.4}
+                    >
+                      <motion.div
+                        className="w-[488px] h-[757px] flex items-center justify-center shadow-2xl rounded-[28px]"
+                        style={{ backgroundColor: '#2a2a2a' }}
+                        whileHover={{ scale: 1.02 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 300,
+                          damping: 20,
+                        }}
+                      >
+                        <div className="text-center text-gray-500">
+                          <h3 className="text-3xl font-bold mb-2 text-gray-400">
                             COMING SOON
                           </h3>
                         </div>
@@ -387,7 +547,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           data-section-index={3}
         >
           <PageSection id="pricing" fitViewport className="bg-black text-white">
-            <div className="h-full flex flex-col">
+            <div className="h-full flex flex-col px-4 md:px-0">
               <SectionHeader
                 yellowText="PLAN."
                 title={t('sectionPricingTitle')}
@@ -422,7 +582,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                   </div>
                 </div>
                 {/* Pricing Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6 lg:gap-8">
                   {/* Free Plan */}
                   <AnimatedElement direction="up" delay={0.4}>
                     <div className="bg-[#1A1A1A] rounded-[20px] border border-[#313131] flex flex-col h-full">
@@ -635,25 +795,25 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           data-section-index={4}
         >
           <PageSection className="bg-black text-white">
-            <div className="flex justify-center">
+            <div className="flex justify-center px-4">
               <AnimatedElement direction="scale" delay={0.2} duration={0.5}>
-                <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full h-[320px]">
-                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 h-full">
+                <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full min-h-[320px] lg:h-[320px]">
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 lg:gap-4 h-full">
                     {/* Left side - Title */}
-                    <div className="pt-[38px] pl-[83px] pr-8">
-                      <h2 className="text-[23px] font-bold mb-4">
+                    <div className="pt-[38px] px-8 lg:pl-[83px] lg:pr-8">
+                      <h2 className="text-[20px] lg:text-[23px] font-bold mb-4">
                         CONTACT US.
                       </h2>
-                      <p className="text-[36px] font-bold whitespace-pre-line">
+                      <p className="text-[28px] lg:text-[36px] font-bold whitespace-pre-line">
                         {t('sectionContactTitle')}
                       </p>
                     </div>
 
                     {/* Right side - Form */}
-                    <div className="pt-[38px] pl-8 pr-[83px] pb-12">
+                    <div className="pt-4 lg:pt-[38px] px-8 lg:pl-8 lg:pr-[83px] pb-8 lg:pb-12">
                       <form
                         onSubmit={handleContactSubmit}
-                        className="space-y-4 h-full flex flex-col"
+                        className="space-y-4 h-full flex flex-col min-h-[240px] lg:min-h-0"
                       >
                         <div>
                           <input
@@ -671,14 +831,14 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder={t('contactFormMessage')}
-                            className="w-full h-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
+                            className="w-full h-full min-h-[120px] lg:min-h-0 px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
                             style={{ fontSize: '14px' }}
                             required
                           />
                         </div>
                         <button
                           type="submit"
-                          className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-[8px] text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
+                          className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-[8px] text-base lg:text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
                         >
                           {t('contactFormSubmit')}
                         </button>

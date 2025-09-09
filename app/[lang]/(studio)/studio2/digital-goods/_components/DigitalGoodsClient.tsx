@@ -77,7 +77,7 @@ export default function DigitalGoodsClient() {
         </div>
       </div>
 
-      <div className="flex items-center gap-6 relative flex-1 self-stretch w-full grow px-12 pt-6 pb-12">
+      <div className="flex flex-1 items-start gap-6 self-stretch w-full px-12 pt-6 pb-12 overflow-hidden">
         <div className="flex flex-col self-stretch w-[330px] bg-studio-border rounded-[20px] p-[15px] gap-[18px]">
           {/* 드래그 앤 드롭 영역 */}
           <div

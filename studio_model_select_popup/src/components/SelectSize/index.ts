@@ -1,1 +1,0 @@
-export { SelectSize } from "./SelectSize";

@@ -16,17 +16,21 @@ export default function StudioLayout({ children, params }: Props) {
 
   return (
     <StudioAuthGuard>
-      {/* 화면 전체를 채우는 레이아웃 */}
       <div className="flex flex-col min-h-screen w-full">
-        {/* Top Header - 화면 전체 너비 */}
-        <div className="flex h-16 items-center justify-end gap-2.5 px-8 py-5 w-full bg-[#292c31] border-b border-solid border-[#4a4a4b]">
-          <div className="relative flex-1 mt-[-3.00px] mb-[-1.00px] font-normal text-[#ffd93b] text-xl tracking-[0] leading-7" style={{ fontFamily: 'Archivo Black, Helvetica' }}>
+        <div className="flex h-16 items-center justify-end gap-2.5 px-8 py-5 w-full bg-[#202020] border-b border-solid border-[#4a4a4b]">
+          <div
+            className="relative flex-1 mt-[-3.00px] mb-[-1.00px] font-normal text-[#ffd93b] text-xl tracking-[0] leading-7"
+            style={{ fontFamily: 'Archivo Black, Helvetica' }}
+          >
             LikeButter
           </div>
-          
+
           <div className="inline-flex items-center justify-end gap-4 relative flex-[0_0_auto]">
             <div className="inline-flex items-center overflow-hidden rounded-md justify-center relative">
-              <div className="font-semibold w-fit mt-[-2.00px] tracking-[0] text-sm font-normal text-[#ffd83b] leading-[14px] whitespace-nowrap relative" style={{ fontFamily: 'Pretendard, Helvetica' }}>
+              <div
+                className="font-semibold w-fit mt-[-2.00px] tracking-[0] text-sm text-[#ffd83b] leading-[14px] whitespace-nowrap relative"
+                style={{ fontFamily: 'Pretendard, Helvetica' }}
+              >
                 Button text
               </div>
             </div>
@@ -36,18 +40,12 @@ export default function StudioLayout({ children, params }: Props) {
           </div>
         </div>
 
-        {/* Main Layout - 화면 전체 너비와 남은 높이 */}
         <div className="flex flex-1 w-full bg-[#323232] overflow-hidden">
-          {/* Sidebar */}
           <StudioSidebar lang={lang} />
-          
-          {/* Main Content */}
-          <div className="flex-1">
-            {children}
-          </div>
+
+          <div className="flex-1">{children}</div>
         </div>
-        
-        {/* Toast Notifications */}
+
         <Toaster position="top-right" />
       </div>
     </StudioAuthGuard>

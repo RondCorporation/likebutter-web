@@ -1,1 +1,0 @@
-export { HeroiconsMiniMagnifyingGlass } from "./HeroiconsMiniMagnifyingGlass";

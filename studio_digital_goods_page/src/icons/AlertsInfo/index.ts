@@ -1,1 +1,0 @@
-export { AlertsInfo } from "./AlertsInfo";

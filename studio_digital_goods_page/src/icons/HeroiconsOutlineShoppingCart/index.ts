@@ -1,1 +1,0 @@
-export { HeroiconsOutlineShoppingCart } from "./HeroiconsOutlineShoppingCart";

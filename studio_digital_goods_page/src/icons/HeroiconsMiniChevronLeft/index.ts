@@ -1,1 +1,0 @@
-export { HeroiconsMiniChevronLeft } from "./HeroiconsMiniChevronLeft";

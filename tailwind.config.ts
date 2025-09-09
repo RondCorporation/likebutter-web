@@ -64,7 +64,7 @@ export default {
         'butter-orange': '#FF9E2C',
         // Studio2 Design System Colors
         studio: {
-          header: '#292c31',
+          header: '#202020',
           main: '#323232',
           content: '#25282c',
           sidebar: '#202020',

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { CustomDropdown } from '../../_components/ui';
+import CustomDropdown from '../../_components/CustomDropdown';
 
 export default function DigitalGoodsStyleSidebar() {
   const [selectedPreset, setSelectedPreset] = useState('지브리');
@@ -13,19 +13,20 @@ export default function DigitalGoodsStyleSidebar() {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  // 포스터, 스티커, 지브리, 피규어, 카툰
   const stylePresets = [
-    { name: '지브리', width: 84, selected: true },
-    { name: '액션', width: 84, selected: false },
-    { name: '지브리2', width: 84, selected: false },
-    { name: '포스터', width: 84, selected: false },
+    { name: '포스터', width: 84, selected: true },
     { name: '스티커', width: 84, selected: false },
+    { name: '지브리', width: 84, selected: false },
+    { name: '피규어', width: 84, selected: false },
     { name: '카툰', width: 84, selected: false },
-    { name: '웹툰', width: 84, selected: false },
-    { name: '일러스트', width: 84, selected: false },
-    { name: '판타지', width: 84, selected: false },
-    { name: '미니먀', width: 84, selected: false },
-    { name: '빈티지', width: 84, selected: false },
-    { name: '모던', width: 84, selected: false },
+    // { name: '카툰', width: 84, selected: false },
+    // { name: '웹툰', width: 84, selected: false },
+    // { name: '일러스트', width: 84, selected: false },
+    // { name: '판타지', width: 84, selected: false },
+    // { name: '미니먀', width: 84, selected: false },
+    // { name: '빈티지', width: 84, selected: false },
+    // { name: '모던', width: 84, selected: false },
   ];
 
   const checkScrollButtons = () => {
@@ -67,7 +68,6 @@ export default function DigitalGoodsStyleSidebar() {
     }
   }, []);
 
-
   return (
     <div className="flex flex-col w-[260px] h-full items-start gap-10 pt-6 pb-3 px-3 relative bg-studio-sidebar border-r border-solid border-studio-border-light overflow-y-auto">
       <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">
@@ -84,7 +84,7 @@ export default function DigitalGoodsStyleSidebar() {
               className="flex flex-col gap-2.5 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden [-webkit-scrollbar-width:none] [scrollbar-width:none]"
             >
               <div className="flex gap-3 flex-shrink-0">
-                {stylePresets.slice(0, 6).map((preset, index) => (
+                {stylePresets.slice(0, 3).map((preset, index) => (
                   <div
                     key={index}
                     className="flex flex-col items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
@@ -110,7 +110,7 @@ export default function DigitalGoodsStyleSidebar() {
                 ))}
               </div>
               <div className="flex gap-3 flex-shrink-0">
-                {stylePresets.slice(6, 12).map((preset, index) => (
+                {stylePresets.slice(3, 5).map((preset, index) => (
                   <div
                     key={index + 6}
                     className="flex flex-col items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"

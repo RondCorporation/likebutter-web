@@ -1,1 +1,0 @@
-export { SideMenuDarkWrapper } from "./SideMenuDarkWrapper";

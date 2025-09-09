@@ -1,1 +1,0 @@
-export { BasicsCopy } from "./BasicsCopy";

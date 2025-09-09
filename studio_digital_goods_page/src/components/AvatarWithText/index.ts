@@ -1,1 +1,0 @@
-export { AvatarWithText } from "./AvatarWithText";

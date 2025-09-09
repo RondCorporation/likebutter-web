@@ -1,1 +1,0 @@
-export { HeroiconsOutlineRectangleStack } from "./HeroiconsOutlineRectangleStack";

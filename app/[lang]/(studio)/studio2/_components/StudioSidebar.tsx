@@ -39,7 +39,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
   return (
     <>
       {/* 화면 전체 높이를 사용하는 사이드바 */}
-      <div className="flex flex-col w-20 items-center gap-6 pt-6 pb-3 px-3 bg-[#292c31] border-r border-solid border-[#4a4a4b]">
+      <div className="flex flex-col w-20 items-center gap-6 pt-6 pb-3 px-3 bg-[#202020] border-r border-solid border-[#4a4a4b]">
         {/* 만들기 버튼 */}
         <div className="flex flex-col items-center gap-1">
           <button

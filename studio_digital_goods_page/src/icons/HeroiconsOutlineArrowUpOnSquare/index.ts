@@ -1,1 +1,0 @@
-export { HeroiconsOutlineArrowUpOnSquare } from "./HeroiconsOutlineArrowUpOnSquare";

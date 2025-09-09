@@ -1,1 +1,0 @@
-export { HeroiconsOutlineQuestionMarkCircle } from "./HeroiconsOutlineQuestionMarkCircle";

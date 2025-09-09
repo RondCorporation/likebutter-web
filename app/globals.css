@@ -130,6 +130,89 @@
       transform: none;
     }
   }
+
+  /* Studio2 Font System */
+  .font-pretendard { font-family: 'Pretendard', 'Helvetica', sans-serif; }
+  .font-pretendard-medium { font-family: 'Pretendard-Medium', 'Helvetica', sans-serif; }
+  .font-pretendard-bold { font-family: 'Pretendard-Bold', 'Helvetica', sans-serif; }
+  .font-archivo-black { font-family: 'Archivo Black', 'Helvetica', sans-serif; }
+
+  /* Studio2 Common Layout Utilities */
+  .flex-center { @apply flex items-center justify-center; }
+  .flex-between { @apply flex items-center justify-between; }
+  .flex-col-center { @apply flex flex-col items-center; }
+  .flex-end { @apply flex items-center justify-end; }
+  .inline-flex-center { @apply inline-flex items-center justify-center; }
+  .inline-flex-end { @apply inline-flex items-center justify-end; }
+
+  /* Studio2 Custom Dropdown Styles */
+  .studio-dropdown {
+    position: relative;
+  }
+
+  .studio-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    margin-top: 4px;
+    background: theme('colors.studio.sidebar');
+    border: 1px solid theme('colors.studio.border');
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    max-height: 200px;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+
+  .studio-dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .studio-dropdown-item {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: theme('colors.studio.text.secondary');
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 4px;
+    margin: 2px 4px;
+  }
+
+  .studio-dropdown-item:hover {
+    background: theme('colors.studio.border');
+    color: theme('colors.studio.text.primary');
+  }
+
+  .studio-dropdown-item.selected {
+    background: theme('colors.studio.button.primary');
+    color: theme('colors.studio.header');
+    font-weight: 600;
+  }
+
+  .studio-dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .studio-dropdown-menu::-webkit-scrollbar-track {
+    background: theme('colors.studio.sidebar');
+    border-radius: 3px;
+  }
+
+  .studio-dropdown-menu::-webkit-scrollbar-thumb {
+    background: theme('colors.studio.border');
+    border-radius: 3px;
+  }
+
+  .studio-dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.studio.text.muted');
+  }
 }
 
 @media (prefers-color-scheme: dark) {

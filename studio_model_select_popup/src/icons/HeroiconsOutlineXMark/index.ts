@@ -1,0 +1,1 @@
+export { HeroiconsOutlineXMark } from "./HeroiconsOutlineXMark";

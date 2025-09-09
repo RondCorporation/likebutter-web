@@ -1,0 +1,1 @@
+export { HeroiconsOutlineArrowUpOnSquare } from "./HeroiconsOutlineArrowUpOnSquare";

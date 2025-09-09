@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, ReactNode } from 'react';
+import { useState, useEffect, useRef, ReactNode, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 
 interface BottomSheetProps {
@@ -23,22 +23,53 @@ export default function BottomSheet({
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [startHeight, setStartHeight] = useState(initialHeight);
+  const [velocity, setVelocity] = useState(0);
+  const [lastMoveTime, setLastMoveTime] = useState(0);
+  const [lastClientY, setLastClientY] = useState(0);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number>();
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
     setIsDragging(true);
-    setStartY(e.touches[0].clientY);
+    const clientY = e.touches[0].clientY;
+    setStartY(clientY);
+    setLastClientY(clientY);
     setStartHeight(height);
-  };
+    setVelocity(0);
+    setLastMoveTime(Date.now());
+    
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  }, [height]);
 
-  const handleMouseStart = (e: React.MouseEvent) => {
+  const handleMouseStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     setIsDragging(true);
     setStartY(e.clientY);
+    setLastClientY(e.clientY);
     setStartHeight(height);
-  };
+    setVelocity(0);
+    setLastMoveTime(Date.now());
+    
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+  }, [height]);
 
-  const handleMove = (clientY: number) => {
+  const handleMove = useCallback((clientY: number) => {
     if (!isDragging) return;
+
+    const now = Date.now();
+    const timeDelta = now - lastMoveTime;
+    
+    if (timeDelta > 0) {
+      const clientYDelta = clientY - lastClientY;
+      setVelocity(clientYDelta / timeDelta);
+      setLastClientY(clientY);
+      setLastMoveTime(now);
+    }
 
     const deltaY = startY - clientY;
     const viewportHeight = window.innerHeight;
@@ -46,28 +77,78 @@ export default function BottomSheet({
     const newHeight = Math.max(minHeight, Math.min(maxHeight, startHeight + deltaPercent));
     
     setHeight(newHeight);
-  };
+  }, [isDragging, startY, startHeight, lastMoveTime, lastClientY, minHeight, maxHeight]);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
     handleMove(e.touches[0].clientY);
-  };
+  }, [handleMove]);
 
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    e.preventDefault();
     handleMove(e.clientY);
-  };
+  }, [handleMove]);
 
-  const handleEnd = () => {
+  const handleEnd = useCallback(() => {
     setIsDragging(false);
     
-    // 스냅 기능: 특정 높이에 가까우면 자동으로 스냅
-    if (height < minHeight + 5) {
-      setHeight(minHeight);
-    } else if (height > maxHeight - 5) {
-      setHeight(maxHeight);
-    } else if (Math.abs(height - initialHeight) < 10) {
-      setHeight(initialHeight);
+    // 관성 기반 최종 위치 계산
+    const momentum = velocity * -200; // 관성 효과 강화
+    let finalHeight = height + momentum;
+    
+    // 스냅 포인트 결정
+    const snapPoints = [minHeight, initialHeight, maxHeight];
+    let targetHeight = finalHeight;
+    
+    // 가장 가까운 스냅 포인트 찾기
+    let minDistance = Infinity;
+    snapPoints.forEach(point => {
+      const distance = Math.abs(finalHeight - point);
+      if (distance < minDistance) {
+        minDistance = distance;
+        targetHeight = point;
+      }
+    });
+    
+    // 속도가 빠르면 더 먼 스냅 포인트로 이동
+    if (Math.abs(velocity) > 0.5) {
+      if (velocity > 0 && targetHeight < maxHeight) {
+        targetHeight = maxHeight;
+      } else if (velocity < 0 && targetHeight > minHeight) {
+        targetHeight = minHeight;
+      }
     }
-  };
+    
+    // 경계값 적용
+    targetHeight = Math.max(minHeight, Math.min(maxHeight, targetHeight));
+    
+    // 부드러운 애니메이션으로 최종 위치로 이동
+    animateToHeight(targetHeight);
+  }, [height, velocity, minHeight, maxHeight, initialHeight]);
+
+  // 애니메이션 함수
+  const animateToHeight = useCallback((targetHeight: number) => {
+    const startHeight = height;
+    const startTime = Date.now();
+    const duration = 300; // 300ms 애니메이션
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // easeOutCubic 이징 함수 적용
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentHeight = startHeight + (targetHeight - startHeight) * easeProgress;
+      
+      setHeight(currentHeight);
+      
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+    
+    animationRef.current = requestAnimationFrame(animate);
+  }, [height]);
 
   // 마우스 이벤트 리스너
   useEffect(() => {
@@ -80,7 +161,16 @@ export default function BottomSheet({
         document.removeEventListener('mouseup', handleEnd);
       };
     }
-  }, [isDragging, startY, startHeight]);
+  }, [isDragging, handleMouseMove, handleEnd]);
+  
+  // 컴포넌트 언마운트 시 애니메이션 정리
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
 
   // 데스크톱에서는 일반 사이드바로 표시
   if (!isMobile) {
@@ -94,25 +184,29 @@ export default function BottomSheet({
   return (
     <div
       ref={sheetRef}
-      className={`fixed inset-x-0 bottom-0 z-50 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl transition-all duration-300 ease-out ${className}`}
+      className={`fixed inset-x-0 bottom-0 z-50 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl ${isDragging ? '' : 'transition-transform duration-200 ease-out'} ${className}`}
       style={{
         height: `${height}vh`,
-        transform: isDragging ? 'none' : undefined,
+        transform: isDragging ? 'translateZ(0)' : undefined,
+        willChange: isDragging ? 'transform' : 'auto',
       }}
     >
       {/* 드래그 핸들 */}
       <div
-        className="flex justify-center py-3 cursor-grab active:cursor-grabbing"
+        className="flex justify-center py-3 cursor-grab active:cursor-grabbing touch-none select-none"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleEnd}
         onMouseDown={handleMouseStart}
+        style={{ touchAction: 'none' }}
       >
-        <div className="w-12 h-1 bg-studio-text-muted rounded-full" />
+        <div className={`w-12 h-1 bg-studio-text-muted rounded-full transition-all duration-200 ${
+          isDragging ? 'bg-studio-button-primary scale-110' : ''
+        }`} />
       </div>
 
       {/* 콘텐츠 영역 */}
-      <div className="flex-1 overflow-y-auto px-3">
+      <div className="flex-1 overflow-y-auto px-3 overscroll-contain">
         {children}
       </div>
     </div>

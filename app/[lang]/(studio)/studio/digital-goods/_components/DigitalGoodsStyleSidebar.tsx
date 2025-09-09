@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import CustomDropdown from '../../_components/CustomDropdown';
 
 export default function DigitalGoodsStyleSidebar() {
-  const [selectedPreset, setSelectedPreset] = useState('지브리');
+  const [selectedPreset, setSelectedPreset] = useState('포스터');
   const [description, setDescription] = useState('');
   const [imageSize, setImageSize] = useState('1:1(정방향)');
   const [fileUpload, setFileUpload] = useState('1:1(정방향)');
@@ -80,7 +80,7 @@ export default function DigitalGoodsStyleSidebar() {
             {/* 스크롤 컨테이너 */}
             <div
               ref={scrollContainerRef}
-              className="flex flex-col gap-2.5 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden [-webkit-scrollbar-width:none] [scrollbar-width:none]"
+              className="flex flex-col gap-2.5 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden [-webkit-scrollbar-width:none] [scrollbar-width:none] overscroll-contain"
             >
               <div className="flex gap-3 flex-shrink-0">
                 {stylePresets.slice(0, 3).map((preset, index) => (
@@ -96,7 +96,7 @@ export default function DigitalGoodsStyleSidebar() {
                       <div className="w-full h-full bg-gradient-to-br from-studio-border to-studio-border"></div>
                     </div>
                     <div
-                      className={`font-pretendard-medium text-sm text-center leading-[19.6px] tracking-[0] ${
+                      className={`font-pretendard-medium text-sm text-center leading-[19.6px] tracking-[0] transition-colors duration-200 ${
                         preset.name === selectedPreset
                           ? 'text-studio-button-hover'
                           : 'text-studio-text-primary'
@@ -122,7 +122,7 @@ export default function DigitalGoodsStyleSidebar() {
                       <div className="w-full h-full bg-gradient-to-br from-studio-border to-studio-border"></div>
                     </div>
                     <div
-                      className={`font-pretendard-medium text-sm text-center leading-[19.6px] tracking-[0] ${
+                      className={`font-pretendard-medium text-sm text-center leading-[19.6px] tracking-[0] transition-colors duration-200 ${
                         preset.name === selectedPreset
                           ? 'text-studio-button-hover'
                           : 'text-studio-text-primary'

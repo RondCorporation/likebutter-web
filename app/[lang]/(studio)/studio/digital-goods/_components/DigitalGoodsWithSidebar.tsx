@@ -20,10 +20,12 @@ export default function DigitalGoodsWithSidebar() {
 
   // 모바일: Bottom Sheet 레이아웃
   return (
-    <div className="relative h-full w-full bg-studio-main overflow-hidden">
-      <DigitalGoodsClient />
-      
-      <BottomSheet 
+    <div className="relative h-full w-full bg-studio-main">
+      <div className="h-full overflow-y-auto">
+        <DigitalGoodsClient />
+      </div>
+
+      <BottomSheet
         initialHeight={40}
         maxHeight={85}
         minHeight={20}

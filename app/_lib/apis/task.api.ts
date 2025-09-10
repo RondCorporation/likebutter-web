@@ -39,18 +39,21 @@ export const getTaskStatus = (
   return apiFetch<TaskStatusResponse>(`/tasks/me/${taskId}`);
 };
 
-export const getBatchTaskStatus = (
-  taskIds: number[]
-): Promise<ApiResponse<TaskStatusResponse[]>> => {
-  return apiFetch<TaskStatusResponse[]>('/tasks/batch/status', {
-    method: 'POST',
-    body: { taskIds },
-  });
-};
+// Digital Goods style enum values
+export const DIGITAL_GOODS_STYLES = {
+  POSTER: 'POSTER',
+  STICKER: 'STICKER',
+  GHIBLI: 'GHIBLI',
+  FIGURE: 'FIGURE',
+  CARTOON: 'CARTOON',
+} as const;
+
+export type DigitalGoodsStyle =
+  (typeof DIGITAL_GOODS_STYLES)[keyof typeof DIGITAL_GOODS_STYLES];
 
 // Digital Goods task creation
 export interface DigitalGoodsRequest {
-  style: string;
+  style: DigitalGoodsStyle;
   customPrompt?: string;
   title?: string;
   subtitle?: string;
@@ -60,11 +63,15 @@ export interface DigitalGoodsRequest {
 }
 
 export const createDigitalGoodsTask = (
-  image: File,
-  request: DigitalGoodsRequest
+  request: DigitalGoodsRequest,
+  image?: File
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
-  formData.append('image', image);
+
+  // Add image if provided
+  if (image) {
+    formData.append('image', image);
+  }
 
   // Add form fields individually
   Object.entries(request).forEach(([key, value]) => {

@@ -1,23 +1,58 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { HelpCircle, Upload } from 'lucide-react';
+import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
+import { createDigitalGoodsTask, DigitalGoodsRequest, DigitalGoodsStyle } from '@/lib/apis/task.api';
+import { useTaskPolling } from '@/hooks/useTaskPolling';
+import { toast } from 'react-hot-toast';
+import { DigitalGoodsDetails } from '@/types/task';
 
-export default function DigitalGoodsClient() {
+interface DigitalGoodsClientProps {
+  formData: {
+    style?: DigitalGoodsStyle;
+    customPrompt?: string;
+    title?: string;
+    subtitle?: string;
+    accentColor?: string;
+    productName?: string;
+    brandName?: string;
+  };
+}
+
+export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [resultImage, setResultImage] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+
+  const { taskData, isPolling, error: pollingError, startPolling } = useTaskPolling({
+    onCompleted: (result) => {
+      const details = result.details as DigitalGoodsDetails;
+      if (details?.result?.imageUrl) {
+        setResultImage(details.result.imageUrl);
+        setDownloadUrl(details.result.downloadUrl || details.result.imageUrl);
+        toast.success('디지털 굿즈 생성이 완료되었습니다!');
+      }
+      setIsGenerating(false);
+    },
+    onFailed: (error) => {
+      toast.error(`생성 실패: ${error}`);
+      setIsGenerating(false);
+    },
+  });
 
   const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
     if (file.size > 200 * 1024 * 1024) {
-      alert('파일 크기가 200MB를 초과합니다.');
+      toast.error('파일 크기가 200MB를 초과합니다.');
       return;
     }
 
     // Check file type
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-      alert('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
+      toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
       return;
     }
 
@@ -26,6 +61,69 @@ export default function DigitalGoodsClient() {
     // Create preview URL
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
+  };
+
+  const handleGenerate = async () => {
+    // Validate form data
+    if (!formData.customPrompt || formData.customPrompt.trim().length < 10) {
+      toast.error('프롬프트를 더 자세히 입력해주세요. (최소 10자)');
+      return;
+    }
+
+    setIsGenerating(true);
+    setResultImage(null);
+    setDownloadUrl(null);
+
+    try {
+      const request: DigitalGoodsRequest = {
+        style: formData.style || 'POSTER',
+        customPrompt: formData.customPrompt,
+        title: formData.title,
+        subtitle: formData.subtitle,
+        accentColor: formData.accentColor,
+        productName: formData.productName,
+        brandName: formData.brandName,
+      };
+
+      const response = await createDigitalGoodsTask(request, uploadedFile || undefined);
+      
+      console.log('API Response:', response); // 디버깅용
+      
+      if (response.status === 200 && response.data) {
+        toast.success('디지털 굿즈 생성 요청이 전송되었습니다!');
+        startPolling(response.data.taskId);
+      } else {
+        console.error('Response status:', response.status, 'Response data:', response.data);
+        throw new Error(`Failed to create task: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error creating digital goods task:', error);
+      toast.error('디지털 굿즈 생성 요청에 실패했습니다.');
+      setIsGenerating(false);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!downloadUrl) return;
+    
+    try {
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `digital-goods-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('이미지가 다운로드되었습니다!');
+    } catch (error) {
+      console.error('Download failed:', error);
+      toast.error('다운로드에 실패했습니다.');
+    }
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,17 +167,30 @@ export default function DigitalGoodsClient() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200">
+          <button 
+            onClick={handleGenerate}
+            disabled={isGenerating || isPolling}
+            className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {(isGenerating || isPolling) && (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            )}
             <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-              굿즈생성
+              {isGenerating || isPolling ? '생성중...' : '굿즈생성'}
             </div>
           </button>
 
-          <button className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] opacity-60 hover:opacity-80 active:scale-95 transition-all duration-200 disabled:opacity-40">
-            <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-              저장하기
-            </div>
-          </button>
+          {resultImage && downloadUrl && (
+            <button 
+              onClick={handleDownload}
+              className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
+            >
+              <Download className="w-4 h-4 mr-1" />
+              <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
+                다운로드
+              </div>
+            </button>
+          )}
         </div>
       </div>
 
@@ -152,23 +263,73 @@ export default function DigitalGoodsClient() {
 
         <div className="relative w-full md:self-stretch md:flex-1 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm">
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
-            <div className="flex flex-col items-center gap-4 relative self-stretch w-full flex-[0_0_auto]">
-              <div className="flex flex-col w-[142px] items-center gap-3.5 relative flex-[0_0_auto]">
-                <HelpCircle className="relative w-12 h-12" color="#89898A" />
-              </div>
-
-              <div className="relative w-[174px] h-[50px]">
-                <div className="inline-flex flex-col items-center gap-2 relative">
-                  <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-secondary text-base text-center leading-6 whitespace-nowrap relative tracking-[0]">
-                    결과 이미지
+            {(isGenerating || isPolling) ? (
+              // 로딩 상태
+              <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
+                <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <div className="text-studio-text-primary text-base font-pretendard-medium">
+                    {isGenerating ? '디지털 굿즈 생성 중...' : '생성 진행 중...'}
                   </div>
-
-                  <div className="relative w-fit font-pretendard text-studio-text-muted text-xs text-center tracking-[0] leading-[18px] whitespace-nowrap">
-                    파일당 200mb 제한 (png, jpg, jpeg)
+                  <div className="text-studio-text-muted text-sm font-pretendard">
+                    잠시 기다리시면 결과가 나옵니다
+                  </div>
+                  {taskData?.status && (
+                    <div className="mt-2 text-xs text-studio-text-secondary">
+                      상태: {taskData.status}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : resultImage ? (
+              // 결과 이미지 표시
+              <div className="relative w-full h-full">
+                <img
+                  src={resultImage}
+                  alt="Generated digital goods"
+                  className="w-full h-full object-contain rounded-[20px]"
+                  onError={(e) => {
+                    console.error('Image load error:', e);
+                    setResultImage(null);
+                    toast.error('이미지 로드에 실패했습니다.');
+                  }}
+                />
+                {downloadUrl && (
+                  <button
+                    onClick={handleDownload}
+                    className="absolute top-4 right-4 p-2 bg-studio-sidebar/80 hover:bg-studio-sidebar rounded-lg backdrop-blur-sm transition-all duration-200"
+                    title="다운로드"
+                  >
+                    <Download className="w-5 h-5 text-studio-text-primary" />
+                  </button>
+                )}
+              </div>
+            ) : pollingError ? (
+              // 에러 상태
+              <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
+                <div className="flex flex-col items-center gap-2 text-center text-red-400">
+                  <div className="text-base font-pretendard-medium">
+                    생성 실패
+                  </div>
+                  <div className="text-sm font-pretendard max-w-[200px]">
+                    {pollingError}
                   </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              // 기본 상태
+              <div className="flex flex-col items-center justify-center w-full h-full">
+                <div className="flex flex-col items-center text-center">
+                  <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />
+                  <div className="font-pretendard-medium text-studio-text-secondary text-base leading-6 mb-2">
+                    결과 이미지
+                  </div>
+                  <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
+                    사이드바에서 설정을 완료하고<br />'굿즈생성'을 눌러주세요
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

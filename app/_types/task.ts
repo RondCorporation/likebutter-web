@@ -22,23 +22,30 @@ export type ActionType =
 
 // Digital Goods types
 interface DigitalGoodsRequestDetails {
-  style: string;
+  style?: string;
   customPrompt?: string;
   title?: string;
   subtitle?: string;
   accentColor?: string;
   productName?: string;
   brandName?: string;
-  sourceImageKey: string;
+  imageUrl?: string;
 }
 
 interface DigitalGoodsResultDetails {
-  imageKey: string;
+  imageUrl: string;
+  downloadUrl?: string;
+  filename: string;
+  style: string;
+  promptUsed: string;
+  fileSize: number;
+  executionTime: number;
 }
 
 export interface DigitalGoodsDetails {
   request: DigitalGoodsRequestDetails;
   result?: DigitalGoodsResultDetails;
+  error?: string;
 }
 
 // Dream Conti types

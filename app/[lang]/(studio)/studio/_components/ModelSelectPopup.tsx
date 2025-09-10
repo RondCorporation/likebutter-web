@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import TabItem from './ui/TabItem';
 import SelectCard from './ui/SelectCard';
@@ -22,6 +22,32 @@ export default function ModelSelectPopup({
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
   const [selectedModel, setSelectedModel] = useState<string>('digital-goods');
+
+  // Prefetch routes when popup opens
+  useEffect(() => {
+    router.prefetch(`/${lang}/studio/digital-goods`);
+    router.prefetch(`/${lang}/studio/photo-editor`);
+    router.prefetch(`/${lang}/studio/fanmeeting-studio`);
+    router.prefetch(`/${lang}/studio/dream-conti`);
+  }, [router, lang]);
+
+  // Prefetch on hover for better UX
+  const handleCardHover = (modelType: string) => {
+    switch (modelType) {
+      case 'digital-goods':
+        router.prefetch(`/${lang}/studio/digital-goods`);
+        break;
+      case 'idol-editor':
+        router.prefetch(`/${lang}/studio/photo-editor`);
+        break;
+      case 'fanmeeting':
+        router.prefetch(`/${lang}/studio/fanmeeting-studio`);
+        break;
+      case 'dream-conte':
+        router.prefetch(`/${lang}/studio/dream-conti`);
+        break;
+    }
+  };
 
   const handleCreate = () => {
     switch (selectedModel) {
@@ -100,6 +126,7 @@ export default function ModelSelectPopup({
               title="디지털 굿즈"
               backgroundImage="/studio/model-select/select-size.png"
               onClick={() => setSelectedModel('digital-goods')}
+              onMouseEnter={() => handleCardHover('digital-goods')}
             >
               <Badge
                 text="New"
@@ -112,18 +139,21 @@ export default function ModelSelectPopup({
               state={selectedModel === 'idol-editor' ? 'selected' : 'default'}
               title="아이돌 사진 에디터"
               onClick={() => setSelectedModel('idol-editor')}
+              onMouseEnter={() => handleCardHover('idol-editor')}
             />
 
             <SelectCard
               state={selectedModel === 'fanmeeting' ? 'selected' : 'default'}
               title="팬미팅 스튜디오"
               onClick={() => setSelectedModel('fanmeeting')}
+              onMouseEnter={() => handleCardHover('fanmeeting')}
             />
 
             <SelectCard
               state={selectedModel === 'dream-conte' ? 'selected' : 'default'}
               title="AI 드림 콘티"
               onClick={() => setSelectedModel('dream-conte')}
+              onMouseEnter={() => handleCardHover('dream-conte')}
             />
           </div>
         </div>

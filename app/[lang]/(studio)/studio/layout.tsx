@@ -6,6 +6,7 @@ import StudioAuthGuard from '../_components/StudioAuthGuard';
 import { Settings } from 'lucide-react';
 import StudioSidebar from './_components/StudioSidebar';
 import MobileBottomNavigation from './_components/MobileBottomNavigation';
+import StudioPreloader from './_components/StudioPreloader';
 import Logo from '@/components/Logo';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 
@@ -53,6 +54,9 @@ export default function StudioLayout({ children, params }: Props) {
 
         {/* 모바일에서만 하단 네비게이션 표시 */}
         {!isDesktop && <MobileBottomNavigation lang={lang} />}
+
+        {/* Component preloader for better performance */}
+        <StudioPreloader lang={lang} />
 
         <Toaster position="top-right" />
       </div>

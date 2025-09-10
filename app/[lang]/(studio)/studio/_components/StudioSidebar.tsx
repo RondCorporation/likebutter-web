@@ -58,7 +58,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
         {/* 홈 버튼 */}
         <div className="flex flex-col items-center gap-1">
-          <Link href={`/${lang}/studio`}>
+          <Link href={`/${lang}/studio`} prefetch={true}>
             <div
               className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-md transition-colors ${selectedMenu === 'home' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
             >

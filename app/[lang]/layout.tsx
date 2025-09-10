@@ -10,6 +10,7 @@ import { LayoutClient } from './_components/LayoutClient';
 import initTranslations from '../_lib/i18n-server';
 import TranslationsProvider from '../_components/TranslationsProvider';
 import { getMeOnServer } from '../_lib/apiServer';
+import GoogleAnalytics from '../_components/GoogleAnalytics';
 
 const archivoBlack = Archivo_Black({
   subsets: ['latin'],
@@ -42,6 +43,9 @@ export default async function RootLayout({
       dir={dir(lang)}
       className={`${GeistSans.variable} ${GeistMono.variable} ${archivoBlack.variable}`}
     >
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body>
         <TranslationsProvider
           namespaces={i18nNamespaces}

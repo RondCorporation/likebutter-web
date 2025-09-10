@@ -9,6 +9,7 @@ interface SelectCardProps {
   className?: string;
   children?: ReactNode;
   onClick?: () => void;
+  onMouseEnter?: () => void;
 }
 
 export default function SelectCard({
@@ -18,6 +19,7 @@ export default function SelectCard({
   className = '',
   children,
   onClick,
+  onMouseEnter,
 }: SelectCardProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-4 relative w-full">
@@ -33,6 +35,7 @@ export default function SelectCard({
           backgroundPosition: 'center'
         }}
         onClick={onClick}
+        onMouseEnter={onMouseEnter}
       >
         {children}
       </div>

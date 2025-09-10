@@ -183,23 +183,25 @@ export function useTaskHistory() {
     // Smart polling with exponential backoff
     let pollInterval = 5000; // Start with 5 seconds
     const maxInterval = 30000; // Max 30 seconds
-    
+
     let timeoutId: NodeJS.Timeout;
-    
+
     const poll = async () => {
       if (state.isPolling) return;
       dispatch({ type: 'POLLING_START' });
 
       try {
-        const taskIds = tasksToCheck.map(t => t.taskId);
-        
+        const taskIds = tasksToCheck.map((t) => t.taskId);
+
         // Use batch API instead of individual calls
         const response = await getBatchTaskStatus(taskIds);
-        
+
         if (response.data && Array.isArray(response.data)) {
           // Update only changed tasks
-          response.data.forEach(updatedTask => {
-            const existingTask = state.tasks.find(t => t.taskId === updatedTask.taskId);
+          response.data.forEach((updatedTask) => {
+            const existingTask = state.tasks.find(
+              (t) => t.taskId === updatedTask.taskId
+            );
             if (existingTask && existingTask.status !== updatedTask.status) {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
@@ -213,12 +215,12 @@ export function useTaskHistory() {
               });
             }
           });
-          
+
           // If tasks completed, reset poll interval for next batch
           const stillInProgress = response.data.filter(
-            t => t.status === 'PENDING' || t.status === 'PROCESSING'
+            (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
           );
-          
+
           if (stillInProgress.length === 0) {
             pollInterval = 5000; // Reset to fast polling
           } else if (stillInProgress.length === tasksToCheck.length) {
@@ -236,14 +238,14 @@ export function useTaskHistory() {
       } finally {
         dispatch({ type: 'POLLING_END' });
       }
-      
+
       // Schedule next poll with dynamic interval
       timeoutId = setTimeout(poll, pollInterval);
     };
-    
+
     // Start first poll immediately
     poll();
-    
+
     return () => {
       if (timeoutId) {
         clearTimeout(timeoutId);

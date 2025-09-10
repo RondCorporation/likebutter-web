@@ -39,6 +39,15 @@ export const getTaskStatus = (
   return apiFetch<TaskStatusResponse>(`/tasks/me/${taskId}`);
 };
 
+export const getBatchTaskStatus = (
+  taskIds: number[]
+): Promise<ApiResponse<TaskStatusResponse[]>> => {
+  return apiFetch<TaskStatusResponse[]>('/tasks/batch/status', {
+    method: 'POST',
+    body: { taskIds },
+  });
+};
+
 // Digital Goods style enum values
 export const DIGITAL_GOODS_STYLES = {
   POSTER: 'POSTER',

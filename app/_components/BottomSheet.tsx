@@ -27,7 +27,7 @@ export default function BottomSheet({
   const [lastMoveTime, setLastMoveTime] = useState(0);
   const [lastClientY, setLastClientY] = useState(0);
   const sheetRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(0);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     e.preventDefault();

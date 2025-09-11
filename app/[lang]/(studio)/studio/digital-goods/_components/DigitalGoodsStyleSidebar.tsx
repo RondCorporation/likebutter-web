@@ -18,17 +18,19 @@ interface DigitalGoodsStyleSidebarProps {
   }) => void;
 }
 
-export default function DigitalGoodsStyleSidebar({ onFormChange }: DigitalGoodsStyleSidebarProps) {
+export default function DigitalGoodsStyleSidebar({
+  onFormChange,
+}: DigitalGoodsStyleSidebarProps) {
   const [selectedPreset, setSelectedPreset] = useState('포스터');
   const [prompt, setPrompt] = useState('');
-  
+
   // Style-specific parameters
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [accentColor, setAccentColor] = useState('#FF0000');
   const [productName, setProductName] = useState('');
   const [brandName, setBrandName] = useState('');
-  
+
   const [imageSize, setImageSize] = useState('1:1(정방향)');
   const [fileUpload, setFileUpload] = useState('1:1(정방향)');
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -45,12 +47,14 @@ export default function DigitalGoodsStyleSidebar({ onFormChange }: DigitalGoodsS
 
   // Form data 변경 감지 및 부모 컴포넌트로 전달
   useEffect(() => {
-    const selectedPresetData = stylePresets.find(preset => preset.name === selectedPreset);
-    const formData: any = { 
+    const selectedPresetData = stylePresets.find(
+      (preset) => preset.name === selectedPreset
+    );
+    const formData: any = {
       style: (selectedPresetData?.value || 'POSTER') as DigitalGoodsStyle,
-      customPrompt: prompt
+      customPrompt: prompt,
     };
-    
+
     // Style-specific parameters
     if (selectedPresetData?.value === 'POSTER') {
       if (title) formData.title = title;
@@ -60,9 +64,18 @@ export default function DigitalGoodsStyleSidebar({ onFormChange }: DigitalGoodsS
       if (productName) formData.productName = productName;
       if (brandName) formData.brandName = brandName;
     }
-    
+
     onFormChange(formData);
-  }, [prompt, selectedPreset, title, subtitle, accentColor, productName, brandName, onFormChange]);
+  }, [
+    prompt,
+    selectedPreset,
+    title,
+    subtitle,
+    accentColor,
+    productName,
+    brandName,
+    onFormChange,
+  ]);
 
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -225,7 +238,8 @@ export default function DigitalGoodsStyleSidebar({ onFormChange }: DigitalGoodsS
         </div>
 
         {/* 스타일별 동적 입력 필드 */}
-        {stylePresets.find(p => p.name === selectedPreset)?.value === 'POSTER' && (
+        {stylePresets.find((p) => p.name === selectedPreset)?.value ===
+          'POSTER' && (
           <>
             {/* 제목 */}
             <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
@@ -283,7 +297,8 @@ export default function DigitalGoodsStyleSidebar({ onFormChange }: DigitalGoodsS
           </>
         )}
 
-        {stylePresets.find(p => p.name === selectedPreset)?.value === 'FIGURE' && (
+        {stylePresets.find((p) => p.name === selectedPreset)?.value ===
+          'FIGURE' && (
           <>
             {/* 제품명 */}
             <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">

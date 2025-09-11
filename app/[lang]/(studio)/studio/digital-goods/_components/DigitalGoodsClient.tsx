@@ -2,7 +2,11 @@
 
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
-import { createDigitalGoodsTask, DigitalGoodsRequest, DigitalGoodsStyle } from '@/lib/apis/task.api';
+import {
+  createDigitalGoodsTask,
+  DigitalGoodsRequest,
+  DigitalGoodsStyle,
+} from '@/lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import { toast } from 'react-hot-toast';
 import { DigitalGoodsDetails } from '@/types/task';
@@ -19,7 +23,9 @@ interface DigitalGoodsClientProps {
   };
 }
 
-export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps) {
+export default function DigitalGoodsClient({
+  formData,
+}: DigitalGoodsClientProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -27,7 +33,12 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
-  const { taskData, isPolling, error: pollingError, startPolling } = useTaskPolling({
+  const {
+    taskData,
+    isPolling,
+    error: pollingError,
+    startPolling,
+  } = useTaskPolling({
     onCompleted: (result) => {
       const details = result.details as DigitalGoodsDetails;
       if (details?.result?.imageUrl) {
@@ -85,15 +96,23 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
         brandName: formData.brandName,
       };
 
-      const response = await createDigitalGoodsTask(request, uploadedFile || undefined);
-      
+      const response = await createDigitalGoodsTask(
+        request,
+        uploadedFile || undefined
+      );
+
       console.log('API Response:', response); // 디버깅용
-      
+
       if (response.status === 200 && response.data) {
         toast.success('디지털 굿즈 생성 요청이 전송되었습니다!');
         startPolling(response.data.taskId);
       } else {
-        console.error('Response status:', response.status, 'Response data:', response.data);
+        console.error(
+          'Response status:',
+          response.status,
+          'Response data:',
+          response.data
+        );
         throw new Error(`Failed to create task: ${response.status}`);
       }
     } catch (error) {
@@ -105,11 +124,11 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
 
   const handleDownload = async () => {
     if (!downloadUrl) return;
-    
+
     try {
       const response = await fetch(downloadUrl);
       const blob = await response.blob();
-      
+
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -118,7 +137,7 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
+
       toast.success('이미지가 다운로드되었습니다!');
     } catch (error) {
       console.error('Download failed:', error);
@@ -167,7 +186,7 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
         </div>
 
         <div className="flex items-center gap-2">
-          <button 
+          <button
             onClick={handleGenerate}
             disabled={isGenerating || isPolling}
             className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -181,7 +200,7 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
           </button>
 
           {resultImage && downloadUrl && (
-            <button 
+            <button
               onClick={handleDownload}
               className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
             >
@@ -194,11 +213,11 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:overflow-hidden">
-        <div className="flex flex-col w-full md:w-[330px] md:self-stretch bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm">
+      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:h-[calc(100vh-180px)] md:overflow-hidden">
+        <div className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto">
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col aspect-square items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out ${
+            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
               isDragOver
@@ -261,15 +280,17 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
           />
         </div>
 
-        <div className="relative w-full md:self-stretch md:flex-1 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm">
+        <div className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden">
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
-            {(isGenerating || isPolling) ? (
+            {isGenerating || isPolling ? (
               // 로딩 상태
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
                   <div className="text-studio-text-primary text-base font-pretendard-medium">
-                    {isGenerating ? '디지털 굿즈 생성 중...' : '생성 진행 중...'}
+                    {isGenerating
+                      ? '디지털 굿즈 생성 중...'
+                      : '생성 진행 중...'}
                   </div>
                   <div className="text-studio-text-muted text-sm font-pretendard">
                     잠시 기다리시면 결과가 나옵니다
@@ -325,7 +346,9 @@ export default function DigitalGoodsClient({ formData }: DigitalGoodsClientProps
                     결과 이미지
                   </div>
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
-                    사이드바에서 설정을 완료하고<br />'굿즈생성'을 눌러주세요
+                    사이드바에서 설정을 완료하고
+                    <br />
+                    '굿즈생성'을 눌러주세요
                   </div>
                 </div>
               </div>

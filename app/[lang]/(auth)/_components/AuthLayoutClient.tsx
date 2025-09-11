@@ -2,7 +2,6 @@
 
 import { ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
 import ConditionalSettingsModal from '@/app/_components/ConditionalSettingsModal';
@@ -29,15 +28,6 @@ export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
       <>
         <ServerErrorDisplay />
         <ConditionalSettingsModal />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
         <AuthWithRedirect>
           <div className="flex min-h-screen flex-col">
             <main className="flex-grow">{children}</main>

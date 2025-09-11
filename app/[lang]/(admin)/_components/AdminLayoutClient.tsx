@@ -1,7 +1,6 @@
 'use client';
 
 import { ReactNode, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import AuthInitializer from '@/app/_components/AuthInitializer';
 import StudioAuthGuard from '@/app/[lang]/(studio)/_components/StudioAuthGuard';
@@ -28,16 +27,6 @@ export default function AdminLayoutClient({
       <>
         <ServerErrorDisplay />
         <ConditionalSettingsModal />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: '#1e293b',
-              color: '#fff',
-              border: '1px solid #475569',
-            },
-          }}
-        />
         <StudioAuthGuard>
           <div className="flex min-h-screen bg-black text-white">
             {/* Mobile Sidebar Overlay */}

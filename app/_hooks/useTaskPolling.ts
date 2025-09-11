@@ -15,7 +15,7 @@ interface UseTaskPollingReturn {
   taskData: TaskStatusResponse | null;
   isPolling: boolean;
   error: string | null;
-  startPolling: (taskId: number) => void;
+  startPolling: (taskId: number) => Promise<void>;
   stopPolling: () => void;
 }
 
@@ -34,13 +34,17 @@ export function useTaskPolling(options: UseTaskPollingOptions = {}): UseTaskPoll
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const stopPolling = useCallback(() => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
+    console.log('🛑 Stopping polling...');
+    setIntervalId(prev => {
+      if (prev) {
+        clearInterval(prev);
+        console.log('✅ Polling interval cleared');
+      }
+      return null;
+    });
     setIsPolling(false);
     setAttempts(0);
-  }, [intervalId]);
+  }, []);
 
   const pollTask = useCallback(async (taskId: number) => {
     try {
@@ -52,21 +56,24 @@ export function useTaskPolling(options: UseTaskPollingOptions = {}): UseTaskPoll
 
         // 완료된 경우
         if (response.data.status === 'COMPLETED') {
+          console.log('🔄 Task completed, stopping polling for taskId:', taskId);
           stopPolling();
           onCompleted?.(response.data);
-          return;
+          return true; // 폴링 중단 신호
         }
 
         // 실패한 경우
         if (response.data.status === 'FAILED') {
+          console.log('❌ Task failed, stopping polling for taskId:', taskId);
           stopPolling();
           const errorMsg = response.data.details?.error || 'Task failed';
           setError(errorMsg);
           onFailed?.(errorMsg);
-          return;
+          return true; // 폴링 중단 신호
         }
 
         // 진행 중인 경우는 계속 폴링
+        return false;
       } else {
         throw new Error('Failed to fetch task status');
       }
@@ -78,11 +85,14 @@ export function useTaskPolling(options: UseTaskPollingOptions = {}): UseTaskPoll
       if (attempts >= 3) {
         stopPolling();
         onFailed?.(errorMsg);
+        return true; // 폴링 중단 신호
       }
+      return false;
     }
   }, [attempts, onCompleted, onFailed, stopPolling]);
 
-  const startPolling = useCallback((taskId: number) => {
+  const startPolling = useCallback(async (taskId: number) => {
+    console.log('🚀 Starting polling for taskId:', taskId);
     // 기존 폴링이 있으면 중지
     stopPolling();
     
@@ -92,21 +102,41 @@ export function useTaskPolling(options: UseTaskPollingOptions = {}): UseTaskPoll
     setIsPolling(true);
 
     // 즉시 첫 번째 호출
-    pollTask(taskId);
+    const shouldStop = await pollTask(taskId);
+    if (shouldStop) {
+      console.log('⏹️ Task completed on first check, not starting interval');
+      return; // 첫 번째 호출에서 완료/실패 시 폴링 시작하지 않음
+    }
 
     // 인터벌 설정
+    console.log('⏰ Setting up polling interval, checking every', interval, 'ms');
     const id = setInterval(() => {
       setAttempts(prev => {
         const newAttempts = prev + 1;
+        console.log('🔄 Polling attempt:', newAttempts, 'for taskId:', taskId);
         
         if (newAttempts >= maxAttempts) {
+          console.log('⏰ Polling timeout reached');
           stopPolling();
           setError('Polling timeout');
           onFailed?.('Polling timeout');
           return prev;
         }
         
-        pollTask(taskId);
+        // 비동기 pollTask 실행
+        (async () => {
+          try {
+            const shouldStop = await pollTask(taskId);
+            if (shouldStop) {
+              console.log('🔄 Polling should stop, calling stopPolling()');
+              stopPolling();
+            }
+          } catch (error) {
+            console.error('🔄 Polling error:', error);
+            // 에러는 pollTask 내부에서 처리됨
+          }
+        })();
+        
         return newAttempts;
       });
     }, interval);
@@ -117,11 +147,15 @@ export function useTaskPolling(options: UseTaskPollingOptions = {}): UseTaskPoll
   // 컴포넌트 언마운트 시 정리
   useEffect(() => {
     return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
+      setIntervalId(prev => {
+        if (prev) {
+          console.log('🧹 Cleaning up interval on unmount');
+          clearInterval(prev);
+        }
+        return null;
+      });
     };
-  }, [intervalId]);
+  }, []);
 
   return {
     taskData,

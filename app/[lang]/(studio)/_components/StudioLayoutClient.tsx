@@ -1,7 +1,6 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { Toaster } from 'react-hot-toast';
 import '@/app/_lib/i18n-client';
 import AuthInitializer from '@/app/_components/AuthInitializer';
 import ServerErrorDisplay from '@/app/_components/shared/ServerErrorDisplay';
@@ -34,15 +33,6 @@ export default function StudioLayoutClient({
       <>
         <ServerErrorDisplay />
         <ConditionalSettingsModal />
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: '#333',
-              color: '#fff',
-            },
-          }}
-        />
         <StudioContent>{children}</StudioContent>
       </>
     </AuthInitializer>

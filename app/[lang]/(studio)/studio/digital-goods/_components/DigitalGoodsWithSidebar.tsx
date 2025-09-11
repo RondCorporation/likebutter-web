@@ -26,7 +26,7 @@ export default function DigitalGoodsWithSidebar() {
   if (isDesktop) {
     // 데스크톱: 기존 사이드바 레이아웃
     return (
-      <div className="flex h-full w-full bg-studio-main overflow-hidden">
+      <div className="flex items-start h-full w-full bg-studio-main overflow-hidden">
         <DigitalGoodsStyleSidebar onFormChange={handleFormChange} />
         <DigitalGoodsClient formData={formData} />
       </div>

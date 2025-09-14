@@ -39,13 +39,25 @@ export const getTaskStatus = (
   return apiFetch<TaskStatusResponse>(`/tasks/me/${taskId}`);
 };
 
+// API response format for batch tasks (uses 'id' instead of 'taskId')
+export interface BatchTaskResponse {
+  id: number;
+  accountId: number;
+  actionType: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  details: any;
+}
+
 export const getBatchTaskStatus = (
   taskIds: number[]
-): Promise<ApiResponse<TaskStatusResponse[]>> => {
-  return apiFetch<TaskStatusResponse[]>('/tasks/batch/status', {
-    method: 'POST',
-    body: { taskIds },
+): Promise<ApiResponse<BatchTaskResponse[]>> => {
+  const params = new URLSearchParams({
+    ids: taskIds.join(','),
+    summary: 'false',
   });
+  return apiFetch<BatchTaskResponse[]>(`/tasks/batch?${params.toString()}`);
 };
 
 // Digital Goods style enum values

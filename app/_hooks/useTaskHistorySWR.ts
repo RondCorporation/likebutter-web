@@ -3,7 +3,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { Task } from '@/types/task';
-import { getTaskHistory, getBatchTaskStatus } from '@/lib/apis/task.api';
+import {
+  getTaskHistory,
+  getBatchTaskStatus,
+  BatchTaskResponse,
+} from '@/lib/apis/task.api';
 
 interface TaskHistoryFilters {
   status: string;
@@ -87,7 +91,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   // Batch status checking with SWR
   const { data: batchStatusData, mutate: mutateBatchStatus } = useSWR(
     shouldPoll
-      ? `/tasks/batch/status?ids=${inProgressTaskIds.join(',')}`
+      ? `/tasks/batch?ids=${inProgressTaskIds.join(',')}&summary=false`
       : null,
     () => getBatchTaskStatus(inProgressTaskIds).then((res) => res.data),
     {
@@ -95,12 +99,12 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
       revalidateOnFocus: false,
       onSuccess: (data) => {
         if (data && Array.isArray(data)) {
-          // Check if any task status changed
-          const hasStatusChange = data.some((updatedTask) => {
+          // Check if any task status changed - Map API response to frontend format
+          const hasStatusChange = data.some((apiTask: BatchTaskResponse) => {
             const existingTask = tasks.find(
-              (t) => t.taskId === updatedTask.taskId
+              (t) => t.taskId === apiTask.id // API uses 'id', frontend uses 'taskId'
             );
-            return existingTask && existingTask.status !== updatedTask.status;
+            return existingTask && existingTask.status !== apiTask.status;
           });
 
           // If status changed, refresh the main task history

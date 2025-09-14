@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 interface SelectCardProps {
   state: 'selected' | 'default';
   title: string;
+  subtitle?: string;
   backgroundImage?: string;
   className?: string;
   children?: ReactNode;
@@ -15,6 +16,7 @@ interface SelectCardProps {
 export default function SelectCard({
   state,
   title,
+  subtitle,
   backgroundImage,
   className = '',
   children,
@@ -39,8 +41,15 @@ export default function SelectCard({
       >
         {children}
       </div>
-      <div className="font-medium text-white text-sm text-center leading-[19.6px] relative">
-        {title}
+      <div className="text-left w-full">
+        <div className="font-medium text-white text-sm leading-[19.6px] relative">
+          {title}
+        </div>
+        {subtitle && (
+          <div className="font-normal text-studio-text-secondary text-xs mt-0.5 leading-[16.8px]">
+            {subtitle}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
+import { HelpCircle, Upload, Download, Loader2, Edit } from 'lucide-react';
 import {
   createDigitalGoodsTask,
   DigitalGoodsRequest,
@@ -10,6 +10,7 @@ import {
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import { toast } from 'react-hot-toast';
 import { DigitalGoodsDetails } from '@/types/task';
+import EditRequestPopup from '@/components/ui/EditRequestPopup';
 
 interface DigitalGoodsClientProps {
   formData: {
@@ -32,6 +33,8 @@ export default function DigitalGoodsClient({
   const [isGenerating, setIsGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [isEditLoading, setIsEditLoading] = useState(false);
 
   const {
     taskData,
@@ -178,6 +181,29 @@ export default function DigitalGoodsClient({
     }
   }, []);
 
+  const handleEditRequest = async (editRequest: string) => {
+    setIsEditLoading(true);
+    try {
+      // TODO: API 구현 후 실제 수정 요청 로직 추가
+      console.log('Edit request:', editRequest);
+      console.log('Original image:', resultImage);
+      console.log('Original form data:', formData);
+
+      // 임시로 성공 메시지 표시
+      toast.success('수정 요청이 전송되었습니다!');
+
+      // 실제 구현 시에는 여기서 새로운 task를 생성하고 폴링을 시작해야 함
+      // const response = await updateDigitalGoodsTask(taskId, editRequest);
+      // startPolling(response.data.taskId);
+
+    } catch (error) {
+      console.error('Edit request failed:', error);
+      toast.error('수정 요청에 실패했습니다.');
+    } finally {
+      setIsEditLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
@@ -186,18 +212,36 @@ export default function DigitalGoodsClient({
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            onClick={handleGenerate}
-            disabled={isGenerating || isPolling}
-            className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {(isGenerating || isPolling) && (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            )}
-            <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-              {isGenerating || isPolling ? '생성중...' : '굿즈생성'}
-            </div>
-          </button>
+          {resultImage ? (
+            <button
+              onClick={() => setIsEditPopupOpen(true)}
+              disabled={isEditLoading}
+              className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isEditLoading && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
+              {!isEditLoading && (
+                <Edit className="w-4 h-4 mr-1" />
+              )}
+              <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
+                {isEditLoading ? '수정중...' : '수정하기'}
+              </div>
+            </button>
+          ) : (
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating || isPolling}
+              className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {(isGenerating || isPolling) && (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              )}
+              <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
+                {isGenerating || isPolling ? '생성중...' : '굿즈생성'}
+              </div>
+            </button>
+          )}
 
           {resultImage && downloadUrl && (
             <button
@@ -356,6 +400,13 @@ export default function DigitalGoodsClient({
           </div>
         </div>
       </div>
+
+      <EditRequestPopup
+        isOpen={isEditPopupOpen}
+        onClose={() => setIsEditPopupOpen(false)}
+        onEditRequest={handleEditRequest}
+        isLoading={isEditLoading}
+      />
     </div>
   );
 }

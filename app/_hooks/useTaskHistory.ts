@@ -6,6 +6,7 @@ import {
   getTaskHistory,
   getTaskStatus,
   getBatchTaskStatus,
+  BatchTaskResponse,
 } from '@/lib/apis/task.api';
 
 interface HistoryState {
@@ -197,20 +198,20 @@ export function useTaskHistory() {
         const response = await getBatchTaskStatus(taskIds);
 
         if (response.data && Array.isArray(response.data)) {
-          // Update only changed tasks
-          response.data.forEach((updatedTask) => {
+          // Update only changed tasks - Map API response to frontend Task format
+          response.data.forEach((apiTask: BatchTaskResponse) => {
             const existingTask = state.tasks.find(
-              (t) => t.taskId === updatedTask.taskId
+              (t) => t.taskId === apiTask.id
             );
-            if (existingTask && existingTask.status !== updatedTask.status) {
+            if (existingTask && existingTask.status !== apiTask.status) {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
                 payload: {
-                  taskId: updatedTask.taskId,
-                  status: updatedTask.status,
-                  createdAt: updatedTask.createdAt,
-                  actionType: existingTask.actionType, // Keep original actionType
-                  details: updatedTask.details,
+                  taskId: apiTask.id, // API uses 'id', frontend uses 'taskId'
+                  status: apiTask.status as any, // Cast to match GenerationStatus
+                  createdAt: apiTask.createdAt,
+                  actionType: apiTask.actionType as any, // Cast to match ActionType
+                  details: apiTask.details,
                 } as Task,
               });
             }

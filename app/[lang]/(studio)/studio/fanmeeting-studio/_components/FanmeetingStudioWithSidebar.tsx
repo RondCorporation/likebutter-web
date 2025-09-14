@@ -1,0 +1,35 @@
+'use client';
+
+import { useState, useCallback } from 'react';
+import StudioLayout from '../../_components/StudioLayout';
+import FanmeetingStudioClient from './FanmeetingStudioClient';
+import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
+
+interface FanmeetingFormData {
+  place: string;
+  pose: string;
+}
+
+export default function FanmeetingStudioWithSidebar() {
+  const [formData, setFormData] = useState<FanmeetingFormData>({
+    place: '',
+    pose: '',
+  });
+
+  const handleFormChange = useCallback((newFormData: FanmeetingFormData) => {
+    setFormData(newFormData);
+  }, []);
+
+  return (
+    <StudioLayout
+      sidebar={<FanmeetingStudioSidebar onFormChange={handleFormChange} />}
+      bottomSheetOptions={{
+        initialHeight: 50,
+        maxHeight: 90,
+        minHeight: 30,
+      }}
+    >
+      <FanmeetingStudioClient formData={formData} />
+    </StudioLayout>
+  );
+}

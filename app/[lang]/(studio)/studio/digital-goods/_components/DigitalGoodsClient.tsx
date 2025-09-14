@@ -78,12 +78,7 @@ export default function DigitalGoodsClient({
   };
 
   const handleGenerate = async () => {
-    // Validate form data
-    if (!formData.customPrompt || formData.customPrompt.trim().length < 10) {
-      toast.error('프롬프트를 더 자세히 입력해주세요. (최소 10자)');
-      return;
-    }
-
+    // 폼 유효성은 버튼에서 이미 검사되므로 여기서는 제거
     setIsGenerating(true);
     setResultImage(null);
     setDownloadUrl(null);
@@ -204,10 +199,24 @@ export default function DigitalGoodsClient({
     }
   };
 
+  const isFormValid = () => {
+    // 프롬프트는 필수이고 최소 10자 이상
+    if (!formData.customPrompt || formData.customPrompt.trim().length < 10) {
+      return false;
+    }
+
+    // 이미지 업로드는 필수
+    if (!uploadedFile) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
-        <div className="flex-1 text-studio-text-primary text-xl font-bold leading-7 font-pretendard">
+        <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
           디지털 굿즈
         </div>
 
@@ -231,7 +240,7 @@ export default function DigitalGoodsClient({
           ) : (
             <button
               onClick={handleGenerate}
-              disabled={isGenerating || isPolling}
+              disabled={isGenerating || isPolling || !isFormValid()}
               className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {(isGenerating || isPolling) && (

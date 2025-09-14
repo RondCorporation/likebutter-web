@@ -8,10 +8,10 @@ import useStudioNavigationStore from '@/stores/studioNavigationStore';
 // Dynamic imports for studio tools
 const DigitalGoodsClient = dynamic(() => import('../digital-goods/_components/DigitalGoodsClient'));
 const DigitalGoodsStyleSidebar = dynamic(() => import('../digital-goods/_components/DigitalGoodsStyleSidebar'));
-const PhotoEditorClient = dynamic(() => import('../photo-editor/_components/PhotoEditorClient'));
 const ButterCoverClient = dynamic(() => import('../butter-cover/_components/ButterCoverClient'));
 const FanmeetingStudioClient = dynamic(() => import('../fanmeeting-studio/_components/FanmeetingStudioClient'));
-const DreamContiClient = dynamic(() => import('../dream-conti/_components/DreamContiClient'));
+const StylistClient = dynamic(() => import('../stylist/_components/StylistClient'));
+const VirtualCastingClient = dynamic(() => import('../virtual-casting/_components/VirtualCastingClient'));
 const HistoryClient = dynamic(() => import('../history/_components/HistoryClient'));
 const DashboardClient = dynamic(() => import('../_components/DashboardClient'));
 
@@ -29,34 +29,34 @@ interface StudioNavigationState {
 }
 
 const STUDIO_TOOLS: Record<string, StudioToolConfig> = {
-  'dashboard': { 
-    component: DashboardClient, 
-    preloaded: false 
+  'dashboard': {
+    component: DashboardClient,
+    preloaded: false
   },
-  'digital-goods': { 
-    component: DigitalGoodsClient, 
+  'digital-goods': {
+    component: DigitalGoodsClient,
     sidebarComponent: DigitalGoodsStyleSidebar,
-    preloaded: false 
+    preloaded: false
   },
-  'photo-editor': { 
-    component: PhotoEditorClient, 
-    preloaded: false 
+  'stylist': {
+    component: StylistClient,
+    preloaded: false
   },
-  'butter-cover': { 
-    component: ButterCoverClient, 
-    preloaded: false 
+  'virtual-casting': {
+    component: VirtualCastingClient,
+    preloaded: false
   },
-  'fanmeeting-studio': { 
-    component: FanmeetingStudioClient, 
-    preloaded: false 
+  'butter-cover': {
+    component: ButterCoverClient,
+    preloaded: false
   },
-  'dream-conti': { 
-    component: DreamContiClient, 
-    preloaded: false 
+  'fanmeeting-studio': {
+    component: FanmeetingStudioClient,
+    preloaded: false
   },
-  'history': { 
-    component: HistoryClient, 
-    preloaded: false 
+  'history': {
+    component: HistoryClient,
+    preloaded: false
   },
 };
 
@@ -169,8 +169,8 @@ export function useStudioNavigation(lang: string) {
 
   // Preload popular tools on initial load
   useEffect(() => {
-    const popularTools = ['digital-goods', 'photo-editor', 'history'];
-    
+    const popularTools = ['digital-goods', 'stylist', 'history'];
+
     // Preload after a short delay to not block initial render
     const preloadTimeout = setTimeout(() => {
       popularTools.forEach(tool => preloadTool(tool));

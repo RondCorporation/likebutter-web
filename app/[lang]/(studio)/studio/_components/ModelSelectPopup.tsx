@@ -27,9 +27,9 @@ export default function ModelSelectPopup({
   // Prefetch routes when popup opens
   useEffect(() => {
     router.prefetch(`/${lang}/studio/digital-goods`);
-    router.prefetch(`/${lang}/studio/photo-editor`);
+    router.prefetch(`/${lang}/studio/stylist`);
+    router.prefetch(`/${lang}/studio/virtual-casting`);
     router.prefetch(`/${lang}/studio/fanmeeting-studio`);
-    router.prefetch(`/${lang}/studio/dream-conti`);
   }, [router, lang]);
 
   // Prefetch on hover for better UX
@@ -38,14 +38,14 @@ export default function ModelSelectPopup({
       case 'digital-goods':
         router.prefetch(`/${lang}/studio/digital-goods`);
         break;
-      case 'idol-editor':
-        router.prefetch(`/${lang}/studio/photo-editor`);
+      case 'stylist':
+        router.prefetch(`/${lang}/studio/stylist`);
+        break;
+      case 'virtual-casting':
+        router.prefetch(`/${lang}/studio/virtual-casting`);
         break;
       case 'fanmeeting':
         router.prefetch(`/${lang}/studio/fanmeeting-studio`);
-        break;
-      case 'dream-conte':
-        router.prefetch(`/${lang}/studio/dream-conti`);
         break;
     }
   };
@@ -55,7 +55,7 @@ export default function ModelSelectPopup({
       // Handle audio generation
       switch (selectedAudioModel) {
         case 'butter-cover':
-          console.log('Butter Cover page is not ready yet.');
+          router.push(`/${lang}/studio/butter-cover`);
           break;
         default:
           break;
@@ -67,13 +67,13 @@ export default function ModelSelectPopup({
           router.push(`/${lang}/studio/digital-goods`);
           break;
         case 'stylist':
-          console.log('Stylist page is not ready yet.');
-          break;
-        case 'fanmeeting':
-          console.log('Fanmeeting Studio page is not ready yet.');
+          router.push(`/${lang}/studio/stylist`);
           break;
         case 'virtual-casting':
-          console.log('Virtual Casting page is not ready yet.');
+          router.push(`/${lang}/studio/virtual-casting`);
+          break;
+        case 'fanmeeting':
+          router.push(`/${lang}/studio/fanmeeting-studio`);
           break;
         default:
           break;

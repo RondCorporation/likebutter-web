@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import FanmeetingStudioClient from './_components/FanmeetingStudioClient';
+import { Suspense } from 'react';
+import FanmeetingStudioWithSidebar from './_components/FanmeetingStudioWithSidebar';
 
 export const metadata: Metadata = {
   title: 'Fanmeeting Studio - Like Butter Studio',
@@ -8,5 +9,13 @@ export const metadata: Metadata = {
 };
 
 export default function FanmeetingStudioPage() {
-  return <FanmeetingStudioClient />;
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-full">
+        <div className="text-studio-text-secondary">Loading...</div>
+      </div>
+    }>
+      <FanmeetingStudioWithSidebar />
+    </Suspense>
+  );
 }

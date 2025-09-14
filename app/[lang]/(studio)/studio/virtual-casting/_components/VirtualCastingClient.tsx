@@ -4,28 +4,26 @@ import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-interface FanmeetingFormData {
-  place: string;
-  pose: string;
+interface VirtualCastingFormData {
+  selectedCharacter: {
+    category: string;
+    name: string;
+    image: string;
+  } | null;
 }
 
-interface FanmeetingStudioClientProps {
-  formData?: FanmeetingFormData;
+interface VirtualCastingClientProps {
+  formData?: VirtualCastingFormData;
 }
 
-export default function FanmeetingStudioClient({
-  formData,
-}: FanmeetingStudioClientProps) {
-  const [idolFile, setIdolFile] = useState<File | null>(null);
-  const [userFile, setUserFile] = useState<File | null>(null);
-  const [idolPreviewUrl, setIdolPreviewUrl] = useState<string>('');
-  const [userPreviewUrl, setUserPreviewUrl] = useState<string>('');
-  const [isDragOverIdol, setIsDragOverIdol] = useState(false);
-  const [isDragOverUser, setIsDragOverUser] = useState(false);
+export default function VirtualCastingClient({ formData }: VirtualCastingClientProps) {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
 
-  const handleFileUpload = (file: File, type: 'idol' | 'user') => {
+  const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
     if (file.size > 200 * 1024 * 1024) {
       toast.error('파일 크기가 200MB를 초과합니다.');
@@ -38,15 +36,11 @@ export default function FanmeetingStudioClient({
       return;
     }
 
-    if (type === 'idol') {
-      setIdolFile(file);
-      const url = URL.createObjectURL(file);
-      setIdolPreviewUrl(url);
-    } else {
-      setUserFile(file);
-      const url = URL.createObjectURL(file);
-      setUserPreviewUrl(url);
-    }
+    setUploadedFile(file);
+
+    // Create preview URL
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
   };
 
   const handleGenerate = async () => {
@@ -57,23 +51,18 @@ export default function FanmeetingStudioClient({
 
     try {
       // TODO: API 연결
-      console.log('Fanmeeting generation data:', {
-        formData,
-        idolFile,
-        userFile,
-      });
+      console.log('Virtual casting generation data:', { formData, uploadedFile });
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
       // Mock result
-      setResultImage(
-        'https://via.placeholder.com/400x400/444444/FFFFFF?text=Fanmeeting+Result'
-      );
-      toast.success('팬미팅 사진이 생성되었습니다!');
+      setResultImage('https://via.placeholder.com/400x400/444444/FFFFFF?text=Virtual+Casting+Result');
+      toast.success('가상 캐스팅이 완료되었습니다!');
+
     } catch (error) {
-      console.error('Failed to generate fanmeeting result:', error);
-      toast.error('팬미팅 사진 생성에 실패했습니다.');
+      console.error('Failed to generate virtual casting result:', error);
+      toast.error('가상 캐스팅에 실패했습니다.');
     } finally {
       setIsProcessing(false);
     }
@@ -89,7 +78,7 @@ export default function FanmeetingStudioClient({
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `fanmeeting-result-${Date.now()}.png`;
+      link.download = `virtual-casting-result-${Date.now()}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -102,19 +91,17 @@ export default function FanmeetingStudioClient({
     }
   };
 
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    type: 'idol' | 'user'
-  ) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      handleFileUpload(file, type);
+      handleFileUpload(file);
     }
   };
 
   const handleDragOver = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
+      setIsDragOver(true);
     },
     []
   );
@@ -122,53 +109,33 @@ export default function FanmeetingStudioClient({
   const handleDragLeave = useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
+      setIsDragOver(false);
     },
     []
   );
 
-  const handleDropIdol = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsDragOverIdol(false);
+  const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragOver(false);
 
-      const files = event.dataTransfer.files;
-      if (files.length > 0) {
-        handleFileUpload(files[0], 'idol');
-      }
-    },
-    []
-  );
-
-  const handleDropUser = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setIsDragOverUser(false);
-
-      const files = event.dataTransfer.files;
-      if (files.length > 0) {
-        handleFileUpload(files[0], 'user');
-      }
-    },
-    []
-  );
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileUpload(files[0]);
+    }
+  }, []);
 
   const isFormValid = () => {
     if (!formData) return false;
 
-    // 장소와 포즈가 모두 입력되어야 하고, 두 이미지가 모두 업로드되어야 함
-    return (
-      formData.place.trim().length > 0 &&
-      formData.pose.trim().length > 0 &&
-      idolFile !== null &&
-      userFile !== null
-    );
+    // 캐릭터 선택과 이미지 업로드 모두 필수
+    return formData.selectedCharacter !== null && uploadedFile !== null;
   };
 
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
         <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
-          온라인 팬미팅
+          가상 캐스팅
         </div>
 
         <div className="flex items-center gap-2">
@@ -182,7 +149,7 @@ export default function FanmeetingStudioClient({
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               )}
               <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                {isProcessing ? '생성중...' : '팬미팅생성'}
+                {isProcessing ? '생성중...' : '캐스팅생성'}
               </div>
             </button>
           ) : (
@@ -201,143 +168,74 @@ export default function FanmeetingStudioClient({
 
       <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:h-[calc(100vh-180px)] md:overflow-hidden">
         <div className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto">
-          {/* 아이돌 이미지 업로드 */}
-          <div className="flex items-center justify-between">
-            <div className="text-studio-text-primary text-sm font-pretendard-medium">
-              아이돌 사진
-            </div>
-          </div>
-
-          <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
-              !idolPreviewUrl ? 'border-2 border-dashed' : ''
-            } ${
-              isDragOverIdol
-                ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
-                : 'border-studio-border hover:border-studio-button-primary/50'
-            }`}
-            onDragOver={(e) => {
-              handleDragOver(e);
-              setIsDragOverIdol(true);
-            }}
-            onDragLeave={(e) => {
-              handleDragLeave(e);
-              setIsDragOverIdol(false);
-            }}
-            onDrop={handleDropIdol}
-          >
-            {idolPreviewUrl ? (
-              <img
-                className="w-full h-full object-contain rounded-[20px]"
-                alt="Idol preview"
-                src={idolPreviewUrl}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-2">
-                <Upload
-                  className={`w-6 h-6 mb-2 transition-all duration-200 ${
-                    isDragOverIdol
-                      ? 'text-studio-button-primary scale-110'
-                      : 'text-studio-text-secondary'
-                  }`}
-                />
-                <div
-                  className={`text-xs mb-1 font-pretendard-medium transition-colors duration-200 ${
-                    isDragOverIdol
-                      ? 'text-studio-button-primary'
-                      : 'text-studio-text-secondary'
-                  }`}
-                >
-                  {isDragOverIdol ? '파일을 놓아주세요' : '아이돌 사진 업로드'}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={() => document.getElementById('idol-file-upload')?.click()}
-            className="w-full h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
-          >
-            <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-              아이돌 사진 찾기
-            </div>
-          </button>
-
-          <input
-            id="idol-file-upload"
-            type="file"
-            accept="image/png,image/jpg,image/jpeg"
-            onChange={(e) => handleInputChange(e, 'idol')}
-            className="hidden"
-          />
-
-          {/* 내 사진 업로드 */}
+          {/* 제목 */}
           <div className="flex items-center justify-between">
             <div className="text-studio-text-primary text-sm font-pretendard-medium">
               내 사진
             </div>
           </div>
 
+          {/* 드래그 앤 드롭 영역 */}
           <div
             className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
-              !userPreviewUrl ? 'border-2 border-dashed' : ''
+              !previewUrl ? 'border-2 border-dashed' : ''
             } ${
-              isDragOverUser
+              isDragOver
                 ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
-            onDragOver={(e) => {
-              handleDragOver(e);
-              setIsDragOverUser(true);
-            }}
-            onDragLeave={(e) => {
-              handleDragLeave(e);
-              setIsDragOverUser(false);
-            }}
-            onDrop={handleDropUser}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
           >
-            {userPreviewUrl ? (
+            {previewUrl ? (
               <img
                 className="w-full h-full object-contain rounded-[20px]"
-                alt="User preview"
-                src={userPreviewUrl}
+                alt="Uploaded preview"
+                src={previewUrl}
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-2">
+              <div className="flex flex-col items-center justify-center h-full text-center p-4">
                 <Upload
-                  className={`w-6 h-6 mb-2 transition-all duration-200 ${
-                    isDragOverUser
+                  className={`w-8 h-8 mb-3 transition-all duration-200 ${
+                    isDragOver
                       ? 'text-studio-button-primary scale-110'
                       : 'text-studio-text-secondary'
                   }`}
                 />
                 <div
-                  className={`text-xs mb-1 font-pretendard-medium transition-colors duration-200 ${
-                    isDragOverUser
+                  className={`text-sm mb-1 font-pretendard-medium transition-colors duration-200 ${
+                    isDragOver
                       ? 'text-studio-button-primary'
                       : 'text-studio-text-secondary'
                   }`}
                 >
-                  {isDragOverUser ? '파일을 놓아주세요' : '내 사진 업로드'}
+                  {isDragOver
+                    ? '파일을 놓아주세요'
+                    : '파일을 여기다 끌어다 놓으세요'}
+                </div>
+                <div className="text-studio-text-muted text-xs font-pretendard">
+                  파일당 200mb 제한 (png, jpg, jpeg)
                 </div>
               </div>
             )}
           </div>
 
+          {/* 파일 찾아보기 버튼 */}
           <button
-            onClick={() => document.getElementById('user-file-upload')?.click()}
-            className="w-full h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
+            onClick={() => document.getElementById('file-upload')?.click()}
+            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-              내 사진 찾기
+              파일 찾아보기
             </div>
           </button>
 
           <input
-            id="user-file-upload"
+            id="file-upload"
             type="file"
             accept="image/png,image/jpg,image/jpeg"
-            onChange={(e) => handleInputChange(e, 'user')}
+            onChange={handleInputChange}
             className="hidden"
           />
         </div>
@@ -350,7 +248,7 @@ export default function FanmeetingStudioClient({
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
                   <div className="text-studio-text-primary text-base font-pretendard-medium">
-                    팬미팅 사진 생성 중...
+                    가상 캐스팅 생성 중...
                   </div>
                   <div className="text-studio-text-muted text-sm font-pretendard">
                     잠시 기다리시면 결과가 나옵니다
@@ -362,7 +260,7 @@ export default function FanmeetingStudioClient({
               <div className="relative w-full h-full">
                 <img
                   src={resultImage}
-                  alt="Generated fanmeeting result"
+                  alt="Generated virtual casting result"
                   className="w-full h-full object-contain rounded-[20px]"
                 />
                 <button
@@ -384,7 +282,7 @@ export default function FanmeetingStudioClient({
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
                     사이드바에서 설정을 완료하고
                     <br />
-                    '팬미팅생성'을 눌러주세요
+                    '캐스팅생성'을 눌러주세요
                   </div>
                 </div>
               </div>

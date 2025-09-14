@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import CustomDropdown from '../../_components/CustomDropdown';
+import ScrollableGrid from '../../_components/ScrollableGrid';
 
 import { DigitalGoodsStyle } from '@/lib/apis/task.api';
 
@@ -32,10 +32,6 @@ export default function DigitalGoodsStyleSidebar({
   const [brandName, setBrandName] = useState('');
 
   const [imageSize, setImageSize] = useState('1:1(정방향)');
-  const [fileUpload, setFileUpload] = useState('1:1(정방향)');
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const stylePresets = [
     { name: '포스터', value: 'POSTER', width: 84 },
@@ -77,45 +73,6 @@ export default function DigitalGoodsStyleSidebar({
     onFormChange,
   ]);
 
-  const checkScrollButtons = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } =
-        scrollContainerRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
-    }
-  };
-
-  const scrollLeft = () => {
-    if (scrollContainerRef.current && canScrollLeft) {
-      scrollContainerRef.current.scrollBy({
-        left: -180,
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollContainerRef.current && canScrollRight) {
-      scrollContainerRef.current.scrollBy({
-        left: 180,
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      checkScrollButtons();
-      scrollContainer.addEventListener('scroll', checkScrollButtons);
-
-      return () => {
-        scrollContainer.removeEventListener('scroll', checkScrollButtons);
-      };
-    }
-  }, []);
-
   return (
     <div className="flex flex-col w-full md:w-[260px] h-full items-start gap-6 md:gap-10 pt-3 md:pt-6 pb-3 px-3 relative bg-studio-sidebar md:border-r border-solid border-studio-border-light overflow-y-auto">
       <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">
@@ -125,12 +82,8 @@ export default function DigitalGoodsStyleSidebar({
             스타일 프리셋
           </div>
 
-          <div className="relative w-full overflow-hidden group">
-            {/* 스크롤 컨테이너 */}
-            <div
-              ref={scrollContainerRef}
-              className="flex flex-col gap-2.5 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden [-webkit-scrollbar-width:none] [scrollbar-width:none] overscroll-contain"
-            >
+          <ScrollableGrid rows={2} scrollAmount={180}>
+            <div className="flex flex-col gap-2.5 flex-shrink-0">
               <div className="flex gap-3 flex-shrink-0">
                 {stylePresets.slice(0, 3).map((preset, index) => (
                   <div
@@ -184,35 +137,7 @@ export default function DigitalGoodsStyleSidebar({
                 ))}
               </div>
             </div>
-
-            {/* 얇은 그라데이션 페이드 */}
-            {canScrollLeft && (
-              <div className="absolute left-0 top-0 w-4 h-full bg-gradient-to-r from-studio-sidebar to-transparent pointer-events-none z-10 opacity-60" />
-            )}
-
-            {canScrollRight && (
-              <div className="absolute right-0 top-0 w-4 h-full bg-gradient-to-l from-studio-sidebar to-transparent pointer-events-none z-10 opacity-60" />
-            )}
-
-            {/* 미니멀한 화살표 - 호버시만 표시 */}
-            {canScrollLeft && (
-              <button
-                onClick={scrollLeft}
-                className="absolute left-1 top-1/2 transform -translate-y-1/2 p-1 rounded-full opacity-0 group-hover:opacity-70 hover:opacity-100 bg-studio-sidebar/80 backdrop-blur-sm transition-all duration-300 z-20"
-              >
-                <ChevronLeft className="w-3 h-3 text-studio-text-primary" />
-              </button>
-            )}
-
-            {canScrollRight && (
-              <button
-                onClick={scrollRight}
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 p-1 rounded-full opacity-0 group-hover:opacity-70 hover:opacity-100 bg-studio-sidebar/80 backdrop-blur-sm transition-all duration-300 z-20"
-              >
-                <ChevronRight className="w-3 h-3 text-studio-text-primary" />
-              </button>
-            )}
-          </div>
+          </ScrollableGrid>
         </div>
 
         {/* 프롬프트 입력 (공통 필수) */}
@@ -348,23 +273,6 @@ export default function DigitalGoodsStyleSidebar({
             ]}
             value={imageSize}
             onChange={setImageSize}
-          />
-        </div>
-
-        {/* 파일업로드 - DropdownButton 컴포넌트 스타일 매칭 */}
-        <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
-          <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
-            파일업로드
-          </div>
-
-          <CustomDropdown
-            options={[
-              { value: '1:1(정방향)', label: '1:1(정방향)' },
-              { value: '16:9(가로형)', label: '16:9(가로형)' },
-              { value: '9:16(세로형)', label: '9:16(세로형)' },
-            ]}
-            value={fileUpload}
-            onChange={setFileUpload}
           />
         </div>
       </div>

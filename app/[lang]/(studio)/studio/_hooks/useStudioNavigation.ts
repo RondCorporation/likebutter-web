@@ -6,23 +6,20 @@ import dynamic from 'next/dynamic';
 import useStudioNavigationStore from '@/stores/studioNavigationStore';
 
 // Dynamic imports for studio tools
-const DigitalGoodsClient = dynamic(
-  () => import('../digital-goods/_components/DigitalGoodsClient')
-);
-const DigitalGoodsStyleSidebar = dynamic(
-  () => import('../digital-goods/_components/DigitalGoodsStyleSidebar')
+const DigitalGoodsWithSidebar = dynamic(
+  () => import('../digital-goods/_components/DigitalGoodsWithSidebar')
 );
 const ButterCoverClient = dynamic(
   () => import('../butter-cover/_components/ButterCoverClient')
 );
-const FanmeetingStudioClient = dynamic(
-  () => import('../fanmeeting-studio/_components/FanmeetingStudioClient')
+const FanmeetingStudioWithSidebar = dynamic(
+  () => import('../fanmeeting-studio/_components/FanmeetingStudioWithSidebar')
 );
-const StylistClient = dynamic(
-  () => import('../stylist/_components/StylistClient')
+const StylistWithSidebar = dynamic(
+  () => import('../stylist/_components/StylistWithSidebar')
 );
-const VirtualCastingClient = dynamic(
-  () => import('../virtual-casting/_components/VirtualCastingClient')
+const VirtualCastingWithSidebar = dynamic(
+  () => import('../virtual-casting/_components/VirtualCastingWithSidebar')
 );
 const ArchiveClient = dynamic(
   () => import('../archive/_components/ArchiveClient')
@@ -31,7 +28,6 @@ const DashboardClient = dynamic(() => import('../_components/DashboardClient'));
 
 interface StudioToolConfig {
   component: React.ComponentType<any>;
-  sidebarComponent?: React.ComponentType<any>;
   preloaded: boolean;
   lastVisited?: Date;
 }
@@ -48,16 +44,15 @@ const STUDIO_TOOLS: Record<string, StudioToolConfig> = {
     preloaded: false,
   },
   'digital-goods': {
-    component: DigitalGoodsClient,
-    sidebarComponent: DigitalGoodsStyleSidebar,
+    component: DigitalGoodsWithSidebar,
     preloaded: false,
   },
   stylist: {
-    component: StylistClient,
+    component: StylistWithSidebar,
     preloaded: false,
   },
   'virtual-casting': {
-    component: VirtualCastingClient,
+    component: VirtualCastingWithSidebar,
     preloaded: false,
   },
   'butter-cover': {
@@ -65,10 +60,10 @@ const STUDIO_TOOLS: Record<string, StudioToolConfig> = {
     preloaded: false,
   },
   'fanmeeting-studio': {
-    component: FanmeetingStudioClient,
+    component: FanmeetingStudioWithSidebar,
     preloaded: false,
   },
-  history: {
+  archive: {
     component: ArchiveClient,
     preloaded: false,
   },
@@ -125,12 +120,6 @@ export function useStudioNavigation(lang: string) {
 
       // Cache the component
       componentCache.current.set(toolName, toolConfig.component);
-      if (toolConfig.sidebarComponent) {
-        componentCache.current.set(
-          `${toolName}-sidebar`,
-          toolConfig.sidebarComponent
-        );
-      }
 
       // Mark as preloaded in local state
       setNavigationState((prev) => ({
@@ -208,17 +197,43 @@ export function useStudioNavigation(lang: string) {
     ]
   );
 
-  // Preload popular tools on initial load
+  // Check if tool is preloaded
+  const isToolPreloaded = useCallback(
+    (toolName: string) => navigationState.preloadedTools.has(toolName),
+    [navigationState.preloadedTools]
+  );
+
+  // Preload critical tools immediately, others progressively
   useEffect(() => {
-    const popularTools = ['digital-goods', 'stylist', 'history'];
+    // Preload dashboard component immediately since it's the default
+    preloadTool('dashboard');
 
-    // Preload after a short delay to not block initial render
-    const preloadTimeout = setTimeout(() => {
-      popularTools.forEach((tool) => preloadTool(tool));
-    }, 1000);
+    // Progressive preloading with priority levels
+    const preloadSchedule = [
+      { tools: ['digital-goods'], delay: 0 },      // Critical: Load immediately
+      { tools: ['archive'], delay: 200 },          // High: Load very quickly
+      { tools: ['stylist'], delay: 500 },          // Medium: Load after initial paint
+      { tools: ['virtual-casting'], delay: 1000 }, // Medium: Load after user settles
+      { tools: ['butter-cover', 'fanmeeting-studio'], delay: 2000 } // Low: Load in background
+    ];
 
-    return () => clearTimeout(preloadTimeout);
-  }, [preloadTool]);
+    const timeouts: NodeJS.Timeout[] = [];
+
+    preloadSchedule.forEach(({ tools, delay }) => {
+      const timeout = setTimeout(() => {
+        tools.forEach((tool) => {
+          if (!isToolPreloaded(tool)) {
+            preloadTool(tool);
+          }
+        });
+      }, delay);
+      timeouts.push(timeout);
+    });
+
+    return () => {
+      timeouts.forEach(clearTimeout);
+    };
+  }, [preloadTool, isToolPreloaded]);
 
   // Update current tool based on pathname changes
   useEffect(() => {
@@ -243,23 +258,6 @@ export function useStudioNavigation(lang: string) {
     return null;
   }, []);
 
-  // Get cached sidebar component for a tool
-  const getToolSidebarComponent = useCallback((toolName: string) => {
-    const cached = componentCache.current.get(`${toolName}-sidebar`);
-    if (cached) return cached;
-
-    const toolConfig = STUDIO_TOOLS[toolName];
-    if (toolConfig?.sidebarComponent) {
-      componentCache.current.set(
-        `${toolName}-sidebar`,
-        toolConfig.sidebarComponent
-      );
-      return toolConfig.sidebarComponent;
-    }
-
-    return null;
-  }, []);
-
   return {
     currentTool: navigationState.currentTool,
     isTransitioning: navigationState.isTransitioning,
@@ -267,7 +265,6 @@ export function useStudioNavigation(lang: string) {
     navigateToTool,
     preloadTool,
     getToolComponent,
-    getToolSidebarComponent,
     isToolPreloaded: (toolName: string) =>
       navigationState.preloadedTools.has(toolName),
   };

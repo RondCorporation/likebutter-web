@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import {
   createFanmeetingStudioTask,
   FanmeetingStudioRequest,
-} from '@/lib/apis/task.api';
+} from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface FanmeetingFormData {
@@ -173,15 +173,17 @@ export default function FanmeetingStudioClient({
   );
 
   const isFormValid = () => {
+    // 두 개의 이미지 업로드 필수 (아이돌 + 사용자)
+    if (!idolFile || !userFile) return false;
+
+    // sidebar에서 formData가 설정되어야 함
     if (!formData) return false;
 
-    // 배경과 상황이 모두 입력되어야 하고, 두 이미지가 모두 업로드되어야 함
-    return (
-      formData.backgroundPrompt.trim().length > 0 &&
-      formData.situationPrompt.trim().length > 0 &&
-      idolFile !== null &&
-      userFile !== null
-    );
+    // 배경 프롬프트와 상황 프롬프트 둘 다 필수
+    if (!formData.backgroundPrompt || formData.backgroundPrompt.trim().length < 2) return false;
+    if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2) return false;
+
+    return true;
   };
 
   return (

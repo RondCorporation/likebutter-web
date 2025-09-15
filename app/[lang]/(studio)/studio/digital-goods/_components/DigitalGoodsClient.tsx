@@ -6,14 +6,14 @@ import {
   createDigitalGoodsTask,
   DigitalGoodsRequest,
   DigitalGoodsStyle,
-} from '@/lib/apis/task.api';
+} from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import { toast } from 'react-hot-toast';
 import { DigitalGoodsDetails } from '@/types/task';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
 
 interface DigitalGoodsClientProps {
-  formData: {
+  formData?: {
     style?: DigitalGoodsStyle;
     customPrompt?: string;
     title?: string;
@@ -25,7 +25,7 @@ interface DigitalGoodsClientProps {
 }
 
 export default function DigitalGoodsClient({
-  formData,
+  formData = {},
 }: DigitalGoodsClientProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -78,7 +78,8 @@ export default function DigitalGoodsClient({
   };
 
   const handleGenerate = async () => {
-    // 폼 유효성은 버튼에서 이미 검사되므로 여기서는 제거
+    if (!formData || !uploadedFile) return;
+
     setIsGenerating(true);
     setResultImage(null);
     setDownloadUrl(null);
@@ -199,14 +200,28 @@ export default function DigitalGoodsClient({
   };
 
   const isFormValid = () => {
-    // 프롬프트는 필수이고 최소 10자 이상
-    if (!formData.customPrompt || formData.customPrompt.trim().length < 10) {
-      return false;
-    }
+    // 이미지 업로드 필수
+    if (!uploadedFile) return false;
 
-    // 이미지 업로드는 필수
-    if (!uploadedFile) {
-      return false;
+    // sidebar에서 formData가 설정되어야 함
+    if (!formData) return false;
+
+    // 스타일별 유효성 검사
+    const style = formData.style || 'POSTER';
+
+    if (style === 'POSTER') {
+      // POSTER: 제목 + 부제목 + 프롬프트 필수
+      if (!formData.title || formData.title.trim().length < 1) return false;
+      if (!formData.subtitle || formData.subtitle.trim().length < 1) return false;
+      if (!formData.customPrompt || formData.customPrompt.trim().length < 5) return false;
+    } else if (style === 'FIGURE') {
+      // FIGURE: 브랜드명 + 제품명 + 프롬프트 필수
+      if (!formData.brandName || formData.brandName.trim().length < 1) return false;
+      if (!formData.productName || formData.productName.trim().length < 1) return false;
+      if (!formData.customPrompt || formData.customPrompt.trim().length < 5) return false;
+    } else {
+      // STICKER, GHIBLI, CARTOON: 프롬프트만 필수
+      if (!formData.customPrompt || formData.customPrompt.trim().length < 5) return false;
     }
 
     return true;
@@ -328,6 +343,7 @@ export default function DigitalGoodsClient({
             onChange={handleInputChange}
             className="hidden"
           />
+
         </div>
 
         <div className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden">

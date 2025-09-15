@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { createStylistTask, StylistRequest } from '@/lib/apis/task.api';
+import { createStylistTask, StylistRequest } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface StylistFormData {
@@ -181,23 +181,26 @@ export default function StylistClient({ formData }: StylistClientProps) {
   }, []);
 
   const isFormValid = () => {
-    if (!formData || !uploadedFile) return false;
+    // 이미지 업로드 필수
+    if (!uploadedFile) return false;
+
+    // sidebar에서 formData가 설정되어야 함
+    if (!formData) return false;
+
+    // mode가 설정되어야 함
+    if (!formData.mode) return false;
 
     if (formData.mode === 'text') {
-      return (formData.textPrompt?.trim().length ?? 0) > 0;
-    } else {
-      // 이미지 모드에서는 이미지 설정과 파일, 또는 프롬프트 중 하나라도 있어야 함
-      const hasImageSettings = Object.values(formData.imageSettings || {}).some(
-        Boolean
-      );
-      const hasUploadedFiles =
-        formData.uploadedFiles &&
-        Object.values(formData.uploadedFiles).some(
-          (file) => file !== undefined
-        );
-      const hasPrompt = (formData.imagePrompt?.trim().length ?? 0) > 0;
-      return hasImageSettings || hasUploadedFiles || hasPrompt;
+      // 텍스트 모드: 텍스트 설명 + 이미지 필수
+      if (!formData.textPrompt || formData.textPrompt.trim().length < 5) return false;
+    } else if (formData.mode === 'image') {
+      // 이미지 모드: 최소 1개 이미지 첨부 + 기본 이미지 필수
+      const hasUploadedFiles = formData.uploadedFiles &&
+        Object.values(formData.uploadedFiles).some(file => file instanceof File);
+      if (!hasUploadedFiles) return false;
     }
+
+    return true;
   };
 
   return (

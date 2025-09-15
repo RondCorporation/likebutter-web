@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Plus, Home, FolderOpen, Users } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import ModelSelectPopup from './ModelSelectPopup';
@@ -12,7 +11,7 @@ interface StudioSidebarProps {
 }
 
 export default function StudioSidebar({ lang }: StudioSidebarProps) {
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [showModelPopup, setShowModelPopup] = useState(false);
 
   const handleComingSoon = () => {
@@ -25,12 +24,23 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
     });
   };
 
-  // 현재 선택된 메뉴 확인 - Digital Goods 페이지에서는 아무것도 선택되지 않음
+  // SPA 네비게이션 함수
+  const navigateToTool = (toolName: string) => {
+    if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
+      (window as any).studioNavigateToTool(toolName);
+    }
+  };
+
+  // 현재 선택된 메뉴 확인
+  const getCurrentTool = () => {
+    return searchParams.get('tool') || 'dashboard';
+  };
+
   const getSelectedMenu = () => {
-    if (pathname === `/${lang}/studio`) return 'home';
-    if (pathname === `/${lang}/studio/archive`) return 'vault';
-    if (pathname === `/${lang}/studio/help`) return 'help';
-    // digital-goods 페이지에서는 아무것도 선택되지 않음
+    const currentTool = getCurrentTool();
+    if (currentTool === 'dashboard') return 'home';
+    if (currentTool === 'archive') return 'vault';
+    if (currentTool === 'help') return 'help';
     return '';
   };
 
@@ -58,13 +68,13 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
         {/* 홈 버튼 */}
         <div className="flex flex-col items-center gap-1">
-          <Link href={`/${lang}/studio`} prefetch={true}>
+          <button onClick={() => navigateToTool('dashboard')}>
             <div
               className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-md transition-colors ${selectedMenu === 'home' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
             >
               <Home className="w-5 h-5" color="#89898B" />
             </div>
-          </Link>
+          </button>
           <div
             className="text-[#a8a8aa] text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}
@@ -75,13 +85,13 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
         {/* 보관함 버튼 */}
         <div className="flex flex-col items-center gap-1">
-          <Link href={`/${lang}/studio/archive`} prefetch={true}>
+          <button onClick={() => navigateToTool('archive')}>
             <div
               className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-[10px] transition-colors ${selectedMenu === 'vault' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
             >
               <FolderOpen className="w-5 h-5" color="#C3C3C5" />
             </div>
-          </Link>
+          </button>
           <div
             className="text-[#a8a8aa] text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}

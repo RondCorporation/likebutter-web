@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-import { Suspense } from 'react';
-import FanmeetingStudioWithSidebar from './_components/FanmeetingStudioWithSidebar';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Fanmeeting Studio - Like Butter Studio',
@@ -8,16 +7,13 @@ export const metadata: Metadata = {
     'Create magical fanmeeting moments with AI-powered studio experiences',
 };
 
-export default function FanmeetingStudioPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center h-full">
-          <div className="text-studio-text-secondary">Loading...</div>
-        </div>
-      }
-    >
-      <FanmeetingStudioWithSidebar />
-    </Suspense>
-  );
+type Props = {
+  params: Promise<{ lang: string }>;
+};
+
+export default async function FanmeetingStudioPage({ params }: Props) {
+  const { lang } = await params;
+
+  // Redirect to main studio page with tool parameter
+  redirect(`/${lang}/studio?tool=fanmeeting-studio`);
 }

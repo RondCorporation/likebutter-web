@@ -7,7 +7,7 @@ import CustomDropdown from '../../_components/CustomDropdown';
 import ScrollableGrid from '../../_components/ScrollableGrid';
 
 interface VirtualCastingSidebarProps {
-  onFormChange: (formData: {
+  onFormChange?: (formData: {
     selectedCharacter: {
       category: string;
       name: string;
@@ -23,7 +23,7 @@ interface Character {
 
 export default function VirtualCastingSidebar({
   onFormChange,
-}: VirtualCastingSidebarProps) {
+}: VirtualCastingSidebarProps = {}) {
   const [selectedCharacter, setSelectedCharacter] = useState<{
     category: string;
     name: string;
@@ -106,7 +106,7 @@ export default function VirtualCastingSidebar({
     };
 
     setSelectedCharacter(newSelection);
-    onFormChange({
+    onFormChange?.({
       selectedCharacter: newSelection,
     });
   };

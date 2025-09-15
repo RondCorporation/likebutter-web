@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import initTranslations from '@/lib/i18n-server';
-import ArchiveClient from './_components/ArchiveClient';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HistoryPage({ params }: Props) {
   const { lang } = await params;
-  const { t } = await initTranslations(lang, ['common']);
 
-  return <ArchiveClient />;
+  // Redirect to main studio page with tool parameter
+  redirect(`/${lang}/studio?tool=archive`);
 }

@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import {
   createVirtualCastingTask,
   VirtualCastingRequest,
-} from '@/lib/apis/task.api';
+} from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface VirtualCastingFormData {
@@ -147,10 +147,16 @@ export default function VirtualCastingClient({
   }, []);
 
   const isFormValid = () => {
+    // 이미지 업로드 필수
+    if (!uploadedFile) return false;
+
+    // sidebar에서 formData가 설정되어야 함
     if (!formData) return false;
 
-    // 캐릭터 선택과 이미지 업로드 모두 필수
-    return formData.selectedCharacter !== null && uploadedFile !== null;
+    // 캐릭터 1개 선택 필수
+    if (!formData.selectedCharacter) return false;
+
+    return true;
   };
 
   return (

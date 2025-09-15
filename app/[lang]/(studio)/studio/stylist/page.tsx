@@ -1,16 +1,12 @@
-import { Suspense } from 'react';
-import StylistWithSidebar from './_components/StylistWithSidebar';
+import { redirect } from 'next/navigation';
 
-export default function StylistPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center h-full">
-          <div className="text-studio-text-secondary">Loading...</div>
-        </div>
-      }
-    >
-      <StylistWithSidebar />
-    </Suspense>
-  );
+type Props = {
+  params: Promise<{ lang: string }>;
+};
+
+export default async function StylistPage({ params }: Props) {
+  const { lang } = await params;
+
+  // Redirect to main studio page with tool parameter
+  redirect(`/${lang}/studio?tool=stylist`);
 }

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Plus, Home, FolderOpen, Users, MoreHorizontal } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import ModelSelectPopup from './ModelSelectPopup';
@@ -14,7 +13,7 @@ interface MobileBottomNavigationProps {
 export default function MobileBottomNavigation({
   lang,
 }: MobileBottomNavigationProps) {
-  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [showModelPopup, setShowModelPopup] = useState(false);
 
   const handleComingSoon = () => {
@@ -27,11 +26,23 @@ export default function MobileBottomNavigation({
     });
   };
 
+  // SPA 네비게이션 함수
+  const navigateToTool = (toolName: string) => {
+    if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
+      (window as any).studioNavigateToTool(toolName);
+    }
+  };
+
   // 현재 선택된 메뉴 확인
+  const getCurrentTool = () => {
+    return searchParams.get('tool') || 'dashboard';
+  };
+
   const getSelectedMenu = () => {
-    if (pathname === `/${lang}/studio`) return 'home';
-    if (pathname === `/${lang}/studio/vault`) return 'vault';
-    if (pathname === `/${lang}/studio/help`) return 'help';
+    const currentTool = getCurrentTool();
+    if (currentTool === 'dashboard') return 'home';
+    if (currentTool === 'archive') return 'vault';
+    if (currentTool === 'help') return 'help';
     return '';
   };
 
@@ -45,8 +56,8 @@ export default function MobileBottomNavigation({
           style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
         >
           {/* 홈 */}
-          <Link
-            href={`/${lang}/studio`}
+          <button
+            onClick={() => navigateToTool('dashboard')}
             className="flex flex-col items-center py-2 px-3"
           >
             <div
@@ -68,11 +79,11 @@ export default function MobileBottomNavigation({
             >
               홈
             </span>
-          </Link>
+          </button>
 
           {/* 보관함 */}
           <button
-            onClick={handleComingSoon}
+            onClick={() => navigateToTool('archive')}
             className="flex flex-col items-center py-2 px-3"
           >
             <div

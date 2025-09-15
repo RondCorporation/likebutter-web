@@ -1,4 +1,4 @@
-import DashboardClient from './_components/DashboardClient';
+import StudioRouter from './_components/StudioRouter';
 
 type Props = {
   params: Promise<{ lang: string }>;
@@ -7,5 +7,5 @@ type Props = {
 export default async function StudioPage({ params }: Props) {
   const { lang } = await params;
 
-  return <DashboardClient />;
+  return <StudioRouter lang={lang} />;
 }

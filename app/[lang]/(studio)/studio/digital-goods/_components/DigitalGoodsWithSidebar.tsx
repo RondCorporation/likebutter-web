@@ -5,7 +5,7 @@ import { useIsDesktop } from '@/hooks/useMediaQuery';
 import BottomSheet from '@/components/BottomSheet';
 import DigitalGoodsClient from './DigitalGoodsClient';
 import DigitalGoodsStyleSidebar from './DigitalGoodsStyleSidebar';
-import { DigitalGoodsStyle } from '@/lib/apis/task.api';
+import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 
 export default function DigitalGoodsWithSidebar() {
   const isDesktop = useIsDesktop();

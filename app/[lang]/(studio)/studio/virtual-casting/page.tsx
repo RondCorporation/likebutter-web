@@ -1,16 +1,12 @@
-import { Suspense } from 'react';
-import VirtualCastingWithSidebar from './_components/VirtualCastingWithSidebar';
+import { redirect } from 'next/navigation';
 
-export default function VirtualCastingPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center h-full">
-          <div className="text-studio-text-secondary">Loading...</div>
-        </div>
-      }
-    >
-      <VirtualCastingWithSidebar />
-    </Suspense>
-  );
+type Props = {
+  params: Promise<{ lang: string }>;
+};
+
+export default async function VirtualCastingPage({ params }: Props) {
+  const { lang } = await params;
+
+  // Redirect to main studio page with tool parameter
+  redirect(`/${lang}/studio?tool=virtual-casting`);
 }

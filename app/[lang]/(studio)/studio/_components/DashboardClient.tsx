@@ -75,7 +75,16 @@ export default function DashboardClient() {
   ];
 
   const handleToolClick = (route: string) => {
-    router.push(route);
+    // Extract tool name from route
+    const toolName = route.split('/').pop() || 'dashboard';
+
+    // Use the global navigation function if available (SPA mode)
+    if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
+      (window as any).studioNavigateToTool(toolName);
+    } else {
+      // Fallback to traditional routing
+      router.push(route);
+    }
   };
 
   const currentToolCards =

@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import CustomDropdown from '../../_components/CustomDropdown';
 import ScrollableGrid from '../../_components/ScrollableGrid';
 
-import { DigitalGoodsStyle } from '@/lib/apis/task.api';
+import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 
 interface DigitalGoodsStyleSidebarProps {
-  onFormChange: (formData: {
+  onFormChange?: (formData: {
     style?: DigitalGoodsStyle;
     customPrompt?: string;
     title?: string;
@@ -20,7 +20,7 @@ interface DigitalGoodsStyleSidebarProps {
 
 export default function DigitalGoodsStyleSidebar({
   onFormChange,
-}: DigitalGoodsStyleSidebarProps) {
+}: DigitalGoodsStyleSidebarProps = {}) {
   const [selectedPreset, setSelectedPreset] = useState('포스터');
   const [prompt, setPrompt] = useState('');
 
@@ -61,7 +61,7 @@ export default function DigitalGoodsStyleSidebar({
       if (brandName) formData.brandName = brandName;
     }
 
-    onFormChange(formData);
+    onFormChange?.(formData);
   }, [
     prompt,
     selectedPreset,

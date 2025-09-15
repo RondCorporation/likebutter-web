@@ -8,7 +8,7 @@ import ToggleSwitch from '../../_components/ui/ToggleSwitch';
 import CustomDropdown from '../../_components/CustomDropdown';
 
 interface StylistSidebarProps {
-  onFormChange: (formData: {
+  onFormChange?: (formData: {
     mode: 'text' | 'image';
     textPrompt?: string;
     imagePrompt?: string; // 이미지 모드용 프롬프트
@@ -29,7 +29,7 @@ interface StylistSidebarProps {
   }) => void;
 }
 
-export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
+export default function StylistSidebar({ onFormChange }: StylistSidebarProps = {}) {
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
   const [imagePrompt, setImagePrompt] = useState(''); // 이미지 모드용 프롬프트
@@ -87,7 +87,7 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
   ];
 
   const updateFormData = () => {
-    onFormChange({
+    onFormChange?.({
       mode,
       textPrompt: mode === 'text' ? textPrompt : undefined,
       imagePrompt: mode === 'image' ? imagePrompt : undefined,

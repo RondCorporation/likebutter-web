@@ -52,32 +52,44 @@ export default function ModelSelectPopup({
   };
 
   const handleCreate = () => {
+    let toolName = '';
+
     if (activeTab === 'audio') {
-      // Handle audio generation
-      switch (selectedAudioModel) {
-        case 'butter-cover':
-          router.push(`/${lang}/studio/butter-cover`);
-          break;
-        default:
-          break;
-      }
+      toolName = selectedAudioModel;
     } else {
-      // Handle image generation
-      switch (selectedModel) {
-        case 'digital-goods':
-          router.push(`/${lang}/studio/digital-goods`);
-          break;
-        case 'stylist':
-          router.push(`/${lang}/studio/stylist`);
-          break;
-        case 'virtual-casting':
-          router.push(`/${lang}/studio/virtual-casting`);
-          break;
-        case 'fanmeeting':
-          router.push(`/${lang}/studio/fanmeeting-studio`);
-          break;
-        default:
-          break;
+      toolName = selectedModel === 'fanmeeting' ? 'fanmeeting-studio' : selectedModel;
+    }
+
+    // Use SPA navigation if available
+    if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
+      (window as any).studioNavigateToTool(toolName);
+    } else {
+      // Fallback to traditional routing
+      if (activeTab === 'audio') {
+        switch (selectedAudioModel) {
+          case 'butter-cover':
+            router.push(`/${lang}/studio/butter-cover`);
+            break;
+          default:
+            break;
+        }
+      } else {
+        switch (selectedModel) {
+          case 'digital-goods':
+            router.push(`/${lang}/studio/digital-goods`);
+            break;
+          case 'stylist':
+            router.push(`/${lang}/studio/stylist`);
+            break;
+          case 'virtual-casting':
+            router.push(`/${lang}/studio/virtual-casting`);
+            break;
+          case 'fanmeeting':
+            router.push(`/${lang}/studio/fanmeeting-studio`);
+            break;
+          default:
+            break;
+        }
       }
     }
     onClose();

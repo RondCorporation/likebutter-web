@@ -5,7 +5,7 @@ import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import CustomDropdown from '../../_components/CustomDropdown';
 
 interface FanmeetingStudioSidebarProps {
-  onFormChange: (formData: {
+  onFormChange?: (formData: {
     backgroundPrompt: string;
     situationPrompt: string;
   }) => void;
@@ -13,7 +13,7 @@ interface FanmeetingStudioSidebarProps {
 
 export default function FanmeetingStudioSidebar({
   onFormChange,
-}: FanmeetingStudioSidebarProps) {
+}: FanmeetingStudioSidebarProps = {}) {
   const [backgroundPrompt, setBackgroundPrompt] = useState('');
   const [situationPrompt, setSituationPrompt] = useState('');
   const [imageSize, setImageSize] = useState('1:1(정방향)');
@@ -39,7 +39,7 @@ export default function FanmeetingStudioSidebar({
 
   const handleBackgroundChange = (value: string) => {
     setBackgroundPrompt(value);
-    onFormChange({
+    onFormChange?.({
       backgroundPrompt: value,
       situationPrompt,
     });
@@ -47,7 +47,7 @@ export default function FanmeetingStudioSidebar({
 
   const handleSituationChange = (value: string) => {
     setSituationPrompt(value);
-    onFormChange({
+    onFormChange?.({
       backgroundPrompt,
       situationPrompt: value,
     });

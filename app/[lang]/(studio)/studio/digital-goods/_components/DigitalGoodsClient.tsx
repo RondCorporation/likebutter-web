@@ -190,7 +190,6 @@ export default function DigitalGoodsClient({
       // 실제 구현 시에는 여기서 새로운 task를 생성하고 폴링을 시작해야 함
       // const response = await updateDigitalGoodsTask(taskId, editRequest);
       // startPolling(response.data.taskId);
-
     } catch (error) {
       console.error('Edit request failed:', error);
       toast.error('수정 요청에 실패했습니다.');
@@ -230,9 +229,7 @@ export default function DigitalGoodsClient({
               {isEditLoading && (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               )}
-              {!isEditLoading && (
-                <Edit className="w-4 h-4 mr-1" />
-              )}
+              {!isEditLoading && <Edit className="w-4 h-4 mr-1" />}
               <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
                 {isEditLoading ? '수정중...' : '수정하기'}
               </div>

@@ -22,7 +22,8 @@ export default function ModelSelectPopup({
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
   const [selectedModel, setSelectedModel] = useState<string>('digital-goods');
-  const [selectedAudioModel, setSelectedAudioModel] = useState<string>('butter-cover');
+  const [selectedAudioModel, setSelectedAudioModel] =
+    useState<string>('butter-cover');
 
   // Prefetch routes when popup opens
   useEffect(() => {
@@ -91,21 +92,20 @@ export default function ModelSelectPopup({
     >
       <div
         className={`${
-          isMobile
-            ? 'w-full h-[85vh] rounded-t-xl'
-            : 'w-[678px] rounded-xl'
+          isMobile ? 'w-full h-[85vh] rounded-t-xl' : 'w-[678px] rounded-xl'
         } bg-studio-sidebar border border-solid border-studio-border ${
           isMobile ? 'p-4' : 'p-8'
-        } flex flex-col gap-6 md:gap-8 ${
-          isMobile ? 'animate-slide-up' : ''
-        }`}
+        } flex flex-col gap-6 md:gap-8 ${isMobile ? 'animate-slide-up' : ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex-1 text-center font-bold text-studio-text-primary text-lg">
             만들어보기
           </div>
-          <button onClick={onClose} className="text-studio-text-primary hover:text-studio-text-secondary">
+          <button
+            onClick={onClose}
+            className="text-studio-text-primary hover:text-studio-text-secondary"
+          >
             <X size={isMobile ? 24 : 20} />
           </button>
         </div>
@@ -129,15 +129,21 @@ export default function ModelSelectPopup({
           {activeTab === 'image' ? (
             <>
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-studio-text-primary text-sm">이미지 생성하기</h3>
+                <h3 className="font-bold text-studio-text-primary text-sm">
+                  이미지 생성하기
+                </h3>
                 <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
                   How to use
                 </span>
               </div>
 
-              <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+              <div
+                className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}
+              >
                 <SelectCard
-                  state={selectedModel === 'digital-goods' ? 'selected' : 'default'}
+                  state={
+                    selectedModel === 'digital-goods' ? 'selected' : 'default'
+                  }
                   title="디지털 굿즈"
                   subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
                   backgroundImage="/studio/model-select/digital-goods.png"
@@ -161,7 +167,9 @@ export default function ModelSelectPopup({
                 />
 
                 <SelectCard
-                  state={selectedModel === 'fanmeeting' ? 'selected' : 'default'}
+                  state={
+                    selectedModel === 'fanmeeting' ? 'selected' : 'default'
+                  }
                   title="온라인 팬미팅"
                   subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
                   backgroundImage="/studio/model-select/fanmeeting-studio.png"
@@ -170,7 +178,9 @@ export default function ModelSelectPopup({
                 />
 
                 <SelectCard
-                  state={selectedModel === 'virtual-casting' ? 'selected' : 'default'}
+                  state={
+                    selectedModel === 'virtual-casting' ? 'selected' : 'default'
+                  }
                   title="가상 캐스팅"
                   subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
                   backgroundImage="/studio/model-select/virtual_casting.png"
@@ -182,25 +192,35 @@ export default function ModelSelectPopup({
           ) : (
             <>
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-studio-text-primary text-sm">아이돌 보이스 AI</h3>
+                <h3 className="font-bold text-studio-text-primary text-sm">
+                  아이돌 보이스 AI
+                </h3>
                 <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
                   How to use
                 </span>
               </div>
 
-              <div className="relative w-full h-[400px] rounded-lg overflow-hidden cursor-pointer" onClick={() => setSelectedAudioModel('butter-cover')}>
+              <div
+                className="relative w-full h-[400px] rounded-lg overflow-hidden cursor-pointer"
+                onClick={() => setSelectedAudioModel('butter-cover')}
+              >
                 <div
                   className="w-full h-full bg-cover bg-center relative"
                   style={{
-                    backgroundImage: 'url(/studio/model-select/butter-cover.png)',
+                    backgroundImage:
+                      'url(/studio/model-select/butter-cover.png)',
                     backgroundSize: 'cover',
-                    backgroundPosition: 'center'
+                    backgroundPosition: 'center',
                   }}
                 >
                   <div className="absolute inset-0 bg-black/20"></div>
                   <div className="absolute bottom-6 left-6 text-white z-10">
-                    <h2 className="text-2xl font-bold mb-1">AI로 완성된 아이돌 음성</h2>
-                    <p className="text-sm font-light opacity-90">AI 기술로 재현된 아이돌의 목소리.</p>
+                    <h2 className="text-2xl font-bold mb-1">
+                      AI로 완성된 아이돌 음성
+                    </h2>
+                    <p className="text-sm font-light opacity-90">
+                      AI 기술로 재현된 아이돌의 목소리.
+                    </p>
                   </div>
                 </div>
               </div>

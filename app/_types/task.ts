@@ -18,7 +18,9 @@ export type ActionType =
   | 'DIGITAL_GOODS'
   | 'DREAM_CONTI'
   | 'FANMEETING_STUDIO'
-  | 'PHOTO_EDITOR';
+  | 'PHOTO_EDITOR'
+  | 'STYLIST'
+  | 'VIRTUAL_CASTING';
 
 // Digital Goods types
 interface DigitalGoodsRequestDetails {
@@ -68,19 +70,29 @@ export interface DreamContiDetails {
 // Fanmeeting Studio types
 interface FanmeetingStudioRequestDetails {
   fanImageKey: string;
+  fanImageUrl?: string;
   idolImageKey: string;
-  studioStyle: string;
-  lightingMode: string;
-  backgroundMusic: string;
+  idolImageUrl?: string;
+  situationPrompt: string;
+  backgroundPrompt: string;
+  customPrompt?: string;
 }
 
 interface FanmeetingStudioResultDetails {
   imageKey: string;
+  imageUrl?: string;
+  filename: string;
+  situationPrompt: string;
+  backgroundPrompt: string;
+  promptUsed: string;
+  fileSize: number;
+  executionTime: number;
 }
 
 export interface FanmeetingStudioDetails {
   request: FanmeetingStudioRequestDetails;
   result?: FanmeetingStudioResultDetails;
+  error?: string;
 }
 
 // Photo Editor types
@@ -141,12 +153,76 @@ export interface ButterCoverDetails {
   result?: ButterCoverResultDetails;
 }
 
+// Stylist types
+interface StylistRequestDetails {
+  prompt: string;
+  idolImageKey: string;
+  idolImageUrl?: string;
+  hairStyleImageKey?: string;
+  hairStyleImageUrl?: string;
+  outfitImageKey?: string;
+  outfitImageUrl?: string;
+  backgroundImageKey?: string;
+  backgroundImageUrl?: string;
+  accessoryImageKey?: string;
+  accessoryImageUrl?: string;
+  moodImageKey?: string;
+  moodImageUrl?: string;
+  customPrompt?: string;
+}
+
+interface StylistResultDetails {
+  imageKey: string;
+  imageUrl?: string;
+  filename: string;
+  promptUsed: string;
+  fileSize: number;
+  executionTime: number;
+  hairStyleUsed?: string;
+  outfitUsed?: string;
+  backgroundUsed?: string;
+  accessoryUsed?: string;
+  moodUsed?: string;
+}
+
+export interface StylistDetails {
+  request: StylistRequestDetails;
+  result?: StylistResultDetails;
+  error?: string;
+}
+
+// Virtual Casting types
+interface VirtualCastingRequestDetails {
+  idolImageKey: string;
+  idolImageUrl: string;
+  keyword: string;
+  customPrompt?: string;
+}
+
+interface VirtualCastingResultDetails {
+  imageKey: string;
+  imageUrl: string;
+  filename: string;
+  keywordUsed: string;
+  promptUsed: string;
+  fileSize: number;
+  executionTime: number;
+}
+
+export interface VirtualCastingDetails {
+  request: VirtualCastingRequestDetails;
+  result?: VirtualCastingResultDetails;
+  error?: string;
+}
+
 type ActionMap = {
   BUTTER_COVER: { details?: ButterCoverDetails };
   DIGITAL_GOODS: { details?: DigitalGoodsDetails };
   DREAM_CONTI: { details?: DreamContiDetails };
   FANMEETING_STUDIO: { details?: FanmeetingStudioDetails };
   PHOTO_EDITOR: { details?: PhotoEditorDetails };
+  STYLIST: { details?: StylistDetails };
+  VIRTUAL_CASTING: { details?: VirtualCastingDetails };
 };
 
 export type Task = {

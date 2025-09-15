@@ -12,7 +12,9 @@ export default function StudioSidebarBase({
   className = '',
 }: StudioSidebarBaseProps) {
   return (
-    <div className={`flex flex-col w-full md:w-[260px] h-full items-start gap-6 md:gap-10 pt-3 md:pt-6 pb-3 px-3 relative bg-studio-sidebar md:border-r border-solid border-studio-border-light overflow-y-auto ${className}`}>
+    <div
+      className={`flex flex-col w-full md:w-[260px] h-full items-start gap-6 md:gap-10 pt-3 md:pt-6 pb-3 px-3 relative bg-studio-sidebar md:border-r border-solid border-studio-border-light overflow-y-auto ${className}`}
+    >
       <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">
         {children}
       </div>

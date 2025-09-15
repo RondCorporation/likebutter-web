@@ -10,11 +10,13 @@ export const metadata: Metadata = {
 
 export default function FanmeetingStudioPage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center h-full">
-        <div className="text-studio-text-secondary">Loading...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-full">
+          <div className="text-studio-text-secondary">Loading...</div>
+        </div>
+      }
+    >
       <FanmeetingStudioWithSidebar />
     </Suspense>
   );

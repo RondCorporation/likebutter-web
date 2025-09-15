@@ -79,13 +79,15 @@ export default function StylistClient({ formData }: StylistClientProps) {
 
     try {
       // Prepare request data
-      const prompt = formData.mode === 'text'
-        ? formData.textPrompt || ''
-        : formData.imagePrompt || '';
+      const prompt =
+        formData.mode === 'text'
+          ? formData.textPrompt || ''
+          : formData.imagePrompt || '';
 
       const request: StylistRequest = {
         prompt,
-        customPrompt: formData.mode === 'image' ? formData.imagePrompt : undefined,
+        customPrompt:
+          formData.mode === 'image' ? formData.imagePrompt : undefined,
       };
 
       // Add files from uploadedFiles if in image mode
@@ -115,7 +117,6 @@ export default function StylistClient({ formData }: StylistClientProps) {
       } else {
         throw new Error('API request failed');
       }
-
     } catch (error) {
       console.error('Failed to generate stylist result:', error);
       toast.error('스타일링 생성 요청에 실패했습니다.');
@@ -186,8 +187,14 @@ export default function StylistClient({ formData }: StylistClientProps) {
       return (formData.textPrompt?.trim().length ?? 0) > 0;
     } else {
       // 이미지 모드에서는 이미지 설정과 파일, 또는 프롬프트 중 하나라도 있어야 함
-      const hasImageSettings = Object.values(formData.imageSettings || {}).some(Boolean);
-      const hasUploadedFiles = formData.uploadedFiles && Object.values(formData.uploadedFiles).some(file => file !== undefined);
+      const hasImageSettings = Object.values(formData.imageSettings || {}).some(
+        Boolean
+      );
+      const hasUploadedFiles =
+        formData.uploadedFiles &&
+        Object.values(formData.uploadedFiles).some(
+          (file) => file !== undefined
+        );
       const hasPrompt = (formData.imagePrompt?.trim().length ?? 0) > 0;
       return hasImageSettings || hasUploadedFiles || hasPrompt;
     }

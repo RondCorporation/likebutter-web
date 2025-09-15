@@ -38,9 +38,7 @@ export default function StudioLayout({
   // Mobile: Bottom Sheet 레이아웃
   return (
     <div className="relative h-full w-full bg-studio-main">
-      <div className="h-full overflow-y-auto">
-        {children}
-      </div>
+      <div className="h-full overflow-y-auto">{children}</div>
 
       <BottomSheet
         initialHeight={bottomSheetOptions.initialHeight}

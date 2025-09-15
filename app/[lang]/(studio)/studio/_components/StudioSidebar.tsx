@@ -28,7 +28,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
   // 현재 선택된 메뉴 확인 - Digital Goods 페이지에서는 아무것도 선택되지 않음
   const getSelectedMenu = () => {
     if (pathname === `/${lang}/studio`) return 'home';
-    if (pathname === `/${lang}/studio/vault`) return 'vault';
+    if (pathname === `/${lang}/studio/archive`) return 'vault';
     if (pathname === `/${lang}/studio/help`) return 'help';
     // digital-goods 페이지에서는 아무것도 선택되지 않음
     return '';
@@ -75,15 +75,13 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
         {/* 보관함 버튼 */}
         <div className="flex flex-col items-center gap-1">
-          <button
-            onClick={() => {
-              // 실제 보관함 페이지가 구현되면 라우팅하고, 지금은 준비중 메시지
-              handleComingSoon();
-            }}
-            className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-[10px] transition-colors ${selectedMenu === 'vault' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
-          >
-            <FolderOpen className="w-5 h-5" color="#C3C3C5" />
-          </button>
+          <Link href={`/${lang}/studio/archive`} prefetch={true}>
+            <div
+              className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-[10px] transition-colors ${selectedMenu === 'vault' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
+            >
+              <FolderOpen className="w-5 h-5" color="#C3C3C5" />
+            </div>
+          </Link>
           <div
             className="text-[#a8a8aa] text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}

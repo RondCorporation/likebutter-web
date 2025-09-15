@@ -18,9 +18,12 @@ export default function VirtualCastingWithSidebar() {
     selectedCharacter: null,
   });
 
-  const handleFormChange = useCallback((newFormData: VirtualCastingFormData) => {
-    setFormData(newFormData);
-  }, []);
+  const handleFormChange = useCallback(
+    (newFormData: VirtualCastingFormData) => {
+      setFormData(newFormData);
+    },
+    []
+  );
 
   return (
     <StudioLayout

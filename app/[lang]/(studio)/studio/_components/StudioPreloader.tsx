@@ -13,16 +13,21 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
   useEffect(() => {
     // Preload essential tools immediately
     const essentialTools = ['digital-goods', 'history'];
-    essentialTools.forEach(tool => {
+    essentialTools.forEach((tool) => {
       if (!isToolPreloaded(tool)) {
         preloadTool(tool);
       }
     });
 
     // Preload secondary tools after a delay
-    const secondaryTools = ['photo-editor', 'butter-cover', 'fanmeeting-studio', 'dream-conti'];
+    const secondaryTools = [
+      'photo-editor',
+      'butter-cover',
+      'fanmeeting-studio',
+      'dream-conti',
+    ];
     const delayedPreload = setTimeout(() => {
-      secondaryTools.forEach(tool => {
+      secondaryTools.forEach((tool) => {
         if (!isToolPreloaded(tool)) {
           preloadTool(tool);
         }

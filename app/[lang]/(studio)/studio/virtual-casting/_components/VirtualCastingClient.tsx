@@ -3,7 +3,10 @@
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { createVirtualCastingTask, VirtualCastingRequest } from '@/lib/apis/task.api';
+import {
+  createVirtualCastingTask,
+  VirtualCastingRequest,
+} from '@/lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface VirtualCastingFormData {
@@ -18,7 +21,9 @@ interface VirtualCastingClientProps {
   formData?: VirtualCastingFormData;
 }
 
-export default function VirtualCastingClient({ formData }: VirtualCastingClientProps) {
+export default function VirtualCastingClient({
+  formData,
+}: VirtualCastingClientProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -78,7 +83,6 @@ export default function VirtualCastingClient({ formData }: VirtualCastingClientP
       } else {
         throw new Error('API request failed');
       }
-
     } catch (error) {
       console.error('Failed to generate virtual casting result:', error);
       toast.error('가상 캐스팅 생성 요청에 실패했습니다.');

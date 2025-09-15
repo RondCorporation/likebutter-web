@@ -1,1 +1,0 @@
-export { HeroiconsMiniHome } from "./HeroiconsMiniHome";

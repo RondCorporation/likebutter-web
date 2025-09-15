@@ -1,1 +1,0 @@
-export { HeroiconsOutlineRectangleGroup } from "./HeroiconsOutlineRectangleGroup";

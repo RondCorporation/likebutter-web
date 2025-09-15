@@ -21,11 +21,11 @@ function StudioToolSkeleton() {
 export default function StudioRouter({ lang }: StudioRouterProps) {
   const pathname = usePathname();
   const isDesktop = useIsDesktop();
-  const { 
-    currentTool, 
+  const {
+    currentTool,
     isTransitioning,
     getToolComponent,
-    getToolSidebarComponent
+    getToolSidebarComponent,
   } = useStudioNavigation(lang);
 
   // Get components for current tool
@@ -42,7 +42,11 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     if (isDesktop) {
       return (
         <div className="flex h-full w-full bg-studio-main overflow-hidden">
-          <Suspense fallback={<div className="w-[260px] h-full bg-studio-sidebar border-r border-solid border-studio-border animate-pulse"></div>}>
+          <Suspense
+            fallback={
+              <div className="w-[260px] h-full bg-studio-sidebar border-r border-solid border-studio-border animate-pulse"></div>
+            }
+          >
             <SidebarComponent />
           </Suspense>
           <Suspense fallback={<StudioToolSkeleton />}>
@@ -65,7 +69,11 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
             minHeight={20}
             className="bg-studio-sidebar"
           >
-            <Suspense fallback={<div className="h-20 bg-studio-sidebar animate-pulse"></div>}>
+            <Suspense
+              fallback={
+                <div className="h-20 bg-studio-sidebar animate-pulse"></div>
+              }
+            >
               <SidebarComponent />
             </Suspense>
           </BottomSheet>

@@ -1,1 +1,0 @@
-export { HeroiconsSolidWrapper } from "./HeroiconsSolidWrapper";

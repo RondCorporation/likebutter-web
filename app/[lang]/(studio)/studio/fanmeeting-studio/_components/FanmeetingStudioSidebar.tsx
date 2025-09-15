@@ -11,7 +11,9 @@ interface FanmeetingStudioSidebarProps {
   }) => void;
 }
 
-export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStudioSidebarProps) {
+export default function FanmeetingStudioSidebar({
+  onFormChange,
+}: FanmeetingStudioSidebarProps) {
   const [backgroundPrompt, setBackgroundPrompt] = useState('');
   const [situationPrompt, setSituationPrompt] = useState('');
   const [imageSize, setImageSize] = useState('1:1(정방향)');
@@ -52,12 +54,16 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
   };
 
   const handleBackgroundPromptClick = (prompt: string) => {
-    const newBackground = backgroundPrompt ? `${backgroundPrompt}, ${prompt}` : prompt;
+    const newBackground = backgroundPrompt
+      ? `${backgroundPrompt}, ${prompt}`
+      : prompt;
     handleBackgroundChange(newBackground);
   };
 
   const handleSituationPromptClick = (prompt: string) => {
-    const newSituation = situationPrompt ? `${situationPrompt}, ${prompt}` : prompt;
+    const newSituation = situationPrompt
+      ? `${situationPrompt}, ${prompt}`
+      : prompt;
     handleSituationChange(newSituation);
   };
 

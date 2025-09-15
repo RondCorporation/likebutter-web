@@ -1,1 +1,0 @@
-export { HeroiconsSolidCog } from "./HeroiconsSolidCog";

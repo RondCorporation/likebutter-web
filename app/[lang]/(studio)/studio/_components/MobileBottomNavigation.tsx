@@ -11,7 +11,9 @@ interface MobileBottomNavigationProps {
   lang: string;
 }
 
-export default function MobileBottomNavigation({ lang }: MobileBottomNavigationProps) {
+export default function MobileBottomNavigation({
+  lang,
+}: MobileBottomNavigationProps) {
   const pathname = usePathname();
   const [showModelPopup, setShowModelPopup] = useState(false);
 
@@ -38,22 +40,30 @@ export default function MobileBottomNavigation({ lang }: MobileBottomNavigationP
   return (
     <>
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-studio-header border-t border-studio-border">
-        <div className="flex items-center justify-around px-4 py-2" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
+        <div
+          className="flex items-center justify-around px-4 py-2"
+          style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
+        >
           {/* 홈 */}
-          <Link href={`/${lang}/studio`} className="flex flex-col items-center py-2 px-3">
+          <Link
+            href={`/${lang}/studio`}
+            className="flex flex-col items-center py-2 px-3"
+          >
             <div
               className={`p-2 rounded-lg transition-colors ${
                 selectedMenu === 'home' ? 'bg-studio-main' : ''
               }`}
             >
-              <Home 
-                className="w-6 h-6" 
-                color={selectedMenu === 'home' ? '#ffd93b' : '#89898B'} 
+              <Home
+                className="w-6 h-6"
+                color={selectedMenu === 'home' ? '#ffd93b' : '#89898B'}
               />
             </div>
-            <span 
+            <span
               className={`text-xs mt-1 font-pretendard ${
-                selectedMenu === 'home' ? 'text-studio-button-primary' : 'text-studio-text-secondary'
+                selectedMenu === 'home'
+                  ? 'text-studio-button-primary'
+                  : 'text-studio-text-secondary'
               }`}
             >
               홈
@@ -61,7 +71,7 @@ export default function MobileBottomNavigation({ lang }: MobileBottomNavigationP
           </Link>
 
           {/* 보관함 */}
-          <button 
+          <button
             onClick={handleComingSoon}
             className="flex flex-col items-center py-2 px-3"
           >
@@ -70,14 +80,16 @@ export default function MobileBottomNavigation({ lang }: MobileBottomNavigationP
                 selectedMenu === 'vault' ? 'bg-studio-main' : ''
               }`}
             >
-              <FolderOpen 
-                className="w-6 h-6" 
-                color={selectedMenu === 'vault' ? '#ffd93b' : '#C3C3C5'} 
+              <FolderOpen
+                className="w-6 h-6"
+                color={selectedMenu === 'vault' ? '#ffd93b' : '#C3C3C5'}
               />
             </div>
-            <span 
+            <span
               className={`text-xs mt-1 font-pretendard ${
-                selectedMenu === 'vault' ? 'text-studio-button-primary' : 'text-studio-text-secondary'
+                selectedMenu === 'vault'
+                  ? 'text-studio-button-primary'
+                  : 'text-studio-text-secondary'
               }`}
             >
               보관함
@@ -98,7 +110,7 @@ export default function MobileBottomNavigation({ lang }: MobileBottomNavigationP
           </button>
 
           {/* 도움말 */}
-          <button 
+          <button
             onClick={handleComingSoon}
             className="flex flex-col items-center py-2 px-3"
           >
@@ -107,14 +119,16 @@ export default function MobileBottomNavigation({ lang }: MobileBottomNavigationP
                 selectedMenu === 'help' ? 'bg-studio-main' : ''
               }`}
             >
-              <Users 
-                className="w-6 h-6" 
-                color={selectedMenu === 'help' ? '#ffd93b' : '#A8A8AA'} 
+              <Users
+                className="w-6 h-6"
+                color={selectedMenu === 'help' ? '#ffd93b' : '#A8A8AA'}
               />
             </div>
-            <span 
+            <span
               className={`text-xs mt-1 font-pretendard ${
-                selectedMenu === 'help' ? 'text-studio-button-primary' : 'text-studio-text-secondary'
+                selectedMenu === 'help'
+                  ? 'text-studio-button-primary'
+                  : 'text-studio-text-secondary'
               }`}
             >
               도움말
@@ -122,7 +136,7 @@ export default function MobileBottomNavigation({ lang }: MobileBottomNavigationP
           </button>
 
           {/* 더보기 */}
-          <button 
+          <button
             onClick={handleComingSoon}
             className="flex flex-col items-center py-2 px-3"
           >

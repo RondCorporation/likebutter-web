@@ -59,11 +59,31 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
   ];
 
   const imageCategories = [
-    { key: 'hairstyle', label: '헤어 스타일', icon: '/studio/stylist/sidebar-hairstyle.svg' },
-    { key: 'costume', label: '의상', icon: '/studio/stylist/sidebar-costume.svg' },
-    { key: 'background', label: '배경', icon: '/studio/stylist/sidebar-background.svg' },
-    { key: 'accessory', label: '액세서리', icon: '/studio/stylist/sidebar-accessory.svg' },
-    { key: 'atmosphere', label: '분위기', icon: '/studio/stylist/sidebar-atmosphere.svg' },
+    {
+      key: 'hairstyle',
+      label: '헤어 스타일',
+      icon: '/studio/stylist/sidebar-hairstyle.svg',
+    },
+    {
+      key: 'costume',
+      label: '의상',
+      icon: '/studio/stylist/sidebar-costume.svg',
+    },
+    {
+      key: 'background',
+      label: '배경',
+      icon: '/studio/stylist/sidebar-background.svg',
+    },
+    {
+      key: 'accessory',
+      label: '액세서리',
+      icon: '/studio/stylist/sidebar-accessory.svg',
+    },
+    {
+      key: 'atmosphere',
+      label: '분위기',
+      icon: '/studio/stylist/sidebar-atmosphere.svg',
+    },
   ];
 
   const updateFormData = () => {
@@ -102,7 +122,8 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
 
   const handleFileUpload = (category: string, file: File) => {
     // File validation
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
+      // 10MB limit
       return;
     }
 
@@ -112,16 +133,16 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
 
     // Map category to API parameter names
     const fileMapping: { [key: string]: keyof typeof uploadedFiles } = {
-      'hairstyle': 'hairStyleImage',
-      'costume': 'outfitImage',
-      'background': 'backgroundImage',
-      'accessory': 'accessoryImage',
-      'atmosphere': 'moodImage',
+      hairstyle: 'hairStyleImage',
+      costume: 'outfitImage',
+      background: 'backgroundImage',
+      accessory: 'accessoryImage',
+      atmosphere: 'moodImage',
     };
 
     const fileKey = fileMapping[category];
     if (fileKey) {
-      setUploadedFiles(prev => ({ ...prev, [fileKey]: file }));
+      setUploadedFiles((prev) => ({ ...prev, [fileKey]: file }));
     }
   };
 
@@ -216,14 +237,22 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
                       </span>
                     </div>
                     <ToggleSwitch
-                      checked={imageSettings[category.key as keyof typeof imageSettings]}
-                      onChange={(checked) => handleImageSettingToggle(category.key, checked)}
+                      checked={
+                        imageSettings[
+                          category.key as keyof typeof imageSettings
+                        ]
+                      }
+                      onChange={(checked) =>
+                        handleImageSettingToggle(category.key, checked)
+                      }
                       size="sm"
                     />
                   </div>
 
                   {/* 업로드 영역 (토글 활성화 시) */}
-                  {imageSettings[category.key as keyof typeof imageSettings] && (
+                  {imageSettings[
+                    category.key as keyof typeof imageSettings
+                  ] && (
                     <div className="w-full">
                       <input
                         id={`file-${category.key}`}
@@ -238,7 +267,11 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
                         className="hidden"
                       />
                       <button
-                        onClick={() => document.getElementById(`file-${category.key}`)?.click()}
+                        onClick={() =>
+                          document
+                            .getElementById(`file-${category.key}`)
+                            ?.click()
+                        }
                         className="flex items-center gap-2 w-full h-[36px] px-3 py-2 bg-studio-border rounded-md text-studio-text-primary text-sm font-pretendard-medium hover:bg-studio-border-light transition-colors duration-200"
                       >
                         <Image
@@ -247,15 +280,17 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
                           width={16}
                           height={16}
                         />
-                        {uploadedFiles[{
-                          'hairstyle': 'hairStyleImage',
-                          'costume': 'outfitImage',
-                          'background': 'backgroundImage',
-                          'accessory': 'accessoryImage',
-                          'atmosphere': 'moodImage'
-                        }[category.key] as keyof typeof uploadedFiles] ?
-                          `${category.label} 변경` : `${category.label} 첨부`
-                        }
+                        {uploadedFiles[
+                          {
+                            hairstyle: 'hairStyleImage',
+                            costume: 'outfitImage',
+                            background: 'backgroundImage',
+                            accessory: 'accessoryImage',
+                            atmosphere: 'moodImage',
+                          }[category.key] as keyof typeof uploadedFiles
+                        ]
+                          ? `${category.label} 변경`
+                          : `${category.label} 첨부`}
                       </button>
                     </div>
                   )}

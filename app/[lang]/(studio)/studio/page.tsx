@@ -6,6 +6,6 @@ type Props = {
 
 export default async function StudioPage({ params }: Props) {
   const { lang } = await params;
-  
+
   return <DashboardClient />;
 }

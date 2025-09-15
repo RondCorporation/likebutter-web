@@ -21,7 +21,9 @@ interface Character {
   image: string;
 }
 
-export default function VirtualCastingSidebar({ onFormChange }: VirtualCastingSidebarProps) {
+export default function VirtualCastingSidebar({
+  onFormChange,
+}: VirtualCastingSidebarProps) {
   const [selectedCharacter, setSelectedCharacter] = useState<{
     category: string;
     name: string;
@@ -92,7 +94,11 @@ export default function VirtualCastingSidebar({ onFormChange }: VirtualCastingSi
     },
   ];
 
-  const handleCharacterSelect = (categoryId: string, character: Character, folder: string) => {
+  const handleCharacterSelect = (
+    categoryId: string,
+    character: Character,
+    folder: string
+  ) => {
     const newSelection = {
       category: categoryId,
       name: character.name,
@@ -148,10 +154,18 @@ interface CategorySectionProps {
     name: string;
     image: string;
   } | null;
-  onCharacterSelect: (categoryId: string, character: Character, folder: string) => void;
+  onCharacterSelect: (
+    categoryId: string,
+    character: Character,
+    folder: string
+  ) => void;
 }
 
-function CategorySection({ category, selectedCharacter, onCharacterSelect }: CategorySectionProps) {
+function CategorySection({
+  category,
+  selectedCharacter,
+  onCharacterSelect,
+}: CategorySectionProps) {
   return (
     <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
       <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
@@ -168,13 +182,17 @@ function CategorySection({ category, selectedCharacter, onCharacterSelect }: Cat
             <div
               key={character.name}
               className="flex flex-col items-center gap-2 flex-shrink-0 cursor-pointer"
-              onClick={() => onCharacterSelect(category.id, character, category.folder)}
+              onClick={() =>
+                onCharacterSelect(category.id, character, category.folder)
+              }
             >
-              <div className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                isSelected
-                  ? 'border-butter-yellow scale-105'
-                  : 'border-studio-border hover:border-studio-button-primary/50'
-              }`}>
+              <div
+                className={`relative w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                  isSelected
+                    ? 'border-butter-yellow scale-105'
+                    : 'border-studio-border hover:border-studio-button-primary/50'
+                }`}
+              >
                 <Image
                   src={`/studio/virtual-casting/${category.folder}/${character.image}`}
                   alt={character.name}
@@ -183,11 +201,13 @@ function CategorySection({ category, selectedCharacter, onCharacterSelect }: Cat
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className={`text-xs font-pretendard text-center max-w-16 leading-tight transition-colors duration-200 ${
-                isSelected
-                  ? 'text-butter-yellow font-medium'
-                  : 'text-studio-text-secondary'
-              }`}>
+              <div
+                className={`text-xs font-pretendard text-center max-w-16 leading-tight transition-colors duration-200 ${
+                  isSelected
+                    ? 'text-butter-yellow font-medium'
+                    : 'text-studio-text-secondary'
+                }`}
+              >
                 {character.name}
               </div>
             </div>

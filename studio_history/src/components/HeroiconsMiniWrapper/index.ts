@@ -1,1 +1,0 @@
-export { HeroiconsMiniWrapper } from "./HeroiconsMiniWrapper";

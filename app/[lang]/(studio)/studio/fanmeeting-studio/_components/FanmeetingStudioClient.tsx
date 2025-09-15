@@ -3,7 +3,10 @@
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { createFanmeetingStudioTask, FanmeetingStudioRequest } from '@/lib/apis/task.api';
+import {
+  createFanmeetingStudioTask,
+  FanmeetingStudioRequest,
+} from '@/lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface FanmeetingFormData {
@@ -77,7 +80,11 @@ export default function FanmeetingStudioClient({
         backgroundPrompt: formData.backgroundPrompt,
       };
 
-      const response = await createFanmeetingStudioTask(userFile, idolFile, request);
+      const response = await createFanmeetingStudioTask(
+        userFile,
+        idolFile,
+        request
+      );
 
       if (response.status === 200 && response.data) {
         toast.success('팬미팅 사진 생성 요청이 전송되었습니다!');

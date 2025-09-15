@@ -14,7 +14,7 @@ export default function ScrollableGrid({
   children,
   rows,
   scrollAmount = 200,
-  className = ""
+  className = '',
 }: ScrollableGridProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -22,7 +22,8 @@ export default function ScrollableGrid({
 
   const checkScrollButtons = useCallback(() => {
     if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current;
       setCanScrollLeft(scrollLeft > 0);
       setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1);
     }
@@ -59,9 +60,10 @@ export default function ScrollableGrid({
   }, [checkScrollButtons]);
 
   // 화살표 위치 계산
-  const arrowPositionClass = rows === 1
-    ? "top-8 transform -translate-y-1/2"  // 1줄: 아이콘 중심 (32px, 텍스트 제외)
-    : "top-1/2 transform -translate-y-1/2"; // 2줄: 전체 중앙
+  const arrowPositionClass =
+    rows === 1
+      ? 'top-8 transform -translate-y-1/2' // 1줄: 아이콘 중심 (32px, 텍스트 제외)
+      : 'top-1/2 transform -translate-y-1/2'; // 2줄: 전체 중앙
 
   return (
     <div className={`relative w-full overflow-hidden group ${className}`}>

@@ -1,0 +1,1 @@
+export { HeroiconsOutlineWrapper } from "./HeroiconsOutlineWrapper";

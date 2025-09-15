@@ -1,0 +1,1 @@
+export { HeroiconsMini } from "./HeroiconsMini";

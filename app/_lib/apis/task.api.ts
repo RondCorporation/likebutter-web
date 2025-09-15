@@ -174,3 +174,114 @@ export const createButterCoverTask = (
     body: formData,
   });
 };
+
+// Stylist task creation
+export interface StylistRequest {
+  prompt: string;
+  hairStyleImage?: File;
+  outfitImage?: File;
+  backgroundImage?: File;
+  accessoryImage?: File;
+  moodImage?: File;
+  customPrompt?: string;
+}
+
+export const createStylistTask = (
+  idolImage: File,
+  request: StylistRequest
+): Promise<ApiResponse<TaskCreationResponse>> => {
+  const formData = new FormData();
+
+  // Add required idol image
+  formData.append('idolImage', idolImage);
+
+  // Add required prompt
+  formData.append('prompt', request.prompt);
+
+  // Add optional style images
+  if (request.hairStyleImage) {
+    formData.append('hairStyleImage', request.hairStyleImage);
+  }
+  if (request.outfitImage) {
+    formData.append('outfitImage', request.outfitImage);
+  }
+  if (request.backgroundImage) {
+    formData.append('backgroundImage', request.backgroundImage);
+  }
+  if (request.accessoryImage) {
+    formData.append('accessoryImage', request.accessoryImage);
+  }
+  if (request.moodImage) {
+    formData.append('moodImage', request.moodImage);
+  }
+
+  // Add optional custom prompt
+  if (request.customPrompt) {
+    formData.append('customPrompt', request.customPrompt);
+  }
+
+  return apiFetch<TaskCreationResponse>('/tasks/stylist', {
+    method: 'POST',
+    body: formData,
+  });
+};
+
+// Virtual Casting task creation
+export interface VirtualCastingRequest {
+  keyword: string;
+  customPrompt?: string;
+}
+
+export const createVirtualCastingTask = (
+  idolImage: File,
+  request: VirtualCastingRequest
+): Promise<ApiResponse<TaskCreationResponse>> => {
+  const formData = new FormData();
+
+  // Add required files and data
+  formData.append('idolImage', idolImage);
+  formData.append('keyword', request.keyword);
+
+  // Add optional custom prompt
+  if (request.customPrompt) {
+    formData.append('customPrompt', request.customPrompt);
+  }
+
+  return apiFetch<TaskCreationResponse>('/tasks/virtual-casting', {
+    method: 'POST',
+    body: formData,
+  });
+};
+
+// Fanmeeting Studio task creation
+export interface FanmeetingStudioRequest {
+  situationPrompt: string;
+  backgroundPrompt: string;
+  customPrompt?: string;
+}
+
+export const createFanmeetingStudioTask = (
+  fanImage: File,
+  idolImage: File,
+  request: FanmeetingStudioRequest
+): Promise<ApiResponse<TaskCreationResponse>> => {
+  const formData = new FormData();
+
+  // Add required images
+  formData.append('fanImage', fanImage);
+  formData.append('idolImage', idolImage);
+
+  // Add required prompts
+  formData.append('situationPrompt', request.situationPrompt);
+  formData.append('backgroundPrompt', request.backgroundPrompt);
+
+  // Add optional custom prompt
+  if (request.customPrompt) {
+    formData.append('customPrompt', request.customPrompt);
+  }
+
+  return apiFetch<TaskCreationResponse>('/tasks/fanmeeting-studio', {
+    method: 'POST',
+    body: formData,
+  });
+};

@@ -3,16 +3,26 @@
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { createStylistTask, StylistRequest } from '@/lib/apis/task.api';
+import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface StylistFormData {
   mode: 'text' | 'image';
   textPrompt?: string;
+  imagePrompt?: string;
   imageSettings?: {
     hairstyle: boolean;
     costume: boolean;
     background: boolean;
     accessory: boolean;
     atmosphere: boolean;
+  };
+  uploadedFiles?: {
+    hairStyleImage?: File;
+    outfitImage?: File;
+    backgroundImage?: File;
+    accessoryImage?: File;
+    moodImage?: File;
   };
 }
 
@@ -26,6 +36,20 @@ export default function StylistClient({ formData }: StylistClientProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+
+  const { taskData, isPolling, startPolling } = useTaskPolling({
+    onCompleted: (result) => {
+      if (result.details?.result?.imageUrl) {
+        setResultImage(result.details.result.imageUrl);
+        toast.success('스타일링이 완료되었습니다!');
+      }
+      setIsProcessing(false);
+    },
+    onFailed: (error) => {
+      toast.error('스타일링에 실패했습니다.');
+      setIsProcessing(false);
+    },
+  });
 
   const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
@@ -48,26 +72,53 @@ export default function StylistClient({ formData }: StylistClientProps) {
   };
 
   const handleGenerate = async () => {
-    if (!formData) return;
+    if (!formData || !uploadedFile) return;
 
     setIsProcessing(true);
     setResultImage(null);
 
     try {
-      // TODO: API 연결
-      console.log('Stylist generation data:', formData);
+      // Prepare request data
+      const prompt = formData.mode === 'text'
+        ? formData.textPrompt || ''
+        : formData.imagePrompt || '';
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const request: StylistRequest = {
+        prompt,
+        customPrompt: formData.mode === 'image' ? formData.imagePrompt : undefined,
+      };
 
-      // Mock result
-      setResultImage('https://via.placeholder.com/400x400/444444/FFFFFF?text=Styled+Result');
-      toast.success('스타일링이 완료되었습니다!');
+      // Add files from uploadedFiles if in image mode
+      if (formData.mode === 'image' && formData.uploadedFiles) {
+        if (formData.uploadedFiles.hairStyleImage) {
+          request.hairStyleImage = formData.uploadedFiles.hairStyleImage;
+        }
+        if (formData.uploadedFiles.outfitImage) {
+          request.outfitImage = formData.uploadedFiles.outfitImage;
+        }
+        if (formData.uploadedFiles.backgroundImage) {
+          request.backgroundImage = formData.uploadedFiles.backgroundImage;
+        }
+        if (formData.uploadedFiles.accessoryImage) {
+          request.accessoryImage = formData.uploadedFiles.accessoryImage;
+        }
+        if (formData.uploadedFiles.moodImage) {
+          request.moodImage = formData.uploadedFiles.moodImage;
+        }
+      }
+
+      const response = await createStylistTask(uploadedFile, request);
+
+      if (response.status === 200 && response.data) {
+        toast.success('스타일링 생성 요청이 전송되었습니다!');
+        startPolling(response.data.taskId);
+      } else {
+        throw new Error('API request failed');
+      }
 
     } catch (error) {
       console.error('Failed to generate stylist result:', error);
-      toast.error('스타일링에 실패했습니다.');
-    } finally {
+      toast.error('스타일링 생성 요청에 실패했습니다.');
       setIsProcessing(false);
     }
   };
@@ -129,15 +180,16 @@ export default function StylistClient({ formData }: StylistClientProps) {
   }, []);
 
   const isFormValid = () => {
-    if (!formData) return false;
+    if (!formData || !uploadedFile) return false;
 
     if (formData.mode === 'text') {
       return (formData.textPrompt?.trim().length ?? 0) > 0;
     } else {
-      // 이미지 모드에서는 요소 선택 또는 프롬프트 입력 중 하나만 있어도 됨
+      // 이미지 모드에서는 이미지 설정과 파일, 또는 프롬프트 중 하나라도 있어야 함
       const hasImageSettings = Object.values(formData.imageSettings || {}).some(Boolean);
-      const hasPrompt = (formData.textPrompt?.trim().length ?? 0) > 0;
-      return hasImageSettings || hasPrompt;
+      const hasUploadedFiles = formData.uploadedFiles && Object.values(formData.uploadedFiles).some(file => file !== undefined);
+      const hasPrompt = (formData.imagePrompt?.trim().length ?? 0) > 0;
+      return hasImageSettings || hasUploadedFiles || hasPrompt;
     }
   };
 

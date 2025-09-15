@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import SquareToggleButton from '../../_components/ui/SquareToggleButton';
@@ -11,6 +11,7 @@ interface StylistSidebarProps {
   onFormChange: (formData: {
     mode: 'text' | 'image';
     textPrompt?: string;
+    imagePrompt?: string; // 이미지 모드용 프롬프트
     imageSettings?: {
       hairstyle: boolean;
       costume: boolean;
@@ -18,12 +19,20 @@ interface StylistSidebarProps {
       accessory: boolean;
       atmosphere: boolean;
     };
+    uploadedFiles?: {
+      hairStyleImage?: File;
+      outfitImage?: File;
+      backgroundImage?: File;
+      accessoryImage?: File;
+      moodImage?: File;
+    };
   }) => void;
 }
 
 export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
+  const [imagePrompt, setImagePrompt] = useState(''); // 이미지 모드용 프롬프트
   const [imageSettings, setImageSettings] = useState({
     hairstyle: false,
     costume: false,
@@ -31,6 +40,13 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
     accessory: false,
     atmosphere: false,
   });
+  const [uploadedFiles, setUploadedFiles] = useState<{
+    hairStyleImage?: File;
+    outfitImage?: File;
+    backgroundImage?: File;
+    accessoryImage?: File;
+    moodImage?: File;
+  }>({});
   const [imageSize, setImageSize] = useState('1:1(정방향)');
 
   const recommendedPrompts = [
@@ -50,37 +66,69 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
     { key: 'atmosphere', label: '분위기', icon: '/studio/stylist/sidebar-atmosphere.svg' },
   ];
 
+  const updateFormData = () => {
+    onFormChange({
+      mode,
+      textPrompt: mode === 'text' ? textPrompt : undefined,
+      imagePrompt: mode === 'image' ? imagePrompt : undefined,
+      imageSettings: mode === 'image' ? imageSettings : undefined,
+      uploadedFiles: mode === 'image' ? uploadedFiles : undefined,
+    });
+  };
+
   const handleModeToggle = (value: 'left' | 'right') => {
     const newMode = value === 'left' ? 'text' : 'image';
     setMode(newMode);
-    onFormChange({
-      mode: newMode,
-      textPrompt: newMode === 'text' ? textPrompt : undefined,
-      imageSettings: newMode === 'image' ? imageSettings : undefined,
-    });
+    // Update form data will be called by useEffect
   };
 
   const handleTextPromptChange = (value: string) => {
     setTextPrompt(value);
-    onFormChange({
-      mode: 'text',
-      textPrompt: value,
-    });
+  };
+
+  const handleImagePromptChange = (value: string) => {
+    setImagePrompt(value);
   };
 
   const handleRecommendedPromptClick = (prompt: string) => {
     const newPrompt = textPrompt ? `${textPrompt}, ${prompt}` : prompt;
-    handleTextPromptChange(newPrompt);
+    setTextPrompt(newPrompt);
   };
 
   const handleImageSettingToggle = (key: string, value: boolean) => {
     const newSettings = { ...imageSettings, [key]: value };
     setImageSettings(newSettings);
-    onFormChange({
-      mode: 'image',
-      imageSettings: newSettings,
-    });
   };
+
+  const handleFileUpload = (category: string, file: File) => {
+    // File validation
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      return;
+    }
+
+    if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
+      return;
+    }
+
+    // Map category to API parameter names
+    const fileMapping: { [key: string]: keyof typeof uploadedFiles } = {
+      'hairstyle': 'hairStyleImage',
+      'costume': 'outfitImage',
+      'background': 'backgroundImage',
+      'accessory': 'accessoryImage',
+      'atmosphere': 'moodImage',
+    };
+
+    const fileKey = fileMapping[category];
+    if (fileKey) {
+      setUploadedFiles(prev => ({ ...prev, [fileKey]: file }));
+    }
+  };
+
+  // Effect to update form data when any state changes
+  React.useEffect(() => {
+    updateFormData();
+  }, [mode, textPrompt, imagePrompt, imageSettings, uploadedFiles]);
 
   return (
     <StudioSidebarBase>
@@ -177,14 +225,37 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
                   {/* 업로드 영역 (토글 활성화 시) */}
                   {imageSettings[category.key as keyof typeof imageSettings] && (
                     <div className="w-full">
-                      <button className="flex items-center gap-2 w-full h-[36px] px-3 py-2 bg-studio-border rounded-md text-studio-text-primary text-sm font-pretendard-medium hover:bg-studio-border-light transition-colors duration-200">
+                      <input
+                        id={`file-${category.key}`}
+                        type="file"
+                        accept="image/png,image/jpg,image/jpeg"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleFileUpload(category.key, file);
+                          }
+                        }}
+                        className="hidden"
+                      />
+                      <button
+                        onClick={() => document.getElementById(`file-${category.key}`)?.click()}
+                        className="flex items-center gap-2 w-full h-[36px] px-3 py-2 bg-studio-border rounded-md text-studio-text-primary text-sm font-pretendard-medium hover:bg-studio-border-light transition-colors duration-200"
+                      >
                         <Image
                           src="/studio/stylist/sidebar-upload.svg"
                           alt="Upload"
                           width={16}
                           height={16}
                         />
-                        {category.label} 첨부
+                        {uploadedFiles[{
+                          'hairstyle': 'hairStyleImage',
+                          'costume': 'outfitImage',
+                          'background': 'backgroundImage',
+                          'accessory': 'accessoryImage',
+                          'atmosphere': 'moodImage'
+                        }[category.key] as keyof typeof uploadedFiles] ?
+                          `${category.label} 변경` : `${category.label} 첨부`
+                        }
                       </button>
                     </div>
                   )}
@@ -204,8 +275,8 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps) {
                 <div className="flex w-full h-[70px] items-center gap-3 px-3 py-2.5 absolute top-0 left-0 rounded overflow-hidden border border-solid border-studio-border bg-studio-sidebar">
                   <div className="flex items-start gap-2.5 grow relative flex-1 self-stretch">
                     <textarea
-                      value={textPrompt}
-                      onChange={(e) => handleTextPromptChange(e.target.value)}
+                      value={imagePrompt}
+                      onChange={(e) => handleImagePromptChange(e.target.value)}
                       placeholder="추가 요청사항을 입력해주세요"
                       className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                     />

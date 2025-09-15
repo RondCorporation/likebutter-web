@@ -8,12 +8,20 @@ import StylistSidebar from './StylistSidebar';
 interface StylistFormData {
   mode: 'text' | 'image';
   textPrompt?: string;
+  imagePrompt?: string;
   imageSettings?: {
     hairstyle: boolean;
     costume: boolean;
     background: boolean;
     accessory: boolean;
     atmosphere: boolean;
+  };
+  uploadedFiles?: {
+    hairStyleImage?: File;
+    outfitImage?: File;
+    backgroundImage?: File;
+    accessoryImage?: File;
+    moodImage?: File;
   };
 }
 

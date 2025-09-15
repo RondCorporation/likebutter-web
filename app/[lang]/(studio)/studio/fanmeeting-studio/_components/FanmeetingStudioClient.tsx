@@ -3,10 +3,12 @@
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { createFanmeetingStudioTask, FanmeetingStudioRequest } from '@/lib/apis/task.api';
+import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface FanmeetingFormData {
-  place: string;
-  pose: string;
+  backgroundPrompt: string;
+  situationPrompt: string;
 }
 
 interface FanmeetingStudioClientProps {
@@ -24,6 +26,20 @@ export default function FanmeetingStudioClient({
   const [isDragOverUser, setIsDragOverUser] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+
+  const { taskData, isPolling, startPolling } = useTaskPolling({
+    onCompleted: (result) => {
+      if (result.details?.result?.imageUrl) {
+        setResultImage(result.details.result.imageUrl);
+        toast.success('팬미팅 사진이 생성되었습니다!');
+      }
+      setIsProcessing(false);
+    },
+    onFailed: (error) => {
+      toast.error('팬미팅 사진 생성에 실패했습니다.');
+      setIsProcessing(false);
+    },
+  });
 
   const handleFileUpload = (file: File, type: 'idol' | 'user') => {
     // Check file size (200MB limit)
@@ -50,31 +66,28 @@ export default function FanmeetingStudioClient({
   };
 
   const handleGenerate = async () => {
-    if (!formData) return;
+    if (!formData || !idolFile || !userFile) return;
 
     setIsProcessing(true);
     setResultImage(null);
 
     try {
-      // TODO: API 연결
-      console.log('Fanmeeting generation data:', {
-        formData,
-        idolFile,
-        userFile,
-      });
+      const request: FanmeetingStudioRequest = {
+        situationPrompt: formData.situationPrompt,
+        backgroundPrompt: formData.backgroundPrompt,
+      };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      const response = await createFanmeetingStudioTask(userFile, idolFile, request);
 
-      // Mock result
-      setResultImage(
-        'https://via.placeholder.com/400x400/444444/FFFFFF?text=Fanmeeting+Result'
-      );
-      toast.success('팬미팅 사진이 생성되었습니다!');
+      if (response.status === 200 && response.data) {
+        toast.success('팬미팅 사진 생성 요청이 전송되었습니다!');
+        startPolling(response.data.taskId);
+      } else {
+        throw new Error('API request failed');
+      }
     } catch (error) {
       console.error('Failed to generate fanmeeting result:', error);
-      toast.error('팬미팅 사진 생성에 실패했습니다.');
-    } finally {
+      toast.error('팬미팅 사진 생성 요청에 실패했습니다.');
       setIsProcessing(false);
     }
   };
@@ -155,10 +168,10 @@ export default function FanmeetingStudioClient({
   const isFormValid = () => {
     if (!formData) return false;
 
-    // 장소와 포즈가 모두 입력되어야 하고, 두 이미지가 모두 업로드되어야 함
+    // 배경과 상황이 모두 입력되어야 하고, 두 이미지가 모두 업로드되어야 함
     return (
-      formData.place.trim().length > 0 &&
-      formData.pose.trim().length > 0 &&
+      formData.backgroundPrompt.trim().length > 0 &&
+      formData.situationPrompt.trim().length > 0 &&
       idolFile !== null &&
       userFile !== null
     );

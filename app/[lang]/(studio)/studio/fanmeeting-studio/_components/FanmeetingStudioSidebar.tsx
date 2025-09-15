@@ -6,14 +6,14 @@ import CustomDropdown from '../../_components/CustomDropdown';
 
 interface FanmeetingStudioSidebarProps {
   onFormChange: (formData: {
-    place: string;
-    pose: string;
+    backgroundPrompt: string;
+    situationPrompt: string;
   }) => void;
 }
 
 export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStudioSidebarProps) {
-  const [place, setPlace] = useState('');
-  const [pose, setPose] = useState('');
+  const [backgroundPrompt, setBackgroundPrompt] = useState('');
+  const [situationPrompt, setSituationPrompt] = useState('');
   const [imageSize, setImageSize] = useState('1:1(정방향)');
 
   const placePrompts = [
@@ -35,38 +35,38 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
     '서로 마주보기',
   ];
 
-  const handlePlaceChange = (value: string) => {
-    setPlace(value);
+  const handleBackgroundChange = (value: string) => {
+    setBackgroundPrompt(value);
     onFormChange({
-      place: value,
-      pose,
+      backgroundPrompt: value,
+      situationPrompt,
     });
   };
 
-  const handlePoseChange = (value: string) => {
-    setPose(value);
+  const handleSituationChange = (value: string) => {
+    setSituationPrompt(value);
     onFormChange({
-      place,
-      pose: value,
+      backgroundPrompt,
+      situationPrompt: value,
     });
   };
 
-  const handlePlacePromptClick = (prompt: string) => {
-    const newPlace = place ? `${place}, ${prompt}` : prompt;
-    handlePlaceChange(newPlace);
+  const handleBackgroundPromptClick = (prompt: string) => {
+    const newBackground = backgroundPrompt ? `${backgroundPrompt}, ${prompt}` : prompt;
+    handleBackgroundChange(newBackground);
   };
 
-  const handlePosePromptClick = (prompt: string) => {
-    const newPose = pose ? `${pose}, ${prompt}` : prompt;
-    handlePoseChange(newPose);
+  const handleSituationPromptClick = (prompt: string) => {
+    const newSituation = situationPrompt ? `${situationPrompt}, ${prompt}` : prompt;
+    handleSituationChange(newSituation);
   };
 
   return (
     <StudioSidebarBase>
-      {/* 어떤 장소에서? */}
+      {/* 배경 */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-          어떤 장소에서? <span className="text-red-400">*</span>
+          배경 <span className="text-red-400">*</span>
         </div>
 
         <div className="relative self-stretch w-full h-[unset] gap-4 flex-[0_0_auto] bg-studio-sidebar">
@@ -74,9 +74,9 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
             <div className="flex w-full h-[70px] items-center gap-3 px-3 py-2.5 absolute top-0 left-0 rounded overflow-hidden border border-solid border-studio-border bg-studio-sidebar">
               <div className="flex items-start gap-2.5 grow relative flex-1 self-stretch">
                 <textarea
-                  value={place}
-                  onChange={(e) => handlePlaceChange(e.target.value)}
-                  placeholder="어떤 장소에서 만나고 싶나요?"
+                  value={backgroundPrompt}
+                  onChange={(e) => handleBackgroundChange(e.target.value)}
+                  placeholder="어떤 배경에서 만나고 싶나요?"
                   className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                 />
               </div>
@@ -89,7 +89,7 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
           {placePrompts.map((prompt, index) => (
             <button
               key={index}
-              onClick={() => handlePlacePromptClick(prompt)}
+              onClick={() => handleBackgroundPromptClick(prompt)}
               className="px-3 py-1.5 text-xs font-pretendard-medium text-studio-text-secondary bg-studio-border rounded-md hover:bg-studio-border-light transition-colors duration-200"
             >
               {prompt}
@@ -98,10 +98,10 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
         </div>
       </div>
 
-      {/* 어떤 포즈로? */}
+      {/* 상황 */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-          어떤 포즈로? <span className="text-red-400">*</span>
+          상황 <span className="text-red-400">*</span>
         </div>
 
         <div className="relative self-stretch w-full h-[unset] gap-4 flex-[0_0_auto] bg-studio-sidebar">
@@ -109,9 +109,9 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
             <div className="flex w-full h-[70px] items-center gap-3 px-3 py-2.5 absolute top-0 left-0 rounded overflow-hidden border border-solid border-studio-border bg-studio-sidebar">
               <div className="flex items-start gap-2.5 grow relative flex-1 self-stretch">
                 <textarea
-                  value={pose}
-                  onChange={(e) => handlePoseChange(e.target.value)}
-                  placeholder="어떤 포즈로 사진을 찍고 싶나요?"
+                  value={situationPrompt}
+                  onChange={(e) => handleSituationChange(e.target.value)}
+                  placeholder="어떤 상황으로 사진을 찍고 싶나요?"
                   className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                 />
               </div>
@@ -124,7 +124,7 @@ export default function FanmeetingStudioSidebar({ onFormChange }: FanmeetingStud
           {posePrompts.map((prompt, index) => (
             <button
               key={index}
-              onClick={() => handlePosePromptClick(prompt)}
+              onClick={() => handleSituationPromptClick(prompt)}
               className="px-3 py-1.5 text-xs font-pretendard-medium text-studio-text-secondary bg-studio-border rounded-md hover:bg-studio-border-light transition-colors duration-200"
             >
               {prompt}

@@ -1,0 +1,1 @@
+export { HeroiconsSolid } from "./HeroiconsSolid";

@@ -6,14 +6,14 @@ import FanmeetingStudioClient from './FanmeetingStudioClient';
 import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
 
 interface FanmeetingFormData {
-  place: string;
-  pose: string;
+  backgroundPrompt: string;
+  situationPrompt: string;
 }
 
 export default function FanmeetingStudioWithSidebar() {
   const [formData, setFormData] = useState<FanmeetingFormData>({
-    place: '',
-    pose: '',
+    backgroundPrompt: '',
+    situationPrompt: '',
   });
 
   const handleFormChange = useCallback((newFormData: FanmeetingFormData) => {

@@ -3,6 +3,8 @@
 import { useState, useCallback } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { createVirtualCastingTask, VirtualCastingRequest } from '@/lib/apis/task.api';
+import { useTaskPolling } from '@/hooks/useTaskPolling';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -22,6 +24,20 @@ export default function VirtualCastingClient({ formData }: VirtualCastingClientP
   const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+
+  const { taskData, isPolling, startPolling } = useTaskPolling({
+    onCompleted: (result) => {
+      if (result.details?.result?.imageUrl) {
+        setResultImage(result.details.result.imageUrl);
+        toast.success('가상 캐스팅이 완료되었습니다!');
+      }
+      setIsProcessing(false);
+    },
+    onFailed: (error) => {
+      toast.error('가상 캐스팅에 실패했습니다.');
+      setIsProcessing(false);
+    },
+  });
 
   const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
@@ -44,26 +60,28 @@ export default function VirtualCastingClient({ formData }: VirtualCastingClientP
   };
 
   const handleGenerate = async () => {
-    if (!formData) return;
+    if (!formData || !formData.selectedCharacter || !uploadedFile) return;
 
     setIsProcessing(true);
     setResultImage(null);
 
     try {
-      // TODO: API 연결
-      console.log('Virtual casting generation data:', { formData, uploadedFile });
+      const request: VirtualCastingRequest = {
+        keyword: formData.selectedCharacter.name, // Use character name as keyword
+      };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      const response = await createVirtualCastingTask(uploadedFile, request);
 
-      // Mock result
-      setResultImage('https://via.placeholder.com/400x400/444444/FFFFFF?text=Virtual+Casting+Result');
-      toast.success('가상 캐스팅이 완료되었습니다!');
+      if (response.status === 200 && response.data) {
+        toast.success('가상 캐스팅 생성 요청이 전송되었습니다!');
+        startPolling(response.data.taskId);
+      } else {
+        throw new Error('API request failed');
+      }
 
     } catch (error) {
       console.error('Failed to generate virtual casting result:', error);
-      toast.error('가상 캐스팅에 실패했습니다.');
-    } finally {
+      toast.error('가상 캐스팅 생성 요청에 실패했습니다.');
       setIsProcessing(false);
     }
   };

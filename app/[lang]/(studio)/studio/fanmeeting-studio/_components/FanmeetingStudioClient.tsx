@@ -1,13 +1,15 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
+import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { HelpCircle, Upload, Download, Loader2, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import {
   createFanmeetingStudioTask,
   FanmeetingStudioRequest,
 } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
+import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
+import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 
 interface FanmeetingFormData {
   backgroundPrompt: string;
@@ -18,9 +20,20 @@ interface FanmeetingStudioClientProps {
   formData?: FanmeetingFormData;
 }
 
-export default function FanmeetingStudioClient({
+export interface FanmeetingStudioClientRef {
+  handleGenerate: () => void;
+  handleDownload: () => void;
+  isProcessing: boolean;
+  isPolling: boolean;
+  resultImage: string | null;
+  idolFile: File | null;
+  userFile: File | null;
+  showMobileResult: boolean;
+}
+
+const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingStudioClientProps>(function FanmeetingStudioClient({
   formData,
-}: FanmeetingStudioClientProps) {
+}, ref) {
   const [idolFile, setIdolFile] = useState<File | null>(null);
   const [userFile, setUserFile] = useState<File | null>(null);
   const [idolPreviewUrl, setIdolPreviewUrl] = useState<string>('');
@@ -29,11 +42,13 @@ export default function FanmeetingStudioClient({
   const [isDragOverUser, setIsDragOverUser] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [showMobileResult, setShowMobileResult] = useState(false);
 
   const { taskData, isPolling, startPolling } = useTaskPolling({
     onCompleted: (result) => {
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
+        setShowMobileResult(true);
         toast.success('팬미팅 사진이 생성되었습니다!');
       }
       setIsProcessing(false);
@@ -43,6 +58,17 @@ export default function FanmeetingStudioClient({
       setIsProcessing(false);
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    handleGenerate,
+    handleDownload,
+    isProcessing,
+    isPolling,
+    resultImage,
+    idolFile,
+    userFile,
+    showMobileResult,
+  }), [isProcessing, isPolling, resultImage, idolFile, userFile, showMobileResult]);
 
   const handleFileUpload = (file: File, type: 'idol' | 'user') => {
     // Check file size (200MB limit)
@@ -186,6 +212,20 @@ export default function FanmeetingStudioClient({
     return true;
   };
 
+  // Mobile result view
+  if (showMobileResult && resultImage) {
+    const beforeImage = userPreviewUrl || idolPreviewUrl || '/placeholder-image.png';
+
+    return (
+      <BeforeAfterToggle
+        beforeImage={beforeImage}
+        afterImage={resultImage}
+        onDownload={handleDownload}
+        showEditButton={false}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
@@ -193,7 +233,8 @@ export default function FanmeetingStudioClient({
           온라인 팬미팅
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* PC에서만 표시되는 버튼들 */}
+        <div className="items-center gap-2 hidden md:flex">
           {!resultImage ? (
             <button
               onClick={handleGenerate}
@@ -221,69 +262,162 @@ export default function FanmeetingStudioClient({
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:h-[calc(100vh-180px)] md:overflow-hidden">
-        <div className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto">
-          {/* 아이돌 이미지 업로드 */}
-          <div className="flex items-center justify-between">
-            <div className="text-studio-text-primary text-sm font-pretendard-medium">
-              아이돌 사진
-            </div>
-          </div>
-
-          <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
-              !idolPreviewUrl ? 'border-2 border-dashed' : ''
-            } ${
-              isDragOverIdol
-                ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
-                : 'border-studio-border hover:border-studio-button-primary/50'
-            }`}
-            onDragOver={(e) => {
-              handleDragOver(e);
-              setIsDragOverIdol(true);
-            }}
-            onDragLeave={(e) => {
-              handleDragLeave(e);
-              setIsDragOverIdol(false);
-            }}
-            onDrop={handleDropIdol}
-          >
-            {idolPreviewUrl ? (
-              <img
-                className="w-full h-full object-contain rounded-[20px]"
-                alt="Idol preview"
-                src={idolPreviewUrl}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-2">
-                <Upload
-                  className={`w-6 h-6 mb-2 transition-all duration-200 ${
-                    isDragOverIdol
-                      ? 'text-studio-button-primary scale-110'
-                      : 'text-studio-text-secondary'
-                  }`}
-                />
+      <div
+        className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
+        style={{
+          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+        }}
+      >
+        <div
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
+          {/* 두 이미지 업로드 영역 */}
+          <div className="flex flex-col gap-4">
+            {/* 상단 이미지 영역 */}
+            <div className="flex items-center gap-3">
+              {/* 아이돌 이미지 */}
+              <div className="flex-1">
+                <div className="mb-2">
+                  <div className="text-studio-text-primary text-xs font-pretendard-medium">
+                    아이돌 사진
+                  </div>
+                </div>
                 <div
-                  className={`text-xs mb-1 font-pretendard-medium transition-colors duration-200 ${
+                  className={`flex flex-col h-[140px] w-full items-center justify-center bg-black rounded-[16px] transition-all duration-200 ease-out cursor-pointer ${
+                    !idolPreviewUrl ? 'border-2 border-dashed' : ''
+                  } ${
                     isDragOverIdol
-                      ? 'text-studio-button-primary'
-                      : 'text-studio-text-secondary'
+                      ? 'border-studio-button-primary scale-[1.02]'
+                      : 'border-studio-border hover:border-studio-button-primary/50'
                   }`}
+                  onDragOver={(e) => {
+                    handleDragOver(e);
+                    setIsDragOverIdol(true);
+                  }}
+                  onDragLeave={(e) => {
+                    handleDragLeave(e);
+                    setIsDragOverIdol(false);
+                  }}
+                  onDrop={handleDropIdol}
+                  onClick={() => document.getElementById('idol-file-upload')?.click()}
                 >
-                  {isDragOverIdol ? '파일을 놓아주세요' : '아이돌 사진 업로드'}
+                  {idolPreviewUrl ? (
+                    <img
+                      className="w-full h-full object-contain rounded-[16px]"
+                      alt="Idol preview"
+                      src={idolPreviewUrl}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-2">
+                      <Upload
+                        className={`w-5 h-5 mb-1 transition-all duration-200 ${
+                          isDragOverIdol
+                            ? 'text-studio-button-primary scale-110'
+                            : 'text-studio-text-secondary'
+                        }`}
+                      />
+                      <div
+                        className={`text-xs font-pretendard-medium transition-colors duration-200 ${
+                          isDragOverIdol
+                            ? 'text-studio-button-primary'
+                            : 'text-studio-text-secondary'
+                        }`}
+                      >
+                        {isDragOverIdol ? '놓아주세요' : '아이돌 사진'}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-          </div>
 
-          <button
-            onClick={() => document.getElementById('idol-file-upload')?.click()}
-            className="w-full h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
-          >
-            <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-              아이돌 사진 찾기
+              {/* Plus 아이콘 */}
+              <div className="flex items-center justify-center">
+                <div className="w-8 h-8 bg-studio-button-primary rounded-full flex items-center justify-center">
+                  <Plus className="w-4 h-4 text-studio-header" />
+                </div>
+              </div>
+
+              {/* 사용자 이미지 */}
+              <div className="flex-1">
+                <div className="mb-2">
+                  <div className="text-studio-text-primary text-xs font-pretendard-medium">
+                    내 사진
+                  </div>
+                </div>
+                <div
+                  className={`flex flex-col h-[140px] w-full items-center justify-center bg-black rounded-[16px] transition-all duration-200 ease-out cursor-pointer ${
+                    !userPreviewUrl ? 'border-2 border-dashed' : ''
+                  } ${
+                    isDragOverUser
+                      ? 'border-studio-button-primary scale-[1.02]'
+                      : 'border-studio-border hover:border-studio-button-primary/50'
+                  }`}
+                  onDragOver={(e) => {
+                    handleDragOver(e);
+                    setIsDragOverUser(true);
+                  }}
+                  onDragLeave={(e) => {
+                    handleDragLeave(e);
+                    setIsDragOverUser(false);
+                  }}
+                  onDrop={handleDropUser}
+                  onClick={() => document.getElementById('user-file-upload')?.click()}
+                >
+                  {userPreviewUrl ? (
+                    <img
+                      className="w-full h-full object-contain rounded-[16px]"
+                      alt="User preview"
+                      src={userPreviewUrl}
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-2">
+                      <Upload
+                        className={`w-5 h-5 mb-1 transition-all duration-200 ${
+                          isDragOverUser
+                            ? 'text-studio-button-primary scale-110'
+                            : 'text-studio-text-secondary'
+                        }`}
+                      />
+                      <div
+                        className={`text-xs font-pretendard-medium transition-colors duration-200 ${
+                          isDragOverUser
+                            ? 'text-studio-button-primary'
+                            : 'text-studio-text-secondary'
+                        }`}
+                      >
+                        {isDragOverUser ? '놓아주세요' : '내 사진'}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          </button>
+
+            {/* PC에서만 파일 찾아보기 버튼들 표시 */}
+            <div className="gap-3 hidden md:flex">
+              <button
+                onClick={() => document.getElementById('idol-file-upload')?.click()}
+                className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98]"
+              >
+                <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
+                  아이돌 사진 찾기
+                </div>
+              </button>
+
+              <button
+                onClick={() => document.getElementById('user-file-upload')?.click()}
+                className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98]"
+              >
+                <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
+                  내 사진 찾기
+                </div>
+              </button>
+            </div>
+          </div>
 
           <input
             id="idol-file-upload"
@@ -292,68 +426,6 @@ export default function FanmeetingStudioClient({
             onChange={(e) => handleInputChange(e, 'idol')}
             className="hidden"
           />
-
-          {/* 내 사진 업로드 */}
-          <div className="flex items-center justify-between">
-            <div className="text-studio-text-primary text-sm font-pretendard-medium">
-              내 사진
-            </div>
-          </div>
-
-          <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
-              !userPreviewUrl ? 'border-2 border-dashed' : ''
-            } ${
-              isDragOverUser
-                ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
-                : 'border-studio-border hover:border-studio-button-primary/50'
-            }`}
-            onDragOver={(e) => {
-              handleDragOver(e);
-              setIsDragOverUser(true);
-            }}
-            onDragLeave={(e) => {
-              handleDragLeave(e);
-              setIsDragOverUser(false);
-            }}
-            onDrop={handleDropUser}
-          >
-            {userPreviewUrl ? (
-              <img
-                className="w-full h-full object-contain rounded-[20px]"
-                alt="User preview"
-                src={userPreviewUrl}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center p-2">
-                <Upload
-                  className={`w-6 h-6 mb-2 transition-all duration-200 ${
-                    isDragOverUser
-                      ? 'text-studio-button-primary scale-110'
-                      : 'text-studio-text-secondary'
-                  }`}
-                />
-                <div
-                  className={`text-xs mb-1 font-pretendard-medium transition-colors duration-200 ${
-                    isDragOverUser
-                      ? 'text-studio-button-primary'
-                      : 'text-studio-text-secondary'
-                  }`}
-                >
-                  {isDragOverUser ? '파일을 놓아주세요' : '내 사진 업로드'}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={() => document.getElementById('user-file-upload')?.click()}
-            className="w-full h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
-          >
-            <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-              내 사진 찾기
-            </div>
-          </button>
 
           <input
             id="user-file-upload"
@@ -364,7 +436,14 @@ export default function FanmeetingStudioClient({
           />
         </div>
 
-        <div className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden">
+        {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+        <div
+          className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
             {isProcessing ? (
               // 로딩 상태
@@ -414,6 +493,14 @@ export default function FanmeetingStudioClient({
           </div>
         </div>
       </div>
+
+      <MobileLoadingOverlay
+        isVisible={isProcessing || isPolling}
+        title="팬미팅 사진 생성중"
+        description="잠시 기다리시면 결과가 나옵니다"
+      />
     </div>
   );
-}
+});
+
+export default FanmeetingStudioClient;

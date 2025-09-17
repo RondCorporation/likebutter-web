@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import StudioLayout from '../../_components/StudioLayout';
 import VirtualCastingClient from './VirtualCastingClient';
 import VirtualCastingSidebar from './VirtualCastingSidebar';
 import { VirtualCastingStyle } from '@/app/_lib/apis/task.api';
+import { Loader2, Download } from 'lucide-react';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -19,6 +20,8 @@ export default function VirtualCastingWithSidebar() {
   const [formData, setFormData] = useState<VirtualCastingFormData>({
     selectedCharacter: null,
   });
+  const [clientRef, setClientRef] = useState<any>(null);
+  const [showMobileResult, setShowMobileResult] = useState(false);
 
   const handleFormChange = useCallback(
     (newFormData: VirtualCastingFormData) => {
@@ -26,6 +29,67 @@ export default function VirtualCastingWithSidebar() {
     },
     []
   );
+
+  const isFormValid = () => {
+    if (!clientRef?.uploadedFile) return false;
+    if (!formData) return false;
+    if (!formData.selectedCharacter) return false;
+    return true;
+  };
+
+  const handleGenerate = () => {
+    if (clientRef?.handleGenerate) {
+      clientRef.handleGenerate();
+    }
+  };
+
+  const handleDownload = () => {
+    if (clientRef?.handleDownload) {
+      clientRef.handleDownload();
+    }
+  };
+
+  // Track mobile result state from client ref
+  useEffect(() => {
+    if (clientRef?.showMobileResult !== undefined) {
+      setShowMobileResult(clientRef.showMobileResult);
+    }
+  }, [clientRef?.showMobileResult]);
+
+  const getMobileButton = () => {
+    const isProcessing = clientRef?.isProcessing || false;
+    const isPolling = clientRef?.isPolling || false;
+    const resultImage = clientRef?.resultImage || null;
+
+    if (resultImage) {
+      return (
+        <button
+          onClick={handleDownload}
+          className="w-full h-12 border border-studio-button-primary hover:bg-studio-button-primary/10 active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          <div className="text-studio-button-primary text-sm font-bold font-pretendard-bold">
+            다운로드
+          </div>
+        </button>
+      );
+    }
+
+    return (
+      <button
+        onClick={handleGenerate}
+        disabled={isProcessing || isPolling || !isFormValid()}
+        className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {(isProcessing || isPolling) && (
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        )}
+        <div className="text-studio-header text-sm font-bold font-pretendard-bold">
+          {isProcessing || isPolling ? '생성중...' : '캐스팅생성'}
+        </div>
+      </button>
+    );
+  };
 
   return (
     <StudioLayout
@@ -35,8 +99,13 @@ export default function VirtualCastingWithSidebar() {
         maxHeight: 90,
         minHeight: 40,
       }}
+      mobileBottomButton={getMobileButton()}
+      hideMobileBottomSheet={showMobileResult}
     >
-      <VirtualCastingClient formData={formData} />
+      <VirtualCastingClient
+        formData={formData}
+        ref={setClientRef}
+      />
     </StudioLayout>
   );
 }

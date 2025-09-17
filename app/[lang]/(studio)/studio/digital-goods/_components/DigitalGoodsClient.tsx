@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { HelpCircle, Upload, Download, Loader2, Edit } from 'lucide-react';
 import {
   createDigitalGoodsTask,
@@ -11,6 +11,8 @@ import { useTaskPolling } from '@/hooks/useTaskPolling';
 import { toast } from 'react-hot-toast';
 import { DigitalGoodsDetails } from '@/types/task';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
+import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
+import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 
 interface DigitalGoodsClientProps {
   formData?: {
@@ -18,9 +20,19 @@ interface DigitalGoodsClientProps {
   };
 }
 
-export default function DigitalGoodsClient({
+export interface DigitalGoodsClientRef {
+  handleGenerate: () => void;
+  handleEdit: () => void;
+  isGenerating: boolean;
+  isPolling: boolean;
+  resultImage: string | null;
+  isEditLoading: boolean;
+  showMobileResult: boolean;
+}
+
+const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientProps>(function DigitalGoodsClient({
   formData = {},
-}: DigitalGoodsClientProps) {
+}, ref) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -28,6 +40,7 @@ export default function DigitalGoodsClient({
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
+  const [showMobileResult, setShowMobileResult] = useState(false);
 
   const {
     taskData,
@@ -39,6 +52,7 @@ export default function DigitalGoodsClient({
       const details = result.details as DigitalGoodsDetails;
       if (details?.result?.imageUrl) {
         setResultImage(details.result.imageUrl);
+        setShowMobileResult(true);
         toast.success('디지털 굿즈 생성이 완료되었습니다!');
       }
       setIsGenerating(false);
@@ -184,6 +198,16 @@ export default function DigitalGoodsClient({
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    handleGenerate,
+    handleEdit: () => setIsEditPopupOpen(true),
+    isGenerating,
+    isPolling,
+    resultImage,
+    isEditLoading,
+    showMobileResult,
+  }), [isGenerating, isPolling, resultImage, isEditLoading, showMobileResult]);
+
   const isFormValid = () => {
     // 이미지는 선택사항 (텍스트 전용 생성 가능)
     // sidebar에서 formData가 설정되어야 함
@@ -195,6 +219,29 @@ export default function DigitalGoodsClient({
     return true;
   };
 
+  // Mobile result view
+  if (showMobileResult && resultImage) {
+    return (
+      <>
+        <BeforeAfterToggle
+          beforeImage={previewUrl || '/placeholder-image.png'}
+          afterImage={resultImage}
+          onDownload={handleDownload}
+          onEdit={() => setIsEditPopupOpen(true)}
+          showEditButton={true}
+          editButtonText="수정하기"
+          isEditLoading={isEditLoading}
+        />
+        <EditRequestPopup
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          onEditRequest={handleEditRequest}
+          isLoading={isEditLoading}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
@@ -202,7 +249,8 @@ export default function DigitalGoodsClient({
           디지털 굿즈
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* PC에서만 표시되는 버튼들 */}
+        <div className="items-center gap-2 hidden md:flex">
           {resultImage ? (
             <button
               onClick={() => setIsEditPopupOpen(true)}
@@ -246,20 +294,32 @@ export default function DigitalGoodsClient({
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:h-[calc(100vh-180px)] md:overflow-hidden">
-        <div className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto">
+      <div
+        className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
+        style={{
+          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+        }}
+      >
+        <div
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
+            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 cursor-pointer ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
               isDragOver
-                ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
+                ? 'border-studio-button-primary scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={() => document.getElementById('file-upload')?.click()}
           >
             {previewUrl ? (
               <img
@@ -294,10 +354,10 @@ export default function DigitalGoodsClient({
             )}
           </div>
 
-          {/* 파일 찾아보기 버튼 */}
+          {/* PC에서만 파일 찾아보기 버튼 표시 */}
           <button
             onClick={() => document.getElementById('file-upload')?.click()}
-            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
+            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
               파일 찾아보기
@@ -314,7 +374,14 @@ export default function DigitalGoodsClient({
 
         </div>
 
-        <div className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden">
+        {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+        <div
+          className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
             {isGenerating || isPolling ? (
               // 로딩 상태
@@ -397,6 +464,14 @@ export default function DigitalGoodsClient({
         onEditRequest={handleEditRequest}
         isLoading={isEditLoading}
       />
+
+      <MobileLoadingOverlay
+        isVisible={isGenerating || isPolling}
+        title="디지털 굿즈 생성중"
+        description="잠시 기다리시면 결과가 나옵니다"
+      />
     </div>
   );
-}
+});
+
+export default DigitalGoodsClient;

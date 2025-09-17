@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
+import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { HelpCircle, Upload, Download, Loader2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { createStylistTask, StylistRequest } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
+import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
+import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 
 interface StylistFormData {
   mode: 'text' | 'image';
@@ -30,17 +32,32 @@ interface StylistClientProps {
   formData?: StylistFormData;
 }
 
-export default function StylistClient({ formData }: StylistClientProps) {
+export interface StylistClientRef {
+  handleGenerate: () => void;
+  handleDownload: () => void;
+  isProcessing: boolean;
+  isPolling: boolean;
+  resultImage: string | null;
+  uploadedFile: File | null;
+  showMobileResult: boolean;
+}
+
+const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(function StylistClient({ formData }, ref) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [showMobileResult, setShowMobileResult] = useState(false);
+  const [additionalImagePreviews, setAdditionalImagePreviews] = useState<{
+    [key: string]: string;
+  }>({});
 
   const { taskData, isPolling, startPolling } = useTaskPolling({
     onCompleted: (result) => {
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
+        setShowMobileResult(true);
         toast.success('스타일링이 완료되었습니다!');
       }
       setIsProcessing(false);
@@ -50,6 +67,16 @@ export default function StylistClient({ formData }: StylistClientProps) {
       setIsProcessing(false);
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    handleGenerate,
+    handleDownload,
+    isProcessing,
+    isPolling,
+    resultImage,
+    uploadedFile,
+    showMobileResult,
+  }), [isProcessing, isPolling, resultImage, uploadedFile, showMobileResult]);
 
   const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
@@ -180,6 +207,79 @@ export default function StylistClient({ formData }: StylistClientProps) {
     }
   }, []);
 
+  const handleAdditionalFileUpload = (slotId: string, file: File) => {
+    const url = URL.createObjectURL(file);
+    setAdditionalImagePreviews(prev => ({
+      ...prev,
+      [slotId]: url
+    }));
+
+    // Update formData.uploadedFiles
+    if (formData?.uploadedFiles) {
+      const fileKey = slotId as keyof typeof formData.uploadedFiles;
+      (formData.uploadedFiles as any)[fileKey] = file;
+    }
+  };
+
+  const handleAdditionalFileRemove = (slotId: string) => {
+    setAdditionalImagePreviews(prev => {
+      const newPreviews = { ...prev };
+      delete newPreviews[slotId];
+      return newPreviews;
+    });
+
+    // Remove from formData.uploadedFiles
+    if (formData?.uploadedFiles) {
+      const fileKey = slotId as keyof typeof formData.uploadedFiles;
+      delete (formData.uploadedFiles as any)[fileKey];
+    }
+  };
+
+  const getImageUploadSlots = () => {
+    if (formData?.mode !== 'image' || !formData.imageSettings) return [];
+
+    const slots = [];
+    const settings = formData.imageSettings;
+
+    if (settings.hairstyle) {
+      slots.push({
+        id: 'hairStyleImage',
+        label: '헤어스타일',
+        previewUrl: additionalImagePreviews['hairStyleImage']
+      });
+    }
+    if (settings.costume) {
+      slots.push({
+        id: 'outfitImage',
+        label: '코스튬',
+        previewUrl: additionalImagePreviews['outfitImage']
+      });
+    }
+    if (settings.background) {
+      slots.push({
+        id: 'backgroundImage',
+        label: '배경',
+        previewUrl: additionalImagePreviews['backgroundImage']
+      });
+    }
+    if (settings.accessory) {
+      slots.push({
+        id: 'accessoryImage',
+        label: '액세서리',
+        previewUrl: additionalImagePreviews['accessoryImage']
+      });
+    }
+    if (settings.atmosphere) {
+      slots.push({
+        id: 'moodImage',
+        label: '분위기',
+        previewUrl: additionalImagePreviews['moodImage']
+      });
+    }
+
+    return slots;
+  };
+
   const isFormValid = () => {
     // 이미지 업로드 필수
     if (!uploadedFile) return false;
@@ -203,6 +303,18 @@ export default function StylistClient({ formData }: StylistClientProps) {
     return true;
   };
 
+  // Mobile result view
+  if (showMobileResult && resultImage) {
+    return (
+      <BeforeAfterToggle
+        beforeImage={previewUrl || '/placeholder-image.png'}
+        afterImage={resultImage}
+        onDownload={handleDownload}
+        showEditButton={false}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
@@ -210,7 +322,8 @@ export default function StylistClient({ formData }: StylistClientProps) {
           스타일리스트
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* PC에서만 표시되는 버튼들 */}
+        <div className="items-center gap-2 hidden md:flex">
           {!resultImage ? (
             <button
               onClick={handleGenerate}
@@ -238,8 +351,78 @@ export default function StylistClient({ formData }: StylistClientProps) {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:h-[calc(100vh-180px)] md:overflow-hidden">
-        <div className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto">
+      <div
+        className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
+        style={{
+          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+        }}
+      >
+        <div
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
+          {/* 이미지 모드일 때 상단에 3열 그리드 이미지 업로드 */}
+          {formData?.mode === 'image' && formData.imageSettings && (
+            <div className="grid grid-cols-3 gap-2 mb-4">
+              {getImageUploadSlots().map((slot) => (
+                <div key={slot.id} className="flex flex-col">
+                  <div
+                    className={`relative flex flex-col h-[80px] w-full items-center justify-center bg-black rounded-[12px] transition-all duration-200 ease-out cursor-pointer ${
+                      !slot.previewUrl ? 'border-2 border-dashed' : ''
+                    } ${
+                      additionalImagePreviews[slot.id]
+                        ? 'border-studio-button-primary'
+                        : 'border-studio-border hover:border-studio-button-primary/50'
+                    }`}
+                    onClick={() => document.getElementById(`${slot.id}-upload`)?.click()}
+                  >
+                    {slot.previewUrl ? (
+                      <>
+                        <img
+                          className="w-full h-full object-cover rounded-[12px]"
+                          alt={`${slot.label} preview`}
+                          src={slot.previewUrl}
+                        />
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAdditionalFileRemove(slot.id);
+                          }}
+                          className="absolute top-1 right-1 w-4 h-4 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center transition-colors duration-200"
+                        >
+                          <X className="w-2 h-2 text-white" />
+                        </button>
+                      </>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-center p-1">
+                        <Upload className="w-3 h-3 mb-1 text-studio-text-secondary" />
+                        <div className="text-[10px] font-pretendard-medium text-studio-text-secondary">
+                          {slot.label}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <input
+                    id={`${slot.id}-upload`}
+                    type="file"
+                    accept="image/png,image/jpg,image/jpeg"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        handleAdditionalFileUpload(slot.id, file);
+                      }
+                    }}
+                    className="hidden"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* 제목 */}
           <div className="flex items-center justify-between">
             <div className="text-studio-text-primary text-sm font-pretendard-medium">
@@ -249,16 +432,17 @@ export default function StylistClient({ formData }: StylistClientProps) {
 
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
+            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 cursor-pointer ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
               isDragOver
-                ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
+                ? 'border-studio-button-primary scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={() => document.getElementById('file-upload')?.click()}
           >
             {previewUrl ? (
               <img
@@ -293,10 +477,10 @@ export default function StylistClient({ formData }: StylistClientProps) {
             )}
           </div>
 
-          {/* 파일 찾아보기 버튼 */}
+          {/* PC에서만 파일 찾아보기 버튼 표시 */}
           <button
             onClick={() => document.getElementById('file-upload')?.click()}
-            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
+            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
               파일 찾아보기
@@ -310,9 +494,17 @@ export default function StylistClient({ formData }: StylistClientProps) {
             onChange={handleInputChange}
             className="hidden"
           />
+
         </div>
 
-        <div className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden">
+        {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+        <div
+          className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
             {isProcessing ? (
               // 로딩 상태
@@ -362,6 +554,14 @@ export default function StylistClient({ formData }: StylistClientProps) {
           </div>
         </div>
       </div>
+
+      <MobileLoadingOverlay
+        isVisible={isProcessing || isPolling}
+        title="스타일링 중"
+        description="잠시 기다리시면 결과가 나옵니다"
+      />
     </div>
   );
-}
+});
+
+export default StylistClient;

@@ -12,6 +12,8 @@ interface StudioLayoutProps {
     maxHeight?: number;
     minHeight?: number;
   };
+  mobileBottomButton?: ReactNode; // 모바일 하단 버튼
+  hideMobileBottomSheet?: boolean; // 모바일 바텀시트 숨김 여부
 }
 
 export default function StudioLayout({
@@ -22,6 +24,8 @@ export default function StudioLayout({
     maxHeight: 85,
     minHeight: 20,
   },
+  mobileBottomButton,
+  hideMobileBottomSheet = false,
 }: StudioLayoutProps) {
   const isDesktop = useIsDesktop();
 
@@ -38,16 +42,29 @@ export default function StudioLayout({
   // Mobile: Bottom Sheet 레이아웃
   return (
     <div className="relative h-full w-full bg-studio-main">
-      <div className="h-full overflow-y-auto">{children}</div>
-
-      <BottomSheet
-        initialHeight={bottomSheetOptions.initialHeight}
-        maxHeight={bottomSheetOptions.maxHeight}
-        minHeight={bottomSheetOptions.minHeight}
-        className="bg-studio-sidebar"
+      <div
+        className="h-full overflow-y-auto"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+          touchAction: 'pan-y',
+          paddingBottom: 'env(safe-area-inset-bottom)'
+        }}
       >
-        {sidebar}
-      </BottomSheet>
+        {children}
+      </div>
+
+      {!hideMobileBottomSheet && (
+        <BottomSheet
+          initialHeight={bottomSheetOptions.initialHeight}
+          maxHeight={bottomSheetOptions.maxHeight}
+          minHeight={bottomSheetOptions.minHeight}
+          className="bg-studio-sidebar"
+          bottomButton={mobileBottomButton}
+        >
+          {sidebar}
+        </BottomSheet>
+      )}
     </div>
   );
 }

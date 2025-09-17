@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { HelpCircle, Upload, Download, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import {
@@ -10,6 +10,8 @@ import {
   VIRTUAL_CASTING_STYLES,
 } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
+import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
+import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -24,19 +26,31 @@ interface VirtualCastingClientProps {
   formData?: VirtualCastingFormData;
 }
 
-export default function VirtualCastingClient({
+export interface VirtualCastingClientRef {
+  handleGenerate: () => void;
+  handleDownload: () => void;
+  isProcessing: boolean;
+  isPolling: boolean;
+  resultImage: string | null;
+  uploadedFile: File | null;
+  showMobileResult: boolean;
+}
+
+const VirtualCastingClient = forwardRef<VirtualCastingClientRef, VirtualCastingClientProps>(function VirtualCastingClient({
   formData,
-}: VirtualCastingClientProps) {
+}, ref) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [showMobileResult, setShowMobileResult] = useState(false);
 
   const { taskData, isPolling, startPolling } = useTaskPolling({
     onCompleted: (result) => {
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
+        setShowMobileResult(true);
         toast.success('가상 캐스팅이 완료되었습니다!');
       }
       setIsProcessing(false);
@@ -46,6 +60,16 @@ export default function VirtualCastingClient({
       setIsProcessing(false);
     },
   });
+
+  useImperativeHandle(ref, () => ({
+    handleGenerate,
+    handleDownload,
+    isProcessing,
+    isPolling,
+    resultImage,
+    uploadedFile,
+    showMobileResult,
+  }), [isProcessing, isPolling, resultImage, uploadedFile, showMobileResult]);
 
   const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
@@ -162,6 +186,18 @@ export default function VirtualCastingClient({
     return true;
   };
 
+  // Mobile result view
+  if (showMobileResult && resultImage) {
+    return (
+      <BeforeAfterToggle
+        beforeImage={previewUrl || '/placeholder-image.png'}
+        afterImage={resultImage}
+        onDownload={handleDownload}
+        showEditButton={false}
+      />
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
@@ -169,7 +205,8 @@ export default function VirtualCastingClient({
           가상 캐스팅
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* PC에서만 표시되는 버튼들 */}
+        <div className="items-center gap-2 hidden md:flex">
           {!resultImage ? (
             <button
               onClick={handleGenerate}
@@ -197,8 +234,19 @@ export default function VirtualCastingClient({
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 pb-[100px] md:pb-12 md:h-[calc(100vh-180px)] md:overflow-hidden">
-        <div className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto">
+      <div
+        className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
+        style={{
+          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+        }}
+      >
+        <div
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           {/* 제목 */}
           <div className="flex items-center justify-between">
             <div className="text-studio-text-primary text-sm font-pretendard-medium">
@@ -208,16 +256,17 @@ export default function VirtualCastingClient({
 
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-studio-content rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
+            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 cursor-pointer ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
               isDragOver
-                ? 'border-studio-button-primary bg-studio-button-primary/5 scale-[1.02]'
+                ? 'border-studio-button-primary scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={() => document.getElementById('file-upload')?.click()}
           >
             {previewUrl ? (
               <img
@@ -252,10 +301,10 @@ export default function VirtualCastingClient({
             )}
           </div>
 
-          {/* 파일 찾아보기 버튼 */}
+          {/* PC에서만 파일 찾아보기 버튼 표시 */}
           <button
             onClick={() => document.getElementById('file-upload')?.click()}
-            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98]"
+            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
               파일 찾아보기
@@ -271,7 +320,14 @@ export default function VirtualCastingClient({
           />
         </div>
 
-        <div className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden">
+        {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+        <div
+          className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
+          style={{
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
             {isProcessing ? (
               // 로딩 상태
@@ -321,6 +377,14 @@ export default function VirtualCastingClient({
           </div>
         </div>
       </div>
+
+      <MobileLoadingOverlay
+        isVisible={isProcessing || isPolling}
+        title="가상 캐스팅 생성중"
+        description="잠시 기다리시면 결과가 나옵니다"
+      />
     </div>
   );
-}
+});
+
+export default VirtualCastingClient;

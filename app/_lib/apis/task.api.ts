@@ -1,10 +1,6 @@
 import { apiFetch } from '../apiClient';
 import { ApiResponse } from '@/app/_types/api';
-import {
-  Page,
-  Task,
-  TaskStatusResponse,
-} from '@/types/task';
+import { Page, Task, TaskStatusResponse } from '@/types/task';
 
 interface TaskCreationResponse {
   taskId: number;

@@ -101,14 +101,24 @@ export default function ModelSelectPopup({
         isMobile ? 'items-end' : 'items-center justify-center'
       } bg-black/70 backdrop-blur-sm`}
       onClick={onClose}
+      style={{
+        paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : '0'
+      }}
     >
       <div
         className={`${
-          isMobile ? 'w-full h-[85vh] rounded-t-xl' : 'w-[678px] rounded-xl'
+          isMobile
+            ? 'w-full max-h-[85vh] h-[85vh] rounded-t-xl'
+            : 'w-[678px] max-h-[80vh] rounded-xl'
         } bg-studio-sidebar border border-solid border-studio-border ${
-          isMobile ? 'p-4' : 'p-8'
+          isMobile ? 'p-4 pb-8' : 'p-8'
         } flex flex-col gap-6 md:gap-8 ${isMobile ? 'animate-slide-up' : ''}`}
         onClick={(e) => e.stopPropagation()}
+        style={{
+          maxHeight: isMobile
+            ? 'calc(85vh - env(safe-area-inset-bottom))'
+            : '80vh'
+        }}
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex-1 text-center font-bold text-studio-text-primary text-lg">
@@ -137,7 +147,14 @@ export default function ModelSelectPopup({
           </button>
         </div>
 
-        <div className="flex flex-col gap-4 flex-1 overflow-y-auto">
+        <div
+          className="flex flex-col gap-4 flex-1 overflow-y-auto"
+          style={{
+            paddingBottom: isMobile ? '1rem' : '0',
+            WebkitOverflowScrolling: 'touch',
+            overscrollBehavior: 'contain'
+          }}
+        >
           {activeTab === 'image' ? (
             <>
               <div className="flex items-center justify-between">
@@ -150,7 +167,7 @@ export default function ModelSelectPopup({
               </div>
 
               <div
-                className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}
+                className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4 pb-4`}
               >
                 <SelectCard
                   state={
@@ -213,7 +230,7 @@ export default function ModelSelectPopup({
               </div>
 
               <div
-                className="relative w-full h-[400px] rounded-lg overflow-hidden cursor-pointer"
+                className={`relative w-full ${isMobile ? 'h-[300px]' : 'h-[400px]'} rounded-lg overflow-hidden cursor-pointer mb-4`}
                 onClick={() => setSelectedAudioModel('butter-cover')}
               >
                 <div

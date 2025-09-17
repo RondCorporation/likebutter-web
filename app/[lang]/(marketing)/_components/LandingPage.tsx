@@ -190,13 +190,13 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
   const getPrice = (planType: string, cycle: 'monthly' | 'yearly') => {
     const plan = processedPlans[planType]?.[cycle];
-    if (!plan) return 0;
+    if (!plan || plan.priceKrw === null || plan.priceUsd === null) return 0;
     return isKorean ? plan.priceKrw : plan.priceUsd;
   };
 
   const getYearlyMonthlyPrice = (planType: string) => {
     const yearlyPlan = processedPlans[planType]?.yearly;
-    if (!yearlyPlan) return 0;
+    if (!yearlyPlan || yearlyPlan.priceKrw === null || yearlyPlan.priceUsd === null) return 0;
     const yearlyPrice = isKorean ? yearlyPlan.priceKrw : yearlyPlan.priceUsd;
     return Math.floor(yearlyPrice / 12);
   };
@@ -644,11 +644,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
-                            {t('planCreatorName')}
+                            Basic Plan
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                              {t('planCreatorDesc')}
+                              크리에이터를 위한 기본 플랜
                             </p>
                           </div>
                           <div className="h-[72px] flex flex-col items-center justify-center">
@@ -656,8 +656,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                               {currency}
                               {formatPrice(
                                 billingCycle === 'yearly'
-                                  ? getYearlyMonthlyPrice('CREATOR')
-                                  : getPrice('CREATOR', 'monthly')
+                                  ? getYearlyMonthlyPrice('BASIC')
+                                  : getPrice('BASIC', 'monthly')
                               )}
                               <span className="text-gray-400 text-lg">/월</span>
                             </div>
@@ -675,19 +675,19 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('planCreatorFeature1')}
+                                월 3,000 크레딧
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('planCreatorFeature2')}
+                                워터마크 없음
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('planCreatorFeature3')}
+                                기본 생성 속도
                               </span>
                             </li>
                           </ul>
@@ -698,7 +698,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           href={`/${lang}/billing?plan=basic&billing=${billingCycle}`}
                           className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
                         >
-                          {t('planCreatorCta')}
+                          시작하기
                         </Link>
                       </div>
                     </div>
@@ -710,11 +710,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
-                            {t('planProfessionalName')}
+                            Standard Plan
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                              {t('planProfessionalDesc')}
+                              프로페셔널을 위한 고급 플랜
                             </p>
                           </div>
                           <div className="h-[72px] flex flex-col items-center justify-center">
@@ -722,8 +722,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                               {currency}
                               {formatPrice(
                                 billingCycle === 'yearly'
-                                  ? getYearlyMonthlyPrice('PROFESSIONAL')
-                                  : getPrice('PROFESSIONAL', 'monthly')
+                                  ? getYearlyMonthlyPrice('STANDARD')
+                                  : getPrice('STANDARD', 'monthly')
                               )}
                               <span className="text-gray-400 text-lg">/월</span>
                             </div>
@@ -773,10 +773,10 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       </div>
                       <div className="p-6 pt-0">
                         <Link
-                          href={`/${lang}/billing?plan=pro&billing=${billingCycle}`}
+                          href={`/${lang}/billing?plan=standard&billing=${billingCycle}`}
                           className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
                         >
-                          {t('planProfessionalCta')}
+                          업그레이드
                         </Link>
                       </div>
                     </div>

@@ -6,6 +6,8 @@ import { toast } from 'react-hot-toast';
 import {
   createVirtualCastingTask,
   VirtualCastingRequest,
+  VirtualCastingStyle,
+  VIRTUAL_CASTING_STYLES,
 } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 
@@ -14,6 +16,7 @@ interface VirtualCastingFormData {
     category: string;
     name: string;
     image: string;
+    style: VirtualCastingStyle;
   } | null;
 }
 
@@ -72,7 +75,7 @@ export default function VirtualCastingClient({
 
     try {
       const request: VirtualCastingRequest = {
-        keyword: formData.selectedCharacter.name, // Use character name as keyword
+        style: formData.selectedCharacter.style,
       };
 
       const response = await createVirtualCastingTask(uploadedFile, request);

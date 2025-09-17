@@ -28,71 +28,17 @@ export default function DigitalGoodsDetailsView({ details }: Props) {
             </div>
           )}
 
-          {details.request.title && (
+          {details.request.imageKey && (
             <div>
               <label className="text-sm font-medium text-slate-400">
-                Title
+                Source Image Key
               </label>
-              <p className="text-slate-200">{details.request.title}</p>
-            </div>
-          )}
-
-          {details.request.subtitle && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Subtitle
-              </label>
-              <p className="text-slate-200">{details.request.subtitle}</p>
-            </div>
-          )}
-
-          {details.request.accentColor && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Accent Color
-              </label>
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-4 h-4 rounded border border-slate-600"
-                  style={{ backgroundColor: details.request.accentColor }}
-                />
-                <p className="text-slate-200">{details.request.accentColor}</p>
-              </div>
-            </div>
-          )}
-
-          {details.request.productName && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Product Name
-              </label>
-              <p className="text-slate-200">{details.request.productName}</p>
-            </div>
-          )}
-
-          {details.request.brandName && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Brand Name
-              </label>
-              <p className="text-slate-200">{details.request.brandName}</p>
+              <p className="text-slate-200 text-xs font-mono">{details.request.imageKey}</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Custom Prompt */}
-      {details.request.customPrompt && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-            <Type className="h-5 w-5" />
-            Custom Prompt
-          </h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            <p className="text-slate-200">{details.request.customPrompt}</p>
-          </div>
-        </div>
-      )}
 
       {/* Source Image */}
       {details.request.imageUrl && (
@@ -188,18 +134,16 @@ export default function DigitalGoodsDetailsView({ details }: Props) {
               )}
 
               {/* Download Link */}
-              {details.result.downloadUrl && (
-                <div className="pt-4 border-t border-slate-700">
-                  <a
-                    href={details.result.downloadUrl}
-                    download={details.result.filename}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-butter-yellow text-black rounded hover:bg-butter-orange transition-colors"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download Result
-                  </a>
-                </div>
-              )}
+              <div className="pt-4 border-t border-slate-700">
+                <a
+                  href={details.result.imageUrl}
+                  download={details.result.filename}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-butter-yellow text-black rounded hover:bg-butter-orange transition-colors"
+                >
+                  <Download className="h-4 w-4" />
+                  Download Result
+                </a>
+              </div>
             </div>
           </div>
         </div>

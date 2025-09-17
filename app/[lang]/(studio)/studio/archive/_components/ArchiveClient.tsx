@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, Trash2, MoreVertical, ChevronDown, Loader2, Clock, X, Music, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Settings, Trash2, MoreVertical, ChevronDown, X, Music, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
 import { Task } from '@/types/task';
@@ -43,7 +43,7 @@ function Dropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
-        className="flex items-center gap-2 px-4 py-2 bg-[#25282c] border border-[#4a4a4b] text-white rounded-lg hover:border-[#5a5a5b] transition-colors"
+        className="flex items-center gap-2 px-4 py-2 bg-[#25282c] border border-[#4a4a4b] text-white rounded-lg hover:border-[#5a5a5b] transition-colors text-sm"
       >
         <span>{placeholder}</span>
         <ChevronDown
@@ -94,35 +94,6 @@ function ArchiveTaskCard({
   };
 
 
-  const getStatusBadgeStyle = (status: string) => {
-    switch (status) {
-      case 'COMPLETED':
-        return 'bg-green-500 text-white';
-      case 'PROCESSING':
-        return 'bg-yellow-500 text-black';
-      case 'PENDING':
-        return 'bg-gray-500 text-white';
-      case 'FAILED':
-        return 'bg-red-500 text-white';
-      default:
-        return 'bg-gray-500 text-white';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'COMPLETED':
-        return '완료';
-      case 'PROCESSING':
-        return '처리중';
-      case 'PENDING':
-        return '대기중';
-      case 'FAILED':
-        return '실패';
-      default:
-        return status;
-    }
-  };
 
   const renderTaskPreview = (task: Task) => {
     const { status, actionType } = task;
@@ -144,8 +115,7 @@ function ArchiveTaskCard({
       return (
         <div className="w-full h-full flex items-center justify-center text-gray-400">
           <div className="text-center">
-            <Clock className="w-8 h-8 mx-auto mb-2" />
-            <div className="text-sm font-medium">대기 중</div>
+            <div className="text-sm font-medium">생성 중...</div>
           </div>
         </div>
       );
@@ -156,8 +126,7 @@ function ArchiveTaskCard({
       return (
         <div className="w-full h-full flex items-center justify-center text-yellow-400">
           <div className="text-center">
-            <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin" />
-            <div className="text-sm font-medium">처리 중</div>
+            <div className="text-sm font-medium">생성 중...</div>
           </div>
         </div>
       );
@@ -275,10 +244,6 @@ function ArchiveTaskCard({
           </div>
         </div>
 
-        {/* Status indicator */}
-        <div className="absolute bottom-3 left-3">
-          <div className={`w-3 h-3 rounded-full ${getStatusBadgeStyle(task.status).split(' ')[0]}`} title={getStatusLabel(task.status)} />
-        </div>
       </div>
 
       {/* Card Info */}
@@ -308,12 +273,14 @@ export default function ArchiveClient() {
   const [pageSize, setPageSize] = useState(10);
   const pageSizeDropdownRef = useRef<HTMLDivElement>(null);
   const [pageSizeDropdownPosition, setPageSizeDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+  const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
 
-  const dropdownOptions = [
+  const actionTypeOptions = [
     { label: '전체', value: 'all' },
-    { label: '완료됨', value: 'completed' },
-    { label: '진행중', value: 'processing' },
-    { label: '실패', value: 'failed' },
+    { label: '디지털 굿즈', value: 'DIGITAL_GOODS' },
+    { label: '스타일리스트', value: 'STYLIST' },
+    { label: '가상 캐스팅', value: 'VIRTUAL_CASTING' },
+    { label: '팬미팅 스튜디오', value: 'FANMEETING_STUDIO' },
   ];
 
   const pageSizeOptions = [
@@ -332,13 +299,14 @@ export default function ArchiveClient() {
   };
 
   const handleFilterSelect = (value: string) => {
-    const statusMap: { [key: string]: string } = {
+    const actionTypeMap: { [key: string]: string } = {
       all: '',
-      completed: 'COMPLETED',
-      processing: 'PROCESSING',
-      failed: 'FAILED',
+      DIGITAL_GOODS: 'DIGITAL_GOODS',
+      STYLIST: 'STYLIST',
+      VIRTUAL_CASTING: 'VIRTUAL_CASTING',
+      FANMEETING_STUDIO: 'FANMEETING_STUDIO',
     };
-    setFilters({ status: statusMap[value] });
+    setFilters({ actionType: actionTypeMap[value] });
   };
 
   const handlePageSizeSelect = (value: string) => {
@@ -403,17 +371,49 @@ export default function ArchiveClient() {
     <div className="w-full bg-[#25282c] min-h-screen">
       <div className="px-[90px] py-[44px]">
         {/* Header */}
-        <h1 className="text-white text-3xl font-bold mb-11">내 보관함</h1>
+        <h1 className="text-white text-3xl font-bold mb-8">내 보관함</h1>
+
+        {/* Tabs */}
+        <div className="flex items-center gap-8 mb-6">
+          <button
+            onClick={() => {
+              setActiveTab('image');
+              setFilters({ actionType: '' }); // Reset filters when changing tab
+            }}
+            className={`text-sm font-medium pb-2 border-b-2 transition-colors ${
+              activeTab === 'image'
+                ? 'text-yellow-400 border-yellow-400'
+                : 'text-gray-400 border-transparent hover:text-white'
+            }`}
+          >
+            이미지 생성
+          </button>
+          <button
+            onClick={() => {
+              setActiveTab('audio');
+              setFilters({ actionType: 'BUTTER_COVER' }); // Filter to BUTTER_COVER when on audio tab
+            }}
+            className={`text-sm font-medium pb-2 border-b-2 transition-colors ${
+              activeTab === 'audio'
+                ? 'text-yellow-400 border-yellow-400'
+                : 'text-gray-400 border-transparent hover:text-white'
+            }`}
+          >
+            음원 생성
+          </button>
+        </div>
 
         {/* Controls */}
         <div className="flex items-center justify-between mb-4">
-          <Dropdown
-            isOpen={dropdownOpen}
-            onToggle={() => setDropdownOpen(!dropdownOpen)}
-            placeholder="옵션 선택"
-            options={dropdownOptions}
-            onSelect={handleFilterSelect}
-          />
+          {activeTab === 'image' && (
+            <Dropdown
+              isOpen={dropdownOpen}
+              onToggle={() => setDropdownOpen(!dropdownOpen)}
+              placeholder="옵션 선택"
+              options={actionTypeOptions}
+              onSelect={handleFilterSelect}
+            />
+          )}
 
           <div className="flex items-center gap-3">
             <button className="p-2 text-gray-400 hover:text-white transition-colors">
@@ -429,26 +429,32 @@ export default function ArchiveClient() {
         </div>
 
         {/* Content */}
-        {isLoading && tasks.length === 0 ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-gray-400">로딩 중...</div>
-          </div>
-        ) : tasks.length === 0 ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-gray-400 text-center">
-              <h3 className="text-lg font-semibold mb-2">
-                아직 생성된 작업이 없습니다
-              </h3>
-              <p className="text-sm">
-                스튜디오에서 첫 번째 작업을 시작해보세요!
-              </p>
+        {(() => {
+          // Filter tasks based on active tab
+          const filteredTasks = activeTab === 'audio'
+            ? tasks.filter(task => task.actionType === 'BUTTER_COVER')
+            : tasks.filter(task => task.actionType !== 'BUTTER_COVER');
+
+          return isLoading && filteredTasks.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-gray-400">로딩 중...</div>
             </div>
-          </div>
-        ) : (
-          <>
-            {/* Task Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              {tasks.map((task) => (
+          ) : filteredTasks.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-gray-400 text-center">
+                <h3 className="text-lg font-semibold mb-2">
+                  {activeTab === 'audio' ? '생성된 음원이 없습니다' : '아직 생성된 작업이 없습니다'}
+                </h3>
+                <p className="text-sm">
+                  스튜디오에서 첫 번째 작업을 시작해보세요!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Task Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {filteredTasks.map((task) => (
                 <ArchiveTaskCard
                   key={task.taskId}
                   task={task}
@@ -552,8 +558,9 @@ export default function ArchiveClient() {
                 )}
               </div>
             </div>
-          </>
-        )}
+            </>
+          );
+        })()}
       </div>
 
       {/* Task Details Modal */}

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
-import CustomDropdown from '../../_components/CustomDropdown';
 
 interface FanmeetingStudioSidebarProps {
   onFormChange?: (formData: {
@@ -16,7 +15,6 @@ export default function FanmeetingStudioSidebar({
 }: FanmeetingStudioSidebarProps = {}) {
   const [backgroundPrompt, setBackgroundPrompt] = useState('');
   const [situationPrompt, setSituationPrompt] = useState('');
-  const [imageSize, setImageSize] = useState('1:1(정방향)');
 
   const placePrompts = [
     '팬싸인회장',
@@ -139,22 +137,6 @@ export default function FanmeetingStudioSidebar({
         </div>
       </div>
 
-      {/* 이미지 사이즈 - 항상 표시 */}
-      <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
-        <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
-          이미지 사이즈
-        </div>
-
-        <CustomDropdown
-          options={[
-            { value: '1:1(정방향)', label: '1:1(정방향)' },
-            { value: '16:9(가로형)', label: '16:9(가로형)' },
-            { value: '9:16(세로형)', label: '9:16(세로형)' },
-          ]}
-          value={imageSize}
-          onChange={setImageSize}
-        />
-      </div>
     </StudioSidebarBase>
   );
 }

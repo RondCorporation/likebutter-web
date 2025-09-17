@@ -33,38 +33,14 @@ export default function DigitalGoodsTaskCard({ task, onClick }: Props) {
         </div>
       )}
 
-      {/* Title */}
-      {details?.request?.title && (
+      {/* Source Image Key */}
+      {details?.request?.imageKey && (
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-300">
-          <Type className="h-4 w-4" />
-          <span>Title: {details.request.title}</span>
+          <Image className="h-4 w-4" />
+          <span className="text-xs font-mono truncate">Image: {details.request.imageKey}</span>
         </div>
       )}
 
-      {/* Product and Brand Info */}
-      {(details?.request?.productName || details?.request?.brandName) && (
-        <div className="mb-2 space-y-1">
-          {details.request.productName && (
-            <div className="text-sm text-slate-400">
-              Product: {details.request.productName}
-            </div>
-          )}
-          {details.request.brandName && (
-            <div className="text-sm text-slate-400">
-              Brand: {details.request.brandName}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Custom Prompt */}
-      {details?.request?.customPrompt && (
-        <div className="mb-2 text-sm text-slate-400">
-          <div className="truncate">
-            Prompt: "{details.request.customPrompt}"
-          </div>
-        </div>
-      )}
 
       {/* Result Info */}
       {details?.result && (

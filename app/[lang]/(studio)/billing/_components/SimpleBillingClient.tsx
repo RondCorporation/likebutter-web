@@ -32,22 +32,23 @@ const convertPlansFormat = (
   t: any
 ): SimplePlan[] => {
   const planTypeMap: { [key: string]: string } = {
-    CREATOR: 'planCreatorName',
-    PROFESSIONAL: 'planProfessionalName',
+    BASIC: 'Basic Plan',
+    STANDARD: 'Standard Plan',
   };
 
   const planDescMap: { [key: string]: string } = {
-    CREATOR: 'planCreatorDesc',
-    PROFESSIONAL: 'planProfessionalDesc',
+    BASIC: '크리에이터를 위한 기본 플랜',
+    STANDARD: '프로페셔널을 위한 고급 플랜',
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    CREATOR: ['pricingFeature1', 'pricingFeature2', 'pricingFeature3'],
-    PROFESSIONAL: [
-      'pricingFeature1',
-      'pricingFeature2',
-      'pricingFeature3',
-      'pricingFeature4',
+    BASIC: ['월 3,000 크레딧', '워터마크 없음', '기본 생성 속도'],
+    STANDARD: [
+      '월 12,000 크레딧',
+      '우선 생성 속도',
+      '워터마크 없음',
+      '무제한 크레딧 이월',
+      '추가 크레딧 구매',
     ],
   };
 
@@ -68,17 +69,17 @@ const convertPlansFormat = (
   const result: SimplePlan[] = [
     {
       key: 'free',
-      name: t('planFreeName'),
-      description: t('planFreeDesc'),
+      name: 'Free Plan',
+      description: '무료로 시작하기',
       priceMonthly: 'Free',
       priceYearly: 'Free',
       features: [
-        t('planFreeFeature1'),
-        t('planFreeFeature2'),
-        t('planFreeFeature3'),
+        '월 500 크레딧',
+        '워터마크 포함',
+        '기본 생성 속도',
       ],
       isPopular: false,
-      cta: t('planFreeCta'),
+      cta: '무료 시작',
     },
   ];
 
@@ -87,28 +88,26 @@ const convertPlansFormat = (
       const isKorean = currency === '₩';
       const monthlyPrice = cycles.monthly
         ? isKorean
-          ? cycles.monthly.priceKrw
-          : cycles.monthly.priceUsd
+          ? cycles.monthly.priceKrw || 0
+          : cycles.monthly.priceUsd || 0
         : 0;
       const yearlyPrice = cycles.yearly
         ? isKorean
-          ? cycles.yearly.priceKrw
-          : cycles.yearly.priceUsd
+          ? cycles.yearly.priceKrw || 0
+          : cycles.yearly.priceUsd || 0
         : 0;
       const yearlyMonthlyPrice =
         yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
 
       result.push({
         key: planType.toLowerCase(),
-        name: t(planTypeMap[planType] || planType),
-        description: t(planDescMap[planType] || `${planType} plan`),
+        name: planTypeMap[planType] || planType,
+        description: planDescMap[planType] || `${planType} plan`,
         priceMonthly: monthlyPrice as number | string,
         priceYearly: yearlyMonthlyPrice as number | string,
-        features: (featuresMap[planType] || []).map((featureKey) =>
-          t(featureKey)
-        ),
-        isPopular: planType === 'CREATOR',
-        cta: t('planCreatorCta'),
+        features: featuresMap[planType] || [],
+        isPopular: planType === 'BASIC',
+        cta: planType === 'BASIC' ? '시작하기' : '업그레이드',
       });
     }
   });

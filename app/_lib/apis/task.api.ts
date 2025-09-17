@@ -3,7 +3,6 @@ import { ApiResponse } from '@/app/_types/api';
 import {
   Page,
   Task,
-  TaskImageUrlResponse,
   TaskStatusResponse,
 } from '@/types/task';
 
@@ -62,11 +61,15 @@ export const getBatchTaskStatus = (
 
 // Digital Goods style enum values
 export const DIGITAL_GOODS_STYLES = {
-  POSTER: 'POSTER',
-  STICKER: 'STICKER',
   GHIBLI: 'GHIBLI',
-  FIGURE: 'FIGURE',
+  PIXEL_ART: 'PIXEL_ART',
+  ANIMATION: 'ANIMATION',
   CARTOON: 'CARTOON',
+  SKETCH: 'SKETCH',
+  GRADUATION_PHOTO: 'GRADUATION_PHOTO',
+  LEGO: 'LEGO',
+  STICKER: 'STICKER',
+  FIGURE: 'FIGURE',
 } as const;
 
 export type DigitalGoodsStyle =
@@ -75,12 +78,6 @@ export type DigitalGoodsStyle =
 // Digital Goods task creation
 export interface DigitalGoodsRequest {
   style: DigitalGoodsStyle;
-  customPrompt?: string;
-  title?: string;
-  subtitle?: string;
-  accentColor?: string;
-  productName?: string;
-  brandName?: string;
 }
 
 export const createDigitalGoodsTask = (
@@ -226,10 +223,53 @@ export const createStylistTask = (
   });
 };
 
+// Virtual Casting style enum values
+export const VIRTUAL_CASTING_STYLES = {
+  // Disney, Pixar & Hollywood Animation
+  FROZEN: 'FROZEN',
+  SPONGEBOB: 'SPONGEBOB',
+  ALADDIN: 'ALADDIN',
+  INSIDE_OUT: 'INSIDE_OUT',
+  TOY_STORY: 'TOY_STORY',
+  MINIONS: 'MINIONS',
+  ZOOTOPIA: 'ZOOTOPIA',
+  // Fantasy & SF
+  TWILIGHT: 'TWILIGHT',
+  STAR_WARS: 'STAR_WARS',
+  LORD_OF_THE_RINGS: 'LORD_OF_THE_RINGS',
+  HARRY_POTTER: 'HARRY_POTTER',
+  AVENGERS: 'AVENGERS',
+  OVERWATCH: 'OVERWATCH', // 이미지 있음, API 스펙에 없음 - 더미
+  // Korean Webtoons & Dramas
+  TRUE_BEAUTY: 'TRUE_BEAUTY',
+  LOOKISM: 'LOOKISM',
+  KENGAN_ASHURA: 'KENGAN_ASHURA',
+  ITAEWON_CLASS: 'ITAEWON_CLASS',
+  SQUID_GAME: 'SQUID_GAME',
+  VOLCANO_RETURNS: 'VOLCANO_RETURNS', // 이미지 있음, API 스펙에 없음 - 더미
+  // Japanese Animation
+  CRAYON_SHIN_CHAN: 'CRAYON_SHIN_CHAN',
+  FRIEREN: 'FRIEREN',
+  MY_LOVE_MIX_UP: 'MY_LOVE_MIX_UP',
+  NARUTO: 'NARUTO',
+  // 이미지 있음, API 스펙에 없음 - 더미 열거형들
+  KIMI_NI_TODOKE: 'KIMI_NI_TODOKE', // 너에게 닿기를
+  DETECTIVE_CONAN: 'DETECTIVE_CONAN', // 명탐정 코난
+  NANA: 'NANA', // 나나
+  YOUR_NAME: 'YOUR_NAME', // 너의이름은
+  DORAEMON: 'DORAEMON', // 도라에몽
+  SPY_FAMILY: 'SPY_FAMILY', // 스파이패밀리
+  SLAM_DUNK: 'SLAM_DUNK', // 슬램덩크
+  OURAN_HIGH_SCHOOL: 'OURAN_HIGH_SCHOOL', // 오란고교
+  JUJUTSU_KAISEN: 'JUJUTSU_KAISEN', // 주술회전
+} as const;
+
+export type VirtualCastingStyle =
+  (typeof VIRTUAL_CASTING_STYLES)[keyof typeof VIRTUAL_CASTING_STYLES];
+
 // Virtual Casting task creation
 export interface VirtualCastingRequest {
-  keyword: string;
-  customPrompt?: string;
+  style: VirtualCastingStyle;
 }
 
 export const createVirtualCastingTask = (
@@ -240,12 +280,7 @@ export const createVirtualCastingTask = (
 
   // Add required files and data
   formData.append('idolImage', idolImage);
-  formData.append('keyword', request.keyword);
-
-  // Add optional custom prompt
-  if (request.customPrompt) {
-    formData.append('customPrompt', request.customPrompt);
-  }
+  formData.append('style', request.style);
 
   return apiFetch<TaskCreationResponse>('/tasks/virtual-casting', {
     method: 'POST',

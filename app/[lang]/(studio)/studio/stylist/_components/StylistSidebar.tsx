@@ -5,7 +5,6 @@ import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import SquareToggleButton from '../../_components/ui/SquareToggleButton';
 import ToggleSwitch from '../../_components/ui/ToggleSwitch';
-import CustomDropdown from '../../_components/CustomDropdown';
 
 interface StylistSidebarProps {
   onFormChange?: (formData: {
@@ -47,7 +46,6 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps = {
     accessoryImage?: File;
     moodImage?: File;
   }>({});
-  const [imageSize, setImageSize] = useState('1:1(정방향)');
 
   const recommendedPrompts = [
     '금발로 변경해줘',
@@ -323,22 +321,6 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps = {
         </>
       )}
 
-      {/* 이미지 사이즈 - 항상 표시 */}
-      <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
-        <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
-          이미지 사이즈
-        </div>
-
-        <CustomDropdown
-          options={[
-            { value: '1:1(정방향)', label: '1:1(정방향)' },
-            { value: '16:9(가로형)', label: '16:9(가로형)' },
-            { value: '9:16(세로형)', label: '9:16(세로형)' },
-          ]}
-          value={imageSize}
-          onChange={setImageSize}
-        />
-      </div>
     </StudioSidebarBase>
   );
 }

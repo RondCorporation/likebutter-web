@@ -35,17 +35,9 @@ export default function VirtualCastingDetailsView({ details }: Props) {
           <div>
             <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
               <Sparkles className="h-4 w-4" />
-              키워드
+              스타일
             </label>
-            <p className="text-slate-200">{details.request.keyword || 'Not specified'}</p>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <FileText className="h-4 w-4" />
-              커스텀 프롬프트
-            </label>
-            <p className="text-slate-200">{details.request.customPrompt || '사용 안함'}</p>
+            <p className="text-slate-200">{details.request.style || 'Not specified'}</p>
           </div>
         </div>
       </div>
@@ -130,7 +122,7 @@ export default function VirtualCastingDetailsView({ details }: Props) {
                   <div>
                     <div className="text-slate-400">사용된 키워드</div>
                     <div className="text-slate-200 font-medium">
-                      {details.result.keywordUsed}
+                      {details.result.styleUsed}
                     </div>
                   </div>
                   <div>

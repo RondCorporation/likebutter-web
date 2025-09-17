@@ -24,19 +24,14 @@ export type ActionType =
 
 // Digital Goods types
 interface DigitalGoodsRequestDetails {
-  style?: string;
-  customPrompt?: string;
-  title?: string;
-  subtitle?: string;
-  accentColor?: string;
-  productName?: string;
-  brandName?: string;
+  imageKey?: string;
   imageUrl?: string;
+  style: string;
 }
 
 interface DigitalGoodsResultDetails {
+  imageKey: string;
   imageUrl: string;
-  downloadUrl?: string;
   filename: string;
   style: string;
   promptUsed: string;
@@ -195,15 +190,14 @@ export interface StylistDetails {
 interface VirtualCastingRequestDetails {
   idolImageKey: string;
   idolImageUrl: string;
-  keyword: string;
-  customPrompt?: string;
+  style: string;
 }
 
 interface VirtualCastingResultDetails {
   imageKey: string;
   imageUrl: string;
   filename: string;
-  keywordUsed: string;
+  styleUsed: string;
   promptUsed: string;
   fileSize: number;
   executionTime: number;

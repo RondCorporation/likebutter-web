@@ -1,10 +1,10 @@
 export interface Plan {
   planKey: string;
   description: string;
-  planType: 'CREATOR' | 'PROFESSIONAL' | 'FREE' | 'ENTERPRISE';
-  billingCycle: 'MONTHLY' | 'YEARLY';
-  priceKrw: number;
-  priceUsd: number;
+  planType: 'FREE' | 'BASIC' | 'STANDARD' | 'ENTERPRISE';
+  billingCycle: 'MONTHLY' | 'YEARLY' | null;
+  priceKrw: number | null;
+  priceUsd: number | null;
   pricePerMonth?: {
     krw: number;
     usd: number;

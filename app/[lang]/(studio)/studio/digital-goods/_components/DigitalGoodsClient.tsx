@@ -15,12 +15,6 @@ import EditRequestPopup from '@/components/ui/EditRequestPopup';
 interface DigitalGoodsClientProps {
   formData?: {
     style?: DigitalGoodsStyle;
-    customPrompt?: string;
-    title?: string;
-    subtitle?: string;
-    accentColor?: string;
-    productName?: string;
-    brandName?: string;
   };
 }
 
@@ -32,7 +26,6 @@ export default function DigitalGoodsClient({
   const [isDragOver, setIsDragOver] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
 
@@ -46,7 +39,6 @@ export default function DigitalGoodsClient({
       const details = result.details as DigitalGoodsDetails;
       if (details?.result?.imageUrl) {
         setResultImage(details.result.imageUrl);
-        setDownloadUrl(details.result.downloadUrl || details.result.imageUrl);
         toast.success('디지털 굿즈 생성이 완료되었습니다!');
       }
       setIsGenerating(false);
@@ -78,21 +70,14 @@ export default function DigitalGoodsClient({
   };
 
   const handleGenerate = async () => {
-    if (!formData || !uploadedFile) return;
+    if (!formData) return;
 
     setIsGenerating(true);
     setResultImage(null);
-    setDownloadUrl(null);
 
     try {
       const request: DigitalGoodsRequest = {
-        style: formData.style || 'POSTER',
-        customPrompt: formData.customPrompt,
-        title: formData.title,
-        subtitle: formData.subtitle,
-        accentColor: formData.accentColor,
-        productName: formData.productName,
-        brandName: formData.brandName,
+        style: formData.style || 'GHIBLI',
       };
 
       const response = await createDigitalGoodsTask(
@@ -122,10 +107,10 @@ export default function DigitalGoodsClient({
   };
 
   const handleDownload = async () => {
-    if (!downloadUrl) return;
+    if (!resultImage) return;
 
     try {
-      const response = await fetch(downloadUrl);
+      const response = await fetch(resultImage);
       const blob = await response.blob();
 
       const url = window.URL.createObjectURL(blob);
@@ -200,29 +185,12 @@ export default function DigitalGoodsClient({
   };
 
   const isFormValid = () => {
-    // 이미지 업로드 필수
-    if (!uploadedFile) return false;
-
+    // 이미지는 선택사항 (텍스트 전용 생성 가능)
     // sidebar에서 formData가 설정되어야 함
     if (!formData) return false;
 
-    // 스타일별 유효성 검사
-    const style = formData.style || 'POSTER';
-
-    if (style === 'POSTER') {
-      // POSTER: 제목 + 부제목 + 프롬프트 필수
-      if (!formData.title || formData.title.trim().length < 1) return false;
-      if (!formData.subtitle || formData.subtitle.trim().length < 1) return false;
-      if (!formData.customPrompt || formData.customPrompt.trim().length < 5) return false;
-    } else if (style === 'FIGURE') {
-      // FIGURE: 브랜드명 + 제품명 + 프롬프트 필수
-      if (!formData.brandName || formData.brandName.trim().length < 1) return false;
-      if (!formData.productName || formData.productName.trim().length < 1) return false;
-      if (!formData.customPrompt || formData.customPrompt.trim().length < 5) return false;
-    } else {
-      // STICKER, GHIBLI, CARTOON: 프롬프트만 필수
-      if (!formData.customPrompt || formData.customPrompt.trim().length < 5) return false;
-    }
+    // 스타일은 필수
+    if (!formData.style) return false;
 
     return true;
   };
@@ -264,7 +232,7 @@ export default function DigitalGoodsClient({
             </button>
           )}
 
-          {resultImage && downloadUrl && (
+          {resultImage && (
             <button
               onClick={handleDownload}
               className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
@@ -381,7 +349,7 @@ export default function DigitalGoodsClient({
                     toast.error('이미지 로드에 실패했습니다.');
                   }}
                 />
-                {downloadUrl && (
+                {resultImage && (
                   <button
                     onClick={handleDownload}
                     className="absolute top-4 right-4 p-2 bg-studio-sidebar/80 hover:bg-studio-sidebar rounded-lg backdrop-blur-sm transition-all duration-200"

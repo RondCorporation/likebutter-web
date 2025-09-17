@@ -114,7 +114,7 @@ function SocialButtonsContent({
         <IconGoogle />
         Continue with Google
       </SocialButton>
-      <SocialButton
+      {/* <SocialButton
         href={OAUTH_FACEBOOK}
         onClick={(e) => handleSocialClick(e, 'Facebook')}
       >
@@ -124,7 +124,7 @@ function SocialButtonsContent({
       <SocialButton href={OAUTH_X} onClick={(e) => handleSocialClick(e, 'X')}>
         <IconX />
         Continue with X
-      </SocialButton>
+      </SocialButton> */}
 
       {variant === 'signup' && (
         <p className="pt-2 text-center text-xs text-slate-400">

@@ -3,12 +3,13 @@
 import { ReactNode, use } from 'react';
 import { Toaster } from 'react-hot-toast';
 import StudioAuthGuard from '../_components/StudioAuthGuard';
-import { Settings } from 'lucide-react';
+import { Crown, User } from 'lucide-react';
 import StudioSidebar from './_components/StudioSidebar';
 import MobileBottomNavigation from './_components/MobileBottomNavigation';
 import StudioPreloader from './_components/StudioPreloader';
 import Logo from '@/components/Logo';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   children: ReactNode;
@@ -18,6 +19,11 @@ type Props = {
 export default function StudioLayout({ children, params }: Props) {
   const { lang } = use(params);
   const isDesktop = useIsDesktop();
+  const router = useRouter();
+
+  const handleUpgradeClick = () => {
+    router.push(`/${lang}/billing`);
+  };
 
   return (
     <StudioAuthGuard>
@@ -27,16 +33,19 @@ export default function StudioLayout({ children, params }: Props) {
           <Logo className="relative flex-1 mt-[-3.00px] mb-[-1.00px] tracking-[0]" />
 
           <div className="inline-flex items-center justify-end gap-4 relative flex-[0_0_auto]">
-            <div className="inline-flex items-center overflow-hidden rounded-md justify-center relative">
-              <div
-                className="font-semibold w-fit mt-[-2.00px] tracking-[0] text-sm text-studio-button-primary leading-[14px] whitespace-nowrap relative"
-                style={{ fontFamily: 'Pretendard, Helvetica' }}
-              >
-                Button text
-              </div>
-            </div>
+            <button
+              onClick={handleUpgradeClick}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 border-yellow-400 hover:bg-yellow-50 transition-colors"
+            >
+              <Crown className="w-4 h-4 text-yellow-400" />
+              <span className="font-semibold text-sm text-yellow-400 whitespace-nowrap">
+                업그레이드
+              </span>
+            </button>
             <div className="inline-flex items-center justify-center gap-4 relative flex-[0_0_auto]">
-              <Settings className="w-6 h-6" color="#A8A8AA" />
+              <button className="w-10 h-10 rounded-full bg-studio-header flex items-center justify-center hover:bg-gray-600 transition-colors">
+                <User className="w-5 h-5 text-gray-400" />
+              </button>
             </div>
           </div>
         </div>

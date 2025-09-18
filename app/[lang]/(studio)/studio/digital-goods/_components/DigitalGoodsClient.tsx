@@ -301,7 +301,7 @@ const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientP
         }}
       >
         <div
-          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto"
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain'

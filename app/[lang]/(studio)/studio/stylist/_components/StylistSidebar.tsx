@@ -28,7 +28,9 @@ interface StylistSidebarProps {
   }) => void;
 }
 
-export default function StylistSidebar({ onFormChange }: StylistSidebarProps = {}) {
+export default function StylistSidebar({
+  onFormChange,
+}: StylistSidebarProps = {}) {
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
   const [imagePrompt, setImagePrompt] = useState(''); // 이미지 모드용 프롬프트
@@ -320,7 +322,6 @@ export default function StylistSidebar({ onFormChange }: StylistSidebarProps = {
           </div>
         </>
       )}
-
     </StudioSidebarBase>
   );
 }

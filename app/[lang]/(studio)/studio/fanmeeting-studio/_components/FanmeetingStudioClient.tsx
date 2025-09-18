@@ -269,7 +269,7 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
         }}
       >
         <div
-          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-studio-border rounded-[20px] p-[15px] gap-[18px] shadow-sm md:overflow-y-auto"
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain'
@@ -336,9 +336,7 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
 
               {/* Plus 아이콘 */}
               <div className="flex items-center justify-center">
-                <div className="w-8 h-8 bg-studio-button-primary rounded-full flex items-center justify-center">
-                  <Plus className="w-4 h-4 text-studio-header" />
-                </div>
+                <Plus className="w-6 h-6 text-white" />
               </div>
 
               {/* 사용자 이미지 */}

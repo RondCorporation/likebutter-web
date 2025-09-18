@@ -50,10 +50,14 @@ export default function StylistWithSidebar() {
     if (!formData.mode) return false;
 
     if (formData.mode === 'text') {
-      if (!formData.textPrompt || formData.textPrompt.trim().length < 5) return false;
+      if (!formData.textPrompt || formData.textPrompt.trim().length < 5)
+        return false;
     } else if (formData.mode === 'image') {
-      const hasUploadedFiles = formData.uploadedFiles &&
-        Object.values(formData.uploadedFiles).some(file => file instanceof File);
+      const hasUploadedFiles =
+        formData.uploadedFiles &&
+        Object.values(formData.uploadedFiles).some(
+          (file) => file instanceof File
+        );
       if (!hasUploadedFiles) return false;
     }
 
@@ -103,10 +107,7 @@ export default function StylistWithSidebar() {
       mobileBottomButton={getMobileButton()}
       hideMobileBottomSheet={showMobileResult}
     >
-      <StylistClient
-        formData={formData}
-        ref={setClientRef}
-      />
+      <StylistClient formData={formData} ref={setClientRef} />
     </StudioLayout>
   );
 }

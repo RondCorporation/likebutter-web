@@ -35,7 +35,7 @@ export default function StudioLayout({ children, params }: Props) {
           <div className="inline-flex items-center justify-end gap-4 relative flex-[0_0_auto]">
             <button
               onClick={handleUpgradeClick}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 border-yellow-400 hover:bg-yellow-50 transition-colors"
+              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 border-yellow-400 hover:bg-yellow-50 transition-colors"
             >
               <Crown className="w-4 h-4 text-yellow-400" />
               <span className="font-semibold text-sm text-yellow-400 whitespace-nowrap">

@@ -2,9 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Settings,
   Trash2,
-  MoreVertical,
   ChevronDown,
   X,
   Music,
@@ -260,7 +258,9 @@ function ArchiveTaskCard({
 
       {/* Card Info */}
       <div className="w-full text-center">
-        <p className="text-[#a8a8aa] text-sm md:text-sm">{formatDate(task.createdAt)}</p>
+        <p className="text-[#a8a8aa] text-sm md:text-sm">
+          {formatDate(task.createdAt)}
+        </p>
       </div>
     </div>
   );
@@ -383,9 +383,11 @@ export default function ArchiveClient() {
 
   return (
     <div className="w-full bg-[#25282c] min-h-screen">
-      <div className="px-2 md:px-[90px] py-4 md:py-[44px]">
+      <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
-        <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">내 보관함</h1>
+        <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">
+          내 보관함
+        </h1>
 
         {/* Tabs */}
         <div className="flex items-center gap-6 md:gap-8 mb-6">
@@ -431,13 +433,7 @@ export default function ArchiveClient() {
 
           <div className="flex items-center gap-3">
             <button className="p-2 text-gray-400 hover:text-white transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
-            <button className="p-2 text-gray-400 hover:text-white transition-colors">
               <Trash2 className="w-5 h-5" />
-            </button>
-            <button className="p-2 text-gray-400 hover:text-white transition-colors">
-              <MoreVertical className="w-5 h-5" />
             </button>
           </div>
         </div>

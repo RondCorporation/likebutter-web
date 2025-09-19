@@ -14,6 +14,7 @@ interface CustomDropdownProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  width?: string;
 }
 
 export default function CustomDropdown({
@@ -22,6 +23,7 @@ export default function CustomDropdown({
   onChange,
   placeholder = '선택해주세요',
   className = '',
+  width = 'w-[236px]',
 }: CustomDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,7 +55,7 @@ export default function CustomDropdown({
     <div ref={dropdownRef} className={`studio-dropdown ${className}`}>
       {/* Dropdown Trigger */}
       <div
-        className="flex w-[236px] h-[38px] items-center gap-3 px-3 py-2.5 relative rounded border border-solid border-studio-border bg-studio-sidebar cursor-pointer hover:border-studio-button-primary transition-colors"
+        className={`flex ${width} h-[38px] items-center gap-3 px-3 py-2.5 relative rounded border border-solid border-studio-border bg-studio-sidebar cursor-pointer hover:border-studio-button-primary transition-colors`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2 relative flex-[0_0_auto] self-stretch w-full">

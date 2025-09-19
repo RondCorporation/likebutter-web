@@ -33,7 +33,7 @@ export default function PrimaryButton({
       disabled={disabled}
     >
       <div
-        className={`font-semibold text-base text-white leading-4 whitespace-nowrap relative ${textClassName}`}
+        className={`font-semibold text-base text-black leading-4 whitespace-nowrap relative ${textClassName}`}
       >
         {text}
       </div>
@@ -42,7 +42,7 @@ export default function PrimaryButton({
       {creditCost && (
         <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
           <Image
-            src="/credit.svg"
+            src="/credit_black.svg"
             alt="Credit"
             width={12}
             height={12}

@@ -54,7 +54,7 @@ export interface CreditHistoryPage {
 
 // ActionType별 크레딧 비용 정의
 export const CREDIT_COSTS = {
-  BUTTER_COVER: 4, // 이미지 생성
+  BUTTER_COVER: 25, // 음악 생성
   DIGITAL_GOODS: 4, // 이미지 생성
   VIRTUAL_CASTING: 4, // 이미지 생성
   FANMEETING_STUDIO: 4, // 이미지 생성

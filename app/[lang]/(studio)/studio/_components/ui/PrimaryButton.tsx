@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface PrimaryButtonProps {
   text: string;
@@ -8,6 +9,7 @@ interface PrimaryButtonProps {
   className?: string;
   textClassName?: string;
   disabled?: boolean;
+  creditCost?: number; // 소비될 크레딧 양
 }
 
 export default function PrimaryButton({
@@ -16,6 +18,7 @@ export default function PrimaryButton({
   className = '',
   textClassName = '',
   disabled = false,
+  creditCost,
 }: PrimaryButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -34,6 +37,22 @@ export default function PrimaryButton({
       >
         {text}
       </div>
+
+      {/* 크레딧 정보 - 버튼 내부 우측 */}
+      {creditCost && (
+        <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
+          <Image
+            src="/credit.svg"
+            alt="Credit"
+            width={12}
+            height={12}
+            className="flex-shrink-0"
+          />
+          <span className="text-xs font-medium text-black">
+            -{creditCost}
+          </span>
+        </div>
+      )}
     </button>
   );
 }

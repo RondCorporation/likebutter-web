@@ -6,6 +6,8 @@ import DigitalGoodsClient from './DigitalGoodsClient';
 import DigitalGoodsStyleSidebar from './DigitalGoodsStyleSidebar';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 import { Loader2, Edit } from 'lucide-react';
+import PrimaryButton from '../../_components/ui/PrimaryButton';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 export default function DigitalGoodsWithSidebar() {
   const [formData, setFormData] = useState<{
@@ -62,9 +64,7 @@ export default function DigitalGoodsWithSidebar() {
           disabled={isEditLoading}
           className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isEditLoading && (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          )}
+          {isEditLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           {!isEditLoading && <Edit className="w-4 h-4 mr-2" />}
           <div className="text-studio-header text-sm font-bold font-pretendard-bold">
             {isEditLoading ? '수정중...' : '수정하기'}
@@ -74,18 +74,15 @@ export default function DigitalGoodsWithSidebar() {
     }
 
     return (
-      <button
+      <PrimaryButton
+        text={isGenerating || isPolling ? '생성중...' : '굿즈생성'}
         onClick={handleGenerate}
         disabled={isGenerating || isPolling || !isFormValid()}
-        className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {(isGenerating || isPolling) && (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        )}
-        <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-          {isGenerating || isPolling ? '생성중...' : '굿즈생성'}
-        </div>
-      </button>
+        creditCost={
+          isGenerating || isPolling ? undefined : CREDIT_COSTS.DIGITAL_GOODS
+        }
+        className="w-full"
+      />
     );
   };
 
@@ -100,10 +97,7 @@ export default function DigitalGoodsWithSidebar() {
       mobileBottomButton={getMobileButton()}
       hideMobileBottomSheet={showMobileResult}
     >
-      <DigitalGoodsClient
-        formData={formData}
-        ref={setClientRef}
-      />
+      <DigitalGoodsClient formData={formData} ref={setClientRef} />
     </StudioLayout>
   );
 }

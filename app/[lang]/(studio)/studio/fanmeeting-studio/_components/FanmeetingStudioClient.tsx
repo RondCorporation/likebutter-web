@@ -10,6 +10,8 @@ import {
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
+import Image from 'next/image';
 
 interface FanmeetingFormData {
   backgroundPrompt: string;
@@ -31,9 +33,10 @@ export interface FanmeetingStudioClientRef {
   showMobileResult: boolean;
 }
 
-const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingStudioClientProps>(function FanmeetingStudioClient({
-  formData,
-}, ref) {
+const FanmeetingStudioClient = forwardRef<
+  FanmeetingStudioClientRef,
+  FanmeetingStudioClientProps
+>(function FanmeetingStudioClient({ formData }, ref) {
   const [idolFile, setIdolFile] = useState<File | null>(null);
   const [userFile, setUserFile] = useState<File | null>(null);
   const [idolPreviewUrl, setIdolPreviewUrl] = useState<string>('');
@@ -59,16 +62,20 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
     },
   });
 
-  useImperativeHandle(ref, () => ({
-    handleGenerate,
-    handleDownload,
-    isProcessing,
-    isPolling,
-    resultImage,
-    idolFile,
-    userFile,
-    showMobileResult,
-  }), [isProcessing, isPolling, resultImage, idolFile, userFile, showMobileResult]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleGenerate,
+      handleDownload,
+      isProcessing,
+      isPolling,
+      resultImage,
+      idolFile,
+      userFile,
+      showMobileResult,
+    }),
+    [isProcessing, isPolling, resultImage, idolFile, userFile, showMobileResult]
+  );
 
   const handleFileUpload = (file: File, type: 'idol' | 'user') => {
     // Check file size (200MB limit)
@@ -206,15 +213,21 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
     if (!formData) return false;
 
     // 배경 프롬프트와 상황 프롬프트 둘 다 필수
-    if (!formData.backgroundPrompt || formData.backgroundPrompt.trim().length < 2) return false;
-    if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2) return false;
+    if (
+      !formData.backgroundPrompt ||
+      formData.backgroundPrompt.trim().length < 2
+    )
+      return false;
+    if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2)
+      return false;
 
     return true;
   };
 
   // Mobile result view
   if (showMobileResult && resultImage) {
-    const beforeImage = userPreviewUrl || idolPreviewUrl || '/placeholder-image.png';
+    const beforeImage =
+      userPreviewUrl || idolPreviewUrl || '/placeholder-image.png';
 
     return (
       <BeforeAfterToggle
@@ -247,6 +260,22 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
               <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
                 {isProcessing ? '생성중...' : '팬미팅생성'}
               </div>
+
+              {/* 크레딧 정보 - PC 버튼에도 표시 */}
+              {!isProcessing && (
+                <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
+                  <Image
+                    src="/credit.svg"
+                    alt="Credit"
+                    width={12}
+                    height={12}
+                    className="flex-shrink-0"
+                  />
+                  <span className="text-xs font-medium text-black">
+                    -{CREDIT_COSTS.FANMEETING_STUDIO}
+                  </span>
+                </div>
+              )}
             </button>
           ) : (
             <button
@@ -265,14 +294,15 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
       <div
         className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
         style={{
-          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+          paddingBottom:
+            'max(120px, calc(100px + env(safe-area-inset-bottom)))',
         }}
       >
         <div
           className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           {/* 두 이미지 업로드 영역 */}
@@ -303,7 +333,9 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
                     setIsDragOverIdol(false);
                   }}
                   onDrop={handleDropIdol}
-                  onClick={() => document.getElementById('idol-file-upload')?.click()}
+                  onClick={() =>
+                    document.getElementById('idol-file-upload')?.click()
+                  }
                 >
                   {idolPreviewUrl ? (
                     <img
@@ -363,7 +395,9 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
                     setIsDragOverUser(false);
                   }}
                   onDrop={handleDropUser}
-                  onClick={() => document.getElementById('user-file-upload')?.click()}
+                  onClick={() =>
+                    document.getElementById('user-file-upload')?.click()
+                  }
                 >
                   {userPreviewUrl ? (
                     <img
@@ -398,7 +432,9 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
             {/* PC에서만 파일 찾아보기 버튼들 표시 */}
             <div className="gap-3 hidden md:flex">
               <button
-                onClick={() => document.getElementById('idol-file-upload')?.click()}
+                onClick={() =>
+                  document.getElementById('idol-file-upload')?.click()
+                }
                 className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98]"
               >
                 <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
@@ -407,7 +443,9 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
               </button>
 
               <button
-                onClick={() => document.getElementById('user-file-upload')?.click()}
+                onClick={() =>
+                  document.getElementById('user-file-upload')?.click()
+                }
                 className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98]"
               >
                 <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
@@ -439,7 +477,7 @@ const FanmeetingStudioClient = forwardRef<FanmeetingStudioClientRef, FanmeetingS
           className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
           style={{
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">

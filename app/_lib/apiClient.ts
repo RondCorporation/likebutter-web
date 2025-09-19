@@ -1,5 +1,6 @@
 import { useUIStore } from '@/stores/uiStore';
 import { ApiResponse } from '@/app/_types/api';
+import { toast } from 'react-hot-toast';
 
 const API_URL =
   process.env.NODE_ENV === 'development'
@@ -119,6 +120,18 @@ export async function apiFetch<T>(
         : { status: response.status, msg: response.statusText };
 
       if (!response.ok) {
+        // Handle insufficient credit error specifically
+        if (json.msg === 'INSUFFICIENT_CREDIT') {
+          toast.error('크레딧이 부족합니다. 크레딧을 충전해주세요.', {
+            duration: 4000,
+            style: {
+              background: '#fee2e2',
+              color: '#dc2626',
+              border: '1px solid #fecaca',
+            },
+          });
+        }
+
         throw new Error(
           json.msg ??
             `Request failed: ${response.statusText} (${response.status})`

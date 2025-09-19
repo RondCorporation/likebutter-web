@@ -3,10 +3,11 @@
 import { ReactNode, use } from 'react';
 import { Toaster } from 'react-hot-toast';
 import StudioAuthGuard from '../_components/StudioAuthGuard';
-import { Crown, User } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import StudioSidebar from './_components/StudioSidebar';
 import MobileBottomNavigation from './_components/MobileBottomNavigation';
 import StudioPreloader from './_components/StudioPreloader';
+import StudioUserDropdown from './_components/StudioUserDropdown';
 import Logo from '@/components/Logo';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 import { useRouter } from 'next/navigation';
@@ -43,9 +44,7 @@ export default function StudioLayout({ children, params }: Props) {
               </span>
             </button>
             <div className="inline-flex items-center justify-center gap-4 relative flex-[0_0_auto]">
-              <button className="w-10 h-10 rounded-full bg-studio-header flex items-center justify-center hover:bg-gray-600 transition-colors">
-                <User className="w-5 h-5 text-gray-400" />
-              </button>
+              <StudioUserDropdown />
             </div>
           </div>
         </div>

@@ -5,6 +5,8 @@ import StudioLayout from '../../_components/StudioLayout';
 import FanmeetingStudioClient from './FanmeetingStudioClient';
 import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
 import { Loader2, Download } from 'lucide-react';
+import PrimaryButton from '../../_components/ui/PrimaryButton';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface FanmeetingFormData {
   backgroundPrompt: string;
@@ -32,8 +34,13 @@ export default function FanmeetingStudioWithSidebar() {
 
   const isFormValid = () => {
     if (!formData) return false;
-    if (!formData.backgroundPrompt || formData.backgroundPrompt.trim().length < 2) return false;
-    if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2) return false;
+    if (
+      !formData.backgroundPrompt ||
+      formData.backgroundPrompt.trim().length < 2
+    )
+      return false;
+    if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2)
+      return false;
     if (!clientRef?.idolFile || !clientRef?.userFile) return false;
     return true;
   };
@@ -70,18 +77,15 @@ export default function FanmeetingStudioWithSidebar() {
     }
 
     return (
-      <button
+      <PrimaryButton
+        text={isProcessing || isPolling ? '생성중...' : '팬미팅생성'}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
-        className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {(isProcessing || isPolling) && (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        )}
-        <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-          {isProcessing || isPolling ? '생성중...' : '팬미팅생성'}
-        </div>
-      </button>
+        creditCost={
+          isProcessing || isPolling ? undefined : CREDIT_COSTS.FANMEETING_STUDIO
+        }
+        className="w-full"
+      />
     );
   };
 
@@ -96,10 +100,7 @@ export default function FanmeetingStudioWithSidebar() {
       mobileBottomButton={getMobileButton()}
       hideMobileBottomSheet={showMobileResult}
     >
-      <FanmeetingStudioClient
-        formData={formData}
-        ref={setClientRef}
-      />
+      <FanmeetingStudioClient formData={formData} ref={setClientRef} />
     </StudioLayout>
   );
 }

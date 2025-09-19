@@ -13,6 +13,8 @@ import { DigitalGoodsDetails } from '@/types/task';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
+import Image from 'next/image';
 
 interface DigitalGoodsClientProps {
   formData?: {
@@ -30,9 +32,10 @@ export interface DigitalGoodsClientRef {
   showMobileResult: boolean;
 }
 
-const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientProps>(function DigitalGoodsClient({
-  formData = {},
-}, ref) {
+const DigitalGoodsClient = forwardRef<
+  DigitalGoodsClientRef,
+  DigitalGoodsClientProps
+>(function DigitalGoodsClient({ formData = {} }, ref) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -198,15 +201,19 @@ const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientP
     }
   };
 
-  useImperativeHandle(ref, () => ({
-    handleGenerate,
-    handleEdit: () => setIsEditPopupOpen(true),
-    isGenerating,
-    isPolling,
-    resultImage,
-    isEditLoading,
-    showMobileResult,
-  }), [isGenerating, isPolling, resultImage, isEditLoading, showMobileResult]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleGenerate,
+      handleEdit: () => setIsEditPopupOpen(true),
+      isGenerating,
+      isPolling,
+      resultImage,
+      isEditLoading,
+      showMobileResult,
+    }),
+    [isGenerating, isPolling, resultImage, isEditLoading, showMobileResult]
+  );
 
   const isFormValid = () => {
     // 이미지는 선택사항 (텍스트 전용 생성 가능)
@@ -277,6 +284,22 @@ const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientP
               <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
                 {isGenerating || isPolling ? '생성중...' : '굿즈생성'}
               </div>
+
+              {/* 크레딧 정보 - PC 버튼에도 표시 */}
+              {!(isGenerating || isPolling) && (
+                <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
+                  <Image
+                    src="/credit.svg"
+                    alt="Credit"
+                    width={12}
+                    height={12}
+                    className="flex-shrink-0"
+                  />
+                  <span className="text-xs font-medium text-black">
+                    -{CREDIT_COSTS.DIGITAL_GOODS}
+                  </span>
+                </div>
+              )}
             </button>
           )}
 
@@ -297,14 +320,15 @@ const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientP
       <div
         className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
         style={{
-          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+          paddingBottom:
+            'max(120px, calc(100px + env(safe-area-inset-bottom)))',
         }}
       >
         <div
           className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           {/* 드래그 앤 드롭 영역 */}
@@ -371,7 +395,6 @@ const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientP
             onChange={handleInputChange}
             className="hidden"
           />
-
         </div>
 
         {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
@@ -379,7 +402,7 @@ const DigitalGoodsClient = forwardRef<DigitalGoodsClientRef, DigitalGoodsClientP
           className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
           style={{
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">

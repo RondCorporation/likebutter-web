@@ -136,7 +136,6 @@ export default function FanmeetingStudioSidebar({
           ))}
         </div>
       </div>
-
     </StudioSidebarBase>
   );
 }

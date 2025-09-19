@@ -6,6 +6,8 @@ import VirtualCastingClient from './VirtualCastingClient';
 import VirtualCastingSidebar from './VirtualCastingSidebar';
 import { VirtualCastingStyle } from '@/app/_lib/apis/task.api';
 import { Loader2, Download } from 'lucide-react';
+import PrimaryButton from '../../_components/ui/PrimaryButton';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -76,18 +78,15 @@ export default function VirtualCastingWithSidebar() {
     }
 
     return (
-      <button
+      <PrimaryButton
+        text={isProcessing || isPolling ? '생성중...' : '캐스팅생성'}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
-        className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {(isProcessing || isPolling) && (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        )}
-        <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-          {isProcessing || isPolling ? '생성중...' : '캐스팅생성'}
-        </div>
-      </button>
+        creditCost={
+          isProcessing || isPolling ? undefined : CREDIT_COSTS.VIRTUAL_CASTING
+        }
+        className="w-full"
+      />
     );
   };
 
@@ -102,10 +101,7 @@ export default function VirtualCastingWithSidebar() {
       mobileBottomButton={getMobileButton()}
       hideMobileBottomSheet={showMobileResult}
     >
-      <VirtualCastingClient
-        formData={formData}
-        ref={setClientRef}
-      />
+      <VirtualCastingClient formData={formData} ref={setClientRef} />
     </StudioLayout>
   );
 }

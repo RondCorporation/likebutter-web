@@ -7,6 +7,8 @@ import { createStylistTask, StylistRequest } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
+import Image from 'next/image';
 
 interface StylistFormData {
   mode: 'text' | 'image';
@@ -345,6 +347,22 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                 <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
                   {isProcessing ? '스타일링중...' : '스타일링시작'}
                 </div>
+
+                {/* 크레딧 정보 - PC 버튼에도 표시 */}
+                {!isProcessing && (
+                  <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
+                    <Image
+                      src="/credit.svg"
+                      alt="Credit"
+                      width={12}
+                      height={12}
+                      className="flex-shrink-0"
+                    />
+                    <span className="text-xs font-medium text-black">
+                      -{CREDIT_COSTS.STYLIST}
+                    </span>
+                  </div>
+                )}
               </button>
             ) : (
               <button

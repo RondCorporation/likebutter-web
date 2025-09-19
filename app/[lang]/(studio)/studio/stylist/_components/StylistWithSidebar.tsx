@@ -4,7 +4,8 @@ import { useState, useCallback, useEffect } from 'react';
 import StudioLayout from '../../_components/StudioLayout';
 import StylistClient from './StylistClient';
 import StylistSidebar from './StylistSidebar';
-import { Loader2 } from 'lucide-react';
+import PrimaryButton from '../../_components/ui/PrimaryButton';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface StylistFormData {
   mode: 'text' | 'image';
@@ -81,18 +82,15 @@ export default function StylistWithSidebar() {
     }
 
     return (
-      <button
+      <PrimaryButton
+        text={isProcessing || isPolling ? '스타일링중...' : '스타일링시작'}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
-        className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {(isProcessing || isPolling) && (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        )}
-        <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-          {isProcessing || isPolling ? '스타일링중...' : '스타일링시작'}
-        </div>
-      </button>
+        creditCost={
+          isProcessing || isPolling ? undefined : CREDIT_COSTS.STYLIST
+        }
+        className="w-full"
+      />
     );
   };
 

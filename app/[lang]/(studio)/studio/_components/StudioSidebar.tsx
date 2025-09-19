@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Plus, Home, FolderOpen, Users } from 'lucide-react';
+import { Plus, Home, FolderOpen, Users, Coins } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import ModelSelectPopup from './ModelSelectPopup';
 
@@ -40,6 +40,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
     const currentTool = getCurrentTool();
     if (currentTool === 'dashboard') return 'home';
     if (currentTool === 'archive') return 'vault';
+    if (currentTool === 'credits') return 'credits';
     if (currentTool === 'help') return 'help';
     return '';
   };
@@ -97,6 +98,23 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
             style={{ fontFamily: 'Pretendard, Helvetica' }}
           >
             보관함
+          </div>
+        </div>
+
+        {/* 크레딧 버튼 */}
+        <div className="flex flex-col items-center gap-1">
+          <button onClick={() => navigateToTool('credits')}>
+            <div
+              className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-[10px] transition-colors ${selectedMenu === 'credits' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
+            >
+              <Coins className="w-5 h-5" color="#C3C3C5" />
+            </div>
+          </button>
+          <div
+            className="text-[#a8a8aa] text-xs text-center font-medium"
+            style={{ fontFamily: 'Pretendard, Helvetica' }}
+          >
+            크레딧
           </div>
         </div>
 

@@ -6,9 +6,7 @@ import ScrollableGrid from '../../_components/ScrollableGrid';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 
 interface DigitalGoodsStyleSidebarProps {
-  onFormChange?: (formData: {
-    style?: DigitalGoodsStyle;
-  }) => void;
+  onFormChange?: (formData: { style?: DigitalGoodsStyle }) => void;
 }
 
 export default function DigitalGoodsStyleSidebar({
@@ -19,15 +17,15 @@ export default function DigitalGoodsStyleSidebar({
   // 스타일 이미지 매핑
   const getStyleImage = (style: string) => {
     const styleImageMap: Record<string, string> = {
-      'GHIBLI': '/studio/digital-goods/지브리.png',
-      'PIXEL_ART': '/studio/digital-goods/픽셀아트.png',
-      'ANIMATION': '/studio/digital-goods/애니.png',
-      'CARTOON': '/studio/digital-goods/카툰.png',
-      'SKETCH': '/studio/digital-goods/스캐치.png',
-      'GRADUATION_PHOTO': '/studio/digital-goods/졸업사진.png',
-      'LEGO': '/studio/digital-goods/레고.png',
-      'STICKER': '/studio/digital-goods/스티커.png',
-      'FIGURE': '/studio/digital-goods/피규어.png',
+      GHIBLI: '/studio/digital-goods/지브리.png',
+      PIXEL_ART: '/studio/digital-goods/픽셀아트.png',
+      ANIMATION: '/studio/digital-goods/애니.png',
+      CARTOON: '/studio/digital-goods/카툰.png',
+      SKETCH: '/studio/digital-goods/스캐치.png',
+      GRADUATION_PHOTO: '/studio/digital-goods/졸업사진.png',
+      LEGO: '/studio/digital-goods/레고.png',
+      STICKER: '/studio/digital-goods/스티커.png',
+      FIGURE: '/studio/digital-goods/피규어.png',
     };
     return styleImageMap[style] || '/studio/digital-goods/지브리.png';
   };
@@ -134,8 +132,6 @@ export default function DigitalGoodsStyleSidebar({
             </div>
           </ScrollableGrid>
         </div>
-
-
       </div>
     </div>
   );

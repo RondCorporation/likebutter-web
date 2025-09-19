@@ -12,6 +12,8 @@ import {
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
+import Image from 'next/image';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -36,9 +38,10 @@ export interface VirtualCastingClientRef {
   showMobileResult: boolean;
 }
 
-const VirtualCastingClient = forwardRef<VirtualCastingClientRef, VirtualCastingClientProps>(function VirtualCastingClient({
-  formData,
-}, ref) {
+const VirtualCastingClient = forwardRef<
+  VirtualCastingClientRef,
+  VirtualCastingClientProps
+>(function VirtualCastingClient({ formData }, ref) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -61,15 +64,19 @@ const VirtualCastingClient = forwardRef<VirtualCastingClientRef, VirtualCastingC
     },
   });
 
-  useImperativeHandle(ref, () => ({
-    handleGenerate,
-    handleDownload,
-    isProcessing,
-    isPolling,
-    resultImage,
-    uploadedFile,
-    showMobileResult,
-  }), [isProcessing, isPolling, resultImage, uploadedFile, showMobileResult]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleGenerate,
+      handleDownload,
+      isProcessing,
+      isPolling,
+      resultImage,
+      uploadedFile,
+      showMobileResult,
+    }),
+    [isProcessing, isPolling, resultImage, uploadedFile, showMobileResult]
+  );
 
   const handleFileUpload = (file: File) => {
     // Check file size (200MB limit)
@@ -219,6 +226,22 @@ const VirtualCastingClient = forwardRef<VirtualCastingClientRef, VirtualCastingC
               <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
                 {isProcessing ? '생성중...' : '캐스팅생성'}
               </div>
+
+              {/* 크레딧 정보 - PC 버튼에도 표시 */}
+              {!isProcessing && (
+                <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
+                  <Image
+                    src="/credit.svg"
+                    alt="Credit"
+                    width={12}
+                    height={12}
+                    className="flex-shrink-0"
+                  />
+                  <span className="text-xs font-medium text-black">
+                    -{CREDIT_COSTS.VIRTUAL_CASTING}
+                  </span>
+                </div>
+              )}
             </button>
           ) : (
             <button
@@ -237,14 +260,15 @@ const VirtualCastingClient = forwardRef<VirtualCastingClientRef, VirtualCastingC
       <div
         className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
         style={{
-          paddingBottom: 'max(120px, calc(100px + env(safe-area-inset-bottom)))'
+          paddingBottom:
+            'max(120px, calc(100px + env(safe-area-inset-bottom)))',
         }}
       >
         <div
           className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           {/* 제목 */}
@@ -325,7 +349,7 @@ const VirtualCastingClient = forwardRef<VirtualCastingClientRef, VirtualCastingC
           className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
           style={{
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">

@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Image, Music2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
 
 interface ToolCard {
   id: string;
@@ -17,7 +16,6 @@ interface ToolCard {
 }
 
 export default function DashboardClient() {
-  const { t } = useTranslation();
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<'image' | 'audio'>('image');
 
@@ -95,44 +93,46 @@ export default function DashboardClient() {
   return (
     <div className="w-full min-h-screen bg-[#25282c]">
       {/* Hero Section */}
-      <div className="relative w-full pt-7 px-[90px]">
-        <div className="relative w-full h-[150px] rounded-2xl bg-gradient-to-r from-[#ffd83b] via-[#f2eb1e] to-[#e5ff00] flex items-center justify-center">
-          <h1 className="text-black text-3xl font-bold text-center">
+      <div className="relative w-full pt-2 md:pt-7 px-2 md:px-[90px]">
+        <div className="relative w-full h-[140px] md:h-[150px] rounded-lg md:rounded-2xl bg-gradient-to-r from-[#ffd83b] via-[#f2eb1e] to-[#e5ff00] flex items-center justify-center">
+          <h1 className="text-black text-xl md:text-3xl font-bold text-center px-4">
             오늘은 어떻게 놀아볼까요?
           </h1>
         </div>
 
         {/* Tab Switcher */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 top-32 flex bg-[#292c31] rounded-full p-1">
+        <div className="absolute left-1/2 transform -translate-x-1/2 top-28 md:top-32 flex bg-[#292c31] rounded-full p-1">
           <button
             onClick={() => setSelectedTab('image')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 md:gap-2 px-4 md:px-5 py-3 md:py-2 rounded-full font-medium transition-all ${
               selectedTab === 'image'
                 ? 'bg-[#4a4d54] text-[#ffd93b]'
                 : 'text-gray-400 hover:text-white'
             }`}
+            style={{ fontSize: '14px' }}
           >
-            <Image className="w-5 h-5" />
+            <Image className="w-5 h-5 md:w-5 md:h-5" />
             이미지 생성
           </button>
           <button
             onClick={() => setSelectedTab('audio')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+            className={`flex items-center gap-2 md:gap-2 px-4 md:px-5 py-3 md:py-2 rounded-full font-medium transition-all ${
               selectedTab === 'audio'
                 ? 'bg-[#4a4d54] text-[#ffd93b]'
                 : 'text-gray-400 hover:text-white'
             }`}
+            style={{ fontSize: '14px' }}
           >
-            <Music2 className="w-5 h-5" />
+            <Music2 className="w-5 h-5 md:w-5 md:h-5" />
             음원 생성
           </button>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="px-[90px] mt-[100px]">
+      <div className="px-2 md:px-[90px] mt-20 md:mt-[100px]">
         {/* Section Title */}
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-[#ffcc00] to-[#e8fa07] bg-clip-text text-transparent mb-7">
+        <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#ffcc00] to-[#e8fa07] bg-clip-text text-transparent mb-8 md:mb-7">
           {currentSectionTitle}
         </h2>
 
@@ -141,7 +141,7 @@ export default function DashboardClient() {
           className={
             selectedTab === 'audio'
               ? 'flex justify-start'
-              : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'
+              : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-4'
           }
         >
           {currentToolCards.map((tool) => (
@@ -154,10 +154,10 @@ export default function DashboardClient() {
             >
               {/* Card Preview */}
               <div
-                className={`relative w-full rounded-2xl overflow-hidden transition-transform group-hover:scale-105 mb-4 ${
+                className={`relative w-full rounded-xl md:rounded-2xl overflow-hidden transition-transform group-hover:scale-105 mb-4 ${
                   selectedTab === 'audio'
-                    ? 'aspect-[2/1] h-[300px]'
-                    : 'aspect-[283/165]'
+                    ? 'aspect-[2/1] h-[220px] md:h-[300px]'
+                    : 'aspect-[283/165] h-[200px] md:h-auto'
                 }`}
                 style={{
                   background: tool.gradient || tool.bgColor || '#f5f5f5',
@@ -173,7 +173,7 @@ export default function DashboardClient() {
 
                 {/* New Badge */}
                 {tool.isNew && (
-                  <div className="absolute top-2 right-2 bg-[#4f0089] text-white text-xs px-2 py-1 rounded">
+                  <div className="absolute top-3 right-3 bg-[#4f0089] text-white text-xs px-2 py-1 rounded">
                     New
                   </div>
                 )}
@@ -181,18 +181,18 @@ export default function DashboardClient() {
 
               {/* Card Info */}
               <div
-                className={`w-full text-left ${selectedTab === 'audio' ? 'pl-4' : 'pl-2'}`}
+                className={`w-full text-left ${selectedTab === 'audio' ? 'pl-2 md:pl-4' : 'pl-2'}`}
               >
                 <h3
                   className={`text-white font-medium mb-2 ${
-                    selectedTab === 'audio' ? 'text-2xl' : 'text-lg'
+                    selectedTab === 'audio' ? 'text-xl md:text-2xl' : 'text-lg md:text-lg'
                   }`}
                 >
                   {tool.title}
                 </h3>
                 <p
                   className={`text-[#a8a8aa] leading-relaxed ${
-                    selectedTab === 'audio' ? 'text-base' : 'text-sm'
+                    selectedTab === 'audio' ? 'text-base md:text-base' : 'text-sm md:text-sm'
                   }`}
                 >
                   {tool.description}

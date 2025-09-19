@@ -243,11 +243,11 @@ function ArchiveTaskCard({
 
   return (
     <div
-      className="flex flex-col items-center gap-4 cursor-pointer group"
+      className="flex flex-col items-center gap-3 md:gap-4 cursor-pointer group"
       onClick={onClick}
     >
       {/* Card Preview */}
-      <div className="relative w-full h-[165px] bg-[#4a4a4b] rounded-2xl overflow-hidden transition-transform group-hover:scale-105">
+      <div className="relative w-full h-[200px] md:h-[165px] bg-[#4a4a4b] rounded-xl md:rounded-2xl overflow-hidden transition-transform group-hover:scale-105">
         {renderTaskPreview(task)}
 
         {/* Action Type badge */}
@@ -260,7 +260,7 @@ function ArchiveTaskCard({
 
       {/* Card Info */}
       <div className="w-full text-center">
-        <p className="text-[#a8a8aa] text-sm">{formatDate(task.createdAt)}</p>
+        <p className="text-[#a8a8aa] text-sm md:text-sm">{formatDate(task.createdAt)}</p>
       </div>
     </div>
   );
@@ -383,18 +383,18 @@ export default function ArchiveClient() {
 
   return (
     <div className="w-full bg-[#25282c] min-h-screen">
-      <div className="px-[90px] py-[44px]">
+      <div className="px-2 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
-        <h1 className="text-white text-3xl font-bold mb-8">내 보관함</h1>
+        <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">내 보관함</h1>
 
         {/* Tabs */}
-        <div className="flex items-center gap-8 mb-6">
+        <div className="flex items-center gap-6 md:gap-8 mb-6">
           <button
             onClick={() => {
               setActiveTab('image');
               setFilters({ actionType: '' }); // Reset filters when changing tab
             }}
-            className={`text-sm font-medium pb-2 border-b-2 transition-colors ${
+            className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'image'
                 ? 'text-yellow-400 border-yellow-400'
                 : 'text-gray-400 border-transparent hover:text-white'
@@ -407,7 +407,7 @@ export default function ArchiveClient() {
               setActiveTab('audio');
               setFilters({ actionType: 'BUTTER_COVER' }); // Filter to BUTTER_COVER when on audio tab
             }}
-            className={`text-sm font-medium pb-2 border-b-2 transition-colors ${
+            className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'audio'
                 ? 'text-yellow-400 border-yellow-400'
                 : 'text-gray-400 border-transparent hover:text-white'
@@ -470,7 +470,7 @@ export default function ArchiveClient() {
           ) : (
             <>
               {/* Task Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-4 mb-8">
                 {filteredTasks.map((task) => (
                   <ArchiveTaskCard
                     key={task.taskId}

@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import CustomDropdown from '../../_components/CustomDropdown';
-import StudioInput from '@/app/_components/shared/StudioInput';
 import PrimaryButton from '../../_components/ui/PrimaryButton';
 
 interface ArtistSelectionProps {
-  onNext: (data: { group: string; artist: string; customArtist?: string }) => void;
+  onNext: (data: { group: string; artist: string }) => void;
 }
 
 const artistGroups = [
@@ -182,7 +181,6 @@ const artistMembers = {
 export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
   const [selectedGroup, setSelectedGroup] = useState('');
   const [selectedArtist, setSelectedArtist] = useState('');
-  const [customArtist, setCustomArtist] = useState('');
 
   const handleNext = () => {
     if (!selectedGroup || !selectedArtist) {
@@ -193,7 +191,6 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
     onNext({
       group: selectedGroup,
       artist: selectedArtist,
-      customArtist: customArtist || undefined,
     });
   };
 
@@ -234,17 +231,6 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
             />
           </div>
 
-          <div className="opacity-30">
-            <label className="block text-white text-lg font-medium mb-4">
-              직접 입력
-            </label>
-            <StudioInput
-              value={customArtist}
-              onChange={(e) => setCustomArtist(e.target.value)}
-              placeholder="아이돌을 입력해주세요"
-              disabled
-            />
-          </div>
         </div>
 
         <div className="pt-4">

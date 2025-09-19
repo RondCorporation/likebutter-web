@@ -1,7 +1,16 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Settings, Trash2, MoreVertical, ChevronDown, X, Music, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Settings,
+  Trash2,
+  MoreVertical,
+  ChevronDown,
+  X,
+  Music,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
 import { Task } from '@/types/task';
@@ -22,7 +31,9 @@ function Dropdown({
   onSelect,
 }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+  const [dropdownPosition, setDropdownPosition] = useState<'bottom' | 'top'>(
+    'bottom'
+  );
 
   useEffect(() => {
     if (isOpen && dropdownRef.current) {
@@ -52,11 +63,11 @@ function Dropdown({
       </button>
 
       {isOpen && (
-        <div className={`absolute left-0 bg-[#25282c] border border-[#4a4a4b] rounded-lg py-1 min-w-[200px] z-10 ${
-          dropdownPosition === 'top'
-            ? 'bottom-full mb-1'
-            : 'top-full mt-1'
-        }`}>
+        <div
+          className={`absolute left-0 bg-[#25282c] border border-[#4a4a4b] rounded-lg py-1 min-w-[200px] z-10 ${
+            dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'
+          }`}
+        >
           {options.map((option) => (
             <button
               key={option.value}
@@ -92,8 +103,6 @@ function ArchiveTaskCard({
 
     return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
   };
-
-
 
   const renderTaskPreview = (task: Task) => {
     const { status, actionType } = task;
@@ -194,8 +203,12 @@ function ArchiveTaskCard({
         return (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
             <div className="text-center">
-              <div className="text-sm font-medium">이미지를 불러올 수 없습니다</div>
-              <div className="text-xs mt-1">{getActionTypeLabel(actionType)}</div>
+              <div className="text-sm font-medium">
+                이미지를 불러올 수 없습니다
+              </div>
+              <div className="text-xs mt-1">
+                {getActionTypeLabel(actionType)}
+              </div>
             </div>
           </div>
         );
@@ -243,7 +256,6 @@ function ArchiveTaskCard({
             {getActionTypeLabel(task.actionType)}
           </div>
         </div>
-
       </div>
 
       {/* Card Info */}
@@ -264,7 +276,7 @@ export default function ArchiveClient() {
     totalPages,
     goToPage,
     goToPreviousPage,
-    goToNextPage
+    goToNextPage,
   } = useTaskArchive();
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -272,7 +284,9 @@ export default function ArchiveClient() {
   const [pageSizeDropdownOpen, setPageSizeDropdownOpen] = useState(false);
   const [pageSize, setPageSize] = useState(10);
   const pageSizeDropdownRef = useRef<HTMLDivElement>(null);
-  const [pageSizeDropdownPosition, setPageSizeDropdownPosition] = useState<'bottom' | 'top'>('bottom');
+  const [pageSizeDropdownPosition, setPageSizeDropdownPosition] = useState<
+    'bottom' | 'top'
+  >('bottom');
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
 
   const actionTypeOptions = [
@@ -333,7 +347,7 @@ export default function ArchiveClient() {
 
   // Calculate pagination info
   const totalResults = tasks.length; // This should come from API response
-  const startResult = Math.min((page * pageSize) + 1, totalResults);
+  const startResult = Math.min(page * pageSize + 1, totalResults);
   const endResult = Math.min((page + 1) * pageSize, totalResults);
 
   // Generate page numbers for pagination
@@ -431,9 +445,10 @@ export default function ArchiveClient() {
         {/* Content */}
         {(() => {
           // Filter tasks based on active tab
-          const filteredTasks = activeTab === 'audio'
-            ? tasks.filter(task => task.actionType === 'BUTTER_COVER')
-            : tasks.filter(task => task.actionType !== 'BUTTER_COVER');
+          const filteredTasks =
+            activeTab === 'audio'
+              ? tasks.filter((task) => task.actionType === 'BUTTER_COVER')
+              : tasks.filter((task) => task.actionType !== 'BUTTER_COVER');
 
           return isLoading && filteredTasks.length === 0 ? (
             <div className="flex items-center justify-center h-64">
@@ -443,7 +458,9 @@ export default function ArchiveClient() {
             <div className="flex items-center justify-center h-64">
               <div className="text-gray-400 text-center">
                 <h3 className="text-lg font-semibold mb-2">
-                  {activeTab === 'audio' ? '생성된 음원이 없습니다' : '아직 생성된 작업이 없습니다'}
+                  {activeTab === 'audio'
+                    ? '생성된 음원이 없습니다'
+                    : '아직 생성된 작업이 없습니다'}
                 </h3>
                 <p className="text-sm">
                   스튜디오에서 첫 번째 작업을 시작해보세요!
@@ -455,109 +472,117 @@ export default function ArchiveClient() {
               {/* Task Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 {filteredTasks.map((task) => (
-                <ArchiveTaskCard
-                  key={task.taskId}
-                  task={task}
-                  onClick={() => handleTaskClick(task)}
-                />
-              ))}
-            </div>
+                  <ArchiveTaskCard
+                    key={task.taskId}
+                    task={task}
+                    onClick={() => handleTaskClick(task)}
+                  />
+                ))}
+              </div>
 
-            {/* Pagination */}
-            <div className="flex items-center justify-between mt-8">
-              {/* Left side - Show and page size selector */}
-              <div className="flex items-center gap-4">
-                <span className="text-white text-sm">표시</span>
-                <div className="relative" ref={pageSizeDropdownRef}>
-                  <button
-                    onClick={() => setPageSizeDropdownOpen(!pageSizeDropdownOpen)}
-                    className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
-                  >
-                    <span>{pageSize}개씩</span>
-                    <ChevronDown className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`} />
-                  </button>
+              {/* Pagination */}
+              <div className="flex items-center justify-between mt-8">
+                {/* Left side - Show and page size selector */}
+                <div className="flex items-center gap-4">
+                  <span className="text-white text-sm">표시</span>
+                  <div className="relative" ref={pageSizeDropdownRef}>
+                    <button
+                      onClick={() =>
+                        setPageSizeDropdownOpen(!pageSizeDropdownOpen)
+                      }
+                      className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
+                    >
+                      <span>{pageSize}개씩</span>
+                      <ChevronDown
+                        className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`}
+                      />
+                    </button>
 
-                  {pageSizeDropdownOpen && (
-                    <div className={`absolute left-0 bg-[#25282c] border border-[#4a4a4b] rounded py-1 min-w-[80px] z-10 ${
-                      pageSizeDropdownPosition === 'top'
-                        ? 'bottom-full mb-1'
-                        : 'top-full mt-1'
-                    }`}>
-                      {pageSizeOptions.map((option) => (
+                    {pageSizeDropdownOpen && (
+                      <div
+                        className={`absolute left-0 bg-[#25282c] border border-[#4a4a4b] rounded py-1 min-w-[80px] z-10 ${
+                          pageSizeDropdownPosition === 'top'
+                            ? 'bottom-full mb-1'
+                            : 'top-full mt-1'
+                        }`}
+                      >
+                        {pageSizeOptions.map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => handlePageSizeSelect(option.value)}
+                            className="w-full px-3 py-1 text-left text-white text-sm hover:bg-[#4a4a4b] transition-colors"
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Right side - Results info and page navigation */}
+                <div className="flex items-center gap-6">
+                  {/* Results info */}
+                  <span className="text-white text-sm">
+                    {totalResults > 0
+                      ? `${startResult} ~ ${endResult}개 / 총 ${totalResults}개`
+                      : '결과 없음'}
+                  </span>
+
+                  {/* Page navigation */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-1">
+                      {/* Previous button */}
+                      <button
+                        onClick={goToPreviousPage}
+                        disabled={page === 0 || isLoading}
+                        className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+
+                      {/* Page numbers */}
+                      {generatePageNumbers().map((pageNum) => (
                         <button
-                          key={option.value}
-                          onClick={() => handlePageSizeSelect(option.value)}
-                          className="w-full px-3 py-1 text-left text-white text-sm hover:bg-[#4a4a4b] transition-colors"
+                          key={pageNum}
+                          onClick={() => goToPage(pageNum)}
+                          disabled={isLoading}
+                          className={`px-3 py-1 text-sm rounded transition-colors disabled:opacity-50 ${
+                            pageNum === page
+                              ? 'bg-[#ffd93b] text-black'
+                              : 'text-white hover:bg-[#4a4a4b]'
+                          }`}
                         >
-                          {option.label}
+                          {pageNum + 1}
                         </button>
                       ))}
+
+                      {/* Show dots if there are more pages */}
+                      {totalPages > 6 && page < totalPages - 4 && (
+                        <>
+                          <span className="text-white px-2">...</span>
+                          <button
+                            onClick={() => goToPage(totalPages - 1)}
+                            disabled={isLoading}
+                            className="px-3 py-1 text-sm text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50"
+                          >
+                            {totalPages}
+                          </button>
+                        </>
+                      )}
+
+                      {/* Next button */}
+                      <button
+                        onClick={goToNextPage}
+                        disabled={page >= totalPages - 1 || isLoading}
+                        className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
                   )}
                 </div>
               </div>
-
-              {/* Right side - Results info and page navigation */}
-              <div className="flex items-center gap-6">
-                {/* Results info */}
-                <span className="text-white text-sm">
-                  {totalResults > 0 ? `${startResult} ~ ${endResult}개 / 총 ${totalResults}개` : '결과 없음'}
-                </span>
-
-                {/* Page navigation */}
-                {totalPages > 1 && (
-                  <div className="flex items-center gap-1">
-                    {/* Previous button */}
-                    <button
-                      onClick={goToPreviousPage}
-                      disabled={page === 0 || isLoading}
-                      className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-
-                    {/* Page numbers */}
-                    {generatePageNumbers().map((pageNum) => (
-                      <button
-                        key={pageNum}
-                        onClick={() => goToPage(pageNum)}
-                        disabled={isLoading}
-                        className={`px-3 py-1 text-sm rounded transition-colors disabled:opacity-50 ${
-                          pageNum === page
-                            ? 'bg-[#ffd93b] text-black'
-                            : 'text-white hover:bg-[#4a4a4b]'
-                        }`}
-                      >
-                        {pageNum + 1}
-                      </button>
-                    ))}
-
-                    {/* Show dots if there are more pages */}
-                    {totalPages > 6 && page < totalPages - 4 && (
-                      <>
-                        <span className="text-white px-2">...</span>
-                        <button
-                          onClick={() => goToPage(totalPages - 1)}
-                          disabled={isLoading}
-                          className="px-3 py-1 text-sm text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50"
-                        >
-                          {totalPages}
-                        </button>
-                      </>
-                    )}
-
-                    {/* Next button */}
-                    <button
-                      onClick={goToNextPage}
-                      disabled={page >= totalPages - 1 || isLoading}
-                      className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
             </>
           );
         })()}

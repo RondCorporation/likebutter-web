@@ -34,15 +34,17 @@ export default function OverlayCheckoutClient({
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  
+  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>(
+    'loading'
+  );
+
   // Use the preload context
-  const { 
-    preloadPortone, 
-    getPortone, 
-    isLoaded, 
-    isLoading: sdkIsLoading, 
-    error: sdkError 
+  const {
+    preloadPortone,
+    getPortone,
+    isLoaded,
+    isLoading: sdkIsLoading,
+    error: sdkError,
   } = usePortonePreload();
 
   // Preload SDK when component mounts
@@ -92,7 +94,7 @@ export default function OverlayCheckoutClient({
     try {
       // Use preloaded instance or fallback to dynamic loading
       let PortOne = getPortone();
-      
+
       if (!PortOne) {
         console.debug('Falling back to dynamic SDK loading');
         PortOne = await loadPortone();
@@ -240,7 +242,7 @@ export default function OverlayCheckoutClient({
               `${t('pay')} ${plan.priceFormatted}`
             )}
           </button>
-          
+
           {/* SDK Status Indicator */}
           {sdkStatus === 'loading' && (
             <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-400">
@@ -248,7 +250,7 @@ export default function OverlayCheckoutClient({
               결제 모듈 준비 중...
             </div>
           )}
-          
+
           {sdkStatus === 'ready' && (
             <div className="mt-2 flex items-center justify-center gap-2 text-sm text-green-400">
               <CheckCircle2 className="h-3 w-3" />

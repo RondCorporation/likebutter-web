@@ -32,9 +32,11 @@ export default function SelectCard({
             : 'border-[#4a4a4b] hover:border-[#6a6a6b]'
         } ${className}`}
         style={{
-          backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+          backgroundImage: backgroundImage
+            ? `url(${backgroundImage})`
+            : undefined,
           backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundPosition: 'center',
         }}
         onClick={onClick}
         onMouseEnter={onMouseEnter}

@@ -13,7 +13,7 @@ import {
   Settings,
   X,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
@@ -24,12 +24,14 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
-  const [expandedSections, setExpandedSections] = useState<string[]>(['dashboard']);
+  const [expandedSections, setExpandedSections] = useState<string[]>([
+    'dashboard',
+  ]);
 
   const toggleSection = (sectionKey: string) => {
-    setExpandedSections(prev => 
+    setExpandedSections((prev) =>
       prev.includes(sectionKey)
-        ? prev.filter(key => key !== sectionKey)
+        ? prev.filter((key) => key !== sectionKey)
         : [...prev, sectionKey]
     );
   };
@@ -44,7 +46,7 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
       name: '대시보드',
       href: `/${lang}/admin`,
       icon: BarChart3,
-      exact: true
+      exact: true,
     },
     {
       key: 'users',
@@ -54,14 +56,14 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
         {
           name: '전체 사용자',
           href: `/${lang}/admin/users`,
-          icon: User
+          icon: User,
         },
         {
           name: '계정 관리',
           href: `/${lang}/admin/accounts`,
-          icon: Shield
-        }
-      ]
+          icon: Shield,
+        },
+      ],
     },
     {
       key: 'billing',
@@ -71,14 +73,14 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
         {
           name: '구독 관리',
           href: `/${lang}/admin/subscriptions`,
-          icon: CreditCard
+          icon: CreditCard,
         },
         {
           name: '결제 내역',
           href: `/${lang}/admin/payments`,
-          icon: List
-        }
-      ]
+          icon: List,
+        },
+      ],
     },
     {
       key: 'system',
@@ -88,10 +90,10 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
         {
           name: '작업 관리',
           href: `/${lang}/admin/tasks`,
-          icon: List
-        }
-      ]
-    }
+          icon: List,
+        },
+      ],
+    },
   ];
 
   const isActive = (href: string, exact = false) => {
@@ -147,7 +149,7 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
                     <ChevronRight size={16} />
                   )}
                 </button>
-                
+
                 {isExpanded && (
                   <div className="ml-4 mt-1 space-y-1">
                     {item.children.map((child) => (

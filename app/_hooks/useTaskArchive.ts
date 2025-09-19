@@ -272,7 +272,13 @@ export function useTaskArchive() {
         clearTimeout(timeoutId);
       }
     };
-  }, [state.tasks.length, state.tasks.filter(t => t.status === 'PENDING' || t.status === 'PROCESSING').map(t => t.taskId).join(',')]); // Only restart polling when in-progress task IDs change
+  }, [
+    state.tasks.length,
+    state.tasks
+      .filter((t) => t.status === 'PENDING' || t.status === 'PROCESSING')
+      .map((t) => t.taskId)
+      .join(','),
+  ]); // Only restart polling when in-progress task IDs change
 
   const loadMore = () => {
     if (state.page < state.totalPages - 1 && !state.isLoading) {
@@ -304,9 +310,7 @@ export function useTaskArchive() {
       } catch (err: any) {
         dispatch({
           type: 'FETCH_ERROR',
-          payload:
-            err.message ||
-            'Failed to load more items.',
+          payload: err.message || 'Failed to load more items.',
         });
       }
     }
@@ -341,6 +345,6 @@ export function useTaskArchive() {
     goToPage,
     goToPreviousPage,
     goToNextPage,
-    setFilters
+    setFilters,
   };
 }

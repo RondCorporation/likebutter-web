@@ -1,5 +1,13 @@
 import { FanmeetingStudioDetails } from '@/types/task';
-import { Image, Users, Clock, FileText, Download, Zap, MessageSquare } from 'lucide-react';
+import {
+  Image,
+  Users,
+  Clock,
+  FileText,
+  Download,
+  Zap,
+  MessageSquare,
+} from 'lucide-react';
 
 interface Props {
   details?: FanmeetingStudioDetails;
@@ -39,7 +47,9 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
                 <MessageSquare className="h-4 w-4" />
                 상황 프롬프트
               </label>
-              <p className="text-slate-200">{details.request.situationPrompt || 'Not specified'}</p>
+              <p className="text-slate-200">
+                {details.request.situationPrompt || 'Not specified'}
+              </p>
             </div>
 
             <div>
@@ -47,7 +57,9 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
                 <MessageSquare className="h-4 w-4" />
                 배경 프롬프트
               </label>
-              <p className="text-slate-200">{details.request.backgroundPrompt || 'Not specified'}</p>
+              <p className="text-slate-200">
+                {details.request.backgroundPrompt || 'Not specified'}
+              </p>
             </div>
           </div>
 
@@ -74,7 +86,9 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Fan Image */}
             <div>
-              <h5 className="text-sm font-medium text-slate-400 mb-2">팬 이미지</h5>
+              <h5 className="text-sm font-medium text-slate-400 mb-2">
+                팬 이미지
+              </h5>
               <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center">
                 {details.request.fanImageUrl ? (
                   <img
@@ -95,7 +109,9 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
 
             {/* Idol Image */}
             <div>
-              <h5 className="text-sm font-medium text-slate-400 mb-2">아이돌 이미지</h5>
+              <h5 className="text-sm font-medium text-slate-400 mb-2">
+                아이돌 이미지
+              </h5>
               <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center">
                 {details.request.idolImageUrl ? (
                   <img
@@ -128,7 +144,9 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
             <div className="space-y-4">
               {/* Result Image */}
               <div>
-                <h5 className="text-sm font-medium text-slate-400 mb-2">생성된 팬미팅 장면</h5>
+                <h5 className="text-sm font-medium text-slate-400 mb-2">
+                  생성된 팬미팅 장면
+                </h5>
                 <div className="w-full h-64 bg-slate-700 rounded flex items-center justify-center border-2 border-butter-yellow/30">
                   {details.result.imageUrl ? (
                     <img
@@ -149,7 +167,9 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
 
               {/* Applied Prompts */}
               <div className="pt-4 border-t border-slate-700">
-                <h5 className="text-sm font-medium text-slate-400 mb-3">사용된 프롬프트</h5>
+                <h5 className="text-sm font-medium text-slate-400 mb-3">
+                  사용된 프롬프트
+                </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <div className="text-slate-400">상황 프롬프트</div>
@@ -206,14 +226,18 @@ export default function FanmeetingStudioDetailsView({ details }: Props) {
                 처리 시간
               </label>
               <p className="text-slate-200">
-                {details.result ? formatExecutionTime(details.result.executionTime) : 'N/A'}
+                {details.result
+                  ? formatExecutionTime(details.result.executionTime)
+                  : 'N/A'}
               </p>
             </div>
 
             <div>
               <label className="text-slate-400">파일 크기</label>
               <p className="text-slate-200">
-                {details.result ? formatFileSize(details.result.fileSize) : 'N/A'}
+                {details.result
+                  ? formatFileSize(details.result.fileSize)
+                  : 'N/A'}
               </p>
             </div>
 

@@ -25,7 +25,7 @@ export default function StudioSelect({
 }: StudioSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
 
   return (
     <div className="relative">
@@ -41,11 +41,11 @@ export default function StudioSelect({
         <span className={selectedOption ? 'text-white' : 'text-slate-400'}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown 
-          size={16} 
+        <ChevronDown
+          size={16}
           className={`transition-transform ${isOpen ? 'rotate-180' : ''} ${
             disabled ? 'text-slate-600' : 'text-slate-400'
-          }`} 
+          }`}
         />
       </button>
 

@@ -53,7 +53,7 @@ const SkeletonStat = () => (
 );
 
 export default function BillingLoadingSkeleton({
-  lang
+  lang,
 }: BillingLoadingSkeletonProps) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#202020' }}>
@@ -81,7 +81,10 @@ export default function BillingLoadingSkeleton({
           {/* Plan Cards Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-slate-800/50 rounded-lg border-2 border-slate-700 p-6">
+              <div
+                key={i}
+                className="bg-slate-800/50 rounded-lg border-2 border-slate-700 p-6"
+              >
                 <div className="text-center mb-6">
                   <div className="h-6 bg-slate-600 rounded w-32 mx-auto mb-2 animate-pulse" />
                   <div className="h-4 bg-slate-600 rounded w-48 mx-auto animate-pulse" />

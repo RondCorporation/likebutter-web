@@ -4,11 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 // motion 제거 - 과도한 애니메이션 방지
-import { 
-  Sparkles,
-  Crown,
-  Zap
-} from 'lucide-react';
+import { Sparkles, Crown, Zap } from 'lucide-react';
 
 import StudioOverlay from '@/components/studio/StudioOverlay';
 import ModernPlanCard from './ModernPlanCard';
@@ -30,7 +26,7 @@ interface SimplePlan {
   description: string;
   priceMonthly: number | string;
   priceYearly: number | string;
-  features: Array<{text: string, highlighted?: boolean}>;
+  features: Array<{ text: string; highlighted?: boolean }>;
   isPopular?: boolean;
   isPremium?: boolean;
 }
@@ -61,7 +57,8 @@ const convertPlansFormat = (
     ],
   };
 
-  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } = {};
+  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } =
+    {};
 
   apiPlans.forEach((plan) => {
     if (!processedPlans[plan.planType]) {
@@ -94,12 +91,17 @@ const convertPlansFormat = (
     if (cycles.monthly || cycles.yearly) {
       const isKorean = currency === '₩';
       const monthlyPrice = cycles.monthly
-        ? isKorean ? cycles.monthly.priceKrw || 0 : cycles.monthly.priceUsd || 0
+        ? isKorean
+          ? cycles.monthly.priceKrw || 0
+          : cycles.monthly.priceUsd || 0
         : 0;
       const yearlyPrice = cycles.yearly
-        ? isKorean ? cycles.yearly.priceKrw || 0 : cycles.yearly.priceUsd || 0
+        ? isKorean
+          ? cycles.yearly.priceKrw || 0
+          : cycles.yearly.priceUsd || 0
         : 0;
-      const yearlyMonthlyPrice = yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
+      const yearlyMonthlyPrice =
+        yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
 
       result.push({
         key: planType.toLowerCase(),
@@ -129,8 +131,10 @@ export default function BillingDashboard({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuthStore();
-  
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
+
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
+    'yearly'
+  );
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -142,7 +146,7 @@ export default function BillingDashboard({
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
     }, 1000); // 1초 후 로딩 완료 (실제로는 API 로딩 완료에 맞춰 조정)
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -153,66 +157,75 @@ export default function BillingDashboard({
         setError('planDataNotAvailable');
         return;
       }
-      
+
       // API 플랜 데이터 유효성 검사
-      const hasValidPlans = apiPlans.some(plan => 
-        plan.planType && plan.billingCycle && (plan.priceKrw || plan.priceUsd)
+      const hasValidPlans = apiPlans.some(
+        (plan) =>
+          plan.planType && plan.billingCycle && (plan.priceKrw || plan.priceUsd)
       );
-      
+
       if (!hasValidPlans) {
         setError('invalidPlanData');
         return;
       }
-      
+
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'unknownError');
     }
   }, [apiPlans]);
 
-  const plans = useMemo(() => convertPlansFormat(apiPlans, currency, t), [apiPlans, currency, t]);
+  const plans = useMemo(
+    () => convertPlansFormat(apiPlans, currency, t),
+    [apiPlans, currency, t]
+  );
 
-  const handlePlanSelect = useCallback((planKey: string, cycle: 'monthly' | 'yearly') => {
-    if (planKey === 'free') {
-      router.push(`/${lang}/signup`);
-      return;
-    }
+  const handlePlanSelect = useCallback(
+    (planKey: string, cycle: 'monthly' | 'yearly') => {
+      if (planKey === 'free') {
+        router.push(`/${lang}/signup`);
+        return;
+      }
 
-    const plan = plans.find(p => p.key === planKey);
-    if (!plan) return;
+      const plan = plans.find((p) => p.key === planKey);
+      if (!plan) return;
 
-    const price = cycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
-    const originalPrice = cycle === 'yearly' ? (plan.priceMonthly as number) * 12 : undefined;
+      const price = cycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
+      const originalPrice =
+        cycle === 'yearly' ? (plan.priceMonthly as number) * 12 : undefined;
 
-    setSelectedPlan({
-      planKey,
-      name: plan.name,
-      description: plan.description,
-      price: price as number,
-      originalPrice,
-      currency,
-      billingCycle: cycle,
-      features: plan.features.map(f => f.text),
-    });
-    
-    setShowCheckoutModal(true);
-  }, [plans, router, lang, currency]);
+      setSelectedPlan({
+        planKey,
+        name: plan.name,
+        description: plan.description,
+        price: price as number,
+        originalPrice,
+        currency,
+        billingCycle: cycle,
+        features: plan.features.map((f) => f.text),
+      });
+
+      setShowCheckoutModal(true);
+    },
+    [plans, router, lang, currency]
+  );
 
   // URL에서 플랜 정보 확인하고 자동으로 결제 모달 열기
   useEffect(() => {
     const planParam = searchParams.get('plan');
     const billingParam = searchParams.get('billing') as 'monthly' | 'yearly';
-    
+
     if (planParam && billingParam && plans.length > 0) {
       setBillingCycle(billingParam);
-      
+
       // 해당 플랜 찾기
-      const plan = plans.find(p =>
-        (planParam === 'basic' && p.key === 'basic') ||
-        (planParam === 'standard' && p.key === 'standard') ||
-        p.key === planParam
+      const plan = plans.find(
+        (p) =>
+          (planParam === 'basic' && p.key === 'basic') ||
+          (planParam === 'standard' && p.key === 'standard') ||
+          p.key === planParam
       );
-      
+
       if (plan && plan.key !== 'free') {
         handlePlanSelect(plan.key, billingParam);
       }
@@ -222,7 +235,7 @@ export default function BillingDashboard({
   const handleCloseModal = () => {
     setShowCheckoutModal(false);
     setSelectedPlan(null);
-    
+
     // URL에서 파라미터 제거
     const url = new URL(window.location.href);
     url.searchParams.delete('plan');
@@ -233,7 +246,7 @@ export default function BillingDashboard({
   const handleRetry = () => {
     setError(null);
     setIsInitialLoading(true);
-    
+
     // 1초 후 로딩 완료 (실제 구현에서는 API 재호출)
     setTimeout(() => {
       setIsInitialLoading(false);
@@ -269,12 +282,20 @@ export default function BillingDashboard({
               onClick={() => router.push(`/${lang}/studio`)}
               className="absolute top-0 left-0 inline-flex items-center text-slate-400 hover:text-butter-yellow mb-8 transition-colors group"
             >
-              <svg className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              <svg
+                className="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                  clipRule="evenodd"
+                />
               </svg>
               {t('backToStudio')}
             </button>
-            
+
             <h1 className="text-4xl font-bold text-white mb-4">
               {t('choosePlan')}
             </h1>
@@ -320,9 +341,17 @@ export default function BillingDashboard({
                   planKey={plan.key}
                   name={plan.name}
                   description={plan.description}
-                  price={billingCycle === 'monthly' ? plan.priceMonthly : plan.priceYearly}
-                  originalPrice={billingCycle === 'yearly' && typeof plan.priceMonthly === 'number' 
-                    ? plan.priceMonthly * 12 : undefined}
+                  price={
+                    billingCycle === 'monthly'
+                      ? plan.priceMonthly
+                      : plan.priceYearly
+                  }
+                  originalPrice={
+                    billingCycle === 'yearly' &&
+                    typeof plan.priceMonthly === 'number'
+                      ? plan.priceMonthly * 12
+                      : undefined
+                  }
                   currency={currency}
                   billingCycle={billingCycle}
                   features={plan.features}

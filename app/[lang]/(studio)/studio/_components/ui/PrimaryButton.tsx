@@ -48,9 +48,7 @@ export default function PrimaryButton({
             height={12}
             className="flex-shrink-0"
           />
-          <span className="text-xs font-medium text-black">
-            -{creditCost}
-          </span>
+          <span className="text-xs font-medium text-black">-{creditCost}</span>
         </div>
       )}
     </button>

@@ -57,7 +57,8 @@ export default function ModelSelectPopup({
     if (activeTab === 'audio') {
       toolName = selectedAudioModel;
     } else {
-      toolName = selectedModel === 'fanmeeting' ? 'fanmeeting-studio' : selectedModel;
+      toolName =
+        selectedModel === 'fanmeeting' ? 'fanmeeting-studio' : selectedModel;
     }
 
     // Use SPA navigation if available
@@ -102,7 +103,7 @@ export default function ModelSelectPopup({
       } bg-black/70 backdrop-blur-sm`}
       onClick={onClose}
       style={{
-        paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : '0'
+        paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : '0',
       }}
     >
       <div
@@ -117,7 +118,7 @@ export default function ModelSelectPopup({
         style={{
           maxHeight: isMobile
             ? 'calc(85vh - env(safe-area-inset-bottom))'
-            : '80vh'
+            : '80vh',
         }}
       >
         <div className="flex items-center justify-between w-full">
@@ -152,7 +153,7 @@ export default function ModelSelectPopup({
           style={{
             paddingBottom: isMobile ? '1rem' : '0',
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
         >
           {activeTab === 'image' ? (

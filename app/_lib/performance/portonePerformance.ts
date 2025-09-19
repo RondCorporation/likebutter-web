@@ -62,27 +62,33 @@ class PortonePerformanceTracker {
   // Log performance metrics to console (development only)
   logMetrics(): void {
     const metrics = this.getCompleteMetrics();
-    
+
     if (process.env.NODE_ENV === 'development') {
       console.group('🚀 PortOne Performance Metrics');
-      
+
       if (typeof metrics.sdkLoadTime === 'number') {
         console.log(`⏱️  SDK Load Time: ${metrics.sdkLoadTime.toFixed(2)}ms`);
       }
-      
+
       if (typeof metrics.billingKeyRequestTime === 'number') {
-        console.log(`🔑 Billing Key Request: ${metrics.billingKeyRequestTime.toFixed(2)}ms`);
+        console.log(
+          `🔑 Billing Key Request: ${metrics.billingKeyRequestTime.toFixed(2)}ms`
+        );
       }
-      
+
       if (typeof metrics.totalPaymentTime === 'number') {
-        console.log(`💳 Total Payment Time: ${metrics.totalPaymentTime.toFixed(2)}ms`);
+        console.log(
+          `💳 Total Payment Time: ${metrics.totalPaymentTime.toFixed(2)}ms`
+        );
       }
-      
+
       if (metrics.connectionType) {
         console.log(`🌐 Connection Type: ${metrics.connectionType}`);
       }
-      
-      console.log(`🕐 Timestamp: ${new Date(metrics.timestamp || 0).toISOString()}`);
+
+      console.log(
+        `🕐 Timestamp: ${new Date(metrics.timestamp || 0).toISOString()}`
+      );
       console.groupEnd();
     }
 
@@ -114,9 +120,12 @@ class PortonePerformanceTracker {
     };
 
     return (
-      (typeof sdkLoadTime === 'number' && sdkLoadTime > thresholds.sdkLoadTime) ||
-      (typeof billingKeyRequestTime === 'number' && billingKeyRequestTime > thresholds.billingKeyRequest) ||
-      (typeof totalPaymentTime === 'number' && totalPaymentTime > thresholds.totalPayment)
+      (typeof sdkLoadTime === 'number' &&
+        sdkLoadTime > thresholds.sdkLoadTime) ||
+      (typeof billingKeyRequestTime === 'number' &&
+        billingKeyRequestTime > thresholds.billingKeyRequest) ||
+      (typeof totalPaymentTime === 'number' &&
+        totalPaymentTime > thresholds.totalPayment)
     );
   }
 }

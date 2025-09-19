@@ -14,7 +14,7 @@ import {
   Zap,
   Star,
   Heart,
-  Rocket
+  Rocket,
 } from 'lucide-react';
 import StudioOverlay from '@/components/studio/StudioOverlay';
 
@@ -82,7 +82,7 @@ export default function SuccessCelebration({
     const timer1 = setTimeout(() => setCurrentStep(1), 1000);
     const timer2 = setTimeout(() => setCurrentStep(2), 2000);
     const timer3 = setTimeout(() => setCurrentStep(3), 3500);
-    
+
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
@@ -134,48 +134,44 @@ export default function SuccessCelebration({
   };
 
   return (
-    <StudioOverlay
-      title=""
-      backUrl={`/${lang}/studio`}
-      className="max-w-4xl"
-    >
+    <StudioOverlay title="" backUrl={`/${lang}/studio`} className="max-w-4xl">
       <div className="relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 bg-gradient-to-br from-butter-yellow/5 via-transparent to-purple-500/5" />
-        
+
         <div className="relative text-center space-y-8">
           {/* Main celebration */}
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ 
-              type: 'spring', 
-              stiffness: 200, 
+            transition={{
+              type: 'spring',
+              stiffness: 200,
               damping: 10,
-              duration: 0.8 
+              duration: 0.8,
             }}
             className="relative"
           >
             <div className="inline-flex p-8 rounded-full bg-gradient-to-br from-butter-yellow to-butter-orange shadow-2xl shadow-butter-yellow/25">
               <CheckCircle2 className="w-16 h-16 text-black" />
             </div>
-            
+
             {/* Floating emojis */}
             {celebrationEmojis.map((emoji, index) => (
               <motion.div
                 key={index}
                 className="absolute text-2xl"
                 initial={{ opacity: 0, scale: 0 }}
-                animate={{ 
+                animate={{
                   opacity: [0, 1, 0],
                   scale: [0, 1.2, 0],
                   x: [0, (Math.random() - 0.5) * 200],
                   y: [0, (Math.random() - 0.5) * 200],
                 }}
-                transition={{ 
+                transition={{
                   duration: 2,
                   delay: index * 0.2 + 1,
-                  ease: 'easeOut'
+                  ease: 'easeOut',
                 }}
                 style={{
                   left: '50%',
@@ -208,27 +204,27 @@ export default function SuccessCelebration({
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ 
-                  opacity: currentStep >= index ? 1 : 0.3, 
+                animate={{
+                  opacity: currentStep >= index ? 1 : 0.3,
                   y: currentStep >= index ? 0 : 30,
-                  scale: currentStep >= index ? 1 : 0.95
+                  scale: currentStep >= index ? 1 : 0.95,
                 }}
                 transition={{ delay: index * 0.5 + 1 }}
                 className={`p-6 rounded-2xl border-2 transition-all duration-500 ${
-                  currentStep >= index 
-                    ? `border-${step.color.split('-')[1]}-400 ${step.bgColor}` 
+                  currentStep >= index
+                    ? `border-${step.color.split('-')[1]}-400 ${step.bgColor}`
                     : 'border-slate-700 bg-slate-800/30'
                 }`}
               >
-                <div className={`inline-flex p-3 rounded-xl ${step.bgColor} mb-4`}>
+                <div
+                  className={`inline-flex p-3 rounded-xl ${step.bgColor} mb-4`}
+                >
                   <step.icon className={`w-6 h-6 ${step.color}`} />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">
                   {step.title}
                 </h3>
-                <p className="text-sm text-slate-400">
-                  {step.subtitle}
-                </p>
+                <p className="text-sm text-slate-400">{step.subtitle}</p>
               </motion.div>
             ))}
           </div>
@@ -255,9 +251,7 @@ export default function SuccessCelebration({
                   <div className="p-3 rounded-xl bg-butter-yellow/20">
                     <benefit.icon className="w-5 h-5 text-butter-yellow" />
                   </div>
-                  <span className="text-sm text-slate-300">
-                    {benefit.text}
-                  </span>
+                  <span className="text-sm text-slate-300">{benefit.text}</span>
                 </motion.div>
               ))}
             </div>
@@ -277,7 +271,7 @@ export default function SuccessCelebration({
               {t('startCreating')}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            
+
             <button
               onClick={handleViewReceipt}
               className="text-slate-300 hover:text-white px-6 py-3 rounded-xl border border-slate-600 hover:border-slate-500 transition-colors flex items-center gap-2"

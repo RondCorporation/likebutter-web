@@ -145,14 +145,18 @@ export default function StudioUserDropdown() {
               크레딧 관리
             </button>
             <button
-              onClick={() => handleAction(() => router.push(`/${lang}/billing`))}
+              onClick={() =>
+                handleAction(() => router.push(`/${lang}/billing`))
+              }
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <Crown size={16} className="text-studio-text-secondary" />
               요금제 업그레이드
             </button>
             <button
-              onClick={() => handleAction(() => router.push(`/${lang}/billing/history`))}
+              onClick={() =>
+                handleAction(() => router.push(`/${lang}/billing/history`))
+              }
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <History size={16} className="text-studio-text-secondary" />

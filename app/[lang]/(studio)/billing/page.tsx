@@ -15,7 +15,6 @@ export function generateStaticParams() {
   return nextI18NextConfig.i18n.locales.map((locale) => ({ lang: locale }));
 }
 
-
 export default async function BillingPage({ params }: Props) {
   const { lang } = await params;
 
@@ -28,10 +27,6 @@ export default async function BillingPage({ params }: Props) {
 
   // 새로운 BillingDashboard 사용 (쿼리파라미터 처리는 클라이언트에서)
   return (
-    <BillingDashboard
-      lang={lang}
-      plans={apiPlans || []}
-      currency={currency}
-    />
+    <BillingDashboard lang={lang} plans={apiPlans || []} currency={currency} />
   );
 }

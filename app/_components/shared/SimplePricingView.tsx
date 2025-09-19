@@ -23,13 +23,15 @@ interface SimplePricingViewProps {
   loading?: boolean;
 }
 
-export default function SimplePricingView({ 
-  plans, 
-  onPlanSelect, 
+export default function SimplePricingView({
+  plans,
+  onPlanSelect,
   currentPlanKey,
-  loading = false 
+  loading = false,
 }: SimplePricingViewProps) {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
+    'yearly'
+  );
 
   const handlePlanSelect = (planKey: string) => {
     onPlanSelect(planKey, billingCycle);
@@ -40,11 +42,10 @@ export default function SimplePricingView({
       {/* Header */}
       <StudioToolCard>
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">
-            요금제 선택
-          </h1>
+          <h1 className="text-3xl font-bold text-white mb-4">요금제 선택</h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            창작 활동에 필요한 AI 도구들을 마음껏 사용해보세요. 언제든지 플랜을 변경할 수 있습니다.
+            창작 활동에 필요한 AI 도구들을 마음껏 사용해보세요. 언제든지 플랜을
+            변경할 수 있습니다.
           </p>
         </div>
       </StudioToolCard>
@@ -78,9 +79,10 @@ export default function SimplePricingView({
       {/* Pricing Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {plans.map((plan) => {
-          const price = billingCycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
+          const price =
+            billingCycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
           const isCurrentPlan = currentPlanKey === plan.key;
-          
+
           return (
             <PricingCard
               key={plan.key}

@@ -48,7 +48,8 @@ export function usePerformanceStatus() {
 
   const status = {
     isGood: insights.overallScore >= 80,
-    isNeedsImprovement: insights.overallScore >= 50 && insights.overallScore < 80,
+    isNeedsImprovement:
+      insights.overallScore >= 50 && insights.overallScore < 80,
     isPoor: insights.overallScore < 50,
     score: insights.overallScore,
     hasMetrics: insights.metrics.length > 0,

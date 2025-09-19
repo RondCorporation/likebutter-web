@@ -37,7 +37,9 @@ export default function VirtualCastingDetailsView({ details }: Props) {
               <Sparkles className="h-4 w-4" />
               스타일
             </label>
-            <p className="text-slate-200">{details.request.style || 'Not specified'}</p>
+            <p className="text-slate-200">
+              {details.request.style || 'Not specified'}
+            </p>
           </div>
         </div>
       </div>
@@ -80,7 +82,9 @@ export default function VirtualCastingDetailsView({ details }: Props) {
               {/* Before/After Comparison */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">원본</h5>
+                  <h5 className="text-sm font-medium text-slate-400 mb-2">
+                    원본
+                  </h5>
                   <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center">
                     {details.request.idolImageUrl ? (
                       <img
@@ -89,13 +93,17 @@ export default function VirtualCastingDetailsView({ details }: Props) {
                         className="w-full h-full object-cover rounded"
                       />
                     ) : (
-                      <span className="text-slate-400 text-sm">원본 이미지</span>
+                      <span className="text-slate-400 text-sm">
+                        원본 이미지
+                      </span>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">변환 결과</h5>
+                  <h5 className="text-sm font-medium text-slate-400 mb-2">
+                    변환 결과
+                  </h5>
                   <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center border-2 border-butter-yellow/30">
                     {details.result.imageUrl ? (
                       <img
@@ -117,7 +125,9 @@ export default function VirtualCastingDetailsView({ details }: Props) {
 
               {/* Applied Settings Summary */}
               <div className="pt-4 border-t border-slate-700">
-                <h5 className="text-sm font-medium text-slate-400 mb-3">적용된 설정</h5>
+                <h5 className="text-sm font-medium text-slate-400 mb-3">
+                  적용된 설정
+                </h5>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div>
                     <div className="text-slate-400">사용된 키워드</div>
@@ -166,14 +176,18 @@ export default function VirtualCastingDetailsView({ details }: Props) {
                 처리 시간
               </label>
               <p className="text-slate-200">
-                {details.result ? formatExecutionTime(details.result.executionTime) : 'N/A'}
+                {details.result
+                  ? formatExecutionTime(details.result.executionTime)
+                  : 'N/A'}
               </p>
             </div>
 
             <div>
               <label className="text-slate-400">파일 크기</label>
               <p className="text-slate-200">
-                {details.result ? formatFileSize(details.result.fileSize) : 'N/A'}
+                {details.result
+                  ? formatFileSize(details.result.fileSize)
+                  : 'N/A'}
               </p>
             </div>
 

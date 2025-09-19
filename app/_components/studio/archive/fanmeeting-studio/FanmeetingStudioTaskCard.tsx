@@ -31,7 +31,9 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
       {details?.request?.situationPrompt && (
         <div className="mb-2 flex items-start gap-2 text-sm text-slate-300">
           <MessageSquare className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <span className="line-clamp-2">{details.request.situationPrompt}</span>
+          <span className="line-clamp-2">
+            {details.request.situationPrompt}
+          </span>
         </div>
       )}
 
@@ -39,7 +41,9 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
       {details?.request?.backgroundPrompt && (
         <div className="mb-2 flex items-start gap-2 text-sm text-slate-400">
           <MessageSquare className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <span className="line-clamp-1">{details.request.backgroundPrompt}</span>
+          <span className="line-clamp-1">
+            {details.request.backgroundPrompt}
+          </span>
         </div>
       )}
 

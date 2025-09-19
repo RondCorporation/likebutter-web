@@ -37,10 +37,11 @@ export default function DigitalGoodsTaskCard({ task, onClick }: Props) {
       {details?.request?.imageKey && (
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-300">
           <Image className="h-4 w-4" />
-          <span className="text-xs font-mono truncate">Image: {details.request.imageKey}</span>
+          <span className="text-xs font-mono truncate">
+            Image: {details.request.imageKey}
+          </span>
         </div>
       )}
-
 
       {/* Result Info */}
       {details?.result && (

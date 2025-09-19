@@ -22,7 +22,7 @@ export default function DynamicImageUpload({
   slots,
   onFileUpload,
   onFileRemove,
-  className = ''
+  className = '',
 }: DynamicImageUploadProps) {
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
 
@@ -98,7 +98,9 @@ export default function DynamicImageUpload({
               onDragOver={(e) => handleDragOver(e, slot.id)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, slot.id)}
-              onClick={() => document.getElementById(`${slot.id}-upload`)?.click()}
+              onClick={() =>
+                document.getElementById(`${slot.id}-upload`)?.click()
+              }
             >
               {slot.previewUrl ? (
                 <>

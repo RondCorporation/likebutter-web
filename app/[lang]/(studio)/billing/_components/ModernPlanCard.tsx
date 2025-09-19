@@ -55,8 +55,8 @@ export default function ModernPlanCard({
   return (
     <div
       className={`relative rounded-lg border-2 transition-all duration-200 hover:shadow-lg bg-slate-800/50 ${
-        isPopular 
-          ? 'border-butter-yellow shadow-butter-yellow/20 shadow-lg' 
+        isPopular
+          ? 'border-butter-yellow shadow-butter-yellow/20 shadow-lg'
           : 'border-slate-700 hover:border-slate-600'
       } ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
       onClick={handleSelect}
@@ -81,22 +81,33 @@ export default function ModernPlanCard({
         <div className="text-center mb-6 h-[100px] flex flex-col justify-center">
           <div className="flex items-baseline justify-center gap-1">
             {typeof price === 'string' ? (
-              <span className="text-3xl font-bold text-butter-yellow">{price}</span>
+              <span className="text-3xl font-bold text-butter-yellow">
+                {price}
+              </span>
             ) : (
               <>
                 <span className="text-sm text-slate-400">{currency}</span>
-                <span className="text-4xl font-bold text-white">{formatPrice(price)}</span>
-                <span className="text-slate-400 text-lg">/{billingCycle === 'monthly' ? t('month') : t('year')}</span>
+                <span className="text-4xl font-bold text-white">
+                  {formatPrice(price)}
+                </span>
+                <span className="text-slate-400 text-lg">
+                  /{billingCycle === 'monthly' ? t('month') : t('year')}
+                </span>
               </>
             )}
           </div>
-          
-          {originalPrice && typeof price === 'number' && billingCycle === 'yearly' && (
-            <div className="flex items-center justify-center gap-2 text-sm mt-2">
-              <span className="text-slate-500 line-through">{currency}{formatPrice(originalPrice)}</span>
-              <span className="text-green-400 font-medium">20% off</span>
-            </div>
-          )}
+
+          {originalPrice &&
+            typeof price === 'number' &&
+            billingCycle === 'yearly' && (
+              <div className="flex items-center justify-center gap-2 text-sm mt-2">
+                <span className="text-slate-500 line-through">
+                  {currency}
+                  {formatPrice(originalPrice)}
+                </span>
+                <span className="text-green-400 font-medium">20% off</span>
+              </div>
+            )}
         </div>
 
         {/* Studio Features Only - Max 3 */}
@@ -117,8 +128,8 @@ export default function ModernPlanCard({
             planKey === 'free'
               ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
               : isPopular
-              ? 'bg-butter-yellow hover:bg-butter-yellow/90 text-black'
-              : 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
+                ? 'bg-butter-yellow hover:bg-butter-yellow/90 text-black'
+                : 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
           } ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
           disabled={disabled || loading}
           onClick={(e) => {
@@ -131,8 +142,10 @@ export default function ModernPlanCard({
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               {t('processing')}
             </div>
+          ) : planKey === 'free' ? (
+            t('planFreeCta')
           ) : (
-            planKey === 'free' ? t('planFreeCta') : t('planCreatorCta')
+            t('planCreatorCta')
           )}
         </button>
       </div>

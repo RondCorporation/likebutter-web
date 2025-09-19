@@ -22,10 +22,12 @@ interface MemoTextProps {
   tag?: 'span' | 'p' | 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
-export const MemoText = memo(({ text, className, tag = 'span' }: MemoTextProps) => {
-  const Tag = tag;
-  return <Tag className={className}>{text}</Tag>;
-});
+export const MemoText = memo(
+  ({ text, className, tag = 'span' }: MemoTextProps) => {
+    const Tag = tag;
+    return <Tag className={className}>{text}</Tag>;
+  }
+);
 
 MemoText.displayName = 'MemoText';
 

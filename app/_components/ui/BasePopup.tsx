@@ -32,9 +32,7 @@ export default function BasePopup({
     >
       <div
         className={`${
-          isMobile
-            ? 'w-full h-[85vh] rounded-t-xl'
-            : 'w-[678px] rounded-xl'
+          isMobile ? 'w-full h-[85vh] rounded-t-xl' : 'w-[678px] rounded-xl'
         } bg-studio-sidebar border border-solid border-studio-border ${
           isMobile ? 'p-4' : 'p-8'
         } flex flex-col gap-6 md:gap-8 ${

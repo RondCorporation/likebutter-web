@@ -17,7 +17,7 @@ export default function StudioSidebarBase({
       style={{
         WebkitOverflowScrolling: 'touch',
         overscrollBehavior: 'contain',
-        paddingBottom: 'max(12px, env(safe-area-inset-bottom))'
+        paddingBottom: 'max(12px, env(safe-area-inset-bottom))',
       }}
     >
       <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">

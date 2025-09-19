@@ -73,11 +73,7 @@ const convertPlansFormat = (
       description: '무료로 시작하기',
       priceMonthly: 'Free',
       priceYearly: 'Free',
-      features: [
-        '월 500 크레딧',
-        '워터마크 포함',
-        '기본 생성 속도',
-      ],
+      features: ['월 500 크레딧', '워터마크 포함', '기본 생성 속도'],
       isPopular: false,
       cta: '무료 시작',
     },

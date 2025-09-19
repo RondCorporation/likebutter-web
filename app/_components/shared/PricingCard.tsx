@@ -32,7 +32,7 @@ export default function PricingCard({
   ctaText,
   onCtaClick,
   disabled = false,
-  className
+  className,
 }: PricingCardProps) {
   const formatPrice = (price: string | number) => {
     if (typeof price === 'string') return price;
@@ -40,13 +40,15 @@ export default function PricingCard({
   };
 
   return (
-    <div className={cn(
-      "relative rounded-xl border p-6 transition-all duration-300 hover:scale-105",
-      isPopular 
-        ? "border-butter-yellow bg-butter-yellow/5 shadow-lg shadow-butter-yellow/20" 
-        : "border-slate-700 bg-slate-800/50",
-      className
-    )}>
+    <div
+      className={cn(
+        'relative rounded-xl border p-6 transition-all duration-300 hover:scale-105',
+        isPopular
+          ? 'border-butter-yellow bg-butter-yellow/5 shadow-lg shadow-butter-yellow/20'
+          : 'border-slate-700 bg-slate-800/50',
+        className
+      )}
+    >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="rounded-full bg-butter-yellow px-4 py-1 text-sm font-semibold text-black">
@@ -56,34 +58,44 @@ export default function PricingCard({
       )}
 
       <div className="text-center">
-        <h3 className={cn(
-          "text-xl font-bold mb-2",
-          isPopular ? "text-butter-yellow" : "text-white"
-        )}>
+        <h3
+          className={cn(
+            'text-xl font-bold mb-2',
+            isPopular ? 'text-butter-yellow' : 'text-white'
+          )}
+        >
           {name}
         </h3>
-        
+
         <p className="text-slate-400 text-sm mb-6 min-h-[40px] flex items-center justify-center">
           {description}
         </p>
 
         <div className="mb-6">
-          <div className={cn(
-            "text-3xl font-bold mb-1",
-            isPopular ? "text-butter-yellow" : "text-white"
-          )}>
-            {typeof price === 'number' && price > 0 ? `₩${formatPrice(price)}` : price}
-            <span className="text-lg text-slate-400 font-normal">/{period}</span>
+          <div
+            className={cn(
+              'text-3xl font-bold mb-1',
+              isPopular ? 'text-butter-yellow' : 'text-white'
+            )}
+          >
+            {typeof price === 'number' && price > 0
+              ? `₩${formatPrice(price)}`
+              : price}
+            <span className="text-lg text-slate-400 font-normal">
+              /{period}
+            </span>
           </div>
         </div>
 
         <ul className="space-y-3 mb-8 min-h-[120px]">
           {features.map((feature, index) => (
             <li key={index} className="flex items-center gap-3 text-sm">
-              <Check className={cn(
-                "w-4 h-4 flex-shrink-0",
-                isPopular ? "text-butter-yellow" : "text-green-400"
-              )} />
+              <Check
+                className={cn(
+                  'w-4 h-4 flex-shrink-0',
+                  isPopular ? 'text-butter-yellow' : 'text-green-400'
+                )}
+              />
               <span className="text-slate-300">{feature}</span>
             </li>
           ))}
@@ -96,7 +108,11 @@ export default function PricingCard({
           className="w-full"
           size="lg"
         >
-          {isCurrentPlan ? '현재 플랜' : isDowngrade ? '다운그레이드 불가' : ctaText}
+          {isCurrentPlan
+            ? '현재 플랜'
+            : isDowngrade
+              ? '다운그레이드 불가'
+              : ctaText}
         </StudioButton>
       </div>
     </div>

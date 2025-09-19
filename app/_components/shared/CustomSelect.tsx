@@ -68,7 +68,9 @@ export default function CustomSelect({
               className="flex w-full items-center justify-between px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
             >
               <span>{option.label}</span>
-              {option.value === value && <Check size={16} className="text-accent" />}
+              {option.value === value && (
+                <Check size={16} className="text-accent" />
+              )}
             </button>
           ))}
         </div>

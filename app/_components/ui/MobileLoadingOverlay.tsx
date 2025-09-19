@@ -11,7 +11,7 @@ interface MobileLoadingOverlayProps {
 export default function MobileLoadingOverlay({
   isVisible,
   title = '이미지 생성중',
-  description = '잠시 기다리시면 결과가 나옵니다'
+  description = '잠시 기다리시면 결과가 나옵니다',
 }: MobileLoadingOverlayProps) {
   if (!isVisible) return null;
 

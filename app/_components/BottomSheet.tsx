@@ -32,86 +32,112 @@ export default function BottomSheet({
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    // cancelable인 경우에만 preventDefault 호출
-    if (e.nativeEvent.cancelable) {
-      e.preventDefault();
-    }
-    e.stopPropagation();
-    setIsDragging(true);
-    setIsAnimating(false);
-    const clientY = e.touches[0].clientY;
-    setStartY(clientY);
-    setLastClientY(clientY);
-    setStartHeight(height);
-    setVelocity(0);
-    setLastMoveTime(Date.now());
-
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-  }, [height]);
-
-  const handleMouseStart = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-    setIsAnimating(false);
-    setStartY(e.clientY);
-    setLastClientY(e.clientY);
-    setStartHeight(height);
-    setVelocity(0);
-    setLastMoveTime(Date.now());
-
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-    }
-  }, [height]);
-
-  const handleMove = useCallback((clientY: number) => {
-    if (!isDragging || isAnimating) return;
-
-    const now = Date.now();
-    const timeDelta = now - lastMoveTime;
-
-    if (timeDelta > 0) {
-      const clientYDelta = clientY - lastClientY;
-      // 속도 계산을 더 정밀하게
-      const newVelocity = timeDelta > 16 ? clientYDelta / timeDelta : velocity;
-      setVelocity(newVelocity * 0.8 + velocity * 0.2); // 스무싱 적용
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      // cancelable인 경우에만 preventDefault 호출
+      if (e.nativeEvent.cancelable) {
+        e.preventDefault();
+      }
+      e.stopPropagation();
+      setIsDragging(true);
+      setIsAnimating(false);
+      const clientY = e.touches[0].clientY;
+      setStartY(clientY);
       setLastClientY(clientY);
-      setLastMoveTime(now);
-    }
+      setStartHeight(height);
+      setVelocity(0);
+      setLastMoveTime(Date.now());
 
-    const deltaY = startY - clientY;
-    const viewportHeight = window.innerHeight;
-    const deltaPercent = (deltaY / viewportHeight) * 100;
-    let newHeight = startHeight + deltaPercent;
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    },
+    [height]
+  );
 
-    // 경계 밖으로 나갈 때 저항 효과 추가
-    if (newHeight > maxHeight) {
-      const overshoot = newHeight - maxHeight;
-      newHeight = maxHeight + overshoot * 0.3; // 30% 저항
-    } else if (newHeight < minHeight) {
-      const undershoot = minHeight - newHeight;
-      newHeight = minHeight - undershoot * 0.3; // 30% 저항
-    }
-
-    setHeight(newHeight);
-  }, [isDragging, isAnimating, startY, startHeight, lastMoveTime, lastClientY, velocity, minHeight, maxHeight]);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    // cancelable인 경우에만 preventDefault 호출
-    if (e.nativeEvent.cancelable) {
+  const handleMouseStart = useCallback(
+    (e: React.MouseEvent) => {
       e.preventDefault();
-    }
-    handleMove(e.touches[0].clientY);
-  }, [handleMove]);
+      e.stopPropagation();
+      setIsDragging(true);
+      setIsAnimating(false);
+      setStartY(e.clientY);
+      setLastClientY(e.clientY);
+      setStartHeight(height);
+      setVelocity(0);
+      setLastMoveTime(Date.now());
 
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    e.preventDefault();
-    handleMove(e.clientY);
-  }, [handleMove]);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    },
+    [height]
+  );
+
+  const handleMove = useCallback(
+    (clientY: number) => {
+      if (!isDragging || isAnimating) return;
+
+      const now = Date.now();
+      const timeDelta = now - lastMoveTime;
+
+      if (timeDelta > 0) {
+        const clientYDelta = clientY - lastClientY;
+        // 속도 계산을 더 정밀하게
+        const newVelocity =
+          timeDelta > 16 ? clientYDelta / timeDelta : velocity;
+        setVelocity(newVelocity * 0.8 + velocity * 0.2); // 스무싱 적용
+        setLastClientY(clientY);
+        setLastMoveTime(now);
+      }
+
+      const deltaY = startY - clientY;
+      const viewportHeight = window.innerHeight;
+      const deltaPercent = (deltaY / viewportHeight) * 100;
+      let newHeight = startHeight + deltaPercent;
+
+      // 경계 밖으로 나갈 때 저항 효과 추가
+      if (newHeight > maxHeight) {
+        const overshoot = newHeight - maxHeight;
+        newHeight = maxHeight + overshoot * 0.3; // 30% 저항
+      } else if (newHeight < minHeight) {
+        const undershoot = minHeight - newHeight;
+        newHeight = minHeight - undershoot * 0.3; // 30% 저항
+      }
+
+      setHeight(newHeight);
+    },
+    [
+      isDragging,
+      isAnimating,
+      startY,
+      startHeight,
+      lastMoveTime,
+      lastClientY,
+      velocity,
+      minHeight,
+      maxHeight,
+    ]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      // cancelable인 경우에만 preventDefault 호출
+      if (e.nativeEvent.cancelable) {
+        e.preventDefault();
+      }
+      handleMove(e.touches[0].clientY);
+    },
+    [handleMove]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      e.preventDefault();
+      handleMove(e.clientY);
+    },
+    [handleMove]
+  );
 
   const handleEnd = useCallback(() => {
     setIsDragging(false);
@@ -138,7 +164,9 @@ export default function BottomSheet({
       // 속도 방향에 따른 스냅 포인트 선택
       if (velocity > 0) {
         // 위로 스와이프 - 더 높은 위치로
-        const higherPoints = snapPoints.filter(point => point > currentHeight);
+        const higherPoints = snapPoints.filter(
+          (point) => point > currentHeight
+        );
         if (higherPoints.length > 0) {
           targetHeight = Math.min(...higherPoints);
         } else {
@@ -146,7 +174,7 @@ export default function BottomSheet({
         }
       } else {
         // 아래로 스와이프 - 더 낮은 위치로
-        const lowerPoints = snapPoints.filter(point => point < currentHeight);
+        const lowerPoints = snapPoints.filter((point) => point < currentHeight);
         if (lowerPoints.length > 0) {
           targetHeight = Math.max(...lowerPoints);
         } else {
@@ -156,7 +184,7 @@ export default function BottomSheet({
     } else {
       // 속도가 느리면 가장 가까운 스냅 포인트로
       let minDistance = Infinity;
-      snapPoints.forEach(point => {
+      snapPoints.forEach((point) => {
         const distance = Math.abs(currentHeight - point);
         if (distance < minDistance) {
           minDistance = distance;
@@ -173,36 +201,39 @@ export default function BottomSheet({
   }, [height, velocity, minHeight, maxHeight, initialHeight]);
 
   // 개선된 애니메이션 함수
-  const animateToHeight = useCallback((targetHeight: number) => {
-    const startHeight = height;
-    const startTime = Date.now();
-    const distance = Math.abs(targetHeight - startHeight);
-    // 거리에 따라 애니메이션 시간 조정 (최소 200ms, 최대 400ms)
-    const duration = Math.max(200, Math.min(400, distance * 8));
+  const animateToHeight = useCallback(
+    (targetHeight: number) => {
+      const startHeight = height;
+      const startTime = Date.now();
+      const distance = Math.abs(targetHeight - startHeight);
+      // 거리에 따라 애니메이션 시간 조정 (최소 200ms, 최대 400ms)
+      const duration = Math.max(200, Math.min(400, distance * 8));
 
-    setIsAnimating(true);
+      setIsAnimating(true);
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
 
-      // easeOutQuart 이징 함수로 더 자연스러운 움직임
-      const easeProgress = 1 - Math.pow(1 - progress, 4);
-      const currentHeight = startHeight + (targetHeight - startHeight) * easeProgress;
+        // easeOutQuart 이징 함수로 더 자연스러운 움직임
+        const easeProgress = 1 - Math.pow(1 - progress, 4);
+        const currentHeight =
+          startHeight + (targetHeight - startHeight) * easeProgress;
 
-      setHeight(currentHeight);
+        setHeight(currentHeight);
 
-      if (progress < 1) {
-        animationRef.current = requestAnimationFrame(animate);
-      } else {
-        setIsAnimating(false);
-        setVelocity(0);
-      }
-    };
+        if (progress < 1) {
+          animationRef.current = requestAnimationFrame(animate);
+        } else {
+          setIsAnimating(false);
+          setVelocity(0);
+        }
+      };
 
-    animationRef.current = requestAnimationFrame(animate);
-  }, [height]);
-
+      animationRef.current = requestAnimationFrame(animate);
+    },
+    [height]
+  );
 
   // 마우스 이벤트 리스너
   useEffect(() => {
@@ -216,7 +247,7 @@ export default function BottomSheet({
       };
     }
   }, [isDragging, handleMouseMove, handleEnd]);
-  
+
   // 컴포넌트 언마운트 시 애니메이션 정리
   useEffect(() => {
     return () => {
@@ -256,12 +287,14 @@ export default function BottomSheet({
           touchAction: 'none',
           userSelect: 'none',
           WebkitUserSelect: 'none',
-          WebkitTouchCallout: 'none'
+          WebkitTouchCallout: 'none',
         }}
       >
-        <div className={`w-12 h-1 bg-studio-text-muted rounded-full transition-all duration-200 ${
-          isDragging ? 'bg-studio-button-primary scale-110' : ''
-        }`} />
+        <div
+          className={`w-12 h-1 bg-studio-text-muted rounded-full transition-all duration-200 ${
+            isDragging ? 'bg-studio-button-primary scale-110' : ''
+          }`}
+        />
       </div>
 
       {/* 콘텐츠 영역 */}
@@ -271,7 +304,7 @@ export default function BottomSheet({
           style={{
             touchAction: 'pan-y',
             WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain'
+            overscrollBehavior: 'contain',
           }}
           onTouchStart={(e) => {
             // 콘텐츠 영역에서의 터치는 버블링을 방지

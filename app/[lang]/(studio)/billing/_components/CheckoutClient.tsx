@@ -11,7 +11,13 @@ import {
   getSubscriptionDetails,
 } from '@/app/_lib/apis/subscription.api.client';
 import { useAuthStore } from '@/stores/authStore';
-import { CheckCircle2, Shield, CreditCard, ArrowLeft, Loader2 } from 'lucide-react';
+import {
+  CheckCircle2,
+  Shield,
+  CreditCard,
+  ArrowLeft,
+  Loader2,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 
@@ -34,15 +40,17 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
-  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>('loading');
-  
+  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>(
+    'loading'
+  );
+
   // Use the preload context
-  const { 
-    preloadPortone, 
-    getPortone, 
-    isLoaded, 
-    isLoading: sdkIsLoading, 
-    error: sdkError 
+  const {
+    preloadPortone,
+    getPortone,
+    isLoaded,
+    isLoading: sdkIsLoading,
+    error: sdkError,
   } = usePortonePreload();
 
   // Preload SDK when component mounts
@@ -92,7 +100,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
     try {
       // ⬇️ --- 핵심 수정 사항: 사전 로딩된 인스턴스 사용 --- ⬇️
       let PortOne = getPortone();
-      
+
       // Fallback to dynamic loading if preload failed
       if (!PortOne) {
         console.debug('Falling back to dynamic SDK loading');
@@ -268,7 +276,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                     `${t('pay')} ${plan.priceFormatted}`
                   )}
                 </button>
-                
+
                 {/* SDK Status Indicator */}
                 {sdkStatus === 'loading' && (
                   <div className="mt-3 flex items-center justify-center gap-2 text-sm text-slate-400">
@@ -276,7 +284,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                     결제 모듈 준비 중...
                   </div>
                 )}
-                
+
                 {sdkStatus === 'ready' && (
                   <div className="mt-3 flex items-center justify-center gap-2 text-sm text-green-400">
                     <CheckCircle2 className="h-4 w-4" />

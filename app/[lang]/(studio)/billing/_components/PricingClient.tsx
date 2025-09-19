@@ -172,7 +172,6 @@ const PlanCard = ({
     );
   };
 
-
   return (
     <div
       className={`flex h-full flex-col rounded-3xl p-8 transition-all duration-300 hover:scale-[1.02] ${
@@ -259,18 +258,20 @@ function PricingClientContent({
   const [isLoading, setIsLoading] = useState(false);
   const [activeSubscription, setActiveSubscription] =
     useState<Subscription | null>(null);
-  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>(
+    'loading'
+  );
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const { openSettings } = useUIStore();
 
   // Use the preload context
-  const { 
-    preloadPortone, 
-    getPortone, 
-    isLoaded, 
-    isLoading: sdkIsLoading, 
-    error: sdkError 
+  const {
+    preloadPortone,
+    getPortone,
+    isLoaded,
+    isLoading: sdkIsLoading,
+    error: sdkError,
   } = usePortonePreload();
 
   // Preload SDK when component mounts
@@ -358,7 +359,9 @@ function PricingClientContent({
     }
 
     if (sdkStatus === 'error') {
-      toast.error(translations.sdkLoadError || 'SDK 로딩 중 오류가 발생했습니다.');
+      toast.error(
+        translations.sdkLoadError || 'SDK 로딩 중 오류가 발생했습니다.'
+      );
       return;
     }
 
@@ -383,7 +386,7 @@ function PricingClientContent({
 
       // Use preloaded instance or fallback to dynamic loading
       let PortOne = getPortone();
-      
+
       if (!PortOne) {
         PortOne = await loadPortone();
       }

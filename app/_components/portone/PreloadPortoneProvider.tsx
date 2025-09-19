@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 import type PortOne from '@portone/browser-sdk/v2';
 import { getPortonePerformanceTracker } from '@/lib/performance/portonePerformance';
 
@@ -50,13 +56,13 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
 
     const performanceTracker = getPortonePerformanceTracker();
     performanceTracker.startTiming('sdkLoadTime');
-    
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const module = await import('@portone/browser-sdk/v2');
       const instance = module.default;
-      
+
       if (!instance) {
         throw new Error('PortOne SDK default export not found');
       }
@@ -78,9 +84,12 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
 
       return instance;
     } catch (error) {
-      const loadError = error instanceof Error ? error : new Error('Unknown PortOne loading error');
-      
-      setState(prev => ({
+      const loadError =
+        error instanceof Error
+          ? error
+          : new Error('Unknown PortOne loading error');
+
+      setState((prev) => ({
         ...prev,
         isLoading: false,
         error: loadError,
@@ -100,11 +109,11 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
   // Preload SDK on provider mount for pages that might need it
   useEffect(() => {
     // Check if we're on a billing/payment related page
-    const shouldPreload = typeof window !== 'undefined' && (
-      window.location.pathname.includes('/billing') ||
-      window.location.pathname.includes('/checkout') ||
-      window.location.pathname.includes('/payment')
-    );
+    const shouldPreload =
+      typeof window !== 'undefined' &&
+      (window.location.pathname.includes('/billing') ||
+        window.location.pathname.includes('/checkout') ||
+        window.location.pathname.includes('/payment'));
 
     if (shouldPreload) {
       preloadPortone().catch((error) => {
@@ -128,10 +137,12 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
 
 export function usePortonePreload(): PortoneContextType {
   const context = useContext(PortoneContext);
-  
+
   if (!context) {
-    throw new Error('usePortonePreload must be used within PreloadPortoneProvider');
+    throw new Error(
+      'usePortonePreload must be used within PreloadPortoneProvider'
+    );
   }
-  
+
   return context;
 }

@@ -19,7 +19,7 @@ export default function BeforeAfterToggle({
   onEdit,
   showEditButton = false,
   editButtonText = '수정하기',
-  isEditLoading = false
+  isEditLoading = false,
 }: BeforeAfterToggleProps) {
   const [currentView, setCurrentView] = useState<'before' | 'after'>('after');
 
@@ -66,8 +66,12 @@ export default function BeforeAfterToggle({
       </div>
 
       {/* Action Buttons */}
-      <div className="px-4 pb-8 flex flex-col gap-3"
-           style={{ paddingBottom: 'max(32px, calc(32px + env(safe-area-inset-bottom)))' }}>
+      <div
+        className="px-4 pb-8 flex flex-col gap-3"
+        style={{
+          paddingBottom: 'max(32px, calc(32px + env(safe-area-inset-bottom)))',
+        }}
+      >
         {showEditButton && (
           <button
             onClick={onEdit}

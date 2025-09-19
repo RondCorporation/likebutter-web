@@ -11,7 +11,6 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
   const { preloadTool, isToolPreloaded } = useStudioNavigation(lang);
 
   useEffect(() => {
-
     // Stage 1: Preload most popular tools immediately
     const criticalTools = ['digital-goods', 'archive'];
     criticalTools.forEach((tool) => {
@@ -62,7 +61,7 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
         '/studio/model-select/stylist.png',
         '/studio/model-select/virtual_casting.png',
         '/studio/model-select/fanmeeting-studio.png',
-        '/studio/model-select/butter-cover.png'
+        '/studio/model-select/butter-cover.png',
       ];
 
       imagesToPreload.forEach((imageSrc) => {

@@ -11,11 +11,7 @@ interface FormGroupProps {
 }
 
 export function FormGroup({ children, className }: FormGroupProps) {
-  return (
-    <div className={cn("space-y-6", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn('space-y-6', className)}>{children}</div>;
 }
 
 // Form Section
@@ -26,18 +22,24 @@ interface FormSectionProps {
   className?: string;
 }
 
-export function FormSection({ title, description, children, className }: FormSectionProps) {
+export function FormSection({
+  title,
+  description,
+  children,
+  className,
+}: FormSectionProps) {
   return (
-    <div className={cn("rounded-xl border border-slate-700 bg-slate-800/50 p-6", className)}>
+    <div
+      className={cn(
+        'rounded-xl border border-slate-700 bg-slate-800/50 p-6',
+        className
+      )}
+    >
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
-        {description && (
-          <p className="text-sm text-slate-400">{description}</p>
-        )}
+        {description && <p className="text-sm text-slate-400">{description}</p>}
       </div>
-      <div className="space-y-4">
-        {children}
-      </div>
+      <div className="space-y-4">{children}</div>
     </div>
   );
 }
@@ -62,23 +64,25 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             ref={ref}
             className={cn(
-              "w-full appearance-none rounded-xl border-2 border-slate-700 bg-slate-800/50 px-4 py-3 pr-10 text-white transition-colors duration-300 focus:border-butter-yellow focus:outline-none focus:ring-0",
-              error && "border-red-400 focus:border-red-400",
+              'w-full appearance-none rounded-xl border-2 border-slate-700 bg-slate-800/50 px-4 py-3 pr-10 text-white transition-colors duration-300 focus:border-butter-yellow focus:outline-none focus:ring-0',
+              error && 'border-red-400 focus:border-red-400',
               className
             )}
             {...props}
           >
             {options.map((option) => (
-              <option key={option.value} value={option.value} className="bg-slate-800">
+              <option
+                key={option.value}
+                value={option.value}
+                className="bg-slate-800"
+              >
                 {option.label}
               </option>
             ))}
           </select>
           <ChevronDown className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 pointer-events-none" />
         </div>
-        {error && (
-          <p className="text-sm text-red-400">{error}</p>
-        )}
+        {error && <p className="text-sm text-red-400">{error}</p>}
       </div>
     );
   }
@@ -95,28 +99,35 @@ interface CheckboxProps {
   className?: string;
 }
 
-export function Checkbox({ label, checked, onChange, description, className }: CheckboxProps) {
+export function Checkbox({
+  label,
+  checked,
+  onChange,
+  description,
+  className,
+}: CheckboxProps) {
   return (
-    <div className={cn("flex items-start gap-3", className)}>
+    <div className={cn('flex items-start gap-3', className)}>
       <button
         type="button"
         onClick={() => onChange(!checked)}
         className={cn(
-          "flex h-5 w-5 items-center justify-center rounded border-2 transition-colors",
+          'flex h-5 w-5 items-center justify-center rounded border-2 transition-colors',
           checked
-            ? "border-butter-yellow bg-butter-yellow text-black"
-            : "border-slate-600 bg-slate-800/50 hover:border-slate-500"
+            ? 'border-butter-yellow bg-butter-yellow text-black'
+            : 'border-slate-600 bg-slate-800/50 hover:border-slate-500'
         )}
       >
         {checked && <Check size={14} />}
       </button>
       <div className="space-y-1">
-        <label className="text-sm font-medium text-slate-200 cursor-pointer" onClick={() => onChange(!checked)}>
+        <label
+          className="text-sm font-medium text-slate-200 cursor-pointer"
+          onClick={() => onChange(!checked)}
+        >
           {label}
         </label>
-        {description && (
-          <p className="text-xs text-slate-400">{description}</p>
-        )}
+        {description && <p className="text-xs text-slate-400">{description}</p>}
       </div>
     </div>
   );
@@ -138,9 +149,16 @@ interface RadioGroupProps {
   className?: string;
 }
 
-export function RadioGroup({ name, value, onChange, options, label, className }: RadioGroupProps) {
+export function RadioGroup({
+  name,
+  value,
+  onChange,
+  options,
+  label,
+  className,
+}: RadioGroupProps) {
   return (
-    <div className={cn("space-y-3", className)}>
+    <div className={cn('space-y-3', className)}>
       {label && (
         <label className="block text-sm font-medium text-slate-200">
           {label}
@@ -153,10 +171,10 @@ export function RadioGroup({ name, value, onChange, options, label, className }:
               type="button"
               onClick={() => onChange(option.value)}
               className={cn(
-                "mt-0.5 h-4 w-4 rounded-full border-2 transition-colors",
+                'mt-0.5 h-4 w-4 rounded-full border-2 transition-colors',
                 value === option.value
-                  ? "border-butter-yellow bg-butter-yellow"
-                  : "border-slate-600 bg-slate-800/50 hover:border-slate-500"
+                  ? 'border-butter-yellow bg-butter-yellow'
+                  : 'border-slate-600 bg-slate-800/50 hover:border-slate-500'
               )}
             >
               {value === option.value && (
@@ -164,8 +182,8 @@ export function RadioGroup({ name, value, onChange, options, label, className }:
               )}
             </button>
             <div className="space-y-1">
-              <label 
-                className="text-sm font-medium text-slate-200 cursor-pointer" 
+              <label
+                className="text-sm font-medium text-slate-200 cursor-pointer"
                 onClick={() => onChange(option.value)}
               >
                 {option.label}

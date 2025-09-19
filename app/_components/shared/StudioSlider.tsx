@@ -45,7 +45,10 @@ export default function StudioSlider({
     if (!sliderRef.current) return;
 
     const rect = sliderRef.current.getBoundingClientRect();
-    const percentage = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1);
+    const percentage = Math.min(
+      Math.max((clientX - rect.left) / rect.width, 0),
+      1
+    );
     const newValue = min + percentage * (max - min);
     const steppedValue = Math.round(newValue / step) * step;
     const clampedValue = Math.min(Math.max(steppedValue, min), max);
@@ -79,7 +82,7 @@ export default function StudioSlider({
           className="absolute left-0 top-0 h-full rounded-full bg-butter-yellow transition-all"
           style={{ width: `${percentage}%` }}
         />
-        
+
         {/* Handle */}
         <div
           className={`absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-butter-yellow bg-white shadow-md transition-all ${

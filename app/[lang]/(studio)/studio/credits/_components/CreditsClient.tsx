@@ -3,12 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
-import { getCreditBalance, getCreditHistory, CreditBalance, CreditHistoryPage, CreditTransaction } from '@/app/_lib/apis/credit.api';
+import {
+  getCreditBalance,
+  getCreditHistory,
+  CreditBalance,
+  CreditHistoryPage,
+} from '@/app/_lib/apis/credit.api';
 import { useRouter } from 'next/navigation';
 
 export default function CreditsClient() {
-  const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(null);
-  const [creditHistory, setCreditHistory] = useState<CreditHistoryPage | null>(null);
+  const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(
+    null
+  );
+  const [creditHistory, setCreditHistory] = useState<CreditHistoryPage | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
@@ -29,14 +38,14 @@ export default function CreditsClient() {
       setIsLoading(true);
       const [balanceResponse, historyResponse] = await Promise.all([
         getCreditBalance(),
-        getCreditHistory(page, pageSize)
+        getCreditHistory(page, pageSize),
       ]);
 
-      if (balanceResponse.status === 200) {
+      if (balanceResponse.status === 200 && balanceResponse.data) {
         setCreditBalance(balanceResponse.data);
       }
 
-      if (historyResponse.status === 200) {
+      if (historyResponse.status === 200 && historyResponse.data) {
         setCreditHistory(historyResponse.data);
       }
     } catch (err: any) {
@@ -73,7 +82,6 @@ export default function CreditsClient() {
     const minute = date.getMinutes().toString().padStart(2, '0');
     return `${year}.${month}.${day} ${hour}:${minute}`;
   };
-
 
   // 페이지네이션 생성
   const generatePageNumbers = () => {
@@ -121,7 +129,9 @@ export default function CreditsClient() {
           <div className="bg-[#292c31] border border-[#4a4a4b] rounded-2xl p-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-white text-lg font-semibold mb-2">사용 가능한 크레딧</h3>
+                <h3 className="text-white text-lg font-semibold mb-2">
+                  사용 가능한 크레딧
+                </h3>
                 <div className="flex items-center gap-2">
                   <Image
                     src="/credit.svg"
@@ -130,7 +140,9 @@ export default function CreditsClient() {
                     height={24}
                   />
                   <span className="text-white text-2xl font-bold">
-                    {isLoading ? '...' : creditBalance?.currentBalance.toLocaleString() || '0'}
+                    {isLoading
+                      ? '...'
+                      : creditBalance?.currentBalance.toLocaleString() || '0'}
                   </span>
                 </div>
               </div>
@@ -160,7 +172,9 @@ export default function CreditsClient() {
                   className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
                 >
                   <span>{pageSize}개씩</span>
-                  <ChevronDown className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`}
+                  />
                 </button>
 
                 {pageSizeDropdownOpen && (
@@ -185,38 +199,65 @@ export default function CreditsClient() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-[#4a4a4b]">
-                  <th className="text-left text-white font-medium px-6 py-4">Time</th>
-                  <th className="text-left text-white font-medium px-6 py-4">Type</th>
-                  <th className="text-left text-white font-medium px-6 py-4">Description</th>
-                  <th className="text-right text-white font-medium px-6 py-4">Credits</th>
+                  <th className="text-left text-white font-medium px-6 py-4">
+                    Time
+                  </th>
+                  <th className="text-left text-white font-medium px-6 py-4">
+                    Type
+                  </th>
+                  <th className="text-left text-white font-medium px-6 py-4">
+                    Description
+                  </th>
+                  <th className="text-right text-white font-medium px-6 py-4">
+                    Credits
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading ? (
                   <tr>
-                    <td colSpan={4} className="text-center text-gray-400 px-6 py-8">
+                    <td
+                      colSpan={4}
+                      className="text-center text-gray-400 px-6 py-8"
+                    >
                       로딩 중...
                     </td>
                   </tr>
                 ) : creditHistory?.content.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="text-center text-gray-400 px-6 py-8">
+                    <td
+                      colSpan={4}
+                      className="text-center text-gray-400 px-6 py-8"
+                    >
                       사용 내역이 없습니다.
                     </td>
                   </tr>
                 ) : (
                   creditHistory?.content.map((transaction) => (
-                    <tr key={transaction.transactionId} className="border-b border-[#4a4a4b] last:border-b-0">
-                      <td className="text-white px-6 py-4">{formatDate(transaction.createdAt)}</td>
-                      <td className="text-white px-6 py-4">{transaction.type}</td>
-                      <td className="text-white px-6 py-4">{transaction.description}</td>
+                    <tr
+                      key={transaction.transactionId}
+                      className="border-b border-[#4a4a4b] last:border-b-0"
+                    >
+                      <td className="text-white px-6 py-4">
+                        {formatDate(transaction.createdAt)}
+                      </td>
+                      <td className="text-white px-6 py-4">
+                        {transaction.type}
+                      </td>
+                      <td className="text-white px-6 py-4">
+                        {transaction.description}
+                      </td>
                       <td className="text-right px-6 py-4">
-                        <div className={`inline-flex items-center justify-center px-3 py-1 rounded-[50px] text-white text-sm font-medium ${
-                          transaction.amount > 0
-                            ? 'bg-green-500'
-                            : 'bg-red-500'
-                        }`}>
-                          {transaction.amount > 0 ? `+${transaction.amount}` : transaction.amount}
+                        <div
+                          className={`inline-flex items-center justify-center px-3 py-1 rounded-[50px] text-white text-sm font-medium ${
+                            transaction.amount > 0
+                              ? 'bg-green-500'
+                              : 'bg-red-500'
+                          }`}
+                        >
+                          {transaction.amount > 0
+                            ? `+${transaction.amount}`
+                            : transaction.amount}
                         </div>
                       </td>
                     </tr>
@@ -233,8 +274,7 @@ export default function CreditsClient() {
               <span className="text-white text-sm">
                 {creditHistory.totalElements > 0
                   ? `${currentPage * pageSize + 1} ~ ${Math.min((currentPage + 1) * pageSize, creditHistory.totalElements)}개 / 총 ${creditHistory.totalElements}개`
-                  : '결과 없음'
-                }
+                  : '결과 없음'}
               </span>
 
               {/* 페이지 네비게이션 */}

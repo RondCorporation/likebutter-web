@@ -25,7 +25,9 @@ export default function SquareToggleButton({
   };
 
   return (
-    <div className={`relative w-full h-10 bg-studio-border rounded-lg overflow-hidden ${className}`}>
+    <div
+      className={`relative w-full h-10 bg-studio-border rounded-lg overflow-hidden ${className}`}
+    >
       {/* Background slider */}
       <div
         className={`absolute top-1 bottom-1 w-1/2 bg-butter-yellow rounded-md transition-transform duration-300 ease-in-out ${
@@ -39,7 +41,9 @@ export default function SquareToggleButton({
         <button
           onClick={() => handleToggle('left')}
           className={`flex-1 flex items-center justify-center text-sm font-pretendard-medium transition-colors duration-300 ${
-            selected === 'left' ? 'text-studio-main' : 'text-studio-text-secondary'
+            selected === 'left'
+              ? 'text-studio-main'
+              : 'text-studio-text-secondary'
           }`}
         >
           {leftLabel}
@@ -47,7 +51,9 @@ export default function SquareToggleButton({
         <button
           onClick={() => handleToggle('right')}
           className={`flex-1 flex items-center justify-center text-sm font-pretendard-medium transition-colors duration-300 ${
-            selected === 'right' ? 'text-studio-main' : 'text-studio-text-secondary'
+            selected === 'right'
+              ? 'text-studio-main'
+              : 'text-studio-text-secondary'
           }`}
         >
           {rightLabel}

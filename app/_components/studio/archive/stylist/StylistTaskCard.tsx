@@ -29,9 +29,7 @@ export default function StylistTaskCard({ task, onClick }: Props) {
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-2">
           <Palette className="h-5 w-5 text-accent" />
-          <h4 className="text-sm font-semibold text-white">
-            AI Stylist
-          </h4>
+          <h4 className="text-sm font-semibold text-white">AI Stylist</h4>
         </div>
         <StatusBadge status={task.status} />
       </div>

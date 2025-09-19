@@ -5,7 +5,8 @@ import { getSubscriptions } from '@/lib/apis/subscription.api.client';
 import { Subscription } from '@/types/subscription';
 
 export function useSubscriptions() {
-  const { data, error, isLoading, mutate } = useSWR('/subscriptions', 
+  const { data, error, isLoading, mutate } = useSWR(
+    '/subscriptions',
     async () => {
       const response = await getSubscriptions();
       return response.data || [];
@@ -18,7 +19,8 @@ export function useSubscriptions() {
     }
   );
 
-  const activeSubscription = data?.find((s: Subscription) => s.status === 'ACTIVE') || null;
+  const activeSubscription =
+    data?.find((s: Subscription) => s.status === 'ACTIVE') || null;
 
   return {
     subscriptions: data || [],

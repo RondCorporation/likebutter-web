@@ -23,11 +23,8 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
   const [currentTool, setCurrentTool] = useState('dashboard');
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  const {
-    getToolComponent,
-    preloadTool,
-    isToolPreloaded,
-  } = useStudioNavigation(lang);
+  const { getToolComponent, preloadTool, isToolPreloaded } =
+    useStudioNavigation(lang);
 
   // Get current tool from URL parameter
   const getCurrentToolFromUrl = useCallback(() => {
@@ -47,9 +44,10 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
       }
 
       // Update URL without page reload
-      const newUrl = toolName === 'dashboard'
-        ? `/${lang}/studio`
-        : `/${lang}/studio?tool=${toolName}`;
+      const newUrl =
+        toolName === 'dashboard'
+          ? `/${lang}/studio`
+          : `/${lang}/studio?tool=${toolName}`;
 
       router.replace(newUrl, { scroll: false });
 
@@ -72,7 +70,13 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
         preloadTool(toolFromUrl);
       }
     }
-  }, [searchParams, currentTool, getCurrentToolFromUrl, isToolPreloaded, preloadTool]);
+  }, [
+    searchParams,
+    currentTool,
+    getCurrentToolFromUrl,
+    isToolPreloaded,
+    preloadTool,
+  ]);
 
   // Get component for current tool
   const ToolComponent = getToolComponent(currentTool);

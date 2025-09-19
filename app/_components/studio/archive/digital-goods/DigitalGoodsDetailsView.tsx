@@ -24,7 +24,9 @@ export default function DigitalGoodsDetailsView({ details }: Props) {
               <label className="text-sm font-medium text-slate-400">
                 Style
               </label>
-              <p className="text-slate-200 capitalize">{details.request.style}</p>
+              <p className="text-slate-200 capitalize">
+                {details.request.style}
+              </p>
             </div>
           )}
 
@@ -33,12 +35,13 @@ export default function DigitalGoodsDetailsView({ details }: Props) {
               <label className="text-sm font-medium text-slate-400">
                 Source Image Key
               </label>
-              <p className="text-slate-200 text-xs font-mono">{details.request.imageKey}</p>
+              <p className="text-slate-200 text-xs font-mono">
+                {details.request.imageKey}
+              </p>
             </div>
           )}
         </div>
       </div>
-
 
       {/* Source Image */}
       {details.request.imageUrl && (
@@ -117,7 +120,9 @@ export default function DigitalGoodsDetailsView({ details }: Props) {
                   <label className="text-sm font-medium text-slate-400">
                     Applied Style
                   </label>
-                  <p className="text-slate-200 capitalize">{details.result.style}</p>
+                  <p className="text-slate-200 capitalize">
+                    {details.result.style}
+                  </p>
                 </div>
               )}
 
@@ -152,9 +157,7 @@ export default function DigitalGoodsDetailsView({ details }: Props) {
       {/* Error Information */}
       {details.error && (
         <div>
-          <h4 className="mb-3 font-semibold text-red-400">
-            Error Details
-          </h4>
+          <h4 className="mb-3 font-semibold text-red-400">Error Details</h4>
           <div className="rounded-lg bg-red-900/20 border border-red-500/30 p-4">
             <p className="text-red-300">{details.error}</p>
           </div>

@@ -1,5 +1,14 @@
 import { PhotoEditorDetails } from '@/types/task';
-import { Edit3, Image, Sliders, Filter, Sun, Contrast, Palette, Download } from 'lucide-react';
+import {
+  Edit3,
+  Image,
+  Sliders,
+  Filter,
+  Sun,
+  Contrast,
+  Palette,
+  Download,
+} from 'lucide-react';
 
 interface Props {
   details?: PhotoEditorDetails;
@@ -25,7 +34,9 @@ export default function PhotoEditorDetailsView({ details }: Props) {
               <Edit3 className="h-4 w-4" />
               Edit Type
             </label>
-            <p className="text-slate-200">{details.request.editType || 'Basic Enhancement'}</p>
+            <p className="text-slate-200">
+              {details.request.editType || 'Basic Enhancement'}
+            </p>
           </div>
 
           <div>
@@ -33,7 +44,9 @@ export default function PhotoEditorDetailsView({ details }: Props) {
               <Filter className="h-4 w-4" />
               Applied Filter
             </label>
-            <p className="text-slate-200">{details.request.applyFilter || 'None'}</p>
+            <p className="text-slate-200">
+              {details.request.applyFilter || 'None'}
+            </p>
           </div>
 
           <div>
@@ -46,12 +59,13 @@ export default function PhotoEditorDetailsView({ details }: Props) {
                 <div
                   className="bg-butter-yellow h-2 rounded-full transition-all"
                   style={{
-                    width: `${Math.max(0, Math.min(100, ((details.request.brightness + 100) / 200) * 100))}%`
+                    width: `${Math.max(0, Math.min(100, ((details.request.brightness + 100) / 200) * 100))}%`,
                   }}
                 />
               </div>
               <span className="text-slate-200 text-sm w-12 text-right">
-                {details.request.brightness > 0 ? '+' : ''}{details.request.brightness}
+                {details.request.brightness > 0 ? '+' : ''}
+                {details.request.brightness}
               </span>
             </div>
           </div>
@@ -66,12 +80,13 @@ export default function PhotoEditorDetailsView({ details }: Props) {
                 <div
                   className="bg-butter-yellow h-2 rounded-full transition-all"
                   style={{
-                    width: `${Math.max(0, Math.min(100, ((details.request.contrast + 100) / 200) * 100))}%`
+                    width: `${Math.max(0, Math.min(100, ((details.request.contrast + 100) / 200) * 100))}%`,
                   }}
                 />
               </div>
               <span className="text-slate-200 text-sm w-12 text-right">
-                {details.request.contrast > 0 ? '+' : ''}{details.request.contrast}
+                {details.request.contrast > 0 ? '+' : ''}
+                {details.request.contrast}
               </span>
             </div>
           </div>
@@ -86,12 +101,13 @@ export default function PhotoEditorDetailsView({ details }: Props) {
                 <div
                   className="bg-butter-yellow h-2 rounded-full transition-all"
                   style={{
-                    width: `${Math.max(0, Math.min(100, ((details.request.saturation + 100) / 200) * 100))}%`
+                    width: `${Math.max(0, Math.min(100, ((details.request.saturation + 100) / 200) * 100))}%`,
                   }}
                 />
               </div>
               <span className="text-slate-200 text-sm w-12 text-right">
-                {details.request.saturation > 0 ? '+' : ''}{details.request.saturation}
+                {details.request.saturation > 0 ? '+' : ''}
+                {details.request.saturation}
               </span>
             </div>
           </div>
@@ -102,8 +118,12 @@ export default function PhotoEditorDetailsView({ details }: Props) {
               Quality Enhancement
             </label>
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${details.request.enhanceQuality ? 'bg-green-500' : 'bg-gray-500'}`} />
-              <span className="text-slate-200">{details.request.enhanceQuality ? 'Enabled' : 'Disabled'}</span>
+              <div
+                className={`w-3 h-3 rounded-full ${details.request.enhanceQuality ? 'bg-green-500' : 'bg-gray-500'}`}
+              />
+              <span className="text-slate-200">
+                {details.request.enhanceQuality ? 'Enabled' : 'Disabled'}
+              </span>
             </div>
           </div>
         </div>
@@ -139,9 +159,13 @@ export default function PhotoEditorDetailsView({ details }: Props) {
               {/* Before/After Comparison */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">Original</h5>
+                  <h5 className="text-sm font-medium text-slate-400 mb-2">
+                    Original
+                  </h5>
                   <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center">
-                    <span className="text-slate-400 text-sm">Original Image</span>
+                    <span className="text-slate-400 text-sm">
+                      Original Image
+                    </span>
                   </div>
                   {details.result.originalImageKey && (
                     <p className="text-xs text-slate-500 mt-1 font-mono">
@@ -151,9 +175,13 @@ export default function PhotoEditorDetailsView({ details }: Props) {
                 </div>
 
                 <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">Edited</h5>
+                  <h5 className="text-sm font-medium text-slate-400 mb-2">
+                    Edited
+                  </h5>
                   <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center border-2 border-butter-yellow/30">
-                    <span className="text-slate-400 text-sm">Edited Result</span>
+                    <span className="text-slate-400 text-sm">
+                      Edited Result
+                    </span>
                   </div>
                   {details.result.editedImageKey && (
                     <p className="text-xs text-slate-500 mt-1 font-mono">
@@ -165,29 +193,42 @@ export default function PhotoEditorDetailsView({ details }: Props) {
 
               {/* Applied Settings Summary */}
               <div className="pt-4 border-t border-slate-700">
-                <h5 className="text-sm font-medium text-slate-400 mb-3">Applied Adjustments</h5>
+                <h5 className="text-sm font-medium text-slate-400 mb-3">
+                  Applied Adjustments
+                </h5>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div className="text-center">
                     <div className="text-slate-400">Brightness</div>
-                    <div className={`font-medium ${details.request.brightness > 0 ? 'text-yellow-400' : details.request.brightness < 0 ? 'text-blue-400' : 'text-slate-300'}`}>
-                      {details.request.brightness > 0 ? '+' : ''}{details.request.brightness}
+                    <div
+                      className={`font-medium ${details.request.brightness > 0 ? 'text-yellow-400' : details.request.brightness < 0 ? 'text-blue-400' : 'text-slate-300'}`}
+                    >
+                      {details.request.brightness > 0 ? '+' : ''}
+                      {details.request.brightness}
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-slate-400">Contrast</div>
-                    <div className={`font-medium ${details.request.contrast > 0 ? 'text-purple-400' : details.request.contrast < 0 ? 'text-gray-400' : 'text-slate-300'}`}>
-                      {details.request.contrast > 0 ? '+' : ''}{details.request.contrast}
+                    <div
+                      className={`font-medium ${details.request.contrast > 0 ? 'text-purple-400' : details.request.contrast < 0 ? 'text-gray-400' : 'text-slate-300'}`}
+                    >
+                      {details.request.contrast > 0 ? '+' : ''}
+                      {details.request.contrast}
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-slate-400">Saturation</div>
-                    <div className={`font-medium ${details.request.saturation > 0 ? 'text-pink-400' : details.request.saturation < 0 ? 'text-gray-400' : 'text-slate-300'}`}>
-                      {details.request.saturation > 0 ? '+' : ''}{details.request.saturation}
+                    <div
+                      className={`font-medium ${details.request.saturation > 0 ? 'text-pink-400' : details.request.saturation < 0 ? 'text-gray-400' : 'text-slate-300'}`}
+                    >
+                      {details.request.saturation > 0 ? '+' : ''}
+                      {details.request.saturation}
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-slate-400">Quality</div>
-                    <div className={`font-medium ${details.request.enhanceQuality ? 'text-green-400' : 'text-gray-400'}`}>
+                    <div
+                      className={`font-medium ${details.request.enhanceQuality ? 'text-green-400' : 'text-gray-400'}`}
+                    >
                       {details.request.enhanceQuality ? 'Enhanced' : 'Normal'}
                     </div>
                   </div>
@@ -195,17 +236,18 @@ export default function PhotoEditorDetailsView({ details }: Props) {
               </div>
 
               {/* Filter Information */}
-              {details.request.applyFilter && details.request.applyFilter !== 'None' && (
-                <div className="pt-4 border-t border-slate-700">
-                  <label className="text-sm font-medium text-slate-400">
-                    Applied Filter
-                  </label>
-                  <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-butter-yellow/20 text-butter-yellow rounded-full text-sm">
-                    <Filter className="h-3 w-3" />
-                    {details.request.applyFilter}
+              {details.request.applyFilter &&
+                details.request.applyFilter !== 'None' && (
+                  <div className="pt-4 border-t border-slate-700">
+                    <label className="text-sm font-medium text-slate-400">
+                      Applied Filter
+                    </label>
+                    <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-butter-yellow/20 text-butter-yellow rounded-full text-sm">
+                      <Filter className="h-3 w-3" />
+                      {details.request.applyFilter}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         </div>
@@ -226,18 +268,24 @@ export default function PhotoEditorDetailsView({ details }: Props) {
 
             <div>
               <label className="text-slate-400">Quality Enhancement</label>
-              <p className="text-slate-200">{details.request.enhanceQuality ? 'Applied' : 'Not Applied'}</p>
+              <p className="text-slate-200">
+                {details.request.enhanceQuality ? 'Applied' : 'Not Applied'}
+              </p>
             </div>
 
             <div>
               <label className="text-slate-400">Source Image</label>
-              <p className="text-slate-200 font-mono text-xs">{details.request.sourceImageKey}</p>
+              <p className="text-slate-200 font-mono text-xs">
+                {details.request.sourceImageKey}
+              </p>
             </div>
 
             {details.result?.editedImageKey && (
               <div>
                 <label className="text-slate-400">Result Image</label>
-                <p className="text-slate-200 font-mono text-xs">{details.result.editedImageKey}</p>
+                <p className="text-slate-200 font-mono text-xs">
+                  {details.result.editedImageKey}
+                </p>
               </div>
             )}
           </div>

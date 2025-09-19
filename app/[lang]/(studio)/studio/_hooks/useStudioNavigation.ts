@@ -210,11 +210,11 @@ export function useStudioNavigation(lang: string) {
 
     // Progressive preloading with priority levels
     const preloadSchedule = [
-      { tools: ['digital-goods'], delay: 0 },      // Critical: Load immediately
-      { tools: ['archive'], delay: 200 },          // High: Load very quickly
-      { tools: ['stylist'], delay: 500 },          // Medium: Load after initial paint
+      { tools: ['digital-goods'], delay: 0 }, // Critical: Load immediately
+      { tools: ['archive'], delay: 200 }, // High: Load very quickly
+      { tools: ['stylist'], delay: 500 }, // Medium: Load after initial paint
       { tools: ['virtual-casting'], delay: 1000 }, // Medium: Load after user settles
-      { tools: ['butter-cover', 'fanmeeting-studio'], delay: 2000 } // Low: Load in background
+      { tools: ['butter-cover', 'fanmeeting-studio'], delay: 2000 }, // Low: Load in background
     ];
 
     const timeouts: NodeJS.Timeout[] = [];

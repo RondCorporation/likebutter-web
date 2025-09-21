@@ -1,216 +1,130 @@
 import { VirtualCastingDetails } from '@/types/task';
-import { Image, Sparkles, Clock, FileText, Download, Zap } from 'lucide-react';
+import { Wand2, Star, Film, Sparkles } from 'lucide-react';
+import InfoCard from '../ui/InfoCard';
+import ParameterBadge from '../ui/ParameterBadge';
+import ImageDisplayCard from '../ui/ImageDisplayCard';
+import DetailsModal from '../ui/DetailsModal';
 
 interface Props {
   details?: VirtualCastingDetails;
+  onClose?: () => void;
 }
 
-export default function VirtualCastingDetailsView({ details }: Props) {
+export default function VirtualCastingDetailsView({ details, onClose }: Props) {
   if (!details) {
-    return <p className="text-slate-400">No details available</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+      </div>
+    );
   }
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  const getCharacterName = (style: string) => {
+    const characterNames: { [key: string]: string } = {
+      ELSA: '겨울왕국 엘사',
+      ANNA: '겨울왕국 안나',
+      BELLE: '미녀와 야수 벨',
+      ARIEL: '인어공주 에리얼',
+      MOANA: '모아나',
+      RAPUNZEL: '라푼젤',
+      MULAN: '뮬란',
+      TIANA: '공주와 개구리 티아나',
+      MERIDA: '메리다',
+      POCAHONTAS: '포카혼타스',
+      JASMINE: '알라딘 자스민',
+      CINDERELLA: '신데렐라',
+      AURORA: '잠자는 숲속의 미녀 오로라',
+      SNOW_WHITE: '백설공주',
+    };
+    return characterNames[style] || style;
   };
 
-  const formatExecutionTime = (seconds: number) => {
-    return `${seconds.toFixed(2)}초`;
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Request Details */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Sparkles className="h-5 w-5" />
-          Virtual Casting Configuration
-        </h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Sparkles className="h-4 w-4" />
-              스타일
-            </label>
-            <p className="text-slate-200">
-              {details.request.style || 'Not specified'}
-            </p>
+  const content = (
+    <div className="text-studio-text-primary">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 bg-studio-button-primary rounded-lg">
+            <Wand2 className="h-5 w-5 text-studio-header" />
           </div>
+          <h3 className="text-xl font-semibold">가상 캐스팅</h3>
         </div>
-      </div>
-
-      {/* Source Image */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Image className="h-5 w-5" />
-          원본 이미지
-        </h4>
-        <div className="rounded-lg bg-slate-800/50 p-4">
-          <div className="w-full h-64 bg-slate-700 rounded flex items-center justify-center">
-            {details.request.idolImageUrl ? (
-              <img
-                src={details.request.idolImageUrl}
-                alt="원본 이미지"
-                className="w-full h-full object-cover rounded"
-              />
-            ) : (
-              <span className="text-slate-400">원본 이미지 미리보기</span>
-            )}
-          </div>
-          {details.request.idolImageKey && (
-            <p className="text-xs text-slate-500 mt-2 font-mono">
-              Key: {details.request.idolImageKey}
-            </p>
+        <div className="flex flex-wrap gap-2">
+          {details.request.style && (
+            <ParameterBadge
+              label="캐릭터"
+              value={getCharacterName(details.request.style)}
+              variant="accent"
+            />
           )}
         </div>
       </div>
 
-      {/* Results */}
-      {details.result && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-            <Download className="h-5 w-5" />
-            변환 결과
-          </h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            <div className="space-y-4">
-              {/* Before/After Comparison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">
-                    원본
-                  </h5>
-                  <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center">
-                    {details.request.idolImageUrl ? (
-                      <img
-                        src={details.request.idolImageUrl}
-                        alt="원본 이미지"
-                        className="w-full h-full object-cover rounded"
-                      />
-                    ) : (
-                      <span className="text-slate-400 text-sm">
-                        원본 이미지
-                      </span>
-                    )}
-                  </div>
-                </div>
+      {/* Main Content - Side by Side Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Before Image */}
+        {details.request.idolImageUrl && (
+          <ImageDisplayCard
+            title="원본 이미지"
+            subtitle="캐릭터로 변환할 기본 이미지"
+            imageUrl={details.request.idolImageUrl}
+            alt="업로드한 원본 이미지"
+          />
+        )}
 
-                <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">
-                    변환 결과
-                  </h5>
-                  <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center border-2 border-butter-yellow/30">
-                    {details.result.imageUrl ? (
-                      <img
-                        src={details.result.imageUrl}
-                        alt="변환된 이미지"
-                        className="w-full h-full object-cover rounded"
-                      />
-                    ) : (
-                      <span className="text-slate-400 text-sm">변환 결과</span>
-                    )}
-                  </div>
-                  {details.result.imageKey && (
-                    <p className="text-xs text-slate-500 mt-1 font-mono">
-                      {details.result.imageKey}
-                    </p>
-                  )}
-                </div>
+        {/* After Image */}
+        {details.result?.imageUrl && (
+          <ImageDisplayCard
+            title="변환된 결과"
+            subtitle={`${getCharacterName(details.request.style)} 캐릭터로 변환`}
+            imageUrl={details.result.imageUrl}
+            alt="캐릭터로 변환된 이미지"
+          />
+        )}
+      </div>
+
+      {/* Character Info Card */}
+      {details.request.style && (
+        <div className="mt-6">
+          <InfoCard title="캐릭터 정보">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-studio-border rounded-lg">
+                <Film className="h-6 w-6 text-studio-text-secondary" />
               </div>
-
-              {/* Applied Settings Summary */}
-              <div className="pt-4 border-t border-slate-700">
-                <h5 className="text-sm font-medium text-slate-400 mb-3">
-                  적용된 설정
+              <div className="flex-1">
+                <h5 className="font-medium text-studio-text-primary mb-1">
+                  {getCharacterName(details.request.style)}
                 </h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="text-slate-400">사용된 키워드</div>
-                    <div className="text-slate-200 font-medium">
-                      {details.result.styleUsed}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-slate-400">파일명</div>
-                    <div className="text-slate-200 font-mono text-xs">
-                      {details.result.filename}
-                    </div>
-                  </div>
-                </div>
+                <p className="text-sm text-studio-text-secondary">
+                  AI가 이 캐릭터의 특징을 분석하여 자연스럽게 변환했습니다.
+                </p>
               </div>
-
-              {/* Prompt Information */}
-              {details.result.promptUsed && (
-                <div className="pt-4 border-t border-slate-700">
-                  <label className="text-sm font-medium text-slate-400 mb-2 block">
-                    사용된 프롬프트
-                  </label>
-                  <div className="bg-slate-700/50 rounded-lg p-3">
-                    <p className="text-slate-200 text-sm leading-relaxed">
-                      {details.result.promptUsed}
-                    </p>
-                  </div>
-                </div>
-              )}
+              <div className="flex items-center gap-1">
+                <Star className="h-4 w-4 text-butter-yellow" />
+                <span className="text-sm font-medium text-studio-text-primary">
+                  AI 변환
+                </span>
+              </div>
             </div>
-          </div>
+          </InfoCard>
         </div>
       )}
 
-      {/* Processing Information */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Zap className="h-5 w-5" />
-          처리 정보
-        </h4>
-        <div className="rounded-lg bg-slate-800/50 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <label className="text-slate-400 flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                처리 시간
-              </label>
-              <p className="text-slate-200">
-                {details.result
-                  ? formatExecutionTime(details.result.executionTime)
-                  : 'N/A'}
-              </p>
-            </div>
-
-            <div>
-              <label className="text-slate-400">파일 크기</label>
-              <p className="text-slate-200">
-                {details.result
-                  ? formatFileSize(details.result.fileSize)
-                  : 'N/A'}
-              </p>
-            </div>
-
-            <div>
-              <label className="text-slate-400">변환 타입</label>
-              <p className="text-slate-200">Virtual Casting</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Error Information */}
+      {/* Error State */}
       {details.error && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-red-400">
-            <FileText className="h-5 w-5" />
-            오류 정보
-          </h4>
-          <div className="rounded-lg bg-red-900/20 border border-red-500/30 p-4">
-            <p className="text-red-300">{details.error}</p>
+        <div className="mt-6">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+            <h4 className="text-red-400 font-medium mb-2">변환 실패</h4>
+            <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>
       )}
     </div>
+  );
+
+  return onClose ? (
+    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+  ) : (
+    content
   );
 }

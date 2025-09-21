@@ -1,168 +1,98 @@
 import { DigitalGoodsDetails } from '@/types/task';
-import { Image, Download, Palette, Type } from 'lucide-react';
+import { Palette, Sparkles } from 'lucide-react';
+import InfoCard from '../ui/InfoCard';
+import ParameterBadge from '../ui/ParameterBadge';
+import ImageDisplayCard from '../ui/ImageDisplayCard';
+import DetailsModal from '../ui/DetailsModal';
 
 interface Props {
   details?: DigitalGoodsDetails;
+  onClose?: () => void;
 }
 
-export default function DigitalGoodsDetailsView({ details }: Props) {
+export default function DigitalGoodsDetailsView({ details, onClose }: Props) {
   if (!details) {
-    return <p className="text-slate-400">No details available</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+      </div>
+    );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Request Details */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Palette className="h-5 w-5" />
-          Digital Goods Configuration
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
-          {details.request.style && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Style
-              </label>
-              <p className="text-slate-200 capitalize">
-                {details.request.style}
-              </p>
-            </div>
-          )}
+  const getStyleName = (style: string) => {
+    const styleNames: { [key: string]: string } = {
+      GHIBLI: '지브리 스타일',
+      PIXEL_ART: '픽셀 아트',
+      ANIMATION: '애니메이션',
+      CARTOON: '카툰',
+      SKETCH: '스케치',
+      GRADUATION_PHOTO: '졸업사진',
+      LEGO: '레고',
+      STICKER: '스티커',
+      FIGURE: '피규어',
+    };
+    return styleNames[style] || style;
+  };
 
-          {details.request.imageKey && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Source Image Key
-              </label>
-              <p className="text-slate-200 text-xs font-mono">
-                {details.request.imageKey}
-              </p>
-            </div>
+  const content = (
+    <div className="text-studio-text-primary">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 bg-studio-button-primary rounded-lg">
+            <Palette className="h-5 w-5 text-studio-header" />
+          </div>
+          <h3 className="text-xl font-semibold">디지털 굿즈 생성</h3>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {details.request.style && (
+            <ParameterBadge
+              label="스타일"
+              value={getStyleName(details.request.style)}
+              variant="accent"
+            />
           )}
         </div>
       </div>
 
-      {/* Source Image */}
-      {details.request.imageUrl && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-            <Image className="h-5 w-5" />
-            Source Image
-          </h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            <img
-              src={details.request.imageUrl}
-              alt="Source image"
-              className="max-w-full h-auto rounded"
-            />
-          </div>
-        </div>
-      )}
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Before Image */}
+        {details.request.imageUrl && (
+          <ImageDisplayCard
+            title="원본 이미지"
+            subtitle="업로드한 원본 이미지"
+            imageUrl={details.request.imageUrl}
+            alt="업로드한 원본 이미지"
+          />
+        )}
 
-      {/* Results */}
-      {details.result && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-            <Download className="h-5 w-5" />
-            Generated Digital Goods
-          </h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            <div className="space-y-4">
-              {/* Result Image */}
-              {details.result.imageUrl && (
-                <div>
-                  <img
-                    src={details.result.imageUrl}
-                    alt="Generated digital goods"
-                    className="max-w-full h-auto rounded"
-                  />
-                </div>
-              )}
+        {/* After Image */}
+        {details.result?.imageUrl && (
+          <ImageDisplayCard
+            title="생성된 결과"
+            subtitle={`${getStyleName(details.request.style)} 스타일로 변환`}
+            imageUrl={details.result.imageUrl}
+            alt="생성된 디지털 굿즈"
+          />
+        )}
+      </div>
 
-              {/* File Information */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-700">
-                {details.result.filename && (
-                  <div>
-                    <label className="text-sm font-medium text-slate-400">
-                      Filename
-                    </label>
-                    <p className="text-slate-200">{details.result.filename}</p>
-                  </div>
-                )}
-
-                {details.result.fileSize && (
-                  <div>
-                    <label className="text-sm font-medium text-slate-400">
-                      File Size
-                    </label>
-                    <p className="text-slate-200">
-                      {(details.result.fileSize / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                  </div>
-                )}
-
-                {details.result.executionTime && (
-                  <div>
-                    <label className="text-sm font-medium text-slate-400">
-                      Execution Time
-                    </label>
-                    <p className="text-slate-200">
-                      {details.result.executionTime.toFixed(1)}s
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Style Information */}
-              {details.result.style && (
-                <div className="pt-4 border-t border-slate-700">
-                  <label className="text-sm font-medium text-slate-400">
-                    Applied Style
-                  </label>
-                  <p className="text-slate-200 capitalize">
-                    {details.result.style}
-                  </p>
-                </div>
-              )}
-
-              {/* Prompt Used */}
-              {details.result.promptUsed && (
-                <div className="pt-4 border-t border-slate-700">
-                  <label className="text-sm font-medium text-slate-400">
-                    Final Prompt Used
-                  </label>
-                  <p className="text-slate-200 text-sm bg-slate-700/50 p-3 rounded mt-2">
-                    {details.result.promptUsed}
-                  </p>
-                </div>
-              )}
-
-              {/* Download Link */}
-              <div className="pt-4 border-t border-slate-700">
-                <a
-                  href={details.result.imageUrl}
-                  download={details.result.filename}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-butter-yellow text-black rounded hover:bg-butter-orange transition-colors"
-                >
-                  <Download className="h-4 w-4" />
-                  Download Result
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Error Information */}
+      {/* Error State */}
       {details.error && (
-        <div>
-          <h4 className="mb-3 font-semibold text-red-400">Error Details</h4>
-          <div className="rounded-lg bg-red-900/20 border border-red-500/30 p-4">
-            <p className="text-red-300">{details.error}</p>
+        <div className="mt-6">
+          <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+            <h4 className="text-red-400 font-medium mb-2">생성 실패</h4>
+            <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>
       )}
     </div>
+  );
+
+  return onClose ? (
+    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+  ) : (
+    content
   );
 }

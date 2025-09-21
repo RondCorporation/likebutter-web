@@ -49,37 +49,39 @@ export default function TaskDetailsModal({
     }
   }, [initialTask]);
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-2xl rounded-lg bg-neutral-900 border border-white/10 text-white overflow-hidden shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center p-4 border-b border-white/10">
-          <h2 className="text-lg font-semibold">
-            Task Details (ID: {initialTask.taskId})
-          </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-white">
-            <X size={20} />
-          </button>
-        </div>
-        <div className="p-6 max-h-[70vh] overflow-y-auto">
-          {isLoading ? (
-            <div className="flex justify-center items-center py-10">
-              <LoaderCircle size={32} className="animate-spin text-accent" />
-            </div>
-          ) : error ? (
-            <div className="text-center text-red-400 py-10">
-              <p>{error}</p>
-            </div>
-          ) : (
-            displayTask && <TaskDetailsView task={displayTask} />
-          )}
+  if (isLoading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8">
+          <div className="flex flex-col items-center gap-4">
+            <LoaderCircle size={32} className="animate-spin text-studio-button-primary" />
+            <p className="text-studio-text-primary text-sm">상세 정보를 불러오는 중...</p>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      >
+        <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8 mx-4 max-w-md">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-studio-text-primary">오류 발생</h3>
+            <button onClick={onClose} className="text-studio-text-secondary hover:text-studio-text-primary">
+              <X size={20} />
+            </button>
+          </div>
+          <p className="text-red-400 text-sm">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return displayTask ? (
+    <TaskDetailsView task={displayTask} onClose={onClose} />
+  ) : null;
 }

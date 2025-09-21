@@ -8,13 +8,11 @@ import DetailsModal from '../ui/DetailsModal';
 interface Props {
   details?: FanmeetingStudioDetails;
   onClose?: () => void;
-  actionButtons?: React.ReactNode;
 }
 
 export default function FanmeetingStudioDetailsView({
   details,
   onClose,
-  actionButtons,
 }: Props) {
   if (!details) {
     return (
@@ -122,7 +120,7 @@ export default function FanmeetingStudioDetailsView({
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose} actionButtons={actionButtons}>{content}</DetailsModal>
+    <DetailsModal onClose={onClose}>{content}</DetailsModal>
   ) : (
     content
   );

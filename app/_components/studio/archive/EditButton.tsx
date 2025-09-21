@@ -33,11 +33,11 @@ export default function EditButton({ task, onEditSuccess }: Props) {
 
     try {
       const response = await canEditTask(task.taskId, task.actionType);
-      if (response.success) {
+      if (response.data !== undefined) {
         setCanEdit(response.data);
       } else {
         setCanEdit(false);
-        setError(response.msg || 'Failed to check edit availability');
+        setError('Failed to check edit availability');
       }
     } catch (error) {
       console.error('Error checking edit availability:', error);

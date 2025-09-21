@@ -8,10 +8,9 @@ import DetailsModal from '../ui/DetailsModal';
 interface Props {
   details?: VirtualCastingDetails;
   onClose?: () => void;
-  actionButtons?: React.ReactNode;
 }
 
-export default function VirtualCastingDetailsView({ details, onClose, actionButtons }: Props) {
+export default function VirtualCastingDetailsView({ details, onClose }: Props) {
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
@@ -124,7 +123,7 @@ export default function VirtualCastingDetailsView({ details, onClose, actionButt
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose} actionButtons={actionButtons}>{content}</DetailsModal>
+    <DetailsModal onClose={onClose}>{content}</DetailsModal>
   ) : (
     content
   );

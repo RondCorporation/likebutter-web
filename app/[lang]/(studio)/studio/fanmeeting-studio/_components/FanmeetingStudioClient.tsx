@@ -1,17 +1,19 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { HelpCircle, Upload, Download, Loader2, Plus } from 'lucide-react';
+import { HelpCircle, Upload, Download, Loader2, Plus, Edit } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import {
   createFanmeetingStudioTask,
   FanmeetingStudioRequest,
+  editTask,
 } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
+import EditRequestPopup from '@/components/ui/EditRequestPopup';
 
 interface FanmeetingFormData {
   backgroundPrompt: string;
@@ -25,12 +27,14 @@ interface FanmeetingStudioClientProps {
 export interface FanmeetingStudioClientRef {
   handleGenerate: () => void;
   handleDownload: () => void;
+  handleEdit: () => void;
   isProcessing: boolean;
   isPolling: boolean;
   resultImage: string | null;
   idolFile: File | null;
   userFile: File | null;
   showMobileResult: boolean;
+  isEditLoading: boolean;
 }
 
 const FanmeetingStudioClient = forwardRef<
@@ -46,6 +50,8 @@ const FanmeetingStudioClient = forwardRef<
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [showMobileResult, setShowMobileResult] = useState(false);
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [isEditLoading, setIsEditLoading] = useState(false);
 
   const { taskData, isPolling, startPolling } = useTaskPolling({
     onCompleted: (result) => {
@@ -67,14 +73,16 @@ const FanmeetingStudioClient = forwardRef<
     () => ({
       handleGenerate,
       handleDownload,
+      handleEdit: () => setIsEditPopupOpen(true),
       isProcessing,
       isPolling,
       resultImage,
       idolFile,
       userFile,
       showMobileResult,
+      isEditLoading,
     }),
-    [isProcessing, isPolling, resultImage, idolFile, userFile, showMobileResult]
+    [isProcessing, isPolling, resultImage, idolFile, userFile, showMobileResult, isEditLoading]
   );
 
   const handleFileUpload = (file: File, type: 'idol' | 'user') => {
@@ -152,6 +160,33 @@ const FanmeetingStudioClient = forwardRef<
     } catch (error) {
       console.error('Download failed:', error);
       toast.error('다운로드에 실패했습니다.');
+    }
+  };
+
+  const handleEditRequest = async (editRequest: string) => {
+    if (!taskData || !taskData.taskId) {
+      toast.error('원본 작업을 찾을 수 없습니다.');
+      return;
+    }
+
+    setIsEditLoading(true);
+    setIsEditPopupOpen(false);
+
+    try {
+      const response = await editTask(taskData.taskId, 'FANMEETING_STUDIO', editRequest);
+
+      if (response.data) {
+        toast.success('수정 요청이 전송되었습니다!');
+        // 새로운 edit task에 대해 폴링 시작
+        startPolling(response.data.taskId);
+      } else {
+        toast.error('수정 요청에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Edit request failed:', error);
+      toast.error('수정 요청에 실패했습니다.');
+    } finally {
+      setIsEditLoading(false);
     }
   };
 
@@ -236,7 +271,10 @@ const FanmeetingStudioClient = forwardRef<
         beforeImage={beforeImage}
         afterImage={resultImage}
         onDownload={handleDownload}
-        showEditButton={false}
+        onEdit={() => setIsEditPopupOpen(true)}
+        showEditButton={true}
+        editButtonText="수정하기"
+        isEditLoading={isEditLoading}
       />
     );
   }
@@ -261,15 +299,27 @@ const FanmeetingStudioClient = forwardRef<
               textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
             />
           ) : (
-            <button
-              onClick={handleDownload}
-              className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
-            >
-              <Download className="w-4 h-4 mr-1" />
-              <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                저장하기
-              </div>
-            </button>
+            <>
+              <StudioButton
+                text={isEditLoading ? '수정중...' : '수정하기'}
+                onClick={() => setIsEditPopupOpen(true)}
+                disabled={isEditLoading}
+                loading={isEditLoading}
+                creditCost={3}
+                icon={<Edit className="w-4 h-4 text-black" />}
+                className="px-3 md:px-5 py-2.5 h-[38px] text-xs md:text-sm"
+                textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
+              />
+              <button
+                onClick={handleDownload}
+                className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
+              >
+                <Download className="w-4 h-4 mr-1" />
+                <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
+                  저장하기
+                </div>
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -510,6 +560,13 @@ const FanmeetingStudioClient = forwardRef<
         isVisible={isProcessing || isPolling}
         title="팬미팅 사진 생성중"
         description="잠시 기다리시면 결과가 나옵니다"
+      />
+
+      <EditRequestPopup
+        isOpen={isEditPopupOpen}
+        onClose={() => setIsEditPopupOpen(false)}
+        onEditRequest={handleEditRequest}
+        isLoading={isEditLoading}
       />
     </div>
   );

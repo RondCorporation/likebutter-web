@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { HelpCircle, Upload, Download, Loader2, X } from 'lucide-react';
+import { HelpCircle, Upload, Download, Loader2, X, Edit } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { createStylistTask, StylistRequest } from '@/app/_lib/apis/task.api';
+import { createStylistTask, StylistRequest, editTask } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
+import EditRequestPopup from '@/components/ui/EditRequestPopup';
 
 interface StylistFormData {
   mode: 'text' | 'image';
@@ -52,6 +53,8 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
     const [isProcessing, setIsProcessing] = useState(false);
     const [resultImage, setResultImage] = useState<string | null>(null);
     const [showMobileResult, setShowMobileResult] = useState(false);
+    const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+    const [isEditLoading, setIsEditLoading] = useState(false);
     const [additionalImagePreviews, setAdditionalImagePreviews] = useState<{
       [key: string]: string;
     }>({});
@@ -178,6 +181,33 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       } catch (error) {
         console.error('Download failed:', error);
         toast.error('다운로드에 실패했습니다.');
+      }
+    };
+
+    const handleEditRequest = async (editRequest: string) => {
+      if (!taskData || !taskData.taskId) {
+        toast.error('원본 작업을 찾을 수 없습니다.');
+        return;
+      }
+
+      setIsEditLoading(true);
+      setIsEditPopupOpen(false);
+
+      try {
+        const response = await editTask(taskData.taskId, 'STYLIST', editRequest);
+
+        if (response.data) {
+          toast.success('수정 요청이 전송되었습니다!');
+          // 새로운 edit task에 대해 폴링 시작
+          startPolling(response.data.taskId);
+        } else {
+          toast.error('수정 요청에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Edit request failed:', error);
+        toast.error('수정 요청에 실패했습니다.');
+      } finally {
+        setIsEditLoading(false);
       }
     };
 
@@ -323,7 +353,10 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
           beforeImage={previewUrl || '/placeholder-image.png'}
           afterImage={resultImage}
           onDownload={handleDownload}
-          showEditButton={false}
+          onEdit={() => setIsEditPopupOpen(true)}
+          showEditButton={true}
+          editButtonText="수정하기"
+          isEditLoading={isEditLoading}
         />
       );
     }
@@ -566,6 +599,13 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
           isVisible={isProcessing || isPolling}
           title="스타일링 중"
           description="잠시 기다리시면 결과가 나옵니다"
+        />
+
+        <EditRequestPopup
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          onEditRequest={handleEditRequest}
+          isLoading={isEditLoading}
         />
       </div>
     );

@@ -28,11 +28,11 @@ export default function EditTaskModal({ task, isOpen, onClose, onSuccess }: Prop
 
     try {
       const response = await editTask(task.taskId, task.actionType, editPrompt.trim());
-      if (response.success && response.data) {
+      if (response.data) {
         onSuccess(response.data.taskId);
         handleClose();
       } else {
-        setError(response.msg || '수정 요청 중 오류가 발생했습니다.');
+        setError('수정 요청 중 오류가 발생했습니다.');
       }
     } catch (error) {
       console.error('Edit task error:', error);

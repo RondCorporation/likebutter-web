@@ -5,27 +5,14 @@ import FanmeetingStudioDetailsView from './fanmeeting-studio/FanmeetingStudioDet
 import PhotoEditorDetailsView from './photo-editor/PhotoEditorDetailsView';
 import StylistDetailsView from './stylist/StylistDetailsView';
 import VirtualCastingDetailsView from './virtual-casting/VirtualCastingDetailsView';
-import EditButton from './EditButton';
 
 export default function TaskDetailsView({
   task,
   onClose,
-  onEditSuccess,
 }: {
   task: Task;
   onClose?: () => void;
-  onEditSuccess?: (newTaskId: number) => void;
 }) {
-
-  const editButton = (
-    <EditButton
-      task={task}
-      onEditSuccess={(newTaskId: number) => {
-        onEditSuccess?.(newTaskId);
-        onClose?.(); // 수정 성공 시 모달 닫기
-      }}
-    />
-  );
   switch (task.actionType) {
     case 'BUTTER_COVER':
       return (
@@ -33,21 +20,35 @@ export default function TaskDetailsView({
       );
     case 'DIGITAL_GOODS':
       return (
-        <DigitalGoodsDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />
+        <DigitalGoodsDetailsView details={task.details} onClose={onClose} />
       );
     case 'FANMEETING_STUDIO':
       return (
-        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />
+        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
       );
     case 'PHOTO_EDITOR':
       return (
         <PhotoEditorDetailsView details={task.details} onClose={onClose} />
       );
     case 'STYLIST':
-      return <StylistDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />;
+      return <StylistDetailsView details={task.details} onClose={onClose} />;
     case 'VIRTUAL_CASTING':
       return (
-        <VirtualCastingDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />
+        <VirtualCastingDetailsView details={task.details} onClose={onClose} />
+      );
+    case 'DIGITAL_GOODS_EDIT':
+      return (
+        <DigitalGoodsDetailsView details={task.details} onClose={onClose} />
+      );
+    case 'FANMEETING_STUDIO_EDIT':
+      return (
+        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
+      );
+    case 'STYLIST_EDIT':
+      return <StylistDetailsView details={task.details} onClose={onClose} />;
+    case 'VIRTUAL_CASTING_EDIT':
+      return (
+        <VirtualCastingDetailsView details={task.details} onClose={onClose} />
       );
     case 'DREAM_CONTI':
       return (

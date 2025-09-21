@@ -6,6 +6,7 @@ import {
   createDigitalGoodsTask,
   DigitalGoodsRequest,
   DigitalGoodsStyle,
+  editTask,
 } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
 import { toast } from 'react-hot-toast';
@@ -180,19 +181,28 @@ const DigitalGoodsClient = forwardRef<
   }, []);
 
   const handleEditRequest = async (editRequest: string) => {
+    if (!taskData || !taskData.taskId) {
+      toast.error('원본 작업을 찾을 수 없습니다.');
+      return;
+    }
+
     setIsEditLoading(true);
+    setIsEditPopupOpen(false);
+
     try {
-      // TODO: API 구현 후 실제 수정 요청 로직 추가
-      console.log('Edit request:', editRequest);
-      console.log('Original image:', resultImage);
-      console.log('Original form data:', formData);
+      const response = await editTask(
+        taskData.taskId,
+        'DIGITAL_GOODS',
+        editRequest
+      );
 
-      // 임시로 성공 메시지 표시
-      toast.success('수정 요청이 전송되었습니다!');
-
-      // 실제 구현 시에는 여기서 새로운 task를 생성하고 폴링을 시작해야 함
-      // const response = await updateDigitalGoodsTask(taskId, editRequest);
-      // startPolling(response.data.taskId);
+      if (response.data) {
+        toast.success('수정 요청이 전송되었습니다!');
+        // 새로운 edit task에 대해 폴링 시작
+        startPolling(response.data.taskId);
+      } else {
+        toast.error('수정 요청에 실패했습니다.');
+      }
     } catch (error) {
       console.error('Edit request failed:', error);
       toast.error('수정 요청에 실패했습니다.');

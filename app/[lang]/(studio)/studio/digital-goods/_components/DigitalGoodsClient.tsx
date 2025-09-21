@@ -14,7 +14,7 @@ import EditRequestPopup from '@/components/ui/EditRequestPopup';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
-import Image from 'next/image';
+import StudioButton from '../../_components/ui/StudioButton';
 
 interface DigitalGoodsClientProps {
   formData?: {
@@ -226,8 +226,10 @@ const DigitalGoodsClient = forwardRef<
     return true;
   };
 
-  // Mobile result view
-  if (showMobileResult && resultImage) {
+  // Mobile result view - 모바일에서만 전체 화면 전환
+  // PC에서는 이 조건을 실행하지 않고 메인 레이아웃을 유지
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  if (showMobileResult && resultImage && isMobile) {
     return (
       <>
         <BeforeAfterToggle
@@ -259,48 +261,26 @@ const DigitalGoodsClient = forwardRef<
         {/* PC에서만 표시되는 버튼들 */}
         <div className="items-center gap-2 hidden md:flex">
           {resultImage ? (
-            <button
+            <StudioButton
+              text={isEditLoading ? '수정중...' : '수정하기'}
               onClick={() => setIsEditPopupOpen(true)}
               disabled={isEditLoading}
-              className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isEditLoading && (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              )}
-              {!isEditLoading && <Edit className="w-4 h-4 mr-1" />}
-              <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                {isEditLoading ? '수정중...' : '수정하기'}
-              </div>
-            </button>
+              loading={isEditLoading}
+              creditCost={3}
+              icon={<Edit className="w-4 h-4 text-black" />}
+              className="px-3 md:px-5 py-2.5 h-[38px] text-xs md:text-sm"
+              textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
+            />
           ) : (
-            <button
+            <StudioButton
+              text={isGenerating || isPolling ? '생성중...' : '생성하기'}
               onClick={handleGenerate}
               disabled={isGenerating || isPolling || !isFormValid()}
-              className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {(isGenerating || isPolling) && (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              )}
-              <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                {isGenerating || isPolling ? '생성중...' : '굿즈생성'}
-              </div>
-
-              {/* 크레딧 정보 - PC 버튼에도 표시 */}
-              {!(isGenerating || isPolling) && (
-                <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
-                  <Image
-                    src="/credit.svg"
-                    alt="Credit"
-                    width={12}
-                    height={12}
-                    className="flex-shrink-0"
-                  />
-                  <span className="text-xs font-medium text-black">
-                    -{CREDIT_COSTS.DIGITAL_GOODS}
-                  </span>
-                </div>
-              )}
-            </button>
+              loading={isGenerating || isPolling}
+              creditCost={CREDIT_COSTS.DIGITAL_GOODS}
+              className="px-3 md:px-5 py-2.5 h-[38px] text-xs md:text-sm"
+              textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
+            />
           )}
 
           {resultImage && (
@@ -310,7 +290,7 @@ const DigitalGoodsClient = forwardRef<
             >
               <Download className="w-4 h-4 mr-1" />
               <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                다운로드
+                저장하기
               </div>
             </button>
           )}
@@ -439,15 +419,6 @@ const DigitalGoodsClient = forwardRef<
                     toast.error('이미지 로드에 실패했습니다.');
                   }}
                 />
-                {resultImage && (
-                  <button
-                    onClick={handleDownload}
-                    className="absolute top-4 right-4 p-2 bg-studio-sidebar/80 hover:bg-studio-sidebar rounded-lg backdrop-blur-sm transition-all duration-200"
-                    title="다운로드"
-                  >
-                    <Download className="w-5 h-5 text-studio-text-primary" />
-                  </button>
-                )}
               </div>
             ) : pollingError ? (
               // 에러 상태

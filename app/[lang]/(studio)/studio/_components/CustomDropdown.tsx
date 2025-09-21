@@ -55,11 +55,11 @@ export default function CustomDropdown({
     <div ref={dropdownRef} className={`studio-dropdown ${className}`}>
       {/* Dropdown Trigger */}
       <div
-        className={`flex ${width} h-[38px] items-center gap-3 px-3 py-2.5 relative rounded border border-solid border-studio-border bg-studio-sidebar cursor-pointer hover:border-studio-button-primary transition-colors`}
+        className={`flex ${width} h-[48px] sm:h-[38px] items-center gap-3 px-3 py-2.5 relative rounded border border-solid border-studio-border bg-studio-sidebar cursor-pointer hover:border-studio-button-primary transition-colors`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2 relative flex-[0_0_auto] self-stretch w-full">
-          <span className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] whitespace-nowrap flex-1">
+          <span className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-secondary text-base sm:text-sm tracking-[0] leading-[19.6px] whitespace-nowrap flex-1">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <ChevronDown

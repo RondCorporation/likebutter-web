@@ -8,9 +8,12 @@ import {
   Music,
   ChevronLeft,
   ChevronRight,
+  MoreHorizontal,
 } from 'lucide-react';
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
+import DeleteConfirmModal from '@/components/studio/archive/DeleteConfirmModal';
+import { deleteTask } from '@/lib/apis/task.api';
 import { Task } from '@/types/task';
 
 interface DropdownProps {
@@ -87,9 +90,11 @@ function Dropdown({
 function ArchiveTaskCard({
   task,
   onClick,
+  onDelete,
 }: {
   task: Task;
   onClick: () => void;
+  onDelete: (task: Task) => void;
 }) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -240,19 +245,32 @@ function ArchiveTaskCard({
   };
 
   return (
-    <div
-      className="flex flex-col items-center gap-3 md:gap-4 cursor-pointer group"
-      onClick={onClick}
-    >
+    <div className="flex flex-col items-center gap-3 md:gap-4 group">
       {/* Card Preview */}
       <div className="relative w-full h-[200px] md:h-[165px] bg-[#4a4a4b] rounded-xl md:rounded-2xl overflow-hidden transition-transform group-hover:scale-105">
-        {renderTaskPreview(task)}
+        <div className="w-full h-full cursor-pointer" onClick={onClick}>
+          {renderTaskPreview(task)}
+        </div>
 
         {/* Action Type badge */}
         <div className="absolute top-3 right-3">
           <div className="px-2 py-1 bg-[#e8fa07] text-[#292c31] text-xs font-medium rounded">
             {getActionTypeLabel(task.actionType)}
           </div>
+        </div>
+
+        {/* Delete button */}
+        <div className="absolute top-3 left-3">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(task);
+            }}
+            className="p-1.5 bg-black/50 hover:bg-red-500/80 text-white rounded-full transition-all opacity-0 group-hover:opacity-100"
+            title="삭제"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
@@ -277,9 +295,12 @@ export default function ArchiveClient() {
     goToPage,
     goToPreviousPage,
     goToNextPage,
+    refetch,
   } = useTaskArchive();
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [pageSizeDropdownOpen, setPageSizeDropdownOpen] = useState(false);
   const [pageSize, setPageSize] = useState(10);
@@ -310,6 +331,31 @@ export default function ArchiveClient() {
 
   const handleCloseModal = () => {
     setSelectedTask(null);
+  };
+
+  const handleDeleteClick = (task: Task) => {
+    setTaskToDelete(task);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!taskToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteTask(taskToDelete.taskId);
+      setTaskToDelete(null);
+      // 목록 새로고침
+      refetch();
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+      // 에러 처리 - 필요시 토스트나 알림 추가
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setTaskToDelete(null);
   };
 
   const handleFilterSelect = (value: string) => {
@@ -430,12 +476,6 @@ export default function ArchiveClient() {
               onSelect={handleFilterSelect}
             />
           )}
-
-          <div className="flex items-center gap-3">
-            <button className="p-2 text-gray-400 hover:text-white transition-colors">
-              <Trash2 className="w-5 h-5" />
-            </button>
-          </div>
         </div>
 
         {/* Content */}
@@ -472,6 +512,7 @@ export default function ArchiveClient() {
                     key={task.taskId}
                     task={task}
                     onClick={() => handleTaskClick(task)}
+                    onDelete={handleDeleteClick}
                   />
                 ))}
               </div>
@@ -587,6 +628,17 @@ export default function ArchiveClient() {
       {/* Task Details Modal */}
       {selectedTask && (
         <TaskDetailsModal task={selectedTask} onClose={handleCloseModal} />
+      )}
+
+      {/* Delete Confirm Modal */}
+      {taskToDelete && (
+        <DeleteConfirmModal
+          task={taskToDelete}
+          isOpen={true}
+          onClose={handleDeleteCancel}
+          onConfirm={handleDeleteConfirm}
+          isDeleting={isDeleting}
+        />
       )}
     </div>
   );

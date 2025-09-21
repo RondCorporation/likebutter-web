@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import CustomDropdown from '../../_components/CustomDropdown';
-import PrimaryButton from '../../_components/ui/PrimaryButton';
+import StudioButton from '../../_components/ui/StudioButton';
 
 interface ArtistSelectionProps {
   onNext: (data: { group: string; artist: string }) => void;
@@ -31,7 +31,7 @@ const artistGroups = [
 ];
 
 const artistMembers = {
-  'BTS': [
+  BTS: [
     { value: 'Jhope', label: 'J-Hope' },
     { value: 'RapMonster', label: 'RM' },
     { value: 'Suga', label: 'Suga' },
@@ -47,7 +47,7 @@ const artistMembers = {
     { value: 'IRENE', label: '아이린' },
     { value: 'YERI', label: '예리' },
   ],
-  'NewJeans': [
+  NewJeans: [
     { value: 'Hyein', label: '혜인' },
     { value: 'Hanni', label: '하니' },
     { value: 'Minji', label: '민지' },
@@ -63,20 +63,20 @@ const artistMembers = {
     { value: 'Changbin', label: '창빈' },
     { value: 'I.N', label: '아이엔' },
   ],
-  'BLACKPINK': [
+  BLACKPINK: [
     { value: 'LISA', label: '리사' },
     { value: 'JENNIE', label: '제니' },
     { value: 'JISOO', label: '지수' },
     { value: 'ROSE', label: '로제' },
   ],
-  'ILLIT': [
+  ILLIT: [
     { value: 'Moka', label: '모카' },
     { value: 'Minju', label: '민주' },
     { value: 'Iroha', label: '이로하' },
     { value: 'Yunah', label: '유나' },
     { value: 'Wonhee', label: '원희' },
   ],
-  'ENHYPEN': [
+  ENHYPEN: [
     { value: 'Heeseung', label: '희승' },
     { value: 'Jay', label: '제이' },
     { value: 'Jake', label: '제이크' },
@@ -85,12 +85,12 @@ const artistMembers = {
     { value: 'Niki', label: '니키' },
     { value: 'Sunoo', label: '선우' },
   ],
-  'EXO': [
+  EXO: [
     { value: 'BAEKHYUN', label: '백현' },
     { value: 'D.O', label: '디오' },
     { value: 'Sehun', label: '세훈' },
   ],
-  'BabyMonster': [
+  BabyMonster: [
     { value: 'Ahyeon', label: '아현' },
     { value: 'RUKA', label: '루카' },
     { value: 'PHARITA', label: '파리타' },
@@ -103,7 +103,7 @@ const artistMembers = {
     { value: 'IMChangkyun', label: '아이엠' },
     { value: 'LeeMinhyuk', label: '민혁' },
   ],
-  'RIIZE': [
+  RIIZE: [
     { value: 'Wonbin', label: '원빈' },
     { value: 'Sungchan', label: '성찬' },
     { value: 'Seunghan', label: '승한' },
@@ -111,7 +111,7 @@ const artistMembers = {
     { value: 'Shotaro', label: '쇼타로' },
     { value: 'Sohee', label: '소희' },
   ],
-  'Seventeen': [
+  Seventeen: [
     { value: 'Dino', label: '디노' },
     { value: 'Joshua', label: '조슈아' },
     { value: 'JeonWonwoo', label: '원우' },
@@ -123,7 +123,7 @@ const artistMembers = {
     { value: 'Woozi', label: '우지' },
     { value: 'Jeonghan', label: '정한' },
   ],
-  'NCT': [
+  NCT: [
     { value: 'Chenle', label: '천러' },
     { value: 'Mark', label: '마크' },
     { value: 'Jaemin', label: '재민' },
@@ -135,27 +135,27 @@ const artistMembers = {
     { value: 'TEN', label: '텐' },
     { value: 'Jaehyun', label: '재현' },
   ],
-  'TXT': [
+  TXT: [
     { value: 'HueningKai', label: '휴닝카이' },
     { value: 'Soobin', label: '수빈' },
     { value: 'Beomgyu', label: '범규' },
     { value: 'Taehyun', label: '태현' },
     { value: 'Yeonjun', label: '연준' },
   ],
-  'TWS': [
+  TWS: [
     { value: 'Jihoon', label: '지훈' },
     { value: 'Youngjae', label: '영재' },
     { value: 'Kyungmin', label: '경민' },
     { value: 'Shinyu', label: '신유' },
     { value: 'Dohoon', label: '도훈' },
   ],
-  'AESPA': [
+  AESPA: [
     { value: 'Karina', label: '카리나' },
     { value: 'Giselle', label: '지젤' },
     { value: 'Ningning', label: '닝닝' },
     { value: 'Winter', label: '윈터' },
   ],
-  'IVE': [
+  IVE: [
     { value: 'Leeseo', label: '이서' },
     { value: 'Liz', label: '리즈' },
     { value: 'Yujin', label: '유진' },
@@ -199,14 +199,16 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
     setSelectedArtist(''); // Reset artist selection when group changes
   };
 
-  const availableArtists = selectedGroup ? artistMembers[selectedGroup as keyof typeof artistMembers] || [] : [];
+  const availableArtists = selectedGroup
+    ? artistMembers[selectedGroup as keyof typeof artistMembers] || []
+    : [];
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 px-6 py-8">
-      <div className="w-full max-w-lg space-y-8">
+    <div className="flex flex-col items-center justify-center flex-1 px-4 sm:px-6 py-6 sm:py-8">
+      <div className="w-full max-w-lg space-y-6 sm:space-y-8">
         <div className="space-y-6">
           <div>
-            <label className="block text-white text-lg font-medium mb-4">
+            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
               아티스트 그룹
             </label>
             <CustomDropdown
@@ -219,22 +221,25 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
           </div>
 
           <div>
-            <label className="block text-white text-lg font-medium mb-4">
+            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
               아티스트 선택
             </label>
             <CustomDropdown
               value={selectedArtist}
               onChange={setSelectedArtist}
-              placeholder={selectedGroup ? "아티스트를 선택하세요" : "먼저 그룹을 선택하세요"}
+              placeholder={
+                selectedGroup
+                  ? '아티스트를 선택하세요'
+                  : '먼저 그룹을 선택하세요'
+              }
               options={availableArtists}
               width="w-full"
             />
           </div>
-
         </div>
 
         <div className="pt-4">
-          <PrimaryButton
+          <StudioButton
             text="다음단계"
             onClick={handleNext}
             className="w-full"

@@ -5,7 +5,7 @@ import StudioLayout from '../../_components/StudioLayout';
 import FanmeetingStudioClient from './FanmeetingStudioClient';
 import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
 import { Loader2, Download } from 'lucide-react';
-import PrimaryButton from '../../_components/ui/PrimaryButton';
+import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface FanmeetingFormData {
@@ -77,10 +77,11 @@ export default function FanmeetingStudioWithSidebar() {
     }
 
     return (
-      <PrimaryButton
+      <StudioButton
         text={isProcessing || isPolling ? '생성중...' : '팬미팅생성'}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
+        loading={isProcessing || isPolling}
         creditCost={
           isProcessing || isPolling ? undefined : CREDIT_COSTS.FANMEETING_STUDIO
         }

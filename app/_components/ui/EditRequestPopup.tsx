@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import BasePopup from './BasePopup';
-import PrimaryButton from '../../[lang]/(studio)/studio/_components/ui/PrimaryButton';
+import StudioButton from '../../[lang]/(studio)/studio/_components/ui/StudioButton';
 
 interface EditRequestPopupProps {
   isOpen: boolean;
@@ -65,10 +65,11 @@ export default function EditRequestPopup({
           >
             취소
           </button>
-          <PrimaryButton
+          <StudioButton
             text={isLoading ? '처리중...' : '수정하기'}
             onClick={handleSubmit}
             disabled={editRequest.trim().length < 10 || isLoading}
+            loading={isLoading}
             className="!flex-1"
           />
         </div>

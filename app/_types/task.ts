@@ -113,27 +113,9 @@ export interface PhotoEditorDetails {
 
 // ButterCover types based on updated API specification
 interface ButterCoverRequestDetails {
-  voiceModel: string;
-  pitchAdjust?: number;
-  separatorModel?: string;
-  outputFormat?: string;
-  saveIntermediate?: boolean;
-  // Advanced AI Cover parameters
-  indexRate?: number;
-  filterRadius?: number;
-  rmsMixRate?: number;
-  protect?: number;
-  f0Method?: string;
-  crepeHopLength?: number;
-  // Reverb parameters
-  reverbRmSize?: number;
-  reverbWet?: number;
-  reverbDry?: number;
-  reverbDamping?: number;
-  // Gain parameters
-  mainGain?: number;
-  instGain?: number;
-  pitchChangeAll?: number;
+  voiceModel: string;              // 필수: AI 보이스 모델명
+  pitchAdjust?: number;            // 선택: 목소리 높낮이 조절 (-12 ~ +12, 기본값: 0)
+  outputFormat?: string;           // 선택: 출력 파일 형식 (mp3/wav, 기본값: "mp3")
   sourceAudioKey: string;
 }
 

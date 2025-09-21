@@ -12,10 +12,10 @@ const steps = [
 
 export default function StepNavigation({ currentStep }: StepNavigationProps) {
   return (
-    <div className="flex items-center justify-center gap-9 py-8">
+    <div className="flex items-center justify-center gap-4 sm:gap-9 py-8">
       {steps.map((step, index) => (
-        <div key={step.number} className="flex items-center gap-3">
-          <div className="flex items-center gap-3">
+        <div key={step.number} className="flex items-center gap-2 sm:gap-3">
+          <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-3">
             <div
               className={`flex items-center justify-center w-7 h-7 rounded-lg text-sm font-medium ${
                 step.number <= currentStep
@@ -26,7 +26,7 @@ export default function StepNavigation({ currentStep }: StepNavigationProps) {
               {step.number}
             </div>
             <span
-              className={`text-lg font-medium ${
+              className={`text-lg sm:text-lg font-medium text-center ${
                 step.number <= currentStep
                   ? 'text-butter-yellow'
                   : 'text-slate-400'
@@ -37,7 +37,7 @@ export default function StepNavigation({ currentStep }: StepNavigationProps) {
           </div>
 
           {index < steps.length - 1 && (
-            <div className="w-9 h-px bg-slate-600 ml-3" />
+            <div className="w-6 sm:w-9 h-px bg-slate-600 ml-3" />
           )}
         </div>
       ))}

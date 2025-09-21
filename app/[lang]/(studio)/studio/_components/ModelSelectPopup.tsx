@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import TabItem from './ui/TabItem';
 import SelectCard from './ui/SelectCard';
 import Badge from './ui/Badge';
-import PrimaryButton from './ui/PrimaryButton';
+import StudioButton from './ui/StudioButton';
 import { useRouter } from 'next/navigation';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 
@@ -231,11 +231,15 @@ export default function ModelSelectPopup({
               </div>
 
               <div
-                className={`relative w-full ${isMobile ? 'h-[300px]' : 'h-[400px]'} rounded-lg overflow-hidden cursor-pointer mb-4`}
+                className={`border border-solid w-full ${isMobile ? 'h-[300px]' : 'h-[400px]'} rounded-md cursor-pointer mb-4 transition-colors relative ${
+                  selectedAudioModel === 'butter-cover'
+                    ? 'border-[#ffd83b] border-2'
+                    : 'border-[#4a4a4b] hover:border-[#6a6a6b]'
+                }`}
                 onClick={() => setSelectedAudioModel('butter-cover')}
               >
                 <div
-                  className="w-full h-full bg-cover bg-center relative"
+                  className="w-full h-full bg-cover bg-center relative rounded-md overflow-hidden"
                   style={{
                     backgroundImage:
                       'url(/studio/model-select/butter-cover.png)',
@@ -244,6 +248,7 @@ export default function ModelSelectPopup({
                   }}
                 >
                   <div className="absolute inset-0 bg-black/20"></div>
+
                   <div className="absolute bottom-6 left-6 text-white z-10">
                     <h2 className="text-2xl font-bold mb-1">
                       AI로 완성된 아이돌 음성
@@ -258,7 +263,7 @@ export default function ModelSelectPopup({
           )}
         </div>
 
-        <PrimaryButton
+        <StudioButton
           text="만들기"
           className="!w-full"
           textClassName="!text-[#4a4a4b]"

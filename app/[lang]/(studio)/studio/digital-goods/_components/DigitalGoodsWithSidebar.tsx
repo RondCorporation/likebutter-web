@@ -6,7 +6,7 @@ import DigitalGoodsClient from './DigitalGoodsClient';
 import DigitalGoodsStyleSidebar from './DigitalGoodsStyleSidebar';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 import { Loader2, Edit } from 'lucide-react';
-import PrimaryButton from '../../_components/ui/PrimaryButton';
+import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 export default function DigitalGoodsWithSidebar() {
@@ -74,10 +74,11 @@ export default function DigitalGoodsWithSidebar() {
     }
 
     return (
-      <PrimaryButton
+      <StudioButton
         text={isGenerating || isPolling ? '생성중...' : '굿즈생성'}
         onClick={handleGenerate}
         disabled={isGenerating || isPolling || !isFormValid()}
+        loading={isGenerating || isPolling}
         creditCost={
           isGenerating || isPolling ? undefined : CREDIT_COSTS.DIGITAL_GOODS
         }

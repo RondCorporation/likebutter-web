@@ -47,115 +47,44 @@ export default function ButterCoverDetailsView({ details }: Props) {
               </p>
             </div>
           )}
-
-          {details.request.separatorModel && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Separator Model
-              </label>
-              <p className="text-slate-200">{details.request.separatorModel}</p>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Advanced Settings */}
-      {(details.request.indexRate !== undefined ||
-        details.request.filterRadius !== undefined ||
-        details.request.rmsMixRate !== undefined ||
-        details.request.protect !== undefined) && (
-        <div>
-          <h4 className="mb-3 font-semibold text-slate-200">
-            Advanced AI Settings
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-slate-800/50 p-4">
-            {details.request.indexRate !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Index Rate
-                </label>
-                <p className="text-slate-200">{details.request.indexRate}</p>
-              </div>
-            )}
-
-            {details.request.filterRadius !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Filter Radius
-                </label>
-                <p className="text-slate-200">{details.request.filterRadius}</p>
-              </div>
-            )}
-
-            {details.request.rmsMixRate !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  RMS Mix Rate
-                </label>
-                <p className="text-slate-200">{details.request.rmsMixRate}</p>
-              </div>
-            )}
-
-            {details.request.protect !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Protect
-                </label>
-                <p className="text-slate-200">{details.request.protect}</p>
-              </div>
-            )}
+      {/* 최적화된 설정 정보 */}
+      <div>
+        <h4 className="mb-3 font-semibold text-slate-200">최적화된 AI 설정</h4>
+        <div className="rounded-lg bg-slate-800/50 p-4">
+          <p className="text-slate-300 text-sm">
+            이 AI 커버는 최고 품질을 위해 전문가가 튜닝한 최적화된 파라미터로 생성되었습니다.
+          </p>
+          <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+            <div>
+              <span className="text-slate-400">Index Rate:</span>
+              <span className="text-slate-200 ml-1">0.75</span>
+            </div>
+            <div>
+              <span className="text-slate-400">Filter Radius:</span>
+              <span className="text-slate-200 ml-1">3</span>
+            </div>
+            <div>
+              <span className="text-slate-400">RMS Mix Rate:</span>
+              <span className="text-slate-200 ml-1">0.25</span>
+            </div>
+            <div>
+              <span className="text-slate-400">Protect:</span>
+              <span className="text-slate-200 ml-1">0.33</span>
+            </div>
+            <div>
+              <span className="text-slate-400">F0 Method:</span>
+              <span className="text-slate-200 ml-1">rmvpe</span>
+            </div>
+            <div>
+              <span className="text-slate-400">Reverb:</span>
+              <span className="text-slate-200 ml-1">최적화됨</span>
+            </div>
           </div>
         </div>
-      )}
-
-      {/* Reverb Settings */}
-      {(details.request.reverbRmSize !== undefined ||
-        details.request.reverbWet !== undefined ||
-        details.request.reverbDry !== undefined ||
-        details.request.reverbDamping !== undefined) && (
-        <div>
-          <h4 className="mb-3 font-semibold text-slate-200">Reverb Settings</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 rounded-lg bg-slate-800/50 p-4">
-            {details.request.reverbRmSize !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Room Size
-                </label>
-                <p className="text-slate-200">{details.request.reverbRmSize}</p>
-              </div>
-            )}
-
-            {details.request.reverbWet !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Wet
-                </label>
-                <p className="text-slate-200">{details.request.reverbWet}</p>
-              </div>
-            )}
-
-            {details.request.reverbDry !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Dry
-                </label>
-                <p className="text-slate-200">{details.request.reverbDry}</p>
-              </div>
-            )}
-
-            {details.request.reverbDamping !== undefined && (
-              <div>
-                <label className="text-sm font-medium text-slate-400">
-                  Damping
-                </label>
-                <p className="text-slate-200">
-                  {details.request.reverbDamping}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      </div>
 
       {/* Results */}
       {details.result && (

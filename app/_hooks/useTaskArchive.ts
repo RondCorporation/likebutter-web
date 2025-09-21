@@ -338,6 +338,10 @@ export function useTaskArchive() {
     dispatch({ type: 'SET_FILTERS', payload: newFilters });
   };
 
+  const refetch = useCallback(() => {
+    fetchArchive(state.page, state.filters);
+  }, [fetchArchive, state.page, state.filters]);
+
   return {
     ...state,
     loadMore,
@@ -346,5 +350,6 @@ export function useTaskArchive() {
     goToPreviousPage,
     goToNextPage,
     setFilters,
+    refetch,
   };
 }

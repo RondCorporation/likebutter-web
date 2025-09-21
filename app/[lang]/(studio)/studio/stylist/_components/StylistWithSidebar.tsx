@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import StudioLayout from '../../_components/StudioLayout';
 import StylistClient from './StylistClient';
 import StylistSidebar from './StylistSidebar';
-import PrimaryButton from '../../_components/ui/PrimaryButton';
+import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface StylistFormData {
@@ -82,10 +82,11 @@ export default function StylistWithSidebar() {
     }
 
     return (
-      <PrimaryButton
+      <StudioButton
         text={isProcessing || isPolling ? '스타일링중...' : '스타일링시작'}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
+        loading={isProcessing || isPolling}
         creditCost={
           isProcessing || isPolling ? undefined : CREDIT_COSTS.STYLIST
         }

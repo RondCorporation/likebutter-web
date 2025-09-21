@@ -13,7 +13,7 @@ import { useTaskPolling } from '@/hooks/useTaskPolling';
 import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
-import Image from 'next/image';
+import StudioButton from '../../_components/ui/StudioButton';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -193,8 +193,10 @@ const VirtualCastingClient = forwardRef<
     return true;
   };
 
-  // Mobile result view
-  if (showMobileResult && resultImage) {
+  // Mobile result view - 모바일에서만 전체 화면 전환
+  // PC에서는 이 조건을 실행하지 않고 메인 레이아웃을 유지
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  if (showMobileResult && resultImage && isMobile) {
     return (
       <BeforeAfterToggle
         beforeImage={previewUrl || '/placeholder-image.png'}
@@ -215,34 +217,15 @@ const VirtualCastingClient = forwardRef<
         {/* PC에서만 표시되는 버튼들 */}
         <div className="items-center gap-2 hidden md:flex">
           {!resultImage ? (
-            <button
+            <StudioButton
+              text={isProcessing ? '생성중...' : '생성하기'}
               onClick={handleGenerate}
               disabled={isProcessing || !isFormValid()}
-              className="inline-flex items-center overflow-hidden rounded-md justify-center px-3 md:px-5 py-2.5 h-[38px] bg-studio-button-primary hover:bg-studio-button-hover active:scale-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isProcessing && (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              )}
-              <div className="text-studio-header text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                {isProcessing ? '생성중...' : '캐스팅생성'}
-              </div>
-
-              {/* 크레딧 정보 - PC 버튼에도 표시 */}
-              {!isProcessing && (
-                <div className="flex items-center gap-1 ml-2 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)]">
-                  <Image
-                    src="/credit.svg"
-                    alt="Credit"
-                    width={12}
-                    height={12}
-                    className="flex-shrink-0"
-                  />
-                  <span className="text-xs font-medium text-black">
-                    -{CREDIT_COSTS.VIRTUAL_CASTING}
-                  </span>
-                </div>
-              )}
-            </button>
+              loading={isProcessing}
+              creditCost={CREDIT_COSTS.VIRTUAL_CASTING}
+              className="px-3 md:px-5 py-2.5 h-[38px] text-xs md:text-sm"
+              textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
+            />
           ) : (
             <button
               onClick={handleDownload}
@@ -250,7 +233,7 @@ const VirtualCastingClient = forwardRef<
             >
               <Download className="w-4 h-4 mr-1" />
               <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                다운로드
+                저장하기
               </div>
             </button>
           )}
@@ -374,13 +357,6 @@ const VirtualCastingClient = forwardRef<
                   alt="Generated virtual casting result"
                   className="w-full h-full object-contain rounded-[20px]"
                 />
-                <button
-                  onClick={handleDownload}
-                  className="absolute top-4 right-4 p-2 bg-studio-sidebar/80 hover:bg-studio-sidebar rounded-lg backdrop-blur-sm transition-all duration-200"
-                  title="다운로드"
-                >
-                  <Download className="w-5 h-5 text-studio-text-primary" />
-                </button>
               </div>
             ) : (
               // 기본 상태

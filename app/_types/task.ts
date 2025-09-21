@@ -20,13 +20,18 @@ export type ActionType =
   | 'FANMEETING_STUDIO'
   | 'PHOTO_EDITOR'
   | 'STYLIST'
-  | 'VIRTUAL_CASTING';
+  | 'VIRTUAL_CASTING'
+  | 'DIGITAL_GOODS_EDIT'
+  | 'FANMEETING_STUDIO_EDIT'
+  | 'STYLIST_EDIT'
+  | 'VIRTUAL_CASTING_EDIT';
 
 // Digital Goods types
 interface DigitalGoodsRequestDetails {
   imageKey?: string;
   imageUrl?: string;
   style: string;
+  editPrompt?: string;
 }
 
 interface DigitalGoodsResultDetails {
@@ -71,6 +76,7 @@ interface FanmeetingStudioRequestDetails {
   situationPrompt: string;
   backgroundPrompt: string;
   customPrompt?: string;
+  editPrompt?: string;
 }
 
 interface FanmeetingStudioResultDetails {
@@ -146,6 +152,7 @@ interface StylistRequestDetails {
   moodImageKey?: string;
   moodImageUrl?: string;
   customPrompt?: string;
+  editPrompt?: string;
 }
 
 interface StylistResultDetails {
@@ -173,6 +180,7 @@ interface VirtualCastingRequestDetails {
   idolImageKey: string;
   idolImageUrl: string;
   style: string;
+  editPrompt?: string;
 }
 
 interface VirtualCastingResultDetails {
@@ -199,12 +207,20 @@ type ActionMap = {
   PHOTO_EDITOR: { details?: PhotoEditorDetails };
   STYLIST: { details?: StylistDetails };
   VIRTUAL_CASTING: { details?: VirtualCastingDetails };
+  DIGITAL_GOODS_EDIT: { details?: DigitalGoodsDetails };
+  FANMEETING_STUDIO_EDIT: { details?: FanmeetingStudioDetails };
+  STYLIST_EDIT: { details?: StylistDetails };
+  VIRTUAL_CASTING_EDIT: { details?: VirtualCastingDetails };
 };
 
 export type Task = {
   taskId: number;
   status: GenerationStatus;
   createdAt: string; // ISO 8601 string format
+  parentTaskId?: number;
+  editSequence?: number;
+  isOriginal?: boolean;
+  isEditTask?: boolean;
 } & {
   [K in ActionType]: { actionType: K } & ActionMap[K];
 }[ActionType];
@@ -250,4 +266,29 @@ export interface TaskStatusResponse {
 export interface TaskImageUrlResponse {
   taskId: number;
   imageUrl: string;
+}
+
+export interface EditTaskRequest {
+  originalTaskId: number;
+  editPrompt: string;
+}
+
+export interface EditTaskResponse {
+  taskId: number;
+  originalTaskId: number;
+  actionType: ActionType;
+  status: GenerationStatus;
+  editSequence: number;
+  editPrompt: string;
+  createdAt: string;
+}
+
+export interface TaskHistoryResponse {
+  taskId: number;
+  actionType: ActionType;
+  status: GenerationStatus;
+  editSequence: number;
+  isOriginal: boolean;
+  createdAt: string;
+  resultImageUrl?: string;
 }

@@ -8,9 +8,10 @@ import DetailsModal from '../ui/DetailsModal';
 interface Props {
   details?: StylistDetails;
   onClose?: () => void;
+  actionButtons?: React.ReactNode;
 }
 
-export default function StylistDetailsView({ details, onClose }: Props) {
+export default function StylistDetailsView({ details, onClose, actionButtons }: Props) {
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
@@ -148,7 +149,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+    <DetailsModal onClose={onClose} actionButtons={actionButtons}>{content}</DetailsModal>
   ) : (
     content
   );

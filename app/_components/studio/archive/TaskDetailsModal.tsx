@@ -92,6 +92,15 @@ export default function TaskDetailsModal({
   }
 
   return displayTask ? (
-    <TaskDetailsView task={displayTask} onClose={onClose} />
+    <TaskDetailsView
+      task={displayTask}
+      onClose={onClose}
+      onEditSuccess={(newTaskId: number) => {
+        // 수정 성공 시 새 task로 교체하거나 페이지 새로고침 등의 처리
+        console.log('Edit success, new task ID:', newTaskId);
+        // 여기서 필요에 따라 상위 컴포넌트에게 알리거나
+        // 새로운 task 정보를 불러오는 로직을 추가할 수 있습니다.
+      }}
+    />
   ) : null;
 }

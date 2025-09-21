@@ -1,6 +1,14 @@
 import { apiFetch } from '../apiClient';
 import { ApiResponse } from '@/app/_types/api';
-import { Page, Task, TaskStatusResponse } from '@/types/task';
+import {
+  Page,
+  Task,
+  TaskStatusResponse,
+  EditTaskRequest,
+  EditTaskResponse,
+  TaskHistoryResponse,
+  ActionType
+} from '@/types/task';
 
 interface TaskCreationResponse {
   taskId: number;
@@ -306,4 +314,84 @@ export const deleteTask = (taskId: number): Promise<void> => {
   }).then(() => {
     // 204 No Content 응답의 경우 void를 반환
   });
+};
+
+// 수정 가능 여부 확인 API
+export const canEditTask = (
+  taskId: number,
+  actionType: ActionType
+): Promise<ApiResponse<boolean>> => {
+  const endpoint = getActionTypeEndpoint(actionType);
+  return apiFetch<boolean>(`/tasks/${endpoint}/${taskId}/can-edit`);
+};
+
+// Task 수정 요청 API
+export const editTask = (
+  taskId: number,
+  actionType: ActionType,
+  editPrompt: string
+): Promise<ApiResponse<EditTaskResponse>> => {
+  const endpoint = getActionTypeEndpoint(actionType);
+  const request: EditTaskRequest = {
+    originalTaskId: taskId,
+    editPrompt: editPrompt,
+  };
+
+  return apiFetch<EditTaskResponse>(`/tasks/${endpoint}/${taskId}/edit`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+};
+
+// Task 수정 히스토리 조회 API
+export const getTaskEditHistory = (
+  taskId: number,
+  actionType: ActionType
+): Promise<ApiResponse<TaskHistoryResponse[]>> => {
+  const endpoint = getActionTypeEndpoint(actionType);
+  return apiFetch<TaskHistoryResponse[]>(`/tasks/${endpoint}/${taskId}/history`);
+};
+
+// ActionType에 따른 엔드포인트 매핑
+const getActionTypeEndpoint = (actionType: ActionType): string => {
+  switch (actionType) {
+    case 'DIGITAL_GOODS':
+    case 'DIGITAL_GOODS_EDIT':
+      return 'digital-goods';
+    case 'FANMEETING_STUDIO':
+    case 'FANMEETING_STUDIO_EDIT':
+      return 'fanmeeting-studio';
+    case 'STYLIST':
+    case 'STYLIST_EDIT':
+      return 'stylist';
+    case 'VIRTUAL_CASTING':
+    case 'VIRTUAL_CASTING_EDIT':
+      return 'virtual-casting';
+    default:
+      throw new Error(`Edit not supported for action type: ${actionType}`);
+  }
+};
+
+// 수정 가능한 ActionType인지 확인
+export const isEditableActionType = (actionType: ActionType): boolean => {
+  return ['DIGITAL_GOODS', 'FANMEETING_STUDIO', 'STYLIST', 'VIRTUAL_CASTING'].includes(actionType);
+};
+
+// Edit ActionType인지 확인
+export const isEditActionType = (actionType: ActionType): boolean => {
+  return ['DIGITAL_GOODS_EDIT', 'FANMEETING_STUDIO_EDIT', 'STYLIST_EDIT', 'VIRTUAL_CASTING_EDIT'].includes(actionType);
+};
+
+// 원본 ActionType 가져오기
+export const getOriginalActionType = (editActionType: ActionType): ActionType => {
+  const mapping: { [key: string]: ActionType } = {
+    'DIGITAL_GOODS_EDIT': 'DIGITAL_GOODS',
+    'FANMEETING_STUDIO_EDIT': 'FANMEETING_STUDIO',
+    'STYLIST_EDIT': 'STYLIST',
+    'VIRTUAL_CASTING_EDIT': 'VIRTUAL_CASTING',
+  };
+  return mapping[editActionType] || editActionType;
 };

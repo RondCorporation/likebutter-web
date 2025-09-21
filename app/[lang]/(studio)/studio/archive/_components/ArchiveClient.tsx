@@ -259,6 +259,10 @@ function ArchiveTaskCard({
       STYLIST: 'AI 스타일리스트',
       DREAM_CONTI: '드림 컨티',
       VIRTUAL_CASTING: '가상 캐스팅',
+      DIGITAL_GOODS_EDIT: '디지털 굿즈 (수정)',
+      FANMEETING_STUDIO_EDIT: '팬미팅 스튜디오 (수정)',
+      STYLIST_EDIT: 'AI 스타일리스트 (수정)',
+      VIRTUAL_CASTING_EDIT: '가상 캐스팅 (수정)',
     };
     return labels[actionType] || actionType;
   };
@@ -273,8 +277,15 @@ function ArchiveTaskCard({
 
         {/* Action Type badge */}
         <div className="absolute top-3 right-3">
-          <div className="px-2 py-1 bg-[#e8fa07] text-[#292c31] text-xs font-medium rounded">
+          <div className={`px-2 py-1 text-xs font-medium rounded ${
+            task.isEditTask
+              ? 'bg-blue-500 text-white'
+              : 'bg-[#e8fa07] text-[#292c31]'
+          }`}>
             {getActionTypeLabel(task.actionType)}
+            {task.editSequence && task.editSequence > 1 && (
+              <span className="ml-1">#{task.editSequence}</span>
+            )}
           </div>
         </div>
 
@@ -331,6 +342,11 @@ function ArchiveTaskCard({
         <p className="text-[#a8a8aa] text-sm md:text-sm">
           {formatDate(task.createdAt)}
         </p>
+        {task.parentTaskId && (
+          <p className="text-[#888] text-xs mt-1">
+            원본 Task #{task.parentTaskId}에서 수정됨
+          </p>
+        )}
       </div>
     </div>
   );

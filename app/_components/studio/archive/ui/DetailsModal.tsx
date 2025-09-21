@@ -5,9 +5,10 @@ import { useIsMobile } from '@/hooks/useMediaQuery';
 interface DetailsModalProps {
   children: ReactNode;
   onClose: () => void;
+  actionButtons?: ReactNode;
 }
 
-export default function DetailsModal({ children, onClose }: DetailsModalProps) {
+export default function DetailsModal({ children, onClose, actionButtons }: DetailsModalProps) {
   const isMobile = useIsMobile();
 
   return (
@@ -45,6 +46,15 @@ export default function DetailsModal({ children, onClose }: DetailsModalProps) {
 
         {/* 컨텐츠 */}
         <div className="flex-1 overflow-y-auto p-6">{children}</div>
+
+        {/* 하단 액션 버튼 영역 */}
+        {actionButtons && (
+          <div className="border-t border-studio-border p-4">
+            <div className="flex justify-end">
+              {actionButtons}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

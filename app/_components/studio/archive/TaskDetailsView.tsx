@@ -5,14 +5,27 @@ import FanmeetingStudioDetailsView from './fanmeeting-studio/FanmeetingStudioDet
 import PhotoEditorDetailsView from './photo-editor/PhotoEditorDetailsView';
 import StylistDetailsView from './stylist/StylistDetailsView';
 import VirtualCastingDetailsView from './virtual-casting/VirtualCastingDetailsView';
+import EditButton from './EditButton';
 
 export default function TaskDetailsView({
   task,
   onClose,
+  onEditSuccess,
 }: {
   task: Task;
   onClose?: () => void;
+  onEditSuccess?: (newTaskId: number) => void;
 }) {
+
+  const editButton = (
+    <EditButton
+      task={task}
+      onEditSuccess={(newTaskId: number) => {
+        onEditSuccess?.(newTaskId);
+        onClose?.(); // 수정 성공 시 모달 닫기
+      }}
+    />
+  );
   switch (task.actionType) {
     case 'BUTTER_COVER':
       return (
@@ -20,21 +33,21 @@ export default function TaskDetailsView({
       );
     case 'DIGITAL_GOODS':
       return (
-        <DigitalGoodsDetailsView details={task.details} onClose={onClose} />
+        <DigitalGoodsDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />
       );
     case 'FANMEETING_STUDIO':
       return (
-        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
+        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />
       );
     case 'PHOTO_EDITOR':
       return (
         <PhotoEditorDetailsView details={task.details} onClose={onClose} />
       );
     case 'STYLIST':
-      return <StylistDetailsView details={task.details} onClose={onClose} />;
+      return <StylistDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />;
     case 'VIRTUAL_CASTING':
       return (
-        <VirtualCastingDetailsView details={task.details} onClose={onClose} />
+        <VirtualCastingDetailsView details={task.details} onClose={onClose} actionButtons={editButton} />
       );
     case 'DREAM_CONTI':
       return (

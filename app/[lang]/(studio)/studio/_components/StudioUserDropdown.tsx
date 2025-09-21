@@ -132,7 +132,7 @@ export default function StudioUserDropdown() {
           {/* 크레딧 및 결제 관리 */}
           <div className="px-2">
             <button
-              onClick={() => handleAction(() => {})}
+              onClick={() => handleAction(() => router.push(`/${lang}/studio?tool=credits`))}
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <Image

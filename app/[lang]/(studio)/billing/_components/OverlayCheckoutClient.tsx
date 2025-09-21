@@ -105,6 +105,8 @@ export default function OverlayCheckoutClient({
         throw new Error(t('planNotAvailableError'));
       }
 
+      localStorage.setItem('selectedPlanKey', planKey);
+
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
       const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
       if (!storeId || !channelKey) {
@@ -116,6 +118,7 @@ export default function OverlayCheckoutClient({
         storeId,
         channelKey,
         billingKeyMethod: 'CARD',
+        redirectUrl: `${window.location.origin}/${lang}/billing/callback`,
       });
 
       // 성공적으로 UI가 닫히면 로딩 토스트를 제거합니다.

@@ -24,6 +24,9 @@ const VirtualCastingWithSidebar = dynamic(
 const ArchiveClient = dynamic(
   () => import('../archive/_components/ArchiveClient')
 );
+const CreditsClient = dynamic(
+  () => import('../credits/_components/CreditsClient')
+);
 const DashboardClient = dynamic(() => import('../_components/DashboardClient'));
 
 interface StudioToolConfig {
@@ -65,6 +68,10 @@ const STUDIO_TOOLS: Record<string, StudioToolConfig> = {
   },
   archive: {
     component: ArchiveClient,
+    preloaded: false,
+  },
+  credits: {
+    component: CreditsClient,
     preloaded: false,
   },
 };

@@ -1,5 +1,12 @@
-import CreditsClient from './_components/CreditsClient';
+import { redirect } from 'next/navigation';
 
-export default function CreditsPage() {
-  return <CreditsClient />;
+interface Props {
+  params: Promise<{ lang: string }>;
+}
+
+export default async function CreditsPage({ params }: Props) {
+  const { lang } = await params;
+
+  // Redirect to main studio page with tool parameter
+  redirect(`/${lang}/studio?tool=credits`);
 }

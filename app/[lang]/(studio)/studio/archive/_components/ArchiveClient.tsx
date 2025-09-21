@@ -13,6 +13,7 @@ import {
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
 import DeleteConfirmModal from '@/components/studio/archive/DeleteConfirmModal';
+import SwipeableArchiveCard from '@/components/studio/archive/SwipeableArchiveCard';
 import { deleteTask } from '@/lib/apis/task.api';
 import { Task } from '@/types/task';
 
@@ -96,6 +97,24 @@ function ArchiveTaskCard({
   onClick: () => void;
   onDelete: (task: Task) => void;
 }) {
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMobileMenu(false);
+      }
+    };
+
+    if (showMobileMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showMobileMenu]);
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -244,10 +263,10 @@ function ArchiveTaskCard({
     return labels[actionType] || actionType;
   };
 
-  return (
+  const cardContent = (
     <div className="flex flex-col items-center gap-3 md:gap-4 group">
       {/* Card Preview */}
-      <div className="relative w-full h-[200px] md:h-[165px] bg-[#4a4a4b] rounded-xl md:rounded-2xl overflow-hidden transition-transform group-hover:scale-105">
+      <div className="relative w-full h-[200px] md:h-[165px] bg-[#4a4a4b] rounded-xl md:rounded-2xl overflow-hidden transition-transform md:group-hover:scale-105">
         <div className="w-full h-full cursor-pointer" onClick={onClick}>
           {renderTaskPreview(task)}
         </div>
@@ -259,8 +278,8 @@ function ArchiveTaskCard({
           </div>
         </div>
 
-        {/* Delete button */}
-        <div className="absolute top-3 left-3">
+        {/* Desktop Delete button (hover only) */}
+        <div className="absolute top-3 left-3 hidden md:block">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -272,6 +291,39 @@ function ArchiveTaskCard({
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
+
+        {/* Mobile 3-dot menu */}
+        <div className="absolute top-3 left-3 md:hidden">
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowMobileMenu(!showMobileMenu);
+              }}
+              className="p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-full transition-all"
+              title="메뉴"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </button>
+
+            {/* Mobile menu dropdown */}
+            {showMobileMenu && (
+              <div className="absolute top-full left-0 mt-1 bg-[#25282c] border border-[#4a4a4b] rounded-lg py-1 min-w-[120px] z-10 shadow-lg">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(task);
+                    setShowMobileMenu(false);
+                  }}
+                  className="w-full px-3 py-2 text-left text-red-400 hover:bg-[#4a4a4b] transition-colors flex items-center gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  삭제
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Card Info */}
@@ -281,6 +333,20 @@ function ArchiveTaskCard({
         </p>
       </div>
     </div>
+  );
+
+  // Use SwipeableArchiveCard only on mobile
+  return (
+    <>
+      <div className="md:hidden">
+        <SwipeableArchiveCard task={task} onDelete={onDelete}>
+          {cardContent}
+        </SwipeableArchiveCard>
+      </div>
+      <div className="hidden md:block">
+        {cardContent}
+      </div>
+    </>
   );
 }
 

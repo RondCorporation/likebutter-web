@@ -121,6 +121,8 @@ export default function StudioCheckoutModal({
         throw new Error(t('planNotAvailableError'));
       }
 
+      localStorage.setItem('selectedPlanKey', planKey);
+
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
       const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
       if (!storeId || !channelKey) {
@@ -132,6 +134,7 @@ export default function StudioCheckoutModal({
         storeId,
         channelKey,
         billingKeyMethod: 'CARD',
+        redirectUrl: `${window.location.origin}/${lang}/billing/callback`,
       });
 
       toast.dismiss(loadingToastId);

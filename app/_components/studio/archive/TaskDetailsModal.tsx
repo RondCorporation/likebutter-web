@@ -54,8 +54,13 @@ export default function TaskDetailsModal({
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
         <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8">
           <div className="flex flex-col items-center gap-4">
-            <LoaderCircle size={32} className="animate-spin text-studio-button-primary" />
-            <p className="text-studio-text-primary text-sm">상세 정보를 불러오는 중...</p>
+            <LoaderCircle
+              size={32}
+              className="animate-spin text-studio-button-primary"
+            />
+            <p className="text-studio-text-primary text-sm">
+              상세 정보를 불러오는 중...
+            </p>
           </div>
         </div>
       </div>
@@ -70,8 +75,13 @@ export default function TaskDetailsModal({
       >
         <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8 mx-4 max-w-md">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-studio-text-primary">오류 발생</h3>
-            <button onClick={onClose} className="text-studio-text-secondary hover:text-studio-text-primary">
+            <h3 className="text-lg font-semibold text-studio-text-primary">
+              오류 발생
+            </h3>
+            <button
+              onClick={onClose}
+              className="text-studio-text-secondary hover:text-studio-text-primary"
+            >
               <X size={20} />
             </button>
           </div>

@@ -1,142 +1,167 @@
 import { ButterCoverDetails } from '@/types/task';
-import { Music, Download } from 'lucide-react';
+import { Music, Download, Headphones, Settings } from 'lucide-react';
+import InfoCard from '../ui/InfoCard';
+import ParameterBadge from '../ui/ParameterBadge';
+import DetailsModal from '../ui/DetailsModal';
 
 interface Props {
   details?: ButterCoverDetails;
+  onClose?: () => void;
 }
 
-export default function ButterCoverDetailsView({ details }: Props) {
+export default function ButterCoverDetailsView({ details, onClose }: Props) {
   if (!details) {
-    return <p className="text-slate-400">No details available</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+      </div>
+    );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Request Details */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Music className="h-5 w-5" />
-          Voice Cover Configuration
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
-          <div>
-            <label className="text-sm font-medium text-slate-400">
-              Voice Model
-            </label>
-            <p className="text-slate-200">{details.request.voiceModel}</p>
+  const content = (
+    <div className="text-studio-text-primary space-y-6">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 bg-studio-button-primary rounded-lg">
+            <Headphones className="h-5 w-5 text-studio-header" />
           </div>
-
+          <h3 className="text-xl font-semibold">AI 커버 음원</h3>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ParameterBadge
+            label="모델"
+            value={details.request.voiceModel}
+            variant="accent"
+          />
           {details.request.pitchAdjust !== undefined && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Pitch Adjust
-              </label>
-              <p className="text-slate-200">
-                {details.request.pitchAdjust} semitones
-              </p>
-            </div>
+            <ParameterBadge
+              label="피치"
+              value={`${details.request.pitchAdjust} 세미톤`}
+            />
           )}
-
           {details.request.outputFormat && (
-            <div>
-              <label className="text-sm font-medium text-slate-400">
-                Output Format
-              </label>
-              <p className="text-slate-200 uppercase">
-                {details.request.outputFormat}
-              </p>
-            </div>
+            <ParameterBadge
+              label="포맷"
+              value={details.request.outputFormat.toUpperCase()}
+            />
           )}
         </div>
       </div>
 
-      {/* 최적화된 설정 정보 */}
-      <div>
-        <h4 className="mb-3 font-semibold text-slate-200">최적화된 AI 설정</h4>
-        <div className="rounded-lg bg-slate-800/50 p-4">
-          <p className="text-slate-300 text-sm">
-            이 AI 커버는 최고 품질을 위해 전문가가 튜닝한 최적화된 파라미터로 생성되었습니다.
-          </p>
-          <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
-            <div>
-              <span className="text-slate-400">Index Rate:</span>
-              <span className="text-slate-200 ml-1">0.75</span>
-            </div>
-            <div>
-              <span className="text-slate-400">Filter Radius:</span>
-              <span className="text-slate-200 ml-1">3</span>
-            </div>
-            <div>
-              <span className="text-slate-400">RMS Mix Rate:</span>
-              <span className="text-slate-200 ml-1">0.25</span>
-            </div>
-            <div>
-              <span className="text-slate-400">Protect:</span>
-              <span className="text-slate-200 ml-1">0.33</span>
-            </div>
-            <div>
-              <span className="text-slate-400">F0 Method:</span>
-              <span className="text-slate-200 ml-1">rmvpe</span>
-            </div>
-            <div>
-              <span className="text-slate-400">Reverb:</span>
-              <span className="text-slate-200 ml-1">최적화됨</span>
-            </div>
+      {/* AI 설정 정보 */}
+      <InfoCard title="AI 설정 정보">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="p-3 bg-studio-border rounded-lg">
+            <Settings className="h-6 w-6 text-studio-text-secondary" />
+          </div>
+          <div className="flex-1">
+            <h5 className="font-medium text-studio-text-primary mb-1">
+              최적화된 AI 설정
+            </h5>
+            <p className="text-sm text-studio-text-secondary">
+              최고 품질을 위해 전문가가 튜닝한 파라미터입니다.
+            </p>
           </div>
         </div>
-      </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+          <div className="bg-studio-border rounded-lg p-2">
+            <span className="text-studio-text-secondary">Index Rate:</span>
+            <span className="text-studio-text-primary ml-1 font-medium">
+              0.75
+            </span>
+          </div>
+          <div className="bg-studio-border rounded-lg p-2">
+            <span className="text-studio-text-secondary">Filter Radius:</span>
+            <span className="text-studio-text-primary ml-1 font-medium">3</span>
+          </div>
+          <div className="bg-studio-border rounded-lg p-2">
+            <span className="text-studio-text-secondary">RMS Mix Rate:</span>
+            <span className="text-studio-text-primary ml-1 font-medium">
+              0.25
+            </span>
+          </div>
+          <div className="bg-studio-border rounded-lg p-2">
+            <span className="text-studio-text-secondary">Protect:</span>
+            <span className="text-studio-text-primary ml-1 font-medium">
+              0.33
+            </span>
+          </div>
+          <div className="bg-studio-border rounded-lg p-2">
+            <span className="text-studio-text-secondary">F0 Method:</span>
+            <span className="text-studio-text-primary ml-1 font-medium">
+              rmvpe
+            </span>
+          </div>
+          <div className="bg-studio-border rounded-lg p-2">
+            <span className="text-studio-text-secondary">Reverb:</span>
+            <span className="text-studio-text-primary ml-1 font-medium">
+              최적화됨
+            </span>
+          </div>
+        </div>
+      </InfoCard>
 
-      {/* Results */}
+      {/* 생성된 파일 */}
       {details.result && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-            <Download className="h-5 w-5" />
-            Generated Files
-          </h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            <div className="space-y-3">
-              {details.result.audioKey && (
-                <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
-                  <div>
-                    <div className="font-medium text-slate-200">
-                      AI Voice Cover
-                    </div>
-                    <div className="text-sm text-slate-400">
-                      Main processed audio file
-                    </div>
+        <InfoCard title="생성된 파일">
+          <div className="space-y-3">
+            {details.result.audioKey && (
+              <div className="flex items-center gap-3 rounded-lg bg-studio-border p-3">
+                <div className="p-2 bg-studio-button-primary rounded-lg">
+                  <Music className="h-4 w-4 text-studio-header" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-studio-text-primary">
+                    AI 보이스 커버
+                  </div>
+                  <div className="text-sm text-studio-text-secondary">
+                    메인 처리된 오디오 파일
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {details.result.vocalsKey && (
-                <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
-                  <div>
-                    <div className="font-medium text-slate-200">
-                      Vocals Track
-                    </div>
-                    <div className="text-sm text-slate-400">
-                      Separated vocal track
-                    </div>
+            {details.result.vocalsKey && (
+              <div className="flex items-center gap-3 rounded-lg bg-studio-border p-3">
+                <div className="p-2 bg-studio-border rounded-lg">
+                  <Headphones className="h-4 w-4 text-studio-text-secondary" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-studio-text-primary">
+                    보컬 트랙
+                  </div>
+                  <div className="text-sm text-studio-text-secondary">
+                    분리된 보컬 트랙
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {details.result.instrumentalsKey && (
-                <div className="flex items-center justify-between rounded bg-slate-700/50 p-3">
-                  <div>
-                    <div className="font-medium text-slate-200">
-                      Instrumental Track
-                    </div>
-                    <div className="text-sm text-slate-400">
-                      Separated instrumental track
-                    </div>
+            {details.result.instrumentalsKey && (
+              <div className="flex items-center gap-3 rounded-lg bg-studio-border p-3">
+                <div className="p-2 bg-studio-border rounded-lg">
+                  <Music className="h-4 w-4 text-studio-text-secondary" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-studio-text-primary">
+                    인스트루멘털 트랙
+                  </div>
+                  <div className="text-sm text-studio-text-secondary">
+                    분리된 인스트루멘털 트랙
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </div>
+        </InfoCard>
       )}
     </div>
+  );
+
+  return onClose ? (
+    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+  ) : (
+    content
   );
 }

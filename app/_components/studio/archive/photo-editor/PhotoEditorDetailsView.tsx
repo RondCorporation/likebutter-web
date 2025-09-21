@@ -1,296 +1,208 @@
 import { PhotoEditorDetails } from '@/types/task';
-import {
-  Edit3,
-  Image,
-  Sliders,
-  Filter,
-  Sun,
-  Contrast,
-  Palette,
-  Download,
-} from 'lucide-react';
+import { Edit3, Image, Sliders, Sun, Contrast, Palette } from 'lucide-react';
+import InfoCard from '../ui/InfoCard';
+import ParameterBadge from '../ui/ParameterBadge';
+import DetailsModal from '../ui/DetailsModal';
 
 interface Props {
   details?: PhotoEditorDetails;
+  onClose?: () => void;
 }
 
-export default function PhotoEditorDetailsView({ details }: Props) {
+export default function PhotoEditorDetailsView({ details, onClose }: Props) {
   if (!details) {
-    return <p className="text-slate-400">No details available</p>;
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+      </div>
+    );
   }
 
-  return (
-    <div className="space-y-6">
-      {/* Request Details */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Edit3 className="h-5 w-5" />
-          Photo Editor Configuration
-        </h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-lg bg-slate-800/50 p-4">
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Edit3 className="h-4 w-4" />
-              Edit Type
-            </label>
-            <p className="text-slate-200">
-              {details.request.editType || 'Basic Enhancement'}
-            </p>
+  const content = (
+    <div className="text-studio-text-primary space-y-6">
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 bg-studio-button-primary rounded-lg">
+            <Edit3 className="h-5 w-5 text-studio-header" />
           </div>
+          <h3 className="text-xl font-semibold">포토 에디터</h3>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <ParameterBadge
+            label="편집 타입"
+            value={details.request.editType || '기본 향상'}
+            variant="accent"
+          />
+          {details.request.applyFilter &&
+            details.request.applyFilter !== 'None' && (
+              <ParameterBadge
+                label="필터"
+                value={details.request.applyFilter}
+              />
+            )}
+          {details.request.enhanceQuality && (
+            <ParameterBadge label="품질 향상" value="적용됨" />
+          )}
+        </div>
+      </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Filter className="h-4 w-4" />
-              Applied Filter
-            </label>
-            <p className="text-slate-200">
-              {details.request.applyFilter || 'None'}
-            </p>
+      {/* Before & After Images */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Original Image */}
+        <div className="bg-studio-sidebar border border-studio-border rounded-xl p-4">
+          <h4 className="text-sm font-medium text-studio-text-primary mb-3">
+            원본 이미지
+          </h4>
+          <div className="bg-studio-border rounded-lg p-3">
+            <div className="w-full h-48 bg-studio-border rounded flex items-center justify-center">
+              <span className="text-studio-text-secondary text-sm">
+                원본 이미지 미리보기
+              </span>
+            </div>
+            {details.request.sourceImageKey && (
+              <p className="text-xs text-studio-text-secondary mt-2 font-mono">
+                Key: {details.request.sourceImageKey}
+              </p>
+            )}
           </div>
+        </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Sun className="h-4 w-4" />
-              Brightness
-            </label>
+        {/* Edited Result */}
+        {details.result && (
+          <div className="bg-studio-sidebar border border-studio-border rounded-xl p-4">
+            <h4 className="text-sm font-medium text-studio-text-primary mb-3">
+              편집된 결과
+            </h4>
+            <div className="bg-studio-border rounded-lg p-3">
+              <div className="w-full h-48 bg-studio-border rounded flex items-center justify-center border-2 border-studio-button-primary/30">
+                <span className="text-studio-text-secondary text-sm">
+                  편집된 결과
+                </span>
+              </div>
+              {details.result.editedImageKey && (
+                <p className="text-xs text-studio-text-secondary mt-2 font-mono">
+                  Key: {details.result.editedImageKey}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 편집 설정 */}
+      <InfoCard title="편집 설정">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Brightness */}
+          <div className="bg-studio-border rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Sun className="h-4 w-4 text-studio-text-secondary" />
+              <span className="text-sm font-medium text-studio-text-primary">
+                밝기
+              </span>
+            </div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 bg-slate-700 rounded-full h-2 relative">
+              <div className="flex-1 bg-studio-border rounded-full h-2 relative">
                 <div
-                  className="bg-butter-yellow h-2 rounded-full transition-all"
+                  className="bg-studio-button-primary h-2 rounded-full transition-all"
                   style={{
                     width: `${Math.max(0, Math.min(100, ((details.request.brightness + 100) / 200) * 100))}%`,
                   }}
                 />
               </div>
-              <span className="text-slate-200 text-sm w-12 text-right">
+              <span className="text-studio-text-primary text-sm w-12 text-right font-medium">
                 {details.request.brightness > 0 ? '+' : ''}
                 {details.request.brightness}
               </span>
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Contrast className="h-4 w-4" />
-              Contrast
-            </label>
+          {/* Contrast */}
+          <div className="bg-studio-border rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Contrast className="h-4 w-4 text-studio-text-secondary" />
+              <span className="text-sm font-medium text-studio-text-primary">
+                대비
+              </span>
+            </div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 bg-slate-700 rounded-full h-2 relative">
+              <div className="flex-1 bg-studio-border rounded-full h-2 relative">
                 <div
-                  className="bg-butter-yellow h-2 rounded-full transition-all"
+                  className="bg-studio-button-primary h-2 rounded-full transition-all"
                   style={{
                     width: `${Math.max(0, Math.min(100, ((details.request.contrast + 100) / 200) * 100))}%`,
                   }}
                 />
               </div>
-              <span className="text-slate-200 text-sm w-12 text-right">
+              <span className="text-studio-text-primary text-sm w-12 text-right font-medium">
                 {details.request.contrast > 0 ? '+' : ''}
                 {details.request.contrast}
               </span>
             </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Palette className="h-4 w-4" />
-              Saturation
-            </label>
+          {/* Saturation */}
+          <div className="bg-studio-border rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Palette className="h-4 w-4 text-studio-text-secondary" />
+              <span className="text-sm font-medium text-studio-text-primary">
+                채도
+              </span>
+            </div>
             <div className="flex items-center gap-2">
-              <div className="flex-1 bg-slate-700 rounded-full h-2 relative">
+              <div className="flex-1 bg-studio-border rounded-full h-2 relative">
                 <div
-                  className="bg-butter-yellow h-2 rounded-full transition-all"
+                  className="bg-studio-button-primary h-2 rounded-full transition-all"
                   style={{
                     width: `${Math.max(0, Math.min(100, ((details.request.saturation + 100) / 200) * 100))}%`,
                   }}
                 />
               </div>
-              <span className="text-slate-200 text-sm w-12 text-right">
+              <span className="text-studio-text-primary text-sm w-12 text-right font-medium">
                 {details.request.saturation > 0 ? '+' : ''}
                 {details.request.saturation}
               </span>
             </div>
           </div>
-
-          <div>
-            <label className="text-sm font-medium text-slate-400 flex items-center gap-2 mb-2">
-              <Sliders className="h-4 w-4" />
-              Quality Enhancement
-            </label>
-            <div className="flex items-center gap-2">
-              <div
-                className={`w-3 h-3 rounded-full ${details.request.enhanceQuality ? 'bg-green-500' : 'bg-gray-500'}`}
-              />
-              <span className="text-slate-200">
-                {details.request.enhanceQuality ? 'Enabled' : 'Disabled'}
-              </span>
-            </div>
-          </div>
         </div>
-      </div>
+      </InfoCard>
 
-      {/* Source Image */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Image className="h-5 w-5" />
-          Source Image
-        </h4>
-        <div className="rounded-lg bg-slate-800/50 p-4">
-          <div className="w-full h-64 bg-slate-700 rounded flex items-center justify-center">
-            <span className="text-slate-400">Original Image Preview</span>
+      {/* 처리 정보 */}
+      <InfoCard title="처리 정보">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="p-3 bg-studio-border rounded-lg">
+            <Sliders className="h-6 w-6 text-studio-text-secondary" />
           </div>
-          {details.request.sourceImageKey && (
-            <p className="text-xs text-slate-500 mt-2 font-mono">
-              Key: {details.request.sourceImageKey}
+          <div className="flex-1">
+            <h5 className="font-medium text-studio-text-primary mb-1">
+              {details.request.editType || '기본 향상'}
+            </h5>
+            <p className="text-sm text-studio-text-secondary">
+              {details.request.enhanceQuality
+                ? '품질 향상이 적용되었습니다.'
+                : '기본 편집이 적용되었습니다.'}
             </p>
+          </div>
+        </div>
+
+        {details.request.applyFilter &&
+          details.request.applyFilter !== 'None' && (
+            <div className="mt-4 p-3 bg-studio-button-primary/20 rounded-lg">
+              <div className="flex items-center gap-2">
+                <Image className="h-4 w-4 text-studio-header" />
+                <span className="text-sm font-medium text-studio-header">
+                  적용된 필터: {details.request.applyFilter}
+                </span>
+              </div>
+            </div>
           )}
-        </div>
-      </div>
-
-      {/* Results */}
-      {details.result && (
-        <div>
-          <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-            <Download className="h-5 w-5" />
-            Edited Result
-          </h4>
-          <div className="rounded-lg bg-slate-800/50 p-4">
-            <div className="space-y-4">
-              {/* Before/After Comparison */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">
-                    Original
-                  </h5>
-                  <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center">
-                    <span className="text-slate-400 text-sm">
-                      Original Image
-                    </span>
-                  </div>
-                  {details.result.originalImageKey && (
-                    <p className="text-xs text-slate-500 mt-1 font-mono">
-                      {details.result.originalImageKey}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <h5 className="text-sm font-medium text-slate-400 mb-2">
-                    Edited
-                  </h5>
-                  <div className="w-full h-48 bg-slate-700 rounded flex items-center justify-center border-2 border-butter-yellow/30">
-                    <span className="text-slate-400 text-sm">
-                      Edited Result
-                    </span>
-                  </div>
-                  {details.result.editedImageKey && (
-                    <p className="text-xs text-slate-500 mt-1 font-mono">
-                      {details.result.editedImageKey}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Applied Settings Summary */}
-              <div className="pt-4 border-t border-slate-700">
-                <h5 className="text-sm font-medium text-slate-400 mb-3">
-                  Applied Adjustments
-                </h5>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div className="text-center">
-                    <div className="text-slate-400">Brightness</div>
-                    <div
-                      className={`font-medium ${details.request.brightness > 0 ? 'text-yellow-400' : details.request.brightness < 0 ? 'text-blue-400' : 'text-slate-300'}`}
-                    >
-                      {details.request.brightness > 0 ? '+' : ''}
-                      {details.request.brightness}
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-slate-400">Contrast</div>
-                    <div
-                      className={`font-medium ${details.request.contrast > 0 ? 'text-purple-400' : details.request.contrast < 0 ? 'text-gray-400' : 'text-slate-300'}`}
-                    >
-                      {details.request.contrast > 0 ? '+' : ''}
-                      {details.request.contrast}
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-slate-400">Saturation</div>
-                    <div
-                      className={`font-medium ${details.request.saturation > 0 ? 'text-pink-400' : details.request.saturation < 0 ? 'text-gray-400' : 'text-slate-300'}`}
-                    >
-                      {details.request.saturation > 0 ? '+' : ''}
-                      {details.request.saturation}
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-slate-400">Quality</div>
-                    <div
-                      className={`font-medium ${details.request.enhanceQuality ? 'text-green-400' : 'text-gray-400'}`}
-                    >
-                      {details.request.enhanceQuality ? 'Enhanced' : 'Normal'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Filter Information */}
-              {details.request.applyFilter &&
-                details.request.applyFilter !== 'None' && (
-                  <div className="pt-4 border-t border-slate-700">
-                    <label className="text-sm font-medium text-slate-400">
-                      Applied Filter
-                    </label>
-                    <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-butter-yellow/20 text-butter-yellow rounded-full text-sm">
-                      <Filter className="h-3 w-3" />
-                      {details.request.applyFilter}
-                    </div>
-                  </div>
-                )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Processing Information */}
-      <div>
-        <h4 className="mb-3 flex items-center gap-2 font-semibold text-slate-200">
-          <Sliders className="h-5 w-5" />
-          Processing Details
-        </h4>
-        <div className="rounded-lg bg-slate-800/50 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <label className="text-slate-400">Edit Type</label>
-              <p className="text-slate-200">{details.request.editType}</p>
-            </div>
-
-            <div>
-              <label className="text-slate-400">Quality Enhancement</label>
-              <p className="text-slate-200">
-                {details.request.enhanceQuality ? 'Applied' : 'Not Applied'}
-              </p>
-            </div>
-
-            <div>
-              <label className="text-slate-400">Source Image</label>
-              <p className="text-slate-200 font-mono text-xs">
-                {details.request.sourceImageKey}
-              </p>
-            </div>
-
-            {details.result?.editedImageKey && (
-              <div>
-                <label className="text-slate-400">Result Image</label>
-                <p className="text-slate-200 font-mono text-xs">
-                  {details.result.editedImageKey}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      </InfoCard>
     </div>
+  );
+
+  return onClose ? (
+    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+  ) : (
+    content
   );
 }

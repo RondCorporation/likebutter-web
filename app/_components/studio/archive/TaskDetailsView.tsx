@@ -6,20 +6,36 @@ import PhotoEditorDetailsView from './photo-editor/PhotoEditorDetailsView';
 import StylistDetailsView from './stylist/StylistDetailsView';
 import VirtualCastingDetailsView from './virtual-casting/VirtualCastingDetailsView';
 
-export default function TaskDetailsView({ task, onClose }: { task: Task; onClose?: () => void }) {
+export default function TaskDetailsView({
+  task,
+  onClose,
+}: {
+  task: Task;
+  onClose?: () => void;
+}) {
   switch (task.actionType) {
     case 'BUTTER_COVER':
-      return <ButterCoverDetailsView details={task.details} onClose={onClose} />;
+      return (
+        <ButterCoverDetailsView details={task.details} onClose={onClose} />
+      );
     case 'DIGITAL_GOODS':
-      return <DigitalGoodsDetailsView details={task.details} onClose={onClose} />;
+      return (
+        <DigitalGoodsDetailsView details={task.details} onClose={onClose} />
+      );
     case 'FANMEETING_STUDIO':
-      return <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />;
+      return (
+        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
+      );
     case 'PHOTO_EDITOR':
-      return <PhotoEditorDetailsView details={task.details} onClose={onClose} />;
+      return (
+        <PhotoEditorDetailsView details={task.details} onClose={onClose} />
+      );
     case 'STYLIST':
       return <StylistDetailsView details={task.details} onClose={onClose} />;
     case 'VIRTUAL_CASTING':
-      return <VirtualCastingDetailsView details={task.details} onClose={onClose} />;
+      return (
+        <VirtualCastingDetailsView details={task.details} onClose={onClose} />
+      );
     case 'DREAM_CONTI':
       return (
         <div className="rounded-lg border border-white/10 bg-white/5 p-6">

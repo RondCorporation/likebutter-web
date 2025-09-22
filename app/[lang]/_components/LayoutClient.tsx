@@ -65,15 +65,18 @@ export function LayoutClient({
           <PerformanceMonitor />
           <ServerErrorDisplay />
           <ConditionalSettingsModal />
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                background: '#333',
-                color: '#fff',
-              },
-            }}
-          />
+          {/* Studio 경로는 자체 layout에서 Toaster를 관리하므로 여기서는 제외 */}
+          {!routeInfo.isStudioRoute && (
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                style: {
+                  background: '#333',
+                  color: '#fff',
+                },
+              }}
+            />
+          )}
           <div className="flex min-h-screen flex-col">
             <main className="flex-grow">{children}</main>
           </div>

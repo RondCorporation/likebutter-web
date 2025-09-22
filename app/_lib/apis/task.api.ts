@@ -15,14 +15,22 @@ interface TaskCreationResponse {
   status: string;
 }
 
+// Task Category 타입 정의
+export type TaskCategory = 'IMAGE' | 'AUDIO';
+
+// 필터링 옵션 인터페이스
+export interface TaskFilters {
+  status?: string;
+  actionType?: string;
+  actionTypes?: string[];
+  category?: TaskCategory;
+  size?: number;
+  summary?: boolean;
+}
+
 export const getTaskHistory = (
   page: number,
-  filters: {
-    status?: string;
-    actionType?: string;
-    size?: number;
-    summary?: boolean;
-  }
+  filters: TaskFilters
 ): Promise<ApiResponse<Page<Task>>> => {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -30,8 +38,13 @@ export const getTaskHistory = (
     sort: 'createdAt,desc',
     summary: (filters.summary || false).toString(),
   });
+
   if (filters.status) params.append('status', filters.status);
   if (filters.actionType) params.append('actionType', filters.actionType);
+  if (filters.actionTypes && filters.actionTypes.length > 0) {
+    params.append('actionTypes', filters.actionTypes.join(','));
+  }
+  if (filters.category) params.append('category', filters.category);
 
   return apiFetch<Page<Task>>(`/tasks/me?${params.toString()}`);
 };
@@ -316,6 +329,21 @@ export const deleteTask = (taskId: number): Promise<void> => {
   });
 };
 
+// 배치 Task 삭제 API
+export interface BatchDeleteResponse {
+  totalRequested: number;
+  successfullyDeleted: number;
+  failed: number;
+  failedTaskIds: number[];
+}
+
+export const deleteBatchTasks = (taskIds: number[]): Promise<ApiResponse<BatchDeleteResponse>> => {
+  return apiFetch<BatchDeleteResponse>('/tasks', {
+    method: 'DELETE',
+    body: { taskIds },
+  });
+};
+
 // 수정 가능 여부 확인 API
 export const canEditTask = (
   taskId: number,
@@ -339,10 +367,7 @@ export const editTask = (
 
   return apiFetch<EditTaskResponse>(`/tasks/${endpoint}/${taskId}/edit`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
+    body: request,
   });
 };
 

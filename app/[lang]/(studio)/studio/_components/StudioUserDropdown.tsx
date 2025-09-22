@@ -5,22 +5,26 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   User,
   Settings,
-  CreditCard,
   LogOut,
-  ChevronDown,
   History,
   Crown,
   Globe,
+  Calendar,
+  Check,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useLogout } from '@/app/_hooks/useLogout';
 import { useAuth } from '@/app/_hooks/useAuth';
 import { useOpenSettings } from '@/app/_hooks/useUIStore';
+import { useAttendance } from '@/app/_hooks/useAttendance';
+import { useCredit } from '@/app/_hooks/useCredit';
 
 export default function StudioUserDropdown() {
   const { displayName, userEmail } = useAuth();
   const logout = useLogout();
   const openSettings = useOpenSettings();
+  const { checkAttendance, isLoading, hasAttendedToday } = useAttendance();
+  const { currentBalance, isLoading: isCreditLoading } = useCredit();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -29,7 +33,6 @@ export default function StudioUserDropdown() {
 
   // 더미 데이터
   const planName = 'Basic Plan';
-  const creditAmount = '1,250';
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -49,6 +52,12 @@ export default function StudioUserDropdown() {
   const handleAction = (action: () => void | Promise<void>) => {
     setIsOpen(false);
     action();
+  };
+
+  const handleAttendanceCheck = async () => {
+    if (!hasAttendedToday && !isLoading) {
+      await checkAttendance();
+    }
   };
 
   return (
@@ -95,7 +104,7 @@ export default function StudioUserDropdown() {
                     className="flex-shrink-0"
                   />
                   <span className="text-studio-text-primary text-sm font-semibold">
-                    {creditAmount}
+                    {isCreditLoading ? '...' : currentBalance.toLocaleString()}
                   </span>
                 </div>
                 <div className="text-studio-text-secondary text-xs text-right">
@@ -103,6 +112,33 @@ export default function StudioUserDropdown() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* 구분선 */}
+          <hr className="border-studio-border my-2" />
+
+          {/* 출석체크 */}
+          <div className="px-2">
+            <button
+              onClick={() => handleAction(handleAttendanceCheck)}
+              disabled={hasAttendedToday || isLoading}
+              className={`flex w-full items-center gap-3 px-2 py-2.5 text-sm rounded-md transition ${
+                hasAttendedToday
+                  ? 'text-studio-text-secondary cursor-not-allowed'
+                  : 'text-studio-text-primary hover:bg-studio-button-primary/10'
+              }`}
+            >
+              {hasAttendedToday ? (
+                <Check size={16} className="text-green-500" />
+              ) : (
+                <Calendar size={16} className="text-studio-text-secondary" />
+              )}
+              {isLoading
+                ? '출석체크 중...'
+                : hasAttendedToday
+                  ? '출석체크 완료'
+                  : '출석체크'}
+            </button>
           </div>
 
           {/* 구분선 */}
@@ -132,7 +168,9 @@ export default function StudioUserDropdown() {
           {/* 크레딧 및 결제 관리 */}
           <div className="px-2">
             <button
-              onClick={() => handleAction(() => router.push(`/${lang}/studio?tool=credits`))}
+              onClick={() =>
+                handleAction(() => router.push(`/${lang}/studio?tool=credits`))
+              }
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <Image

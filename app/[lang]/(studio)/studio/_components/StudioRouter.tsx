@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useStudioNavigation } from '../_hooks/useStudioNavigation';
+import { useAttendance } from '@/app/_hooks/useAttendance';
 import { Suspense } from 'react';
+import DailyAttendanceModal from '@/app/_components/studio/DailyAttendanceModal';
 
 interface StudioRouterProps {
   lang: string;
@@ -25,6 +27,19 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
 
   const { getToolComponent, preloadTool, isToolPreloaded } =
     useStudioNavigation(lang);
+
+  const attendance = useAttendance();
+  const {
+    shouldShowModal,
+    checkAttendanceFromModal,
+    closeModal,
+    isLoading: isAttendanceLoading,
+  } = attendance;
+
+  // checkAttendanceOnStudioMount를 메모이제이션하여 불필요한 재실행 방지
+  const memoizedCheckAttendance = useCallback(() => {
+    attendance.checkAttendanceOnStudioMount();
+  }, [attendance.checkAttendanceOnStudioMount]);
 
   // Get current tool from URL parameter
   const getCurrentToolFromUrl = useCallback(() => {
@@ -91,6 +106,11 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     }
   }, [navigateToTool]);
 
+  // Check attendance status on Studio mount (한 번만 실행)
+  useEffect(() => {
+    memoizedCheckAttendance();
+  }, [memoizedCheckAttendance]);
+
   // Show loading state during transitions
   if (isTransitioning) {
     return <StudioToolSkeleton />;
@@ -102,6 +122,14 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
       <Suspense fallback={<StudioToolSkeleton />}>
         {ToolComponent && <ToolComponent />}
       </Suspense>
+
+      {/* Daily Attendance Modal */}
+      <DailyAttendanceModal
+        isOpen={shouldShowModal}
+        onClose={closeModal}
+        onClaimCredit={checkAttendanceFromModal}
+        isLoading={isAttendanceLoading}
+      />
     </div>
   );
 }

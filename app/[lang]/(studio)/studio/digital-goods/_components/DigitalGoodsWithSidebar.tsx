@@ -21,6 +21,7 @@ export default function DigitalGoodsWithSidebar() {
   }>({});
   const [clientRef, setClientRef] = useState<any>(null);
   const [showMobileResult, setShowMobileResult] = useState(false);
+  const [hidePCSidebar, setHidePCSidebar] = useState(false);
 
   const handleFormChange = useCallback((newFormData: typeof formData) => {
     setFormData(newFormData);
@@ -32,6 +33,13 @@ export default function DigitalGoodsWithSidebar() {
       setShowMobileResult(clientRef.showMobileResult);
     }
   }, [clientRef?.showMobileResult]);
+
+  // Track PC sidebar visibility based on result image and processing state
+  useEffect(() => {
+    const resultImage = clientRef?.resultImage;
+    const isProcessing = clientRef?.isGenerating || clientRef?.isPolling;
+    setHidePCSidebar(!!resultImage || !!isProcessing);
+  }, [clientRef?.resultImage, clientRef?.isGenerating, clientRef?.isPolling]);
 
   const isFormValid = () => {
     if (!formData) return false;
@@ -97,6 +105,7 @@ export default function DigitalGoodsWithSidebar() {
       }}
       mobileBottomButton={getMobileButton()}
       hideMobileBottomSheet={showMobileResult}
+      hidePCSidebar={hidePCSidebar}
     >
       <DigitalGoodsClient formData={formData} ref={setClientRef} />
     </StudioLayout>

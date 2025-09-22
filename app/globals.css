@@ -44,6 +44,29 @@
     animation: fadeIn 1s ease-out 0.5s forwards;
   }
 
+  /* Toast animations for Studio */
+  .studio-toast-enter {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+  }
+
+  .studio-toast-enter-active {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .studio-toast-exit {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+
+  .studio-toast-exit-active {
+    transform: translateX(100%) scale(0.9);
+    opacity: 0;
+    transition: all 0.3s ease-in;
+  }
+
   .animate-fade-in-up {
     opacity: 0;
     transform: translateY(2rem);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { HelpCircle, Upload, Download, Loader2, Edit } from 'lucide-react';
+import { HelpCircle, Upload, Loader2, Edit, RotateCcw, Download } from 'lucide-react';
 import {
   createDigitalGoodsTask,
   DigitalGoodsRequest,
@@ -16,6 +16,7 @@ import MobileLoadingOverlay from '@/app/_components/ui/MobileLoadingOverlay';
 import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
+import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
 
 interface DigitalGoodsClientProps {
   formData?: {
@@ -45,6 +46,7 @@ const DigitalGoodsClient = forwardRef<
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [showMobileResult, setShowMobileResult] = useState(false);
+  const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
 
   const {
     taskData,
@@ -57,12 +59,12 @@ const DigitalGoodsClient = forwardRef<
       if (details?.result?.imageUrl) {
         setResultImage(details.result.imageUrl);
         setShowMobileResult(true);
-        toast.success('디지털 굿즈 생성이 완료되었습니다!');
+        toast.success('디지털 굿즈가 생성되었습니다!');
       }
       setIsGenerating(false);
     },
-    onFailed: (error) => {
-      toast.error(`생성 실패: ${error}`);
+    onFailed: () => {
+      toast.error('디지털 굿즈 생성에 실패했습니다.');
       setIsGenerating(false);
     },
   });
@@ -105,6 +107,12 @@ const DigitalGoodsClient = forwardRef<
 
       console.log('API Response:', response); // 디버깅용
 
+      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
+      if ((response as any).isInsufficientCredit) {
+        setIsGenerating(false);
+        return;
+      }
+
       if (response.status === 200 && response.data) {
         toast.success('디지털 굿즈 생성 요청이 전송되었습니다!');
         startPolling(response.data.taskId);
@@ -117,7 +125,7 @@ const DigitalGoodsClient = forwardRef<
         );
         throw new Error(`Failed to create task: ${response.status}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating digital goods task:', error);
       toast.error('디지털 굿즈 생성 요청에 실패했습니다.');
       setIsGenerating(false);
@@ -188,6 +196,7 @@ const DigitalGoodsClient = forwardRef<
 
     setIsEditLoading(true);
     setIsEditPopupOpen(false);
+    setResultImage(null); // 기존 이미지 초기화
 
     try {
       const response = await editTask(
@@ -196,6 +205,11 @@ const DigitalGoodsClient = forwardRef<
         editRequest
       );
 
+      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
+      if ((response as any).isInsufficientCredit) {
+        return;
+      }
+
       if (response.data) {
         toast.success('수정 요청이 전송되었습니다!');
         // 새로운 edit task에 대해 폴링 시작
@@ -203,12 +217,31 @@ const DigitalGoodsClient = forwardRef<
       } else {
         toast.error('수정 요청에 실패했습니다.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Edit request failed:', error);
       toast.error('수정 요청에 실패했습니다.');
     } finally {
       setIsEditLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    // 모든 상태 초기화
+    setUploadedFile(null);
+    setPreviewUrl('');
+    setResultImage(null);
+    setIsGenerating(false);
+    setShowMobileResult(false);
+    setIsEditPopupOpen(false);
+    setIsEditLoading(false);
+    setIsResetPopupOpen(false);
+
+    // URL 정리
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+
+    toast.success('작업이 초기화되었습니다.');
   };
 
   useImperativeHandle(
@@ -295,12 +328,12 @@ const DigitalGoodsClient = forwardRef<
 
           {resultImage && (
             <button
-              onClick={handleDownload}
+              onClick={() => setIsResetPopupOpen(true)}
               className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
             >
-              <Download className="w-4 h-4 mr-1" />
+              <RotateCcw className="w-4 h-4 mr-1" />
               <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                저장하기
+                다시 만들기
               </div>
             </button>
           )}
@@ -323,17 +356,19 @@ const DigitalGoodsClient = forwardRef<
         >
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 cursor-pointer ${
+            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
+              resultImage || isGenerating || isPolling ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+            } ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
-              isDragOver
+              isDragOver && !resultImage && !isGenerating && !isPolling
                 ? 'border-studio-button-primary scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById('file-upload')?.click()}
+            onDragOver={resultImage || isGenerating || isPolling ? undefined : handleDragOver}
+            onDragLeave={resultImage || isGenerating || isPolling ? undefined : handleDragLeave}
+            onDrop={resultImage || isGenerating || isPolling ? undefined : handleDrop}
+            onClick={resultImage || isGenerating || isPolling ? undefined : () => document.getElementById('file-upload')?.click()}
           >
             {previewUrl ? (
               <img
@@ -370,8 +405,9 @@ const DigitalGoodsClient = forwardRef<
 
           {/* PC에서만 파일 찾아보기 버튼 표시 */}
           <button
-            onClick={() => document.getElementById('file-upload')?.click()}
-            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex"
+            onClick={resultImage || isGenerating || isPolling ? undefined : () => document.getElementById('file-upload')?.click()}
+            disabled={!!resultImage || isGenerating || isPolling}
+            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
               파일 찾아보기
@@ -409,16 +445,11 @@ const DigitalGoodsClient = forwardRef<
                   <div className="text-studio-text-muted text-sm font-pretendard">
                     잠시 기다리시면 결과가 나옵니다
                   </div>
-                  {taskData?.status && (
-                    <div className="mt-2 text-xs text-studio-text-secondary">
-                      상태: {taskData.status}
-                    </div>
-                  )}
                 </div>
               </div>
             ) : resultImage ? (
               // 결과 이미지 표시
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full group">
                 <img
                   src={resultImage}
                   alt="Generated digital goods"
@@ -429,6 +460,13 @@ const DigitalGoodsClient = forwardRef<
                     toast.error('이미지 로드에 실패했습니다.');
                   }}
                 />
+                {/* PC 다운로드 아이콘 - 우측 상단 */}
+                <button
+                  onClick={handleDownload}
+                  className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                >
+                  <Download className="w-5 h-5 text-white" />
+                </button>
               </div>
             ) : pollingError ? (
               // 에러 상태
@@ -467,6 +505,12 @@ const DigitalGoodsClient = forwardRef<
         onClose={() => setIsEditPopupOpen(false)}
         onEditRequest={handleEditRequest}
         isLoading={isEditLoading}
+      />
+
+      <ConfirmResetPopup
+        isOpen={isResetPopupOpen}
+        onClose={() => setIsResetPopupOpen(false)}
+        onConfirm={handleReset}
       />
 
       <MobileLoadingOverlay

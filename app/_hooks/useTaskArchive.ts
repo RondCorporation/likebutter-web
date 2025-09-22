@@ -7,6 +7,8 @@ import {
   getTaskStatus,
   getBatchTaskStatus,
   BatchTaskResponse,
+  TaskFilters,
+  TaskCategory,
 } from '@/lib/apis/task.api';
 
 interface ArchiveState {
@@ -18,10 +20,7 @@ interface ArchiveState {
   error: string | null;
   page: number;
   totalPages: number;
-  filters: {
-    status: string;
-    actionType: string;
-  };
+  filters: TaskFilters;
 }
 
 type ArchiveAction =
@@ -34,7 +33,7 @@ type ArchiveAction =
   | { type: 'FETCH_ERROR'; payload: string }
   | { type: 'UPDATE_TASK_STATUS'; payload: Task }
   | { type: 'SET_PAGE'; payload: number }
-  | { type: 'SET_FILTERS'; payload: { status?: string; actionType?: string } }
+  | { type: 'SET_FILTERS'; payload: Partial<TaskFilters> }
   | { type: 'POLLING_START' | 'POLLING_END' };
 
 const initialState: ArchiveState = {
@@ -139,7 +138,7 @@ export function useTaskArchive() {
   const [state, dispatch] = useReducer(archiveReducer, initialState);
 
   const fetchArchive = useCallback(
-    async (pageToFetch: number, filters: ArchiveState['filters']) => {
+    async (pageToFetch: number, filters: TaskFilters) => {
       dispatch({ type: 'FETCH_START', forLoadMore: false }); // Always replace content for pagination
 
       try {
@@ -334,7 +333,7 @@ export function useTaskArchive() {
     }
   };
 
-  const setFilters = (newFilters: { status?: string; actionType?: string }) => {
+  const setFilters = (newFilters: Partial<TaskFilters>) => {
     dispatch({ type: 'SET_FILTERS', payload: newFilters });
   };
 

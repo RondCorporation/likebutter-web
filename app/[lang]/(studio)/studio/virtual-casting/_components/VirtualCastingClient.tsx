@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { HelpCircle, Upload, Download, Loader2, Edit } from 'lucide-react';
+import { HelpCircle, Upload, Download, Loader2, Edit, RotateCcw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import {
   createVirtualCastingTask,
@@ -16,6 +16,7 @@ import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
+import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -54,18 +55,19 @@ const VirtualCastingClient = forwardRef<
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
+  const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
 
   const { taskData, isPolling, startPolling } = useTaskPolling({
     onCompleted: (result) => {
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
         setShowMobileResult(true);
-        toast.success('가상 캐스팅이 완료되었습니다!');
+        toast.success('가상 캐스팅이 완성되었습니다!');
       }
       setIsProcessing(false);
     },
-    onFailed: (error) => {
-      toast.error('가상 캐스팅에 실패했습니다.');
+    onFailed: () => {
+      toast.error('가상 캐스팅 생성에 실패했습니다.');
       setIsProcessing(false);
     },
   });
@@ -119,13 +121,19 @@ const VirtualCastingClient = forwardRef<
 
       const response = await createVirtualCastingTask(uploadedFile, request);
 
+      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
+      if ((response as any).isInsufficientCredit) {
+        setIsProcessing(false);
+        return;
+      }
+
       if (response.status === 200 && response.data) {
         toast.success('가상 캐스팅 생성 요청이 전송되었습니다!');
         startPolling(response.data.taskId);
       } else {
         throw new Error('API request failed');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to generate virtual casting result:', error);
       toast.error('가상 캐스팅 생성 요청에 실패했습니다.');
       setIsProcessing(false);
@@ -163,9 +171,15 @@ const VirtualCastingClient = forwardRef<
 
     setIsEditLoading(true);
     setIsEditPopupOpen(false);
+    setResultImage(null); // 기존 이미지 초기화
 
     try {
       const response = await editTask(taskData.taskId, 'VIRTUAL_CASTING', editRequest);
+
+      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
+      if ((response as any).isInsufficientCredit) {
+        return;
+      }
 
       if (response.data) {
         toast.success('수정 요청이 전송되었습니다!');
@@ -174,7 +188,7 @@ const VirtualCastingClient = forwardRef<
       } else {
         toast.error('수정 요청에 실패했습니다.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Edit request failed:', error);
       toast.error('수정 요청에 실패했습니다.');
     } finally {
@@ -215,6 +229,25 @@ const VirtualCastingClient = forwardRef<
     }
   }, []);
 
+  const handleReset = () => {
+    // 모든 상태 초기화
+    setUploadedFile(null);
+    setPreviewUrl('');
+    setResultImage(null);
+    setIsProcessing(false);
+    setShowMobileResult(false);
+    setIsEditPopupOpen(false);
+    setIsEditLoading(false);
+    setIsResetPopupOpen(false);
+
+    // URL 정리
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+
+    toast.success('작업이 초기화되었습니다.');
+  };
+
   const isFormValid = () => {
     // 이미지 업로드 필수
     if (!uploadedFile) return false;
@@ -254,17 +287,7 @@ const VirtualCastingClient = forwardRef<
 
         {/* PC에서만 표시되는 버튼들 */}
         <div className="items-center gap-2 hidden md:flex">
-          {!resultImage ? (
-            <StudioButton
-              text={isProcessing ? '생성중...' : '생성하기'}
-              onClick={handleGenerate}
-              disabled={isProcessing || !isFormValid()}
-              loading={isProcessing}
-              creditCost={CREDIT_COSTS.VIRTUAL_CASTING}
-              className="px-3 md:px-5 py-2.5 h-[38px] text-xs md:text-sm"
-              textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
-            />
-          ) : (
+          {resultImage ? (
             <>
               <StudioButton
                 text={isEditLoading ? '수정중...' : '수정하기'}
@@ -277,15 +300,25 @@ const VirtualCastingClient = forwardRef<
                 textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
               />
               <button
-                onClick={handleDownload}
+                onClick={() => setIsResetPopupOpen(true)}
                 className="inline-flex items-center overflow-hidden rounded-md justify-center border border-solid border-studio-button-primary px-3 md:px-5 py-2.5 h-[38px] hover:bg-studio-button-primary/10 active:scale-95 transition-all duration-200"
               >
-                <Download className="w-4 h-4 mr-1" />
+                <RotateCcw className="w-4 h-4 mr-1" />
                 <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                  저장하기
+                  다시 만들기
                 </div>
               </button>
             </>
+          ) : (
+            <StudioButton
+              text={isProcessing ? '생성중...' : '생성하기'}
+              onClick={handleGenerate}
+              disabled={isProcessing || !isFormValid()}
+              loading={isProcessing}
+              creditCost={CREDIT_COSTS.VIRTUAL_CASTING}
+              className="px-3 md:px-5 py-2.5 h-[38px] text-xs md:text-sm"
+              textClassName="font-bold leading-[14px] font-pretendard-bold !text-studio-header"
+            />
           )}
         </div>
       </div>
@@ -313,17 +346,19 @@ const VirtualCastingClient = forwardRef<
 
           {/* 드래그 앤 드롭 영역 */}
           <div
-            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 cursor-pointer ${
+            className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
+              resultImage || isProcessing || isPolling ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+            } ${
               !previewUrl ? 'border-2 border-dashed' : ''
             } ${
-              isDragOver
+              isDragOver && !(resultImage || isProcessing || isPolling)
                 ? 'border-studio-button-primary scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById('file-upload')?.click()}
+            onDragOver={resultImage || isProcessing || isPolling ? undefined : handleDragOver}
+            onDragLeave={resultImage || isProcessing || isPolling ? undefined : handleDragLeave}
+            onDrop={resultImage || isProcessing || isPolling ? undefined : handleDrop}
+            onClick={resultImage || isProcessing || isPolling ? undefined : () => document.getElementById('file-upload')?.click()}
           >
             {previewUrl ? (
               <img
@@ -360,8 +395,9 @@ const VirtualCastingClient = forwardRef<
 
           {/* PC에서만 파일 찾아보기 버튼 표시 */}
           <button
-            onClick={() => document.getElementById('file-upload')?.click()}
-            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex"
+            onClick={resultImage || isProcessing || isPolling ? undefined : () => document.getElementById('file-upload')?.click()}
+            disabled={!!(resultImage || isProcessing || isPolling)}
+            className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
               파일 찾아보기
@@ -401,12 +437,19 @@ const VirtualCastingClient = forwardRef<
               </div>
             ) : resultImage ? (
               // 결과 이미지 표시
-              <div className="relative w-full h-full">
+              <div className="relative w-full h-full group">
                 <img
                   src={resultImage}
                   alt="Generated virtual casting result"
                   className="w-full h-full object-contain rounded-[20px]"
                 />
+                {/* PC 다운로드 아이콘 - 우측 상단 */}
+                <button
+                  onClick={handleDownload}
+                  className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                >
+                  <Download className="w-5 h-5 text-white" />
+                </button>
               </div>
             ) : (
               // 기본 상태
@@ -439,6 +482,12 @@ const VirtualCastingClient = forwardRef<
         onClose={() => setIsEditPopupOpen(false)}
         onEditRequest={handleEditRequest}
         isLoading={isEditLoading}
+      />
+
+      <ConfirmResetPopup
+        isOpen={isResetPopupOpen}
+        onClose={() => setIsResetPopupOpen(false)}
+        onConfirm={handleReset}
       />
     </div>
   );

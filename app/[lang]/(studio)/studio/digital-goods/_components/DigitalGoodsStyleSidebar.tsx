@@ -12,7 +12,7 @@ interface DigitalGoodsStyleSidebarProps {
 export default function DigitalGoodsStyleSidebar({
   onFormChange,
 }: DigitalGoodsStyleSidebarProps = {}) {
-  const [selectedPreset, setSelectedPreset] = useState('지브리');
+  const [selectedPreset, setSelectedPreset] = useState('지브리 스타일');
 
   // 스타일 이미지 매핑
   const getStyleImage = (style: string) => {
@@ -31,15 +31,15 @@ export default function DigitalGoodsStyleSidebar({
   };
 
   const stylePresets = [
-    { name: '지브리', value: 'GHIBLI' },
-    { name: '픽셀아트', value: 'PIXEL_ART' },
-    { name: '애니메이션', value: 'ANIMATION' },
-    { name: '카툰', value: 'CARTOON' },
-    { name: '스케치', value: 'SKETCH' },
-    { name: '졸업사진', value: 'GRADUATION_PHOTO' },
-    { name: '레고', value: 'LEGO' },
-    { name: '스티커', value: 'STICKER' },
-    { name: '피규어', value: 'FIGURE' },
+    { name: '지브리 스타일', value: 'GHIBLI' },
+    { name: '픽셀아트 풍', value: 'PIXEL_ART' },
+    { name: '애니메이션 스타일', value: 'ANIMATION' },
+    { name: '카툰 풍', value: 'CARTOON' },
+    { name: '스케치 풍', value: 'SKETCH' },
+    { name: '졸업사진 스타일', value: 'GRADUATION_PHOTO' },
+    { name: '레고 스타일', value: 'LEGO' },
+    { name: '스티커 풍', value: 'STICKER' },
+    { name: '피규어 스타일', value: 'FIGURE' },
   ];
 
   // Form data 변경 감지 및 부모 컴포넌트로 전달
@@ -63,74 +63,38 @@ export default function DigitalGoodsStyleSidebar({
             스타일 프리셋
           </div>
 
-          <ScrollableGrid rows={2} scrollAmount={200}>
-            <div className="flex flex-col gap-3">
-              <div className="flex gap-3">
-                {stylePresets.slice(0, 5).map((preset, index) => (
-                  <div
-                    key={preset.value}
-                    className="flex flex-col items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
-                    onClick={() => setSelectedPreset(preset.name)}
-                  >
-                    <div
-                      className={`relative w-16 h-16 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
-                        preset.name === selectedPreset
-                          ? 'border-studio-button-hover shadow-lg'
-                          : 'border-transparent'
-                      }`}
-                    >
-                      <img
-                        src={getStyleImage(preset.value)}
-                        alt={preset.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div
-                      className={`font-pretendard-medium text-xs text-center leading-tight tracking-[0] transition-colors duration-200 w-16 ${
-                        preset.name === selectedPreset
-                          ? 'text-studio-button-hover font-semibold'
-                          : 'text-studio-text-primary'
-                      }`}
-                    >
-                      {preset.name}
-                    </div>
-                  </div>
-                ))}
+          <div className="grid grid-cols-2 gap-3 w-full">
+            {stylePresets.map((preset, index) => (
+              <div
+                key={preset.value}
+                className="flex flex-col items-center justify-center gap-1.5 cursor-pointer"
+                onClick={() => setSelectedPreset(preset.name)}
+              >
+                <div
+                  className={`relative w-24 h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
+                    preset.name === selectedPreset
+                      ? 'border-studio-button-hover shadow-lg'
+                      : 'border-transparent'
+                  }`}
+                >
+                  <img
+                    src={getStyleImage(preset.value)}
+                    alt={preset.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div
+                  className={`font-pretendard-medium text-xs text-center leading-tight tracking-[0] transition-colors duration-200 w-full px-1 ${
+                    preset.name === selectedPreset
+                      ? 'text-studio-button-hover font-semibold'
+                      : 'text-studio-text-primary'
+                  }`}
+                >
+                  {preset.name}
+                </div>
               </div>
-              <div className="flex gap-3">
-                {stylePresets.slice(5, 9).map((preset, index) => (
-                  <div
-                    key={preset.value}
-                    className="flex flex-col items-center justify-center gap-1.5 cursor-pointer flex-shrink-0"
-                    onClick={() => setSelectedPreset(preset.name)}
-                  >
-                    <div
-                      className={`relative w-16 h-16 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
-                        preset.name === selectedPreset
-                          ? 'border-studio-button-hover shadow-lg'
-                          : 'border-transparent'
-                      }`}
-                    >
-                      <img
-                        src={getStyleImage(preset.value)}
-                        alt={preset.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div
-                      className={`font-pretendard-medium text-xs text-center leading-tight tracking-[0] transition-colors duration-200 w-16 ${
-                        preset.name === selectedPreset
-                          ? 'text-studio-button-hover font-semibold'
-                          : 'text-studio-text-primary'
-                      }`}
-                    >
-                      {preset.name}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </ScrollableGrid>
+            ))}
+          </div>
         </div>
       </div>
     </div>

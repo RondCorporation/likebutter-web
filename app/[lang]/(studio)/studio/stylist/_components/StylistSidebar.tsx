@@ -5,6 +5,7 @@ import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import SquareToggleButton from '../../_components/ui/SquareToggleButton';
 import ToggleSwitch from '../../_components/ui/ToggleSwitch';
+import { useIsDesktop } from '@/hooks/useMediaQuery';
 
 interface StylistSidebarProps {
   onFormChange?: (formData: {
@@ -34,6 +35,7 @@ export default function StylistSidebar({
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
   const [imagePrompt, setImagePrompt] = useState(''); // 이미지 모드용 프롬프트
+  const isDesktop = useIsDesktop();
   const [imageSettings, setImageSettings] = useState({
     hairstyle: false,
     costume: false,
@@ -249,51 +251,50 @@ export default function StylistSidebar({
                     />
                   </div>
 
-                  {/* 업로드 영역 (토글 활성화 시) */}
-                  {imageSettings[
-                    category.key as keyof typeof imageSettings
-                  ] && (
-                    <div className="w-full">
-                      <input
-                        id={`file-${category.key}`}
-                        type="file"
-                        accept="image/png,image/jpg,image/jpeg"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            handleFileUpload(category.key, file);
-                          }
-                        }}
-                        className="hidden"
-                      />
-                      <button
-                        onClick={() =>
-                          document
-                            .getElementById(`file-${category.key}`)
-                            ?.click()
-                        }
-                        className="flex items-center gap-2 w-full h-[36px] px-3 py-2 bg-studio-border rounded-md text-studio-text-primary text-sm font-pretendard-medium hover:bg-studio-border-light transition-colors duration-200"
-                      >
-                        <Image
-                          src="/studio/stylist/sidebar-upload.svg"
-                          alt="Upload"
-                          width={16}
-                          height={16}
+                  {/* 업로드 영역 (토글 활성화 시) - 모바일에서만 표시 */}
+                  {imageSettings[category.key as keyof typeof imageSettings] &&
+                    !isDesktop && (
+                      <div className="w-full">
+                        <input
+                          id={`file-${category.key}`}
+                          type="file"
+                          accept="image/png,image/jpg,image/jpeg"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              handleFileUpload(category.key, file);
+                            }
+                          }}
+                          className="hidden"
                         />
-                        {uploadedFiles[
-                          {
-                            hairstyle: 'hairStyleImage',
-                            costume: 'outfitImage',
-                            background: 'backgroundImage',
-                            accessory: 'accessoryImage',
-                            atmosphere: 'moodImage',
-                          }[category.key] as keyof typeof uploadedFiles
-                        ]
-                          ? `${category.label} 변경`
-                          : `${category.label} 첨부`}
-                      </button>
-                    </div>
-                  )}
+                        <button
+                          onClick={() =>
+                            document
+                              .getElementById(`file-${category.key}`)
+                              ?.click()
+                          }
+                          className="flex items-center gap-2 w-full h-[36px] px-3 py-2 bg-studio-border rounded-md text-studio-text-primary text-sm font-pretendard-medium hover:bg-studio-border-light transition-colors duration-200"
+                        >
+                          <Image
+                            src="/studio/stylist/sidebar-upload.svg"
+                            alt="Upload"
+                            width={16}
+                            height={16}
+                          />
+                          {uploadedFiles[
+                            {
+                              hairstyle: 'hairStyleImage',
+                              costume: 'outfitImage',
+                              background: 'backgroundImage',
+                              accessory: 'accessoryImage',
+                              atmosphere: 'moodImage',
+                            }[category.key] as keyof typeof uploadedFiles
+                          ]
+                            ? `${category.label} 변경`
+                            : `${category.label} 첨부`}
+                        </button>
+                      </div>
+                    )}
                 </div>
               ))}
             </div>

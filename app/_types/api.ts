@@ -52,3 +52,16 @@ export interface User {
   roles: string;
   subscription?: Subscription | null;
 }
+
+export interface AttendanceCheckResponse {
+  attendanceDate: string;
+  creditGranted: number;
+  message: string;
+  isFirstTimeToday: boolean;
+}
+
+export interface TodayAttendanceStatus {
+  date: string;
+  hasAttended: boolean;
+  creditGranted: number | null;
+}

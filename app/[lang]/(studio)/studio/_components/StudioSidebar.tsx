@@ -100,7 +100,6 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
           </div>
         </div>
 
-
         {/* 도움말 버튼 */}
         <div className="flex flex-col items-center gap-1">
           <button

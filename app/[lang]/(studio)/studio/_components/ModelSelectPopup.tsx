@@ -21,9 +21,6 @@ export default function ModelSelectPopup({
   const router = useRouter();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
-  const [selectedModel, setSelectedModel] = useState<string>('digital-goods');
-  const [selectedAudioModel, setSelectedAudioModel] =
-    useState<string>('butter-cover');
 
   // Prefetch routes when popup opens
   useEffect(() => {
@@ -31,69 +28,52 @@ export default function ModelSelectPopup({
     router.prefetch(`/${lang}/studio/stylist`);
     router.prefetch(`/${lang}/studio/virtual-casting`);
     router.prefetch(`/${lang}/studio/fanmeeting-studio`);
+    router.prefetch(`/${lang}/studio/butter-cover`);
   }, [router, lang]);
 
-  // Prefetch on hover for better UX
-  const handleCardHover = (modelType: string) => {
-    switch (modelType) {
-      case 'digital-goods':
-        router.prefetch(`/${lang}/studio/digital-goods`);
-        break;
-      case 'stylist':
-        router.prefetch(`/${lang}/studio/stylist`);
-        break;
-      case 'virtual-casting':
-        router.prefetch(`/${lang}/studio/virtual-casting`);
-        break;
-      case 'fanmeeting':
-        router.prefetch(`/${lang}/studio/fanmeeting-studio`);
-        break;
-    }
-  };
-
-  const handleCreate = () => {
+  const navigateToTool = (toolType: string) => {
+    let targetPath = '';
     let toolName = '';
 
-    if (activeTab === 'audio') {
-      toolName = selectedAudioModel;
-    } else {
-      toolName =
-        selectedModel === 'fanmeeting' ? 'fanmeeting-studio' : selectedModel;
+    switch (toolType) {
+      case 'digital-goods':
+        targetPath = `/${lang}/studio/digital-goods`;
+        toolName = 'digital-goods';
+        break;
+      case 'stylist':
+        targetPath = `/${lang}/studio/stylist`;
+        toolName = 'stylist';
+        break;
+      case 'virtual-casting':
+        targetPath = `/${lang}/studio/virtual-casting`;
+        toolName = 'virtual-casting';
+        break;
+      case 'fanmeeting':
+        targetPath = `/${lang}/studio/fanmeeting-studio`;
+        toolName = 'fanmeeting-studio';
+        break;
+      case 'butter-cover':
+        targetPath = `/${lang}/studio/butter-cover`;
+        toolName = 'butter-cover';
+        break;
+      default:
+        console.warn('Unknown tool type:', toolType);
+        return;
     }
 
-    // Use SPA navigation if available
-    if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
-      (window as any).studioNavigateToTool(toolName);
-    } else {
-      // Fallback to traditional routing
-      if (activeTab === 'audio') {
-        switch (selectedAudioModel) {
-          case 'butter-cover':
-            router.push(`/${lang}/studio/butter-cover`);
-            break;
-          default:
-            break;
-        }
-      } else {
-        switch (selectedModel) {
-          case 'digital-goods':
-            router.push(`/${lang}/studio/digital-goods`);
-            break;
-          case 'stylist':
-            router.push(`/${lang}/studio/stylist`);
-            break;
-          case 'virtual-casting':
-            router.push(`/${lang}/studio/virtual-casting`);
-            break;
-          case 'fanmeeting':
-            router.push(`/${lang}/studio/fanmeeting-studio`);
-            break;
-          default:
-            break;
-        }
-      }
-    }
+    // Close popup first
     onClose();
+
+    // Navigate after a brief delay to ensure popup close animation
+    setTimeout(() => {
+      // Use SPA navigation if available
+      if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
+        (window as any).studioNavigateToTool(toolName);
+      } else {
+        // Fallback to traditional routing
+        router.push(targetPath);
+      }
+    }, 100);
   };
 
   return (
@@ -110,15 +90,15 @@ export default function ModelSelectPopup({
         className={`${
           isMobile
             ? 'w-full max-h-[85vh] h-[85vh] rounded-t-xl'
-            : 'w-[678px] max-h-[80vh] rounded-xl'
+            : 'w-[678px] max-h-[85vh] rounded-xl'
         } bg-studio-sidebar border border-solid border-studio-border ${
           isMobile ? 'p-4 pb-8' : 'p-8'
-        } flex flex-col gap-6 md:gap-8 ${isMobile ? 'animate-slide-up' : ''}`}
+        } flex flex-col gap-4 md:gap-5 ${isMobile ? 'animate-slide-up' : ''}`}
         onClick={(e) => e.stopPropagation()}
         style={{
           maxHeight: isMobile
             ? 'calc(85vh - env(safe-area-inset-bottom))'
-            : '80vh',
+            : '85vh',
         }}
       >
         <div className="flex items-center justify-between w-full">
@@ -171,14 +151,11 @@ export default function ModelSelectPopup({
                 className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4 pb-4`}
               >
                 <SelectCard
-                  state={
-                    selectedModel === 'digital-goods' ? 'selected' : 'default'
-                  }
+                  state="default"
                   title="디지털 굿즈"
-                  subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
+                  subtitle="내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요."
                   backgroundImage="/studio/model-select/digital-goods.png"
-                  onClick={() => setSelectedModel('digital-goods')}
-                  onMouseEnter={() => handleCardHover('digital-goods')}
+                  onClick={() => navigateToTool('digital-goods')}
                 >
                   <Badge
                     text="New"
@@ -188,34 +165,27 @@ export default function ModelSelectPopup({
                 </SelectCard>
 
                 <SelectCard
-                  state={selectedModel === 'stylist' ? 'selected' : 'default'}
+                  state="default"
                   title="스타일리스트"
-                  subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
+                  subtitle="헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요."
                   backgroundImage="/studio/model-select/stylist.png"
-                  onClick={() => setSelectedModel('stylist')}
-                  onMouseEnter={() => handleCardHover('stylist')}
+                  onClick={() => navigateToTool('stylist')}
                 />
 
                 <SelectCard
-                  state={
-                    selectedModel === 'fanmeeting' ? 'selected' : 'default'
-                  }
+                  state="default"
                   title="온라인 팬미팅"
-                  subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
+                  subtitle="아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요."
                   backgroundImage="/studio/model-select/fanmeeting-studio.png"
-                  onClick={() => setSelectedModel('fanmeeting')}
-                  onMouseEnter={() => handleCardHover('fanmeeting')}
+                  onClick={() => navigateToTool('fanmeeting')}
                 />
 
                 <SelectCard
-                  state={
-                    selectedModel === 'virtual-casting' ? 'selected' : 'default'
-                  }
+                  state="default"
                   title="가상 캐스팅"
-                  subtitle="사진을 멋진 리얼리스틱 스케치로 변환"
+                  subtitle="아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요."
                   backgroundImage="/studio/model-select/virtual_casting.png"
-                  onClick={() => setSelectedModel('virtual-casting')}
-                  onMouseEnter={() => handleCardHover('virtual-casting')}
+                  onClick={() => navigateToTool('virtual-casting')}
                 />
               </div>
             </>
@@ -231,12 +201,8 @@ export default function ModelSelectPopup({
               </div>
 
               <div
-                className={`border border-solid w-full ${isMobile ? 'h-[300px]' : 'h-[400px]'} rounded-md cursor-pointer mb-4 transition-colors relative ${
-                  selectedAudioModel === 'butter-cover'
-                    ? 'border-[#ffd83b] border-2'
-                    : 'border-[#4a4a4b] hover:border-[#6a6a6b]'
-                }`}
-                onClick={() => setSelectedAudioModel('butter-cover')}
+                className={`border border-solid w-full ${isMobile ? 'h-[300px]' : 'h-[400px]'} rounded-md cursor-pointer mb-4 transition-colors relative border-[#4a4a4b] hover:border-[#6a6a6b]`}
+                onClick={() => navigateToTool('butter-cover')}
               >
                 <div
                   className="w-full h-full bg-cover bg-center relative rounded-md overflow-hidden"
@@ -263,12 +229,6 @@ export default function ModelSelectPopup({
           )}
         </div>
 
-        <StudioButton
-          text="만들기"
-          className="!w-full"
-          textClassName="!text-[#4a4a4b]"
-          onClick={handleCreate}
-        />
       </div>
     </div>
   );

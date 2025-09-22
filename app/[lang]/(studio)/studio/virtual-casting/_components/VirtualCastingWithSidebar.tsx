@@ -24,6 +24,7 @@ export default function VirtualCastingWithSidebar() {
   });
   const [clientRef, setClientRef] = useState<any>(null);
   const [showMobileResult, setShowMobileResult] = useState(false);
+  const [hidePCSidebar, setHidePCSidebar] = useState(false);
 
   const handleFormChange = useCallback(
     (newFormData: VirtualCastingFormData) => {
@@ -57,6 +58,13 @@ export default function VirtualCastingWithSidebar() {
       setShowMobileResult(clientRef.showMobileResult);
     }
   }, [clientRef?.showMobileResult]);
+
+  // Track PC sidebar visibility based on result image and processing state
+  useEffect(() => {
+    const resultImage = clientRef?.resultImage;
+    const isProcessing = clientRef?.isProcessing || clientRef?.isPolling;
+    setHidePCSidebar(!!resultImage || !!isProcessing);
+  }, [clientRef?.resultImage, clientRef?.isProcessing, clientRef?.isPolling]);
 
   const getMobileButton = () => {
     const isProcessing = clientRef?.isProcessing || false;
@@ -101,6 +109,7 @@ export default function VirtualCastingWithSidebar() {
       }}
       mobileBottomButton={getMobileButton()}
       hideMobileBottomSheet={showMobileResult}
+      hidePCSidebar={hidePCSidebar}
     >
       <VirtualCastingClient formData={formData} ref={setClientRef} />
     </StudioLayout>

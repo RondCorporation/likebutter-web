@@ -120,16 +120,16 @@ export async function apiFetch<T>(
         : { status: response.status, msg: response.statusText };
 
       if (!response.ok) {
-        // Handle insufficient credit error specifically
+        // Handle insufficient credit error specifically - not an error, just show toast and return
         if (json.msg === 'INSUFFICIENT_CREDIT') {
-          toast.error('크레딧이 부족합니다. 크레딧을 충전해주세요.', {
-            duration: 4000,
-            style: {
-              background: '#fee2e2',
-              color: '#dc2626',
-              border: '1px solid #fecaca',
-            },
-          });
+          toast.error('크레딧이 부족합니다. 크레딧을 충전해주세요.');
+          // Return a special response indicating insufficient credit
+          return {
+            status: response.status,
+            msg: 'INSUFFICIENT_CREDIT',
+            data: null,
+            isInsufficientCredit: true,
+          } as any;
         }
 
         throw new Error(

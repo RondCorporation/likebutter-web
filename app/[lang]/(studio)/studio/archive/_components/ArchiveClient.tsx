@@ -14,7 +14,7 @@ import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
 import DeleteConfirmModal from '@/components/studio/archive/DeleteConfirmModal';
 import SwipeableArchiveCard from '@/components/studio/archive/SwipeableArchiveCard';
-import { deleteTask } from '@/lib/apis/task.api';
+import { deleteTask, deleteBatchTasks, BatchDeleteResponse } from '@/lib/apis/task.api';
 import { Task } from '@/types/task';
 
 interface DropdownProps {
@@ -92,10 +92,16 @@ function ArchiveTaskCard({
   task,
   onClick,
   onDelete,
+  isSelectionMode,
+  isSelected,
+  onToggleSelect,
 }: {
   task: Task;
   onClick: () => void;
   onDelete: (task: Task) => void;
+  isSelectionMode: boolean;
+  isSelected: boolean;
+  onToggleSelect: (taskId: number) => void;
 }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -169,9 +175,11 @@ function ArchiveTaskCard({
 
       switch (actionType) {
         case 'DIGITAL_GOODS':
+        case 'DIGITAL_GOODS_EDIT':
           imageUrl = task.details.result.imageUrl || null;
           break;
         case 'FANMEETING_STUDIO':
+        case 'FANMEETING_STUDIO_EDIT':
           imageUrl = task.details.result.imageUrl || null;
           break;
         case 'PHOTO_EDITOR':
@@ -181,9 +189,11 @@ function ArchiveTaskCard({
           imageUrl = task.details.result.imageKey || null;
           break;
         case 'STYLIST':
+        case 'STYLIST_EDIT':
           imageUrl = task.details.result.imageUrl || null;
           break;
         case 'VIRTUAL_CASTING':
+        case 'VIRTUAL_CASTING_EDIT':
           imageUrl = task.details.result.imageUrl || null;
           break;
         case 'BUTTER_COVER':
@@ -271,9 +281,46 @@ function ArchiveTaskCard({
     <div className="flex flex-col items-center gap-3 md:gap-4 group">
       {/* Card Preview */}
       <div className="relative w-full h-[200px] md:h-[165px] bg-[#4a4a4b] rounded-xl md:rounded-2xl overflow-hidden transition-transform md:group-hover:scale-105">
-        <div className="w-full h-full cursor-pointer" onClick={onClick}>
+        <div
+          className="w-full h-full cursor-pointer"
+          onClick={isSelectionMode ? (e) => {
+            e.stopPropagation();
+            onToggleSelect(task.taskId);
+          } : onClick}
+        >
           {renderTaskPreview(task)}
         </div>
+
+        {/* Selection Checkbox */}
+        {isSelectionMode && (
+          <div className="absolute top-3 left-3">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleSelect(task.taskId);
+              }}
+              className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all ${
+                isSelected
+                  ? 'bg-yellow-400 border-yellow-400'
+                  : 'bg-black/50 border-white/50 hover:border-white'
+              }`}
+            >
+              {isSelected && (
+                <svg
+                  className="w-4 h-4 text-black"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+            </button>
+          </div>
+        )}
 
         {/* Action Type badge */}
         <div className="absolute top-3 right-3">
@@ -285,53 +332,6 @@ function ArchiveTaskCard({
             {getActionTypeLabel(task.actionType)}
             {task.editSequence && task.editSequence > 1 && (
               <span className="ml-1">#{task.editSequence}</span>
-            )}
-          </div>
-        </div>
-
-        {/* Desktop Delete button (hover only) */}
-        <div className="absolute top-3 left-3 hidden md:block">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(task);
-            }}
-            className="p-1.5 bg-black/50 hover:bg-red-500/80 text-white rounded-full transition-all opacity-0 group-hover:opacity-100"
-            title="삭제"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-
-        {/* Mobile 3-dot menu */}
-        <div className="absolute top-3 left-3 md:hidden">
-          <div className="relative" ref={menuRef}>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowMobileMenu(!showMobileMenu);
-              }}
-              className="p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-full transition-all"
-              title="메뉴"
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </button>
-
-            {/* Mobile menu dropdown */}
-            {showMobileMenu && (
-              <div className="absolute top-full left-0 mt-1 bg-[#25282c] border border-[#4a4a4b] rounded-lg py-1 min-w-[120px] z-10 shadow-lg">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(task);
-                    setShowMobileMenu(false);
-                  }}
-                  className="w-full px-3 py-2 text-left text-red-400 hover:bg-[#4a4a4b] transition-colors flex items-center gap-2"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  삭제
-                </button>
-              </div>
             )}
           </div>
         </div>
@@ -391,6 +391,10 @@ export default function ArchiveClient() {
     'bottom' | 'top'
   >('bottom');
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(new Set());
+  const [tasksToDelete, setTasksToDelete] = useState<number[] | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState('all');
 
   const actionTypeOptions = [
     { label: '전체', value: 'all' },
@@ -420,16 +424,29 @@ export default function ArchiveClient() {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!taskToDelete) return;
+    if (!taskToDelete && !tasksToDelete) return;
 
     setIsDeleting(true);
     try {
-      await deleteTask(taskToDelete.taskId);
-      setTaskToDelete(null);
+      if (tasksToDelete) {
+        // 배치 삭제
+        const response = await deleteBatchTasks(tasksToDelete);
+        console.log('Batch delete result:', response.data);
+
+        // 선택 상태 초기화
+        setSelectedTaskIds(new Set());
+        setIsSelectionMode(false);
+        setTasksToDelete(null);
+      } else if (taskToDelete) {
+        // 단일 삭제
+        await deleteTask(taskToDelete.taskId);
+        setTaskToDelete(null);
+      }
+
       // 목록 새로고침
       refetch();
     } catch (error) {
-      console.error('Failed to delete task:', error);
+      console.error('Failed to delete task(s):', error);
       // 에러 처리 - 필요시 토스트나 알림 추가
     } finally {
       setIsDeleting(false);
@@ -438,17 +455,47 @@ export default function ArchiveClient() {
 
   const handleDeleteCancel = () => {
     setTaskToDelete(null);
+    setTasksToDelete(null);
+  };
+
+  const toggleSelectionMode = () => {
+    setIsSelectionMode(!isSelectionMode);
+    setSelectedTaskIds(new Set());
+  };
+
+  const toggleTaskSelection = (taskId: number) => {
+    const newSelectedIds = new Set(selectedTaskIds);
+    if (newSelectedIds.has(taskId)) {
+      newSelectedIds.delete(taskId);
+    } else {
+      newSelectedIds.add(taskId);
+    }
+    setSelectedTaskIds(newSelectedIds);
+  };
+
+  const handleBatchDelete = () => {
+    if (selectedTaskIds.size === 0) return;
+    setTasksToDelete(Array.from(selectedTaskIds));
   };
 
   const handleFilterSelect = (value: string) => {
-    const actionTypeMap: { [key: string]: string } = {
-      all: '',
-      DIGITAL_GOODS: 'DIGITAL_GOODS',
-      STYLIST: 'STYLIST',
-      VIRTUAL_CASTING: 'VIRTUAL_CASTING',
-      FANMEETING_STUDIO: 'FANMEETING_STUDIO',
-    };
-    setFilters({ actionType: actionTypeMap[value] });
+    setSelectedFilter(value); // 선택된 필터 상태 업데이트
+
+    if (value === 'all') {
+      // 전체 선택 시 해당 카테고리만 유지, 특정 actionTypes는 제거
+      setFilters({
+        category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
+        actionType: '',
+        actionTypes: []
+      });
+    } else {
+      // 특정 ActionType 선택 시 actionTypes로 필터링
+      setFilters({
+        category: undefined, // category 제거
+        actionType: '',
+        actionTypes: [value]
+      });
+    }
   };
 
   const handlePageSizeSelect = (value: string) => {
@@ -473,8 +520,8 @@ export default function ArchiveClient() {
     }
   }, [pageSizeDropdownOpen]);
 
-  // Calculate pagination info
-  const totalResults = tasks.length; // This should come from API response
+  // Calculate pagination info - 이제 서버에서 올바른 totalElements를 제공받음
+  const totalResults = tasks.length; // 현재 페이지의 항목 수 (임시)
   const startResult = Math.min(page * pageSize + 1, totalResults);
   const endResult = Math.min((page + 1) * pageSize, totalResults);
 
@@ -522,7 +569,8 @@ export default function ArchiveClient() {
           <button
             onClick={() => {
               setActiveTab('image');
-              setFilters({ actionType: '' }); // Reset filters when changing tab
+              setSelectedFilter('all'); // 탭 변경 시 필터 초기화
+              setFilters({ category: 'IMAGE', actionType: '', actionTypes: [] }); // Use category filter
             }}
             className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'image'
@@ -535,7 +583,8 @@ export default function ArchiveClient() {
           <button
             onClick={() => {
               setActiveTab('audio');
-              setFilters({ actionType: 'BUTTER_COVER' }); // Filter to BUTTER_COVER when on audio tab
+              setSelectedFilter('all'); // 탭 변경 시 필터 초기화
+              setFilters({ category: 'AUDIO', actionType: '', actionTypes: [] }); // Use category filter
             }}
             className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'audio'
@@ -549,24 +598,57 @@ export default function ArchiveClient() {
 
         {/* Controls */}
         <div className="flex items-center justify-between mb-4">
-          {activeTab === 'image' && (
-            <Dropdown
-              isOpen={dropdownOpen}
-              onToggle={() => setDropdownOpen(!dropdownOpen)}
-              placeholder="옵션 선택"
-              options={actionTypeOptions}
-              onSelect={handleFilterSelect}
-            />
-          )}
+          <div className="flex items-center gap-3">
+            {activeTab === 'image' && (
+              <Dropdown
+                isOpen={dropdownOpen}
+                onToggle={() => setDropdownOpen(!dropdownOpen)}
+                placeholder={actionTypeOptions.find(option => option.value === selectedFilter)?.label || "옵션 선택"}
+                options={actionTypeOptions}
+                onSelect={handleFilterSelect}
+              />
+            )}
+          </div>
+
+          {/* Selection Mode Controls */}
+          <div className="flex items-center gap-3">
+            {isSelectionMode && (
+              <>
+                <span className="text-gray-400 text-sm">
+                  {selectedTaskIds.size}개 선택됨
+                </span>
+                <button
+                  onClick={handleBatchDelete}
+                  disabled={selectedTaskIds.size === 0}
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg text-sm transition-colors"
+                >
+                  삭제
+                </button>
+                <button
+                  onClick={toggleSelectionMode}
+                  className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors"
+                >
+                  취소
+                </button>
+              </>
+            )}
+
+            {!isSelectionMode && (
+              <button
+                onClick={toggleSelectionMode}
+                className="p-2 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg transition-colors"
+                title="일괄 삭제"
+              >
+                <Trash2 className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Content */}
         {(() => {
-          // Filter tasks based on active tab
-          const filteredTasks =
-            activeTab === 'audio'
-              ? tasks.filter((task) => task.actionType === 'BUTTER_COVER')
-              : tasks.filter((task) => task.actionType !== 'BUTTER_COVER');
+          // 이제 서버에서 필터링되므로 클라이언트 필터링 제거
+          const filteredTasks = tasks;
 
           return isLoading && filteredTasks.length === 0 ? (
             <div className="flex items-center justify-center h-64">
@@ -595,6 +677,9 @@ export default function ArchiveClient() {
                     task={task}
                     onClick={() => handleTaskClick(task)}
                     onDelete={handleDeleteClick}
+                    isSelectionMode={isSelectionMode}
+                    isSelected={selectedTaskIds.has(task.taskId)}
+                    onToggleSelect={toggleTaskSelection}
                   />
                 ))}
               </div>
@@ -713,9 +798,9 @@ export default function ArchiveClient() {
       )}
 
       {/* Delete Confirm Modal */}
-      {taskToDelete && (
+      {(taskToDelete || tasksToDelete) && (
         <DeleteConfirmModal
-          task={taskToDelete}
+          taskCount={tasksToDelete?.length}
           isOpen={true}
           onClose={handleDeleteCancel}
           onConfirm={handleDeleteConfirm}

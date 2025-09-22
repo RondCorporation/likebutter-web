@@ -43,12 +43,12 @@ export default function SelectCard({
       >
         {children}
       </div>
-      <div className="text-left w-full">
+      <div className="text-left w-full h-[52px] flex flex-col">
         <div className="font-medium text-white text-sm leading-[19.6px] relative">
           {title}
         </div>
         {subtitle && (
-          <div className="font-normal text-studio-text-secondary text-xs mt-0.5 leading-[16.8px]">
+          <div className="font-normal text-studio-text-secondary text-xs mt-0.5 leading-[16.8px] flex-1">
             {subtitle}
           </div>
         )}

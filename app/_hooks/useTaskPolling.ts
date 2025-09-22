@@ -34,6 +34,7 @@ export function useTaskPolling(
   const [error, setError] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [isCallbackExecuted, setIsCallbackExecuted] = useState(false); // 콜백 중복 실행 방지
 
   const stopPolling = useCallback(() => {
     console.log('🛑 Stopping polling...');
@@ -64,7 +65,11 @@ export function useTaskPolling(
               taskId
             );
             stopPolling();
-            onCompleted?.(response.data);
+            // 콜백 중복 실행 방지
+            if (!isCallbackExecuted) {
+              setIsCallbackExecuted(true);
+              onCompleted?.(response.data);
+            }
             return true; // 폴링 중단 신호
           }
 
@@ -74,7 +79,11 @@ export function useTaskPolling(
             stopPolling();
             const errorMsg = response.data.details?.error || 'Task failed';
             setError(errorMsg);
-            onFailed?.(errorMsg);
+            // 콜백 중복 실행 방지
+            if (!isCallbackExecuted) {
+              setIsCallbackExecuted(true);
+              onFailed?.(errorMsg);
+            }
             return true; // 폴링 중단 신호
           }
 
@@ -90,13 +99,17 @@ export function useTaskPolling(
         // 에러가 발생해도 몇 번 더 시도
         if (attempts >= 3) {
           stopPolling();
-          onFailed?.(errorMsg);
+          // 콜백 중복 실행 방지
+          if (!isCallbackExecuted) {
+            setIsCallbackExecuted(true);
+            onFailed?.(errorMsg);
+          }
           return true; // 폴링 중단 신호
         }
         return false;
       }
     },
-    [attempts, onCompleted, onFailed, stopPolling]
+    [attempts, onCompleted, onFailed, stopPolling, isCallbackExecuted]
   );
 
   const startPolling = useCallback(
@@ -109,6 +122,7 @@ export function useTaskPolling(
       setError(null);
       setAttempts(0);
       setIsPolling(true);
+      setIsCallbackExecuted(false); // 새로운 폴링 시작 시 콜백 플래그 리셋
 
       // 즉시 첫 번째 호출
       const shouldStop = await pollTask(taskId);
@@ -137,7 +151,11 @@ export function useTaskPolling(
             console.log('⏰ Polling timeout reached');
             stopPolling();
             setError('Polling timeout');
-            onFailed?.('Polling timeout');
+            // 콜백 중복 실행 방지
+            if (!isCallbackExecuted) {
+              setIsCallbackExecuted(true);
+              onFailed?.('Polling timeout');
+            }
             return prev;
           }
 
@@ -161,7 +179,7 @@ export function useTaskPolling(
 
       setIntervalId(id);
     },
-    [interval, maxAttempts, pollTask, onFailed, stopPolling]
+    [interval, maxAttempts, pollTask, onFailed, stopPolling, isCallbackExecuted]
   );
 
   // 컴포넌트 언마운트 시 정리

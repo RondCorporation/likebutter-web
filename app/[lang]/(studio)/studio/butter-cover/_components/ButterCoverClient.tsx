@@ -7,6 +7,7 @@ import MusicUpload from './MusicUpload';
 import StudioButton from '@/app/[lang]/(studio)/studio/_components/ui/StudioButton';
 import { createButterCoverTask } from '@/app/_lib/apis/task.api';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
 
 interface ButterCoverClientProps {
   dictionary?: any;
@@ -54,19 +55,26 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
         outputFormat: data.format,
       });
 
+      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
+      if ((response as any).isInsufficientCredit) {
+        setCurrentStep(2);
+        setIsLoading(false);
+        return;
+      }
+
       if (response.status === 200) {
+        toast.success('음원 생성 요청이 전송되었습니다! 보관함에서 확인해주세요.');
         // 생성 완료 후 보관함으로 이동 // todo: 음원생성으로 이동해서 원형 프로그레스 로딩
         router.push('/studio/archive');
       } else {
         throw new Error(response.msg || '음원 생성에 실패했습니다.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Music generation failed:', error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : '음원 생성에 실패했습니다. 다시 시도해주세요.'
-      );
+      const errorMessage = error instanceof Error
+        ? error.message
+        : '음원 생성에 실패했습니다. 다시 시도해주세요.';
+      toast.error(errorMessage);
       setCurrentStep(2);
     } finally {
       setIsLoading(false);

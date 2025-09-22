@@ -14,6 +14,7 @@ interface StudioLayoutProps {
   };
   mobileBottomButton?: ReactNode; // 모바일 하단 버튼
   hideMobileBottomSheet?: boolean; // 모바일 바텀시트 숨김 여부
+  hidePCSidebar?: boolean; // PC 사이드바 숨김 여부
 }
 
 export default function StudioLayout({
@@ -26,6 +27,7 @@ export default function StudioLayout({
   },
   mobileBottomButton,
   hideMobileBottomSheet = false,
+  hidePCSidebar = false,
 }: StudioLayoutProps) {
   const isDesktop = useIsDesktop();
 
@@ -33,7 +35,7 @@ export default function StudioLayout({
     // Desktop: 기존 사이드바 레이아웃
     return (
       <div className="flex items-start h-full w-full bg-studio-main overflow-hidden">
-        {sidebar}
+        {!hidePCSidebar && sidebar}
         {children}
       </div>
     );

@@ -23,7 +23,7 @@ export default function DashboardClient() {
     {
       id: 'digital-goods',
       title: '디지털 굿즈',
-      description: '사진을 멋진 리얼리스틱 스케치로 변환',
+      description: '내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.',
       route: '/studio/digital-goods',
       preview: '/studio/model-select/digital-goods.png',
       isNew: true,
@@ -33,7 +33,7 @@ export default function DashboardClient() {
     {
       id: 'stylist',
       title: '스타일리스트',
-      description: '사진을 멋진 리얼리스틱 스케치로 변환',
+      description: '헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.',
       route: '/studio/stylist',
       preview: '/studio/model-select/stylist.png',
       gradient:
@@ -42,7 +42,7 @@ export default function DashboardClient() {
     {
       id: 'fanmeeting-studio',
       title: '온라인 팬미팅',
-      description: '사진을 멋진 리얼리스틱 스케치로 변환',
+      description: '아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요.',
       route: '/studio/fanmeeting-studio',
       preview: '/studio/model-select/fanmeeting-studio.png',
       isNew: true,
@@ -51,7 +51,7 @@ export default function DashboardClient() {
     {
       id: 'virtual-casting',
       title: '가상 캐스팅',
-      description: '사진을 멋진 리얼리스틱 스케치로 변환',
+      description: '아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.',
       route: '/studio/virtual-casting',
       preview: '/studio/model-select/virtual_casting.png',
       isNew: true,

@@ -14,9 +14,12 @@ interface UseTaskPollingOptions {
 interface UseTaskPollingReturn {
   taskData: TaskStatusResponse | null;
   isPolling: boolean;
+  isBackgroundProcessing: boolean;
   error: string | null;
   startPolling: (taskId: number) => Promise<void>;
   stopPolling: () => void;
+  checkTaskStatus: (taskId: number) => Promise<void>;
+  currentTaskId: number | null;
 }
 
 export function useTaskPolling(
@@ -24,17 +27,20 @@ export function useTaskPolling(
 ): UseTaskPollingReturn {
   const {
     interval = 2000, // 2초 간격
-    maxAttempts = 150, // 최대 5분 (2초 * 150)
+    maxAttempts = 900, // 최대 30분 (2초 * 900)
     onCompleted,
     onFailed,
   } = options;
 
   const [taskData, setTaskData] = useState<TaskStatusResponse | null>(null);
   const [isPolling, setIsPolling] = useState(false);
+  const [isBackgroundProcessing, setIsBackgroundProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [backgroundIntervalId, setBackgroundIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [isCallbackExecuted, setIsCallbackExecuted] = useState(false); // 콜백 중복 실행 방지
+  const [currentTaskId, setCurrentTaskId] = useState<number | null>(null);
 
   const stopPolling = useCallback(() => {
     console.log('🛑 Stopping polling...');
@@ -48,6 +54,43 @@ export function useTaskPolling(
     setIsPolling(false);
     setAttempts(0);
   }, []);
+
+  const stopBackgroundProcessing = useCallback(() => {
+    console.log('🛑 Stopping background processing...');
+    setBackgroundIntervalId((prev) => {
+      if (prev) {
+        clearInterval(prev);
+        console.log('✅ Background polling interval cleared');
+      }
+      return null;
+    });
+    setIsBackgroundProcessing(false);
+    setCurrentTaskId(null);
+  }, []);
+
+  const startBackgroundProcessing = useCallback(
+    (taskId: number) => {
+      console.log('🔄 Starting background processing for taskId:', taskId);
+      setIsBackgroundProcessing(true);
+      setCurrentTaskId(taskId);
+      setError(null);
+
+      // 백그라운드에서는 30초 간격으로 폴링
+      const backgroundInterval = setInterval(() => {
+        console.log('🔄 Background polling check for taskId:', taskId);
+        pollTask(taskId).then((shouldStop) => {
+          if (shouldStop) {
+            stopBackgroundProcessing();
+          }
+        }).catch((error) => {
+          console.error('🔄 Background polling error:', error);
+        });
+      }, 30000); // 30초 간격
+
+      setBackgroundIntervalId(backgroundInterval);
+    },
+    [pollTask, stopBackgroundProcessing]
+  );
 
   const pollTask = useCallback(
     async (taskId: number) => {
@@ -148,14 +191,9 @@ export function useTaskPolling(
           );
 
           if (newAttempts >= maxAttempts) {
-            console.log('⏰ Polling timeout reached');
+            console.log('⏰ Polling timeout reached, switching to background processing');
             stopPolling();
-            setError('Polling timeout');
-            // 콜백 중복 실행 방지
-            if (!isCallbackExecuted) {
-              setIsCallbackExecuted(true);
-              onFailed?.('Polling timeout');
-            }
+            startBackgroundProcessing(taskId);
             return prev;
           }
 
@@ -179,7 +217,22 @@ export function useTaskPolling(
 
       setIntervalId(id);
     },
-    [interval, maxAttempts, pollTask, onFailed, stopPolling, isCallbackExecuted]
+    [interval, maxAttempts, pollTask, onFailed, stopPolling, isCallbackExecuted, startBackgroundProcessing]
+  );
+
+  const checkTaskStatus = useCallback(
+    async (taskId: number) => {
+      console.log('🔍 Manual task status check for taskId:', taskId);
+      try {
+        const shouldStop = await pollTask(taskId);
+        if (shouldStop && isBackgroundProcessing) {
+          stopBackgroundProcessing();
+        }
+      } catch (error) {
+        console.error('🔍 Manual task status check error:', error);
+      }
+    },
+    [pollTask, isBackgroundProcessing, stopBackgroundProcessing]
   );
 
   // 컴포넌트 언마운트 시 정리
@@ -192,14 +245,24 @@ export function useTaskPolling(
         }
         return null;
       });
+      setBackgroundIntervalId((prev) => {
+        if (prev) {
+          console.log('🧹 Cleaning up background interval on unmount');
+          clearInterval(prev);
+        }
+        return null;
+      });
     };
   }, []);
 
   return {
     taskData,
     isPolling,
+    isBackgroundProcessing,
     error,
     startPolling,
     stopPolling,
+    checkTaskStatus,
+    currentTaskId,
   };
 }

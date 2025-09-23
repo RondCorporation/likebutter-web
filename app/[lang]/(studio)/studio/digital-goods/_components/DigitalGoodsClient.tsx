@@ -36,9 +36,12 @@ export interface DigitalGoodsClientRef {
   handleEdit: () => void;
   isGenerating: boolean;
   isPolling: boolean;
+  isBackgroundProcessing: boolean;
   resultImage: string | null;
   isEditLoading: boolean;
   showMobileResult: boolean;
+  checkTaskStatus: (taskId: number) => Promise<void>;
+  currentTaskId: number | null;
 }
 
 const DigitalGoodsClient = forwardRef<
@@ -58,8 +61,11 @@ const DigitalGoodsClient = forwardRef<
   const {
     taskData,
     isPolling,
+    isBackgroundProcessing,
     error: pollingError,
     startPolling,
+    checkTaskStatus,
+    currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
       const details = result.details as DigitalGoodsDetails;
@@ -258,11 +264,14 @@ const DigitalGoodsClient = forwardRef<
       handleEdit: () => setIsEditPopupOpen(true),
       isGenerating,
       isPolling,
+      isBackgroundProcessing,
       resultImage,
       isEditLoading,
       showMobileResult,
+      checkTaskStatus,
+      currentTaskId,
     }),
-    [isGenerating, isPolling, resultImage, isEditLoading, showMobileResult]
+    [isGenerating, isPolling, isBackgroundProcessing, resultImage, isEditLoading, showMobileResult, checkTaskStatus, currentTaskId]
   );
 
   const isFormValid = () => {
@@ -492,6 +501,24 @@ const DigitalGoodsClient = forwardRef<
                 >
                   <Download className="w-5 h-5 text-white" />
                 </button>
+              </div>
+            ) : isBackgroundProcessing ? (
+              // 백그라운드 처리 상태
+              <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
+                <div className="flex flex-col items-center gap-2 text-center text-blue-400">
+                  <div className="text-base font-pretendard-medium">
+                    백그라운드에서 처리 중
+                  </div>
+                  <div className="text-sm font-pretendard max-w-[200px]">
+                    작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                  </div>
+                  <button
+                    onClick={() => currentTaskId && checkTaskStatus(currentTaskId)}
+                    className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-pretendard-medium rounded-lg transition-colors"
+                  >
+                    상태 확인
+                  </button>
+                </div>
               </div>
             ) : pollingError ? (
               // 에러 상태

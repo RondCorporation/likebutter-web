@@ -27,6 +27,7 @@ type PlanForCheckout = {
   priceFormatted: string;
   features: string[];
   planKey: string;
+  billingCycle: string;
 };
 
 type CheckoutClientProps = {
@@ -141,6 +142,8 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
       }
 
       await registerBillingKey(issueResponse.billingKey);
+
+      // Use planKey directly from API - no conversion needed
       const createSubResponse = await createSubscription(planKey);
 
       if (createSubResponse.data?.subscriptionId) {

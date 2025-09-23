@@ -53,9 +53,12 @@ export interface StylistClientRef {
   handleDownload: () => void;
   isProcessing: boolean;
   isPolling: boolean;
+  isBackgroundProcessing: boolean;
   resultImage: string | null;
   uploadedFile: File | null;
   showMobileResult: boolean;
+  checkTaskStatus: (taskId: number) => Promise<void>;
+  currentTaskId: number | null;
 }
 
 const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
@@ -73,7 +76,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
     }>({});
     const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
 
-    const { taskData, isPolling, startPolling } = useTaskPolling({
+    const { taskData, isPolling, isBackgroundProcessing, startPolling, checkTaskStatus, currentTaskId } = useTaskPolling({
       onCompleted: (result) => {
         if (result.details?.result?.imageUrl) {
           setResultImage(result.details.result.imageUrl);
@@ -95,11 +98,14 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         handleDownload,
         isProcessing,
         isPolling,
+        isBackgroundProcessing,
         resultImage,
         uploadedFile,
         showMobileResult,
+        checkTaskStatus,
+        currentTaskId,
       }),
-      [isProcessing, isPolling, resultImage, uploadedFile, showMobileResult]
+      [isProcessing, isPolling, isBackgroundProcessing, resultImage, uploadedFile, showMobileResult, checkTaskStatus, currentTaskId]
     );
 
     const handleFileUpload = (file: File) => {

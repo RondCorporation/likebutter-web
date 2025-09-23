@@ -42,13 +42,13 @@ const convertPlansFormat = (
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    BASIC: ['월 3,000 크레딧', '워터마크 없음', '기본 생성 속도'],
+    BASIC: ['매일 출석체크 시 10크레딧', '매달 추가 100크레딧', '워터마크 없음', '기본 생성 속도'],
     STANDARD: [
-      '월 12,000 크레딧',
+      '매일 출석체크 시 10크레딧',
+      '매달 추가 300크레딧',
       '우선 생성 속도',
       '워터마크 없음',
       '무제한 크레딧 이월',
-      '추가 크레딧 구매',
     ],
   };
 
@@ -73,7 +73,7 @@ const convertPlansFormat = (
       description: '무료로 시작하기',
       priceMonthly: 'Free',
       priceYearly: 'Free',
-      features: ['월 500 크레딧', '워터마크 포함', '기본 생성 속도'],
+      features: ['매일 출석체크 시 10크레딧', '워터마크 포함', '기본 생성 속도'],
       isPopular: false,
       cta: '무료 시작',
     },

@@ -44,6 +44,9 @@ export interface FanmeetingStudioClientRef {
   userFile: File | null;
   showMobileResult: boolean;
   isEditLoading: boolean;
+  isBackgroundProcessing: boolean;
+  checkTaskStatus: (taskId: number) => Promise<void>;
+  currentTaskId: number | null;
 }
 
 const FanmeetingStudioClient = forwardRef<
@@ -63,7 +66,14 @@ const FanmeetingStudioClient = forwardRef<
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
 
-  const { taskData, isPolling, startPolling } = useTaskPolling({
+  const {
+    taskData,
+    isPolling,
+    isBackgroundProcessing,
+    startPolling,
+    checkTaskStatus,
+    currentTaskId,
+  } = useTaskPolling({
     onCompleted: (result) => {
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
@@ -91,6 +101,9 @@ const FanmeetingStudioClient = forwardRef<
       userFile,
       showMobileResult,
       isEditLoading,
+      isBackgroundProcessing,
+      checkTaskStatus,
+      currentTaskId,
     }),
     [
       isProcessing,
@@ -100,6 +113,9 @@ const FanmeetingStudioClient = forwardRef<
       userFile,
       showMobileResult,
       isEditLoading,
+      isBackgroundProcessing,
+      checkTaskStatus,
+      currentTaskId,
     ]
   );
 
@@ -625,6 +641,24 @@ const FanmeetingStudioClient = forwardRef<
                   <div className="text-studio-text-muted text-sm font-pretendard">
                     잠시 기다리시면 결과가 나옵니다
                   </div>
+                </div>
+              </div>
+            ) : isBackgroundProcessing ? (
+              // 백그라운드 처리 상태
+              <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
+                <div className="flex flex-col items-center gap-2 text-center text-blue-400">
+                  <div className="text-base font-pretendard-medium">
+                    백그라운드에서 처리 중
+                  </div>
+                  <div className="text-sm font-pretendard max-w-[200px]">
+                    작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                  </div>
+                  <button
+                    onClick={() => currentTaskId && checkTaskStatus(currentTaskId)}
+                    className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-pretendard-medium rounded-lg transition-colors"
+                  >
+                    상태 확인
+                  </button>
                 </div>
               </div>
             ) : resultImage ? (

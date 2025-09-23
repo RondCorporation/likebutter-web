@@ -40,8 +40,11 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   const {
     taskData,
     isPolling,
+    isBackgroundProcessing,
     error: pollingError,
     startPolling,
+    checkTaskStatus,
+    currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
       const details = result.details as ButterCoverDetails;
@@ -188,6 +191,24 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                     <p className="text-slate-300 text-sm leading-relaxed">
                       생성이 완료되면 이 화면에서 바로 들으실 수 있습니다.
                     </p>
+                  </div>
+                </div>
+              ) : isBackgroundProcessing ? (
+                // 백그라운드 처리 상태
+                <div className="space-y-8">
+                  <div className="space-y-4 text-center">
+                    <h2 className="text-2xl font-medium text-blue-400">
+                      백그라운드에서 처리 중
+                    </h2>
+                    <p className="text-slate-400 text-lg leading-relaxed max-w-[300px] mx-auto">
+                      작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                    </p>
+                    <button
+                      onClick={() => currentTaskId && checkTaskStatus(currentTaskId)}
+                      className="mt-4 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      상태 확인
+                    </button>
                   </div>
                 </div>
               ) : resultAudioUrl ? (

@@ -21,24 +21,22 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     // Unified footer styling for all marketing pages
-    const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start' : 'pt-20'}`;
+    const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start flex flex-col justify-end' : 'pt-12'}`;
 
     const footerContentClasses = isSnapSection
-      ? 'h-[calc(100%-4rem)] rounded-t-[3rem] pt-16 pb-8'
-      : 'pt-20 pb-12';
+      ? 'rounded-t-[3rem] pt-20 pb-8'
+      : 'pt-20 pb-8';
 
     return (
       <footer className={footerClasses} ref={ref} {...props}>
-        <div
-          className={`w-full ${isSnapSection ? 'h-full flex flex-col justify-end' : ''}`}
-        >
+        <div className="w-full">
           <div
             className={`w-full ${footerContentClasses}`}
             style={{ backgroundColor: '#131313' }}
           >
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
               {/* Logo Section */}
-              <div className="text-center mb-16">
+              <div className="text-center mb-8">
                 <div className="w-56 mx-auto mb-6">
                   <Logo />
                 </div>
@@ -48,7 +46,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
               </div>
 
               {/* Main Content Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 lg:gap-8 mb-16">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 lg:gap-8 mb-8">
                 {/* Services Section */}
                 <div className="space-y-4">
                   <h3 className="font-bold text-lg text-white mb-6">
@@ -168,7 +166,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
               </div>
 
               {/* Bottom Section */}
-              <div className="border-t border-slate-700 pt-8">
+              <div className="border-t border-slate-700 pt-4">
                 <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
                   <div className="text-sm text-slate-500 text-center lg:text-left">
                     <p>

@@ -29,6 +29,8 @@ interface SimplePlan {
   features: Array<{ text: string; highlighted?: boolean }>;
   isPopular?: boolean;
   isPremium?: boolean;
+  monthlyPlanKey?: string;
+  yearlyPlanKey?: string;
 }
 
 const convertPlansFormat = (
@@ -47,74 +49,74 @@ const convertPlansFormat = (
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    BASIC: ['월 3,000 크레딧', '워터마크 없음', '기본 생성 속도'],
+    BASIC: ['매일 출석체크 시 10크레딧', '매달 추가 100크레딧', '워터마크 없음', '기본 생성 속도'],
     STANDARD: [
-      '월 12,000 크레딧',
+      '매일 출석체크 시 10크레딧',
+      '매달 추가 300크레딧',
       '우선 생성 속도',
       '워터마크 없음',
       '무제한 크레딧 이월',
-      '추가 크레딧 구매',
     ],
   };
 
-  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } =
-    {};
-
-  apiPlans.forEach((plan) => {
-    if (!processedPlans[plan.planType]) {
-      processedPlans[plan.planType] = {};
-    }
-    if (plan.billingCycle === 'MONTHLY') {
-      processedPlans[plan.planType].monthly = plan;
-    } else if (plan.billingCycle === 'YEARLY') {
-      processedPlans[plan.planType].yearly = plan;
-    }
-  });
-
   const result: SimplePlan[] = [
     {
-      key: 'free',
+      key: 'FREE',
       name: 'Free Plan',
       description: '무료로 시작하기',
       priceMonthly: 'Free',
       priceYearly: 'Free',
       features: [
-        { text: '월 500 크레딧' },
-        { text: '워터마크 포함' },
-        { text: '기본 생성 속도' },
+        { text: '매일 출석체크 시 10크레딧' },
       ],
       isPopular: false,
     },
   ];
 
+  const isKorean = currency === '₩';
+
+  // Group plans by planType, excluding ENTERPRISE
+  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } = {};
+
+  apiPlans.forEach((plan) => {
+    if (plan.planType !== 'ENTERPRISE' && plan.planKey !== 'FREE') {
+      if (!processedPlans[plan.planType]) {
+        processedPlans[plan.planType] = {};
+      }
+      if (plan.billingCycle === 'MONTHLY') {
+        processedPlans[plan.planType].monthly = plan;
+      } else if (plan.billingCycle === 'YEARLY') {
+        processedPlans[plan.planType].yearly = plan;
+      }
+    }
+  });
+
+  // Create one card per planType with both monthly and yearly pricing
   Object.entries(processedPlans).forEach(([planType, cycles]) => {
     if (cycles.monthly || cycles.yearly) {
-      const isKorean = currency === '₩';
       const monthlyPrice = cycles.monthly
-        ? isKorean
-          ? cycles.monthly.priceKrw || 0
-          : cycles.monthly.priceUsd || 0
+        ? (isKorean ? cycles.monthly.priceKrw || 0 : cycles.monthly.priceUsd || 0)
         : 0;
       const yearlyPrice = cycles.yearly
-        ? isKorean
-          ? cycles.yearly.priceKrw || 0
-          : cycles.yearly.priceUsd || 0
+        ? (isKorean ? cycles.yearly.priceKrw || 0 : cycles.yearly.priceUsd || 0)
         : 0;
-      const yearlyMonthlyPrice =
-        yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
+      const yearlyMonthlyPrice = yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
 
       result.push({
-        key: planType.toLowerCase(),
+        key: planType, // Use planType for UI identification
         name: planTypeMap[planType] || planType,
         description: planDescMap[planType] || `${planType} plan`,
-        priceMonthly: monthlyPrice as number,
-        priceYearly: yearlyMonthlyPrice as number,
+        priceMonthly: monthlyPrice,
+        priceYearly: yearlyMonthlyPrice,
         features: (featuresMap[planType] || []).map((featureText, index) => ({
           text: featureText,
-          highlighted: index === 0, // First feature highlighted
+          highlighted: index === 0,
         })),
         isPopular: planType === 'BASIC',
         isPremium: planType === 'STANDARD',
+        // Store both planKeys for subscription creation
+        monthlyPlanKey: cycles.monthly?.planKey,
+        yearlyPlanKey: cycles.yearly?.planKey,
       });
     }
   });
@@ -182,7 +184,7 @@ export default function BillingDashboard({
 
   const handlePlanSelect = useCallback(
     (planKey: string, cycle: 'monthly' | 'yearly') => {
-      if (planKey === 'free') {
+      if (planKey === 'FREE') {
         router.push(`/${lang}/signup`);
         return;
       }
@@ -190,12 +192,19 @@ export default function BillingDashboard({
       const plan = plans.find((p) => p.key === planKey);
       if (!plan) return;
 
-      const price = cycle === 'monthly' ? plan.priceMonthly : plan.priceYearly;
+      // Get the correct API planKey based on billing cycle
+      const actualPlanKey = cycle === 'monthly' ? plan.monthlyPlanKey : plan.yearlyPlanKey;
+      if (!actualPlanKey) return;
+
+      // For checkout, show the actual amount to be charged
+      const price = cycle === 'monthly'
+        ? plan.priceMonthly
+        : (plan.priceYearly as number) * 12; // Show full yearly price in checkout
       const originalPrice =
         cycle === 'yearly' ? (plan.priceMonthly as number) * 12 : undefined;
 
       setSelectedPlan({
-        planKey,
+        planKey: actualPlanKey, // Use the actual planKey from API
         name: plan.name,
         description: plan.description,
         price: price as number,
@@ -221,12 +230,12 @@ export default function BillingDashboard({
       // 해당 플랜 찾기
       const plan = plans.find(
         (p) =>
-          (planParam === 'basic' && p.key === 'basic') ||
-          (planParam === 'standard' && p.key === 'standard') ||
+          (planParam === 'basic' && p.key === 'BASIC') ||
+          (planParam === 'standard' && p.key === 'STANDARD') ||
           p.key === planParam
       );
 
-      if (plan && plan.key !== 'free') {
+      if (plan && plan.key !== 'FREE') {
         handlePlanSelect(plan.key, billingParam);
       }
     }

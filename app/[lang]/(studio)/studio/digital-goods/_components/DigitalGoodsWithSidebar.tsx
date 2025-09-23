@@ -62,6 +62,7 @@ export default function DigitalGoodsWithSidebar() {
   const getMobileButton = () => {
     const isGenerating = clientRef?.isGenerating || false;
     const isPolling = clientRef?.isPolling || false;
+    const isBackgroundProcessing = clientRef?.isBackgroundProcessing || false;
     const resultImage = clientRef?.resultImage || null;
     const isEditLoading = clientRef?.isEditLoading || false;
 

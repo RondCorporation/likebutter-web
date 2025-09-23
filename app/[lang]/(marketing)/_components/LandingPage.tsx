@@ -609,19 +609,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('planFreeFeature1')}
-                              </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                              <span className="text-gray-300">
-                                {t('planFreeFeature2')}
-                              </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                              <span className="text-gray-300">
-                                {t('planFreeFeature3')}
+                                매일 출석체크 시 10크레딧
                               </span>
                             </li>
                           </ul>
@@ -675,19 +663,13 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                월 3,000 크레딧
+                                매일 출석체크 시 10크레딧
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                워터마크 없음
-                              </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                              <span className="text-gray-300">
-                                기본 생성 속도
+                                매달 추가 100크레딧
                               </span>
                             </li>
                           </ul>
@@ -736,36 +718,18 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             )}
                           </div>
                         </div>
-                        <div className="h-[200px] mt-4">
+                        <div className="h-[120px] mt-4">
                           <ul className="space-y-3 text-sm">
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                월 12,000 크레딧
+                                매일 출석체크 시 10크레딧
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                우선 생성 속도
-                              </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                              <span className="text-gray-300">
-                                워터마크 없음
-                              </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                              <span className="text-gray-300">
-                                무제한 크레딧 이월
-                              </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                              <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
-                              <span className="text-gray-300">
-                                추가 크레딧 구매
+                                매달 추가 300크레딧
                               </span>
                             </li>
                           </ul>

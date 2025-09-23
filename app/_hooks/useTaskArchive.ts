@@ -45,7 +45,7 @@ const initialState: ArchiveState = {
   error: null,
   page: 0,
   totalPages: 1,
-  filters: { status: '', actionType: '' },
+  filters: { status: '', actionType: '', category: 'IMAGE' },
 };
 
 function archiveReducer(

@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
+  Download,
 } from 'lucide-react';
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
@@ -99,6 +100,7 @@ function ArchiveTaskCard({
   isSelectionMode,
   isSelected,
   onToggleSelect,
+  onDownload,
 }: {
   task: Task;
   onClick: () => void;
@@ -106,6 +108,7 @@ function ArchiveTaskCard({
   isSelectionMode: boolean;
   isSelected: boolean;
   onToggleSelect: (taskId: number) => void;
+  onDownload: (task: Task) => void;
 }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -299,6 +302,20 @@ function ArchiveTaskCard({
           {renderTaskPreview(task)}
         </div>
 
+        {/* Download button for completed tasks */}
+        {task.status === 'COMPLETED' && !isSelectionMode && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDownload(task);
+            }}
+            className="absolute top-3 left-3 w-8 h-8 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+            title="다운로드"
+          >
+            <Download className="w-4 h-4 text-white" />
+          </button>
+        )}
+
         {/* Selection Checkbox */}
         {isSelectionMode && (
           <div className="absolute top-3 left-3">
@@ -405,6 +422,7 @@ export default function ArchiveClient() {
   );
   const [tasksToDelete, setTasksToDelete] = useState<number[] | null>(null);
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const actionTypeOptions = [
     { label: '전체', value: 'all' },
@@ -463,6 +481,83 @@ export default function ArchiveClient() {
     }
   };
 
+  const handleDownload = async (task: Task) => {
+    if (!task.details?.result || isDownloading) return;
+
+    setIsDownloading(true);
+    try {
+      let downloadUrl: string | undefined;
+      let fileName = '';
+
+      switch (task.actionType) {
+        case 'BUTTER_COVER':
+          downloadUrl = task.details.result.audioKey;
+          fileName = `butter-cover-${task.taskId}-${Date.now()}.mp3`;
+          break;
+        case 'DIGITAL_GOODS':
+        case 'DIGITAL_GOODS_EDIT':
+          downloadUrl = task.details.result.imageUrl;
+          fileName = `digital-goods-${task.taskId}-${Date.now()}.png`;
+          break;
+        case 'FANMEETING_STUDIO':
+        case 'FANMEETING_STUDIO_EDIT':
+          downloadUrl = task.details.result.imageUrl;
+          fileName = `fanmeeting-studio-${task.taskId}-${Date.now()}.png`;
+          break;
+        case 'PHOTO_EDITOR':
+          downloadUrl = task.details.result.editedImageKey;
+          fileName = `photo-editor-${task.taskId}-${Date.now()}.png`;
+          break;
+        case 'DREAM_CONTI':
+          downloadUrl = task.details.result.imageKey;
+          fileName = `dream-conti-${task.taskId}-${Date.now()}.png`;
+          break;
+        case 'STYLIST':
+        case 'STYLIST_EDIT':
+          downloadUrl = task.details.result.imageUrl;
+          fileName = `stylist-${task.taskId}-${Date.now()}.png`;
+          break;
+        case 'VIRTUAL_CASTING':
+        case 'VIRTUAL_CASTING_EDIT':
+          downloadUrl = task.details.result.imageUrl;
+          fileName = `virtual-casting-${task.taskId}-${Date.now()}.png`;
+          break;
+        default:
+          console.warn(
+            'Unsupported action type for download:',
+            (task as any).actionType
+          );
+          return;
+      }
+
+      if (!downloadUrl) {
+        console.warn('No download URL found for task:', task.taskId);
+        return;
+      }
+
+      // Fetch the file and create download
+      const response = await fetch(downloadUrl);
+      if (!response.ok) {
+        throw new Error('Failed to fetch file');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // TODO: Show error toast
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const handleDeleteCancel = () => {
     setTaskToDelete(null);
     setTasksToDelete(null);
@@ -499,9 +594,9 @@ export default function ArchiveClient() {
         actionTypes: [],
       });
     } else {
-      // 특정 ActionType 선택 시 actionTypes로 필터링
+      // 특정 ActionType 선택 시 actionTypes로 필터링하면서 category도 유지
       setFilters({
-        category: undefined, // category 제거
+        category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
         actionType: '',
         actionTypes: [value],
       });
@@ -702,6 +797,7 @@ export default function ArchiveClient() {
                     isSelectionMode={isSelectionMode}
                     isSelected={selectedTaskIds.has(task.taskId)}
                     onToggleSelect={toggleTaskSelection}
+                    onDownload={handleDownload}
                   />
                 ))}
               </div>

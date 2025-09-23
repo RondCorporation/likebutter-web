@@ -34,7 +34,6 @@ export default function ImageDisplayCard({
       await downloadFile(imageUrl, filename);
     } catch (error) {
       console.error('Download failed:', error);
-      // TODO: Show error toast
     } finally {
       setIsDownloading(false);
     }
@@ -49,7 +48,9 @@ export default function ImageDisplayCard({
             {title}
           </h4>
           {subtitle && (
-            <p className="text-xs text-studio-text-secondary mt-1">{subtitle}</p>
+            <p className="text-xs text-studio-text-secondary mt-1">
+              {subtitle}
+            </p>
           )}
         </div>
         {showDownload && (

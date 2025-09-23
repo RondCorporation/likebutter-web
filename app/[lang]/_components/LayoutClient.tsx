@@ -22,12 +22,10 @@ export function LayoutClient({
   const pathname = usePathname();
 
   const routeInfo = useMemo(() => {
-    // Extract language and route segments
     const segments = pathname.split('/').filter(Boolean);
     const lang = segments[0];
     const routePath = segments.slice(1).join('/');
 
-    // Define marketing routes that don't need auth
     const marketingRoutes = ['', 'pricing', 'privacy'];
     const authRoutes = ['login', 'signup'];
     const adminRoutes = ['admin'];
@@ -42,7 +40,6 @@ export function LayoutClient({
       routePath.startsWith(route)
     );
 
-    // Check if we're in a route group that has its own layout
     const hasRouteGroupLayout =
       isMarketingRoute || isAuthRoute || isAdminRoute || isStudioRoute;
 
@@ -57,7 +54,6 @@ export function LayoutClient({
     };
   }, [pathname]);
 
-  // If route groups handle their own auth, skip initialization here
   if (routeInfo.hasRouteGroupLayout) {
     return (
       <SWRProvider>
@@ -85,7 +81,6 @@ export function LayoutClient({
     );
   }
 
-  // Fallback for other routes
   return (
     <SWRProvider>
       <PreloadPortoneProvider>

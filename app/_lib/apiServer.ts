@@ -35,7 +35,7 @@ async function apiFetch<T>(
     const config: RequestInit = {
       ...opts,
       headers,
-      // Only force no-store if not explicitly set
+
       cache: opts.cache || 'no-store',
     };
 
@@ -59,8 +59,6 @@ async function apiFetch<T>(
       : { status: response.status, msg: response.statusText };
 
     if (!response.ok) {
-      // This is an expected error if the user is not logged in, so we don't log it as an error.
-      // The calling function should handle the error.
       throw new Error(
         json.msg ??
           `Request failed: ${response.statusText} (${response.status})`
@@ -69,8 +67,6 @@ async function apiFetch<T>(
 
     return json;
   } catch (error: any) {
-    // Re-throw the error to be handled by the calling server component.
-    // Avoid logging here as it's not a "true" error in many cases (e.g., user not logged in).
     throw error;
   }
 }
@@ -95,7 +91,6 @@ export const getMeOnServer = async (): Promise<User | null> => {
     const { data: user } = await apiServer.get<User>('/users/me');
     return user || null;
   } catch (error) {
-    // 로그인되지 않은 상태에서는 에러가 발생하는 것이 정상이므로 null을 반환합니다.
     return null;
   }
 };

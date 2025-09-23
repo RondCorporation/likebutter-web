@@ -5,7 +5,6 @@ import Script from 'next/script';
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
 export default function GoogleAnalytics() {
-  // 개발 환경이거나 GA ID가 없으면 렌더링하지 않음
   if (!GA_TRACKING_ID || process.env.NODE_ENV !== 'production') {
     return null;
   }

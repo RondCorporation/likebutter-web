@@ -81,7 +81,6 @@ function StatusBadge({ status }: { status: Subscription['status'] }) {
   );
 }
 
-// A simple modal for upgrade and details
 function SubscriptionModal({
   title,
   children,
@@ -181,7 +180,7 @@ export default function SubscriptionManager() {
     setSelectedSub(sub);
     setModalContent('details');
     setIsModalOpen(true);
-    setDetails(null); // Clear previous details
+    setDetails(null);
     try {
       const res = await getSubscriptionDetails(sub.subscriptionId);
       if (res.data) {

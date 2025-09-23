@@ -14,12 +14,10 @@ export interface WebVitalMetric {
  * Web Vitals 성능 지표 수집 및 분석
  */
 export function initWebVitals() {
-  // Core Web Vitals 수집
   onCLS(onPerfEntry);
-  onINP(onPerfEntry); // INP replaces FID in newer versions
+  onINP(onPerfEntry);
   onLCP(onPerfEntry);
 
-  // 추가 성능 지표
   onFCP(onPerfEntry);
   onTTFB(onPerfEntry);
 }
@@ -33,17 +31,14 @@ function onPerfEntry(metric: any) {
     id: metric.id,
   };
 
-  // 개발 환경에서는 콘솔 로깅
   if (process.env.NODE_ENV === 'development') {
     console.log('🔍 Web Vital:', webVitalMetric);
   }
 
-  // 프로덕션에서는 분석 서비스로 전송
   if (process.env.NODE_ENV === 'production') {
     sendToAnalytics(webVitalMetric);
   }
 
-  // 성능 경고 알림
   showPerformanceWarnings(webVitalMetric);
 }
 
@@ -51,7 +46,6 @@ function onPerfEntry(metric: any) {
  * 분석 서비스로 메트릭 전송
  */
 function sendToAnalytics(metric: WebVitalMetric) {
-  // Google Analytics 4 예시
   if (typeof window !== 'undefined' && 'gtag' in window) {
     const gtag = (window as any).gtag;
     gtag('event', metric.name, {
@@ -64,13 +58,6 @@ function sendToAnalytics(metric: WebVitalMetric) {
       },
     });
   }
-
-  // 사용자 정의 분석 API로 전송 (선택사항)
-  // fetch('/api/analytics/web-vitals', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(metric),
-  // });
 }
 
 /**
@@ -80,7 +67,6 @@ function showPerformanceWarnings(metric: WebVitalMetric) {
   if (metric.rating === 'poor') {
     console.warn(`⚠️ Poor ${metric.name}: ${metric.value}ms`);
 
-    // 특정 메트릭별 개선 제안
     const suggestions = getPerformanceSuggestions(metric.name, metric.value);
     if (suggestions.length > 0) {
       console.warn('💡 Suggestions:', suggestions);
@@ -98,7 +84,7 @@ function getPerformanceSuggestions(
   const suggestions: string[] = [];
 
   switch (metricName) {
-    case 'LCP': // Largest Contentful Paint
+    case 'LCP':
       if (value > 2500) {
         suggestions.push('Optimize images with next/image');
         suggestions.push('Use CDN for static assets');
@@ -106,7 +92,7 @@ function getPerformanceSuggestions(
       }
       break;
 
-    case 'INP': // Interaction to Next Paint (replaces FID)
+    case 'INP':
       if (value > 200) {
         suggestions.push('Reduce JavaScript bundle size');
         suggestions.push('Use React.memo for heavy components');
@@ -115,7 +101,7 @@ function getPerformanceSuggestions(
       }
       break;
 
-    case 'CLS': // Cumulative Layout Shift
+    case 'CLS':
       if (value > 0.1) {
         suggestions.push('Set dimensions for images and videos');
         suggestions.push('Reserve space for dynamic content');
@@ -123,7 +109,7 @@ function getPerformanceSuggestions(
       }
       break;
 
-    case 'FCP': // First Contentful Paint
+    case 'FCP':
       if (value > 1800) {
         suggestions.push('Optimize critical rendering path');
         suggestions.push('Inline critical CSS');
@@ -131,7 +117,7 @@ function getPerformanceSuggestions(
       }
       break;
 
-    case 'TTFB': // Time to First Byte
+    case 'TTFB':
       if (value > 800) {
         suggestions.push('Optimize server response time');
         suggestions.push('Use caching strategies');
@@ -151,11 +137,9 @@ export function getPerformanceInsights(): {
   overallScore: number;
   recommendations: string[];
 } {
-  // 로컬 스토리지에서 수집된 메트릭 가져오기
   const metrics: WebVitalMetric[] = [];
   const recommendations: string[] = [];
 
-  // 전체 성능 점수 계산 (0-100)
   const overallScore = calculateOverallScore(metrics);
 
   return {
@@ -170,7 +154,7 @@ function calculateOverallScore(metrics: WebVitalMetric[]): number {
 
   const weights = {
     LCP: 0.25,
-    INP: 0.25, // Updated from FID to INP
+    INP: 0.25,
     CLS: 0.25,
     FCP: 0.125,
     TTFB: 0.125,

@@ -21,16 +21,13 @@ export function usePerformanceInsights(): PerformanceInsights {
   });
 
   useEffect(() => {
-    // Update insights periodically
     const updateInsights = () => {
       const performanceData = getPerformanceInsights();
       setInsights(performanceData);
     };
 
-    // Initial load
     updateInsights();
 
-    // Update every 30 seconds
     const interval = setInterval(updateInsights, 30000);
 
     return () => clearInterval(interval);

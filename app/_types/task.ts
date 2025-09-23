@@ -4,7 +4,6 @@ export type GenerationStatus =
   | 'COMPLETED'
   | 'FAILED';
 
-// Pipeline status for ButterCover tasks
 export type PipelineStatus =
   | 'PENDING'
   | 'AUDIO_SEPARATION_IN_PROGRESS'
@@ -26,7 +25,6 @@ export type ActionType =
   | 'STYLIST_EDIT'
   | 'VIRTUAL_CASTING_EDIT';
 
-// Digital Goods types
 interface DigitalGoodsRequestDetails {
   imageKey?: string;
   imageUrl?: string;
@@ -50,7 +48,6 @@ export interface DigitalGoodsDetails {
   error?: string;
 }
 
-// Dream Conti types
 interface DreamContiRequestDetails {
   dreamPrompt: string;
   continuationStyle: string;
@@ -67,7 +64,6 @@ export interface DreamContiDetails {
   result?: DreamContiResultDetails;
 }
 
-// Fanmeeting Studio types
 interface FanmeetingStudioRequestDetails {
   fanImageKey: string;
   fanImageUrl?: string;
@@ -96,7 +92,6 @@ export interface FanmeetingStudioDetails {
   error?: string;
 }
 
-// Photo Editor types
 interface PhotoEditorRequestDetails {
   editType: string;
   enhanceQuality: boolean;
@@ -117,11 +112,10 @@ export interface PhotoEditorDetails {
   result?: PhotoEditorResultDetails;
 }
 
-// ButterCover types based on updated API specification
 interface ButterCoverRequestDetails {
-  voiceModel: string;              // 필수: AI 보이스 모델명
-  pitchAdjust?: number;            // 선택: 목소리 높낮이 조절 (-12 ~ +12, 기본값: 0)
-  outputFormat?: string;           // 선택: 출력 파일 형식 (mp3/wav, 기본값: "mp3")
+  voiceModel: string;
+  pitchAdjust?: number;
+  outputFormat?: string;
   sourceAudioKey: string;
 }
 
@@ -136,7 +130,6 @@ export interface ButterCoverDetails {
   result?: ButterCoverResultDetails;
 }
 
-// Stylist types
 interface StylistRequestDetails {
   prompt: string;
   idolImageKey: string;
@@ -175,7 +168,6 @@ export interface StylistDetails {
   error?: string;
 }
 
-// Virtual Casting types
 interface VirtualCastingRequestDetails {
   idolImageKey: string;
   idolImageUrl: string;
@@ -216,7 +208,7 @@ type ActionMap = {
 export type Task = {
   taskId: number;
   status: GenerationStatus;
-  createdAt: string; // ISO 8601 string format
+  createdAt: string;
   parentTaskId?: number;
   editSequence?: number;
   isOriginal?: boolean;

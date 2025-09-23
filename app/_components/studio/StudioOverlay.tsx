@@ -38,7 +38,6 @@ export default function StudioOverlay({
     }
   };
 
-  // ESC 키로 닫기
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {

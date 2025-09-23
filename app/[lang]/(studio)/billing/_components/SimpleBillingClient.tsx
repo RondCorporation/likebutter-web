@@ -25,7 +25,6 @@ interface SimplePlan {
   cta: string;
 }
 
-// Convert API plans to SimplePricingView format
 const convertPlansFormat = (
   apiPlans: Plan[],
   currency: string,
@@ -42,7 +41,12 @@ const convertPlansFormat = (
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    BASIC: ['매일 출석체크 시 10크레딧', '매달 추가 100크레딧', '워터마크 없음', '기본 생성 속도'],
+    BASIC: [
+      '매일 출석체크 시 10크레딧',
+      '매달 추가 100크레딧',
+      '워터마크 없음',
+      '기본 생성 속도',
+    ],
     STANDARD: [
       '매일 출석체크 시 10크레딧',
       '매달 추가 300크레딧',
@@ -73,7 +77,11 @@ const convertPlansFormat = (
       description: '무료로 시작하기',
       priceMonthly: 'Free',
       priceYearly: 'Free',
-      features: ['매일 출석체크 시 10크레딧', '워터마크 포함', '기본 생성 속도'],
+      features: [
+        '매일 출석체크 시 10크레딧',
+        '워터마크 포함',
+        '기본 생성 속도',
+      ],
       isPopular: false,
       cta: '무료 시작',
     },
@@ -134,13 +142,10 @@ export default function SimpleBillingClient({
     setLoading(true);
 
     try {
-      // For now, just show a toast. In real implementation, this would handle payment
       toast.success(`${planKey} ${billingCycle} 플랜을 선택하셨습니다.`);
 
-      // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Redirect to checkout or success page
       router.push(`/${lang}/billing?plan=${planKey}&billing=${billingCycle}`);
     } catch (error) {
       toast.error('플랜 선택 중 오류가 발생했습니다.');

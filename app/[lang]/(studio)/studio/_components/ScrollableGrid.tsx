@@ -59,11 +59,10 @@ export default function ScrollableGrid({
     }
   }, [checkScrollButtons]);
 
-  // 화살표 위치 계산
   const arrowPositionClass =
     rows === 1
-      ? 'top-8 transform -translate-y-1/2' // 1줄: 아이콘 중심 (32px, 텍스트 제외)
-      : 'top-1/2 transform -translate-y-1/2'; // 2줄: 전체 중앙
+      ? 'top-8 transform -translate-y-1/2'
+      : 'top-1/2 transform -translate-y-1/2';
 
   return (
     <div className={`relative w-full overflow-hidden group ${className}`}>

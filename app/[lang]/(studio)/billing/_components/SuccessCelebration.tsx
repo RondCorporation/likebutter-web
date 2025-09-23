@@ -44,7 +44,6 @@ export default function SuccessCelebration({
 
   const PlanIcon = planIcons[planName as keyof typeof planIcons] || Sparkles;
 
-  // Confetti animation
   useEffect(() => {
     if (showConfetti) {
       const duration = 3000;
@@ -77,7 +76,6 @@ export default function SuccessCelebration({
     }
   }, [showConfetti]);
 
-  // Step progression
   useEffect(() => {
     const timer1 = setTimeout(() => setCurrentStep(1), 1000);
     const timer2 = setTimeout(() => setCurrentStep(2), 2000);

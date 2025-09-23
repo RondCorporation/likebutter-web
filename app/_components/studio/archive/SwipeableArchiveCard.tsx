@@ -21,34 +21,28 @@ export default function SwipeableArchiveCard({
 
   const handlers = useSwipeable({
     onSwipeStart: () => {
-      // Reset any existing animations
       setSwipeOffset(0);
     },
     onSwiping: (eventData) => {
-      // Only allow left swipe to reveal delete button
       if (eventData.deltaX < 0) {
         const offset = Math.min(0, Math.max(-80, eventData.deltaX));
         setSwipeOffset(offset);
       }
     },
     onSwipedLeft: (eventData) => {
-      // If swiped far enough, reveal the delete button
       if (eventData.deltaX < -40) {
         setSwipeOffset(-80);
         setIsRevealed(true);
       } else {
-        // Snap back if not swiped far enough
         setSwipeOffset(0);
         setIsRevealed(false);
       }
     },
     onSwipedRight: () => {
-      // Always hide on right swipe
       setSwipeOffset(0);
       setIsRevealed(false);
     },
     onTap: () => {
-      // Hide delete button when tapping on the card
       if (isRevealed) {
         setSwipeOffset(0);
         setIsRevealed(false);
@@ -62,7 +56,7 @@ export default function SwipeableArchiveCard({
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onDelete(task);
-    // Reset swipe state after delete action
+
     setSwipeOffset(0);
     setIsRevealed(false);
   };

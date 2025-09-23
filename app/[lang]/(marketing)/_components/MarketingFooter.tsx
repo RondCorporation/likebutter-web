@@ -20,7 +20,6 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
     const lang = pathname.split('/')[1];
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
-    // Unified footer styling for all marketing pages
     const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start flex flex-col justify-end' : 'pt-12'}`;
 
     const footerContentClasses = isSnapSection

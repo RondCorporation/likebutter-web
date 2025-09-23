@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { X, Check, CheckCircle2, Loader2, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-// 기존 SDK 관련 imports 보존
 import { loadPortone } from '@/lib/portone';
 import { usePortonePreload } from '@/components/portone/PreloadPortoneProvider';
 import {
@@ -45,7 +44,6 @@ export default function StudioCheckoutModal({
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
 
-  // 기존 SDK 관련 states 보존
   const [isLoading, setIsLoading] = useState(false);
   const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>(
     'loading'
@@ -55,7 +53,6 @@ export default function StudioCheckoutModal({
   >('review');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // 기존 SDK 로직 완전 보존
   const {
     preloadPortone,
     getPortone,
@@ -64,7 +61,6 @@ export default function StudioCheckoutModal({
     error: sdkError,
   } = usePortonePreload();
 
-  // 기존 SDK 초기화 로직 보존
   useEffect(() => {
     if (!isLoaded && !sdkIsLoading) {
       preloadPortone()
@@ -85,7 +81,6 @@ export default function StudioCheckoutModal({
     }
   }, [isLoaded, sdkIsLoading, sdkError]);
 
-  // 기존 결제 로직 완전 보존
   const handlePayment = async () => {
     if (!isAuthenticated || !user) {
       toast.error(t('loginRequiredForPayment'));
@@ -108,7 +103,6 @@ export default function StudioCheckoutModal({
     );
 
     try {
-      // 기존 SDK 로딩 로직 보존
       let PortOne = getPortone();
 
       if (!PortOne) {
@@ -129,7 +123,6 @@ export default function StudioCheckoutModal({
         throw new Error(t('paymentEnvError'));
       }
 
-      // 기존 결제 로직 보존
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
@@ -159,7 +152,6 @@ export default function StudioCheckoutModal({
 
         setPaymentStep('success');
 
-        // 성공 후 잠시 후 페이지 이동
         setTimeout(() => {
           if (latestPayment) {
             router.push(`/${lang}/payments/${latestPayment.paymentId}`);
@@ -184,7 +176,6 @@ export default function StudioCheckoutModal({
     return price.toLocaleString();
   };
 
-  // 부가세 10% 계산 (현재 가격이 부가세 포함 가격)
   const priceWithoutVAT = Math.floor(plan.price / 1.1);
   const vatAmount = plan.price - priceWithoutVAT;
 

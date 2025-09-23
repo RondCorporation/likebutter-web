@@ -39,8 +39,7 @@ export default function HeroImageGallery({
 
   useEffect(() => {
     if (isReady && isVisible && onAnimationComplete) {
-      // Calculate the total animation time for desktop (5 columns) and mobile (3 columns)
-      const totalAnimationTime = (5 - 1) * 150 + 600; // (columns - 1) * delay + duration
+      const totalAnimationTime = (5 - 1) * 150 + 600;
       const timer = setTimeout(onAnimationComplete, totalAnimationTime);
       return () => clearTimeout(timer);
     }
@@ -101,9 +100,8 @@ export default function HeroImageGallery({
   ];
 
   const images = customImages || defaultImages;
-  
-  // Filter out image 7 for mobile
-  const mobileImages = images.filter(img => img.id !== 7);
+
+  const mobileImages = images.filter((img) => img.id !== 7);
 
   const getImagePosition = (column: number, row: number) => {
     const columnWidthWithGap = 330;
@@ -131,23 +129,29 @@ export default function HeroImageGallery({
   };
 
   const getMobileImagePosition = (column: number, row: number) => {
-    const columnWidthWithGap = 280; // Smaller for mobile
-    const rowHeightWithGap = 360;   // Smaller for mobile
+    const columnWidthWithGap = 280;
+    const rowHeightWithGap = 360;
     const baseLeft = (column - 1) * columnWidthWithGap;
     const top = (row - 1) * rowHeightWithGap;
     return { left: baseLeft, top };
   };
 
-  // Remap images for mobile 3-column layout
   const getMobileColumnRow = (imageId: number) => {
     switch (imageId) {
-      case 1: return { column: 1, row: 1 };
-      case 2: return { column: 1, row: 2 };
-      case 3: return { column: 2, row: 1 };
-      case 4: return { column: 2, row: 2 };
-      case 5: return { column: 3, row: 1 };
-      case 6: return { column: 3, row: 2 };
-      default: return { column: 1, row: 1 };
+      case 1:
+        return { column: 1, row: 1 };
+      case 2:
+        return { column: 1, row: 2 };
+      case 3:
+        return { column: 2, row: 1 };
+      case 4:
+        return { column: 2, row: 2 };
+      case 5:
+        return { column: 3, row: 1 };
+      case 6:
+        return { column: 3, row: 2 };
+      default:
+        return { column: 1, row: 1 };
     }
   };
 
@@ -214,7 +218,10 @@ export default function HeroImageGallery({
       >
         {mobileImages.map((image) => {
           const mobileLayout = getMobileColumnRow(image.id);
-          const position = getMobileImagePosition(mobileLayout.column, mobileLayout.row);
+          const position = getMobileImagePosition(
+            mobileLayout.column,
+            mobileLayout.row
+          );
           const delay = (mobileLayout.column - 1) * 0.15;
           return (
             <motion.div

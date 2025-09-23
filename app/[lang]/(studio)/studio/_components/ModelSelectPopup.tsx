@@ -21,7 +21,6 @@ export default function ModelSelectPopup({
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
 
-  // Prefetch routes when popup opens
   useEffect(() => {
     router.prefetch(`/${lang}/studio/digital-goods`);
     router.prefetch(`/${lang}/studio/stylist`);
@@ -60,19 +59,15 @@ export default function ModelSelectPopup({
         return;
     }
 
-    // Close popup first
     onClose();
 
-    // Navigate after a brief delay to ensure popup close animation
     setTimeout(() => {
-      // Use SPA navigation if available
       if (
         typeof window !== 'undefined' &&
         (window as any).studioNavigateToTool
       ) {
         (window as any).studioNavigateToTool(toolName);
       } else {
-        // Fallback to traditional routing
         router.push(targetPath);
       }
     }, 100);
@@ -158,8 +153,7 @@ export default function ModelSelectPopup({
                   subtitle="내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요."
                   backgroundImage="/studio/model-select/digital-goods.png"
                   onClick={() => navigateToTool('digital-goods')}
-                >
-                </SelectCard>
+                ></SelectCard>
 
                 <SelectCard
                   state="default"

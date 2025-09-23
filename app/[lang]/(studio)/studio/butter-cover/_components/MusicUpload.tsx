@@ -31,7 +31,6 @@ export default function MusicUpload({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Check if file is audio
       if (file.type.startsWith('audio/')) {
         setSelectedFile(file);
       } else {

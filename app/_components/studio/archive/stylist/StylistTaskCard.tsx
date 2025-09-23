@@ -12,7 +12,6 @@ export default function StylistTaskCard({ task, onClick }: Props) {
   const { t } = useTranslation();
   const details = task.details as StylistDetails | undefined;
 
-  // Count how many style references are provided
   const styleRefCount = [
     details?.request?.hairStyleImageKey,
     details?.request?.outfitImageKey,

@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import useStudioNavigationStore from '@/stores/studioNavigationStore';
 
-// Dynamic imports for studio tools
 const DigitalGoodsWithSidebar = dynamic(
   () => import('../digital-goods/_components/DigitalGoodsWithSidebar')
 );
@@ -80,7 +79,6 @@ export function useStudioNavigation(lang: string) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Use Zustand store for persistence
   const {
     toolStates,
     lastUsedTool,
@@ -103,7 +101,6 @@ export function useStudioNavigation(lang: string) {
     new Map()
   );
 
-  // Extract current tool from pathname
   const getCurrentTool = useCallback(() => {
     const segments = pathname.split('/');
     const toolIndex = segments.findIndex((segment) => segment === 'studio');
@@ -113,7 +110,6 @@ export function useStudioNavigation(lang: string) {
     return 'dashboard';
   }, [pathname]);
 
-  // Preload components for better performance
   const preloadTool = useCallback(
     (toolName: string) => {
       if (
@@ -125,28 +121,22 @@ export function useStudioNavigation(lang: string) {
 
       const toolConfig = STUDIO_TOOLS[toolName];
 
-      // Cache the component
       componentCache.current.set(toolName, toolConfig.component);
 
-      // Mark as preloaded in local state
       setNavigationState((prev) => ({
         ...prev,
         preloadedTools: new Set([...prev.preloadedTools, toolName]),
       }));
 
-      // Persist to store
       addPreloadedTool(toolName);
 
-      // Update tool config
       STUDIO_TOOLS[toolName].preloaded = true;
     },
     [navigationState.preloadedTools, addPreloadedTool]
   );
 
-  // Navigate with client-side routing for better UX
   const navigateToTool = useCallback(
     (toolName: string, options?: { replace?: boolean }) => {
-      // Save current state before navigating
       const currentTool = getCurrentTool();
       if (currentTool !== toolName) {
         setToolState(currentTool, {
@@ -161,13 +151,10 @@ export function useStudioNavigation(lang: string) {
         isTransitioning: true,
       }));
 
-      // Update last used tool
       setLastUsedTool(toolName);
 
-      // Preload the target tool if not already preloaded
       preloadTool(toolName);
 
-      // Use Next.js router for actual navigation
       const targetPath =
         toolName === 'dashboard'
           ? `/${lang}/studio`
@@ -179,14 +166,12 @@ export function useStudioNavigation(lang: string) {
         router.push(targetPath);
       }
 
-      // Reset transition state after a short delay
       setTimeout(() => {
         setNavigationState((prev) => ({
           ...prev,
           isTransitioning: false,
         }));
 
-        // Restore scroll position if available
         const toolState = getToolState(toolName);
         if (toolState?.scrollPosition) {
           window.scrollTo(0, toolState.scrollPosition);
@@ -204,24 +189,20 @@ export function useStudioNavigation(lang: string) {
     ]
   );
 
-  // Check if tool is preloaded
   const isToolPreloaded = useCallback(
     (toolName: string) => navigationState.preloadedTools.has(toolName),
     [navigationState.preloadedTools]
   );
 
-  // Preload critical tools immediately, others progressively
   useEffect(() => {
-    // Preload dashboard component immediately since it's the default
     preloadTool('dashboard');
 
-    // Progressive preloading with priority levels
     const preloadSchedule = [
-      { tools: ['digital-goods'], delay: 0 }, // Critical: Load immediately
-      { tools: ['archive'], delay: 200 }, // High: Load very quickly
-      { tools: ['stylist'], delay: 500 }, // Medium: Load after initial paint
-      { tools: ['virtual-casting'], delay: 1000 }, // Medium: Load after user settles
-      { tools: ['butter-cover', 'fanmeeting-studio'], delay: 2000 }, // Low: Load in background
+      { tools: ['digital-goods'], delay: 0 },
+      { tools: ['archive'], delay: 200 },
+      { tools: ['stylist'], delay: 500 },
+      { tools: ['virtual-casting'], delay: 1000 },
+      { tools: ['butter-cover', 'fanmeeting-studio'], delay: 2000 },
     ];
 
     const timeouts: NodeJS.Timeout[] = [];
@@ -242,7 +223,6 @@ export function useStudioNavigation(lang: string) {
     };
   }, [preloadTool, isToolPreloaded]);
 
-  // Update current tool based on pathname changes
   useEffect(() => {
     const currentTool = getCurrentTool();
     setNavigationState((prev) => ({
@@ -251,7 +231,6 @@ export function useStudioNavigation(lang: string) {
     }));
   }, [getCurrentTool]);
 
-  // Get cached component for a tool
   const getToolComponent = useCallback((toolName: string) => {
     const cached = componentCache.current.get(toolName);
     if (cached) return cached;

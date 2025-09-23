@@ -26,14 +26,12 @@ export default function FanmeetingStudioWithSidebar() {
     setFormData(newFormData);
   }, []);
 
-  // Track mobile result state from client ref
   useEffect(() => {
     if (clientRef?.showMobileResult !== undefined) {
       setShowMobileResult(clientRef.showMobileResult);
     }
   }, [clientRef?.showMobileResult]);
 
-  // Track PC sidebar visibility based on result image and processing state
   useEffect(() => {
     const resultImage = clientRef?.resultImage;
     const isProcessing = clientRef?.isProcessing || clientRef?.isPolling;

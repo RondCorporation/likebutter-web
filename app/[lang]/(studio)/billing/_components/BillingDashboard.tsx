@@ -3,10 +3,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-// motion 제거 - 과도한 애니메이션 방지
-import { Sparkles, Crown, Zap } from 'lucide-react';
-
-import StudioOverlay from '@/components/studio/StudioOverlay';
 import ModernPlanCard from './ModernPlanCard';
 import StudioCheckoutModal from './StudioCheckoutModal';
 import BillingLoadingSkeleton from './BillingLoadingSkeleton';
@@ -49,7 +45,12 @@ const convertPlansFormat = (
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    BASIC: ['매일 출석체크 시 10크레딧', '매달 추가 100크레딧', '워터마크 없음', '기본 생성 속도'],
+    BASIC: [
+      '매일 출석체크 시 10크레딧',
+      '매달 추가 100크레딧',
+      '워터마크 없음',
+      '기본 생성 속도',
+    ],
     STANDARD: [
       '매일 출석체크 시 10크레딧',
       '매달 추가 300크레딧',
@@ -66,17 +67,15 @@ const convertPlansFormat = (
       description: '무료로 시작하기',
       priceMonthly: 'Free',
       priceYearly: 'Free',
-      features: [
-        { text: '매일 출석체크 시 10크레딧' },
-      ],
+      features: [{ text: '매일 출석체크 시 10크레딧' }],
       isPopular: false,
     },
   ];
 
   const isKorean = currency === '₩';
 
-  // Group plans by planType, excluding ENTERPRISE
-  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } = {};
+  const processedPlans: { [key: string]: { monthly?: Plan; yearly?: Plan } } =
+    {};
 
   apiPlans.forEach((plan) => {
     if (plan.planType !== 'ENTERPRISE' && plan.planKey !== 'FREE') {
@@ -91,19 +90,23 @@ const convertPlansFormat = (
     }
   });
 
-  // Create one card per planType with both monthly and yearly pricing
   Object.entries(processedPlans).forEach(([planType, cycles]) => {
     if (cycles.monthly || cycles.yearly) {
       const monthlyPrice = cycles.monthly
-        ? (isKorean ? cycles.monthly.priceKrw || 0 : cycles.monthly.priceUsd || 0)
+        ? isKorean
+          ? cycles.monthly.priceKrw || 0
+          : cycles.monthly.priceUsd || 0
         : 0;
       const yearlyPrice = cycles.yearly
-        ? (isKorean ? cycles.yearly.priceKrw || 0 : cycles.yearly.priceUsd || 0)
+        ? isKorean
+          ? cycles.yearly.priceKrw || 0
+          : cycles.yearly.priceUsd || 0
         : 0;
-      const yearlyMonthlyPrice = yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
+      const yearlyMonthlyPrice =
+        yearlyPrice > 0 ? Math.floor(yearlyPrice / 12) : 0;
 
       result.push({
-        key: planType, // Use planType for UI identification
+        key: planType,
         name: planTypeMap[planType] || planType,
         description: planDescMap[planType] || `${planType} plan`,
         priceMonthly: monthlyPrice,
@@ -114,7 +117,7 @@ const convertPlansFormat = (
         })),
         isPopular: planType === 'BASIC',
         isPremium: planType === 'STANDARD',
-        // Store both planKeys for subscription creation
+
         monthlyPlanKey: cycles.monthly?.planKey,
         yearlyPlanKey: cycles.yearly?.planKey,
       });
@@ -143,16 +146,14 @@ export default function BillingDashboard({
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 초기 로딩 완료 처리
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
-    }, 1000); // 1초 후 로딩 완료 (실제로는 API 로딩 완료에 맞춰 조정)
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // 에러 처리 및 데이터 검증
   useEffect(() => {
     try {
       if (!apiPlans || apiPlans.length === 0) {
@@ -160,7 +161,6 @@ export default function BillingDashboard({
         return;
       }
 
-      // API 플랜 데이터 유효성 검사
       const hasValidPlans = apiPlans.some(
         (plan) =>
           plan.planType && plan.billingCycle && (plan.priceKrw || plan.priceUsd)
@@ -192,19 +192,19 @@ export default function BillingDashboard({
       const plan = plans.find((p) => p.key === planKey);
       if (!plan) return;
 
-      // Get the correct API planKey based on billing cycle
-      const actualPlanKey = cycle === 'monthly' ? plan.monthlyPlanKey : plan.yearlyPlanKey;
+      const actualPlanKey =
+        cycle === 'monthly' ? plan.monthlyPlanKey : plan.yearlyPlanKey;
       if (!actualPlanKey) return;
 
-      // For checkout, show the actual amount to be charged
-      const price = cycle === 'monthly'
-        ? plan.priceMonthly
-        : (plan.priceYearly as number) * 12; // Show full yearly price in checkout
+      const price =
+        cycle === 'monthly'
+          ? plan.priceMonthly
+          : (plan.priceYearly as number) * 12;
       const originalPrice =
         cycle === 'yearly' ? (plan.priceMonthly as number) * 12 : undefined;
 
       setSelectedPlan({
-        planKey: actualPlanKey, // Use the actual planKey from API
+        planKey: actualPlanKey,
         name: plan.name,
         description: plan.description,
         price: price as number,
@@ -219,7 +219,6 @@ export default function BillingDashboard({
     [plans, router, lang, currency]
   );
 
-  // URL에서 플랜 정보 확인하고 자동으로 결제 모달 열기
   useEffect(() => {
     const planParam = searchParams.get('plan');
     const billingParam = searchParams.get('billing') as 'monthly' | 'yearly';
@@ -227,7 +226,6 @@ export default function BillingDashboard({
     if (planParam && billingParam && plans.length > 0) {
       setBillingCycle(billingParam);
 
-      // 해당 플랜 찾기
       const plan = plans.find(
         (p) =>
           (planParam === 'basic' && p.key === 'BASIC') ||
@@ -245,7 +243,6 @@ export default function BillingDashboard({
     setShowCheckoutModal(false);
     setSelectedPlan(null);
 
-    // URL에서 파라미터 제거
     const url = new URL(window.location.href);
     url.searchParams.delete('plan');
     url.searchParams.delete('billing');
@@ -256,20 +253,15 @@ export default function BillingDashboard({
     setError(null);
     setIsInitialLoading(true);
 
-    // 1초 후 로딩 완료 (실제 구현에서는 API 재호출)
     setTimeout(() => {
       setIsInitialLoading(false);
     }, 1000);
   };
 
-  // quickStats 완전 제거 - 불필요한 정보
-
-  // 로딩 상태
   if (isInitialLoading) {
     return <BillingLoadingSkeleton lang={lang} />;
   }
 
-  // 에러 상태
   if (error) {
     return (
       <BillingErrorDisplay

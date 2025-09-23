@@ -31,7 +31,6 @@ export default function StudioLayout({ children, params }: Props) {
     router.push(`/${lang}/billing`);
   };
 
-  // Show upgrade button only for FREE plan users
   const showUpgradeButton = user?.planKey === 'FREE';
 
   return (
@@ -54,9 +53,7 @@ export default function StudioLayout({ children, params }: Props) {
               <span className="text-studio-text-primary text-sm font-semibold">
                 {isCreditLoading ? '...' : currentBalance.toLocaleString()}
               </span>
-              <span className="text-studio-text-secondary text-xs">
-                크레딧
-              </span>
+              <span className="text-studio-text-secondary text-xs">크레딧</span>
             </div>
 
             {/* Upgrade Button - Only for FREE plan users */}

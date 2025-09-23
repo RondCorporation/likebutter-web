@@ -36,7 +36,6 @@ export default function MarketingLayoutContent({
     );
   }
 
-  // Default layout for other marketing pages like /privacy
   return (
     <div className="bg-black text-white">
       <MarketingHeader />

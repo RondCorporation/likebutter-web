@@ -11,7 +11,7 @@ interface StylistSidebarProps {
   onFormChange?: (formData: {
     mode: 'text' | 'image';
     textPrompt?: string;
-    imagePrompt?: string; // 이미지 모드용 프롬프트
+    imagePrompt?: string;
     imageSettings?: {
       hairstyle: boolean;
       costume: boolean;
@@ -34,7 +34,7 @@ export default function StylistSidebar({
 }: StylistSidebarProps = {}) {
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
-  const [imagePrompt, setImagePrompt] = useState(''); // 이미지 모드용 프롬프트
+  const [imagePrompt, setImagePrompt] = useState('');
   const isDesktop = useIsDesktop();
   const [imageSettings, setImageSettings] = useState({
     hairstyle: false,
@@ -101,7 +101,6 @@ export default function StylistSidebar({
   const handleModeToggle = (value: 'left' | 'right') => {
     const newMode = value === 'left' ? 'text' : 'image';
     setMode(newMode);
-    // Update form data will be called by useEffect
   };
 
   const handleTextPromptChange = (value: string) => {
@@ -123,9 +122,7 @@ export default function StylistSidebar({
   };
 
   const handleFileUpload = (category: string, file: File) => {
-    // File validation
     if (file.size > 10 * 1024 * 1024) {
-      // 10MB limit
       return;
     }
 
@@ -133,7 +130,6 @@ export default function StylistSidebar({
       return;
     }
 
-    // Map category to API parameter names
     const fileMapping: { [key: string]: keyof typeof uploadedFiles } = {
       hairstyle: 'hairStyleImage',
       costume: 'outfitImage',
@@ -148,7 +144,6 @@ export default function StylistSidebar({
     }
   };
 
-  // Effect to update form data when any state changes
   React.useEffect(() => {
     updateFormData();
   }, [mode, textPrompt, imagePrompt, imageSettings, uploadedFiles]);

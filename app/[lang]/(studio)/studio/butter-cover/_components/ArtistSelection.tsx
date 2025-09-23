@@ -196,7 +196,7 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
 
   const handleGroupChange = (value: string) => {
     setSelectedGroup(value);
-    setSelectedArtist(''); // Reset artist selection when group changes
+    setSelectedArtist('');
   };
 
   const availableArtists = selectedGroup

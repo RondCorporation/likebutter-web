@@ -36,7 +36,6 @@ export default function RotatingHeroSection({
     'entering' | 'visible' | 'exiting'
   >('entering');
 
-  // Define the hero sections data
   const heroSections: HeroSection[] = [
     {
       id: 1,
@@ -217,7 +216,6 @@ export default function RotatingHeroSection({
 
   const currentSection = heroSections[currentSectionIndex];
 
-  // Auto rotation effect
   useEffect(() => {
     const timer = setInterval(() => {
       setAnimationPhase('exiting');
@@ -233,7 +231,6 @@ export default function RotatingHeroSection({
     return () => clearInterval(timer);
   }, []);
 
-  // Handle animation phase transitions
   useEffect(() => {
     if (animationPhase === 'entering') {
       const timer = setTimeout(() => {

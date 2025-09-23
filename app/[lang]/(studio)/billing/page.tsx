@@ -22,7 +22,6 @@ export default async function BillingPage({ params }: Props) {
   const isKorean = lang === 'ko';
   const currency = isKorean ? '₩' : '$';
 
-  // 새로운 BillingDashboard 사용 (쿼리파라미터 처리는 클라이언트에서)
   return (
     <BillingDashboard lang={lang} plans={apiPlans || []} currency={currency} />
   );

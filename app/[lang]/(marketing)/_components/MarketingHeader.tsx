@@ -136,7 +136,6 @@ export default function MarketingHeader() {
           </div>
           <div className="flex items-center gap-4">
             {(() => {
-              // JWT 기반 인증 상태 체크
               if (isInitialized && isAuthenticated && hasBasicInfo) {
                 return <UserDropdown />;
               }

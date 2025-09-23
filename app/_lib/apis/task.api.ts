@@ -15,10 +15,8 @@ interface TaskCreationResponse {
   status: string;
 }
 
-// Task Category 타입 정의
 export type TaskCategory = 'IMAGE' | 'AUDIO';
 
-// 필터링 옵션 인터페이스
 export interface TaskFilters {
   status?: string;
   actionType?: string;
@@ -55,7 +53,6 @@ export const getTaskStatus = (
   return apiFetch<TaskStatusResponse>(`/tasks/me/${taskId}`);
 };
 
-// API response format for batch tasks (uses 'id' instead of 'taskId')
 export interface BatchTaskResponse {
   id: number;
   accountId: number;
@@ -76,7 +73,6 @@ export const getBatchTaskStatus = (
   return apiFetch<BatchTaskResponse[]>(`/tasks/batch?${params.toString()}`);
 };
 
-// Digital Goods style enum values
 export const DIGITAL_GOODS_STYLES = {
   GHIBLI: 'GHIBLI',
   PIXEL_ART: 'PIXEL_ART',
@@ -92,7 +88,6 @@ export const DIGITAL_GOODS_STYLES = {
 export type DigitalGoodsStyle =
   (typeof DIGITAL_GOODS_STYLES)[keyof typeof DIGITAL_GOODS_STYLES];
 
-// Digital Goods task creation
 export interface DigitalGoodsRequest {
   style: DigitalGoodsStyle;
 }
@@ -103,12 +98,10 @@ export const createDigitalGoodsTask = (
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  // Add image if provided
   if (image) {
     formData.append('image', image);
   }
 
-  // Add form fields individually
   Object.entries(request).forEach(([key, value]) => {
     if (value !== undefined) {
       formData.append(key, value);
@@ -121,7 +114,6 @@ export const createDigitalGoodsTask = (
   });
 };
 
-// Photo Editor task creation (replacing Butter Gen functionality)
 export interface PhotoEditorRequest {
   editType: string;
   enhanceQuality: boolean;
@@ -149,9 +141,9 @@ export const createPhotoEditorTask = (
 };
 
 export interface ButterCoverRequest {
-  voiceModel: string; // 필수: AI 보이스 모델명
-  pitchAdjust?: number; // 선택: 목소리 높낮이 조절 (-12 ~ +12, 기본값: 0)
-  outputFormat?: string; // 선택: 출력 파일 형식 (mp3/wav, 기본값: "mp3")
+  voiceModel: string;
+  pitchAdjust?: number;
+  outputFormat?: string;
 }
 
 export const createButterCoverTask = (
@@ -171,7 +163,6 @@ export const createButterCoverTask = (
   });
 };
 
-// Stylist task creation
 export interface StylistRequest {
   prompt: string;
   hairStyleImage?: File;
@@ -188,13 +179,10 @@ export const createStylistTask = (
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  // Add required idol image
   formData.append('idolImage', idolImage);
 
-  // Add required prompt
   formData.append('prompt', request.prompt);
 
-  // Add optional style images
   if (request.hairStyleImage) {
     formData.append('hairStyleImage', request.hairStyleImage);
   }
@@ -211,7 +199,6 @@ export const createStylistTask = (
     formData.append('moodImage', request.moodImage);
   }
 
-  // Add optional custom prompt
   if (request.customPrompt) {
     formData.append('customPrompt', request.customPrompt);
   }
@@ -222,9 +209,7 @@ export const createStylistTask = (
   });
 };
 
-// Virtual Casting style enum values
 export const VIRTUAL_CASTING_STYLES = {
-  // Disney, Pixar & Hollywood Animation
   FROZEN: 'FROZEN',
   SPONGEBOB: 'SPONGEBOB',
   ALADDIN: 'ALADDIN',
@@ -232,41 +217,40 @@ export const VIRTUAL_CASTING_STYLES = {
   TOY_STORY: 'TOY_STORY',
   MINIONS: 'MINIONS',
   ZOOTOPIA: 'ZOOTOPIA',
-  // Fantasy & SF
+
   TWILIGHT: 'TWILIGHT',
   STAR_WARS: 'STAR_WARS',
   LORD_OF_THE_RINGS: 'LORD_OF_THE_RINGS',
   HARRY_POTTER: 'HARRY_POTTER',
   AVENGERS: 'AVENGERS',
-  OVERWATCH: 'OVERWATCH', // 이미지 있음, API 스펙에 없음 - 더미
-  // Korean Webtoons & Dramas
+  OVERWATCH: 'OVERWATCH',
+
   TRUE_BEAUTY: 'TRUE_BEAUTY',
   LOOKISM: 'LOOKISM',
   KENGAN_ASHURA: 'KENGAN_ASHURA',
   ITAEWON_CLASS: 'ITAEWON_CLASS',
   SQUID_GAME: 'SQUID_GAME',
-  VOLCANO_RETURNS: 'VOLCANO_RETURNS', // 이미지 있음, API 스펙에 없음 - 더미
-  // Japanese Animation
+  VOLCANO_RETURNS: 'VOLCANO_RETURNS',
+
   CRAYON_SHIN_CHAN: 'CRAYON_SHIN_CHAN',
   FRIEREN: 'FRIEREN',
   MY_LOVE_MIX_UP: 'MY_LOVE_MIX_UP',
   NARUTO: 'NARUTO',
-  // 이미지 있음, API 스펙에 없음 - 더미 열거형들
-  KIMI_NI_TODOKE: 'KIMI_NI_TODOKE', // 너에게 닿기를
-  DETECTIVE_CONAN: 'DETECTIVE_CONAN', // 명탐정 코난
-  NANA: 'NANA', // 나나
-  YOUR_NAME: 'YOUR_NAME', // 너의이름은
-  DORAEMON: 'DORAEMON', // 도라에몽
-  SPY_FAMILY: 'SPY_FAMILY', // 스파이패밀리
-  SLAM_DUNK: 'SLAM_DUNK', // 슬램덩크
-  OURAN_HIGH_SCHOOL: 'OURAN_HIGH_SCHOOL', // 오란고교
-  JUJUTSU_KAISEN: 'JUJUTSU_KAISEN', // 주술회전
+
+  KIMI_NI_TODOKE: 'KIMI_NI_TODOKE',
+  DETECTIVE_CONAN: 'DETECTIVE_CONAN',
+  NANA: 'NANA',
+  YOUR_NAME: 'YOUR_NAME',
+  DORAEMON: 'DORAEMON',
+  SPY_FAMILY: 'SPY_FAMILY',
+  SLAM_DUNK: 'SLAM_DUNK',
+  OURAN_HIGH_SCHOOL: 'OURAN_HIGH_SCHOOL',
+  JUJUTSU_KAISEN: 'JUJUTSU_KAISEN',
 } as const;
 
 export type VirtualCastingStyle =
   (typeof VIRTUAL_CASTING_STYLES)[keyof typeof VIRTUAL_CASTING_STYLES];
 
-// Virtual Casting task creation
 export interface VirtualCastingRequest {
   style: VirtualCastingStyle;
 }
@@ -277,7 +261,6 @@ export const createVirtualCastingTask = (
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  // Add required files and data
   formData.append('idolImage', idolImage);
   formData.append('style', request.style);
 
@@ -287,7 +270,6 @@ export const createVirtualCastingTask = (
   });
 };
 
-// Fanmeeting Studio task creation
 export interface FanmeetingStudioRequest {
   situationPrompt: string;
   backgroundPrompt: string;
@@ -301,15 +283,12 @@ export const createFanmeetingStudioTask = (
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  // Add required images
   formData.append('fanImage', fanImage);
   formData.append('idolImage', idolImage);
 
-  // Add required prompts
   formData.append('situationPrompt', request.situationPrompt);
   formData.append('backgroundPrompt', request.backgroundPrompt);
 
-  // Add optional custom prompt
   if (request.customPrompt) {
     formData.append('customPrompt', request.customPrompt);
   }
@@ -320,16 +299,12 @@ export const createFanmeetingStudioTask = (
   });
 };
 
-// Task 삭제 API
 export const deleteTask = (taskId: number): Promise<void> => {
   return apiFetch<void>(`/tasks/${taskId}`, {
     method: 'DELETE',
-  }).then(() => {
-    // 204 No Content 응답의 경우 void를 반환
-  });
+  }).then(() => {});
 };
 
-// 배치 Task 삭제 API
 export interface BatchDeleteResponse {
   totalRequested: number;
   successfullyDeleted: number;
@@ -346,7 +321,6 @@ export const deleteBatchTasks = (
   });
 };
 
-// 수정 가능 여부 확인 API
 export const canEditTask = (
   taskId: number,
   actionType: ActionType
@@ -355,7 +329,6 @@ export const canEditTask = (
   return apiFetch<boolean>(`/tasks/${endpoint}/${taskId}/can-edit`);
 };
 
-// Task 수정 요청 API
 export const editTask = (
   taskId: number,
   actionType: ActionType,
@@ -373,7 +346,6 @@ export const editTask = (
   });
 };
 
-// Task 수정 히스토리 조회 API
 export const getTaskEditHistory = (
   taskId: number,
   actionType: ActionType
@@ -384,7 +356,6 @@ export const getTaskEditHistory = (
   );
 };
 
-// ActionType에 따른 엔드포인트 매핑
 const getActionTypeEndpoint = (actionType: ActionType): string => {
   switch (actionType) {
     case 'DIGITAL_GOODS':
@@ -404,7 +375,6 @@ const getActionTypeEndpoint = (actionType: ActionType): string => {
   }
 };
 
-// 수정 가능한 ActionType인지 확인
 export const isEditableActionType = (actionType: ActionType): boolean => {
   return [
     'DIGITAL_GOODS',
@@ -414,7 +384,6 @@ export const isEditableActionType = (actionType: ActionType): boolean => {
   ].includes(actionType);
 };
 
-// Edit ActionType인지 확인
 export const isEditActionType = (actionType: ActionType): boolean => {
   return [
     'DIGITAL_GOODS_EDIT',
@@ -424,7 +393,6 @@ export const isEditActionType = (actionType: ActionType): boolean => {
   ].includes(actionType);
 };
 
-// 원본 ActionType 가져오기
 export const getOriginalActionType = (
   editActionType: ActionType
 ): ActionType => {

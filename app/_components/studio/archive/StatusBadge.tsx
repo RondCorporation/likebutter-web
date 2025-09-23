@@ -9,7 +9,6 @@ export default function StatusBadge({
 }) {
   const baseClasses = 'px-2 py-1 text-xs font-semibold rounded-full';
 
-  // Handle pipeline status for ButterCover tasks
   if (pipelineStatus) {
     switch (pipelineStatus) {
       case 'AUDIO_SEPARATION_IN_PROGRESS':
@@ -49,7 +48,6 @@ export default function StatusBadge({
     }
   }
 
-  // Default status handling
   switch (status) {
     case 'COMPLETED':
       return (

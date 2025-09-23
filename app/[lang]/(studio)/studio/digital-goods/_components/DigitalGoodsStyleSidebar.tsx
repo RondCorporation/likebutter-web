@@ -14,7 +14,6 @@ export default function DigitalGoodsStyleSidebar({
 }: DigitalGoodsStyleSidebarProps = {}) {
   const [selectedPreset, setSelectedPreset] = useState('지브리 스타일');
 
-  // 스타일 이미지 매핑
   const getStyleImage = (style: string) => {
     const styleImageMap: Record<string, string> = {
       GHIBLI: '/studio/digital-goods/지브리.png',
@@ -42,7 +41,6 @@ export default function DigitalGoodsStyleSidebar({
     { name: '피규어 스타일', value: 'FIGURE' },
   ];
 
-  // Form data 변경 감지 및 부모 컴포넌트로 전달
   useEffect(() => {
     const selectedPresetData = stylePresets.find(
       (preset) => preset.name === selectedPreset

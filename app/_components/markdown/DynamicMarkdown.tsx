@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic';
 import { ComponentProps } from 'react';
 
-// Dynamic import of react-markdown to reduce initial bundle size
 const ReactMarkdown = dynamic(() => import('react-markdown'), {
   ssr: true,
   loading: () => (

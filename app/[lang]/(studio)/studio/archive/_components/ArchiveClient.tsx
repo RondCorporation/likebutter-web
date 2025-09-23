@@ -49,7 +49,6 @@ function Dropdown({
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
 
-      // If there's less than 200px below and more space above, show dropdown upward
       if (spaceBelow < 200 && spaceAbove > spaceBelow) {
         setDropdownPosition('top');
       } else {
@@ -114,7 +113,6 @@ function ArchiveTaskCard({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -143,7 +141,6 @@ function ArchiveTaskCard({
   const renderTaskPreview = (task: Task) => {
     const { status, actionType } = task;
 
-    // Failed state
     if (status === 'FAILED') {
       return (
         <div className="w-full h-full flex items-center justify-center text-red-400">
@@ -155,7 +152,6 @@ function ArchiveTaskCard({
       );
     }
 
-    // Pending state
     if (status === 'PENDING') {
       return (
         <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -166,7 +162,6 @@ function ArchiveTaskCard({
       );
     }
 
-    // Processing state
     if (status === 'PROCESSING') {
       return (
         <div className="w-full h-full flex items-center justify-center text-yellow-400">
@@ -177,7 +172,6 @@ function ArchiveTaskCard({
       );
     }
 
-    // Completed state - show result images
     if (status === 'COMPLETED' && task.details?.result) {
       let imageUrl: string | null = null;
 
@@ -205,7 +199,6 @@ function ArchiveTaskCard({
           imageUrl = task.details.result.imageUrl || null;
           break;
         case 'BUTTER_COVER':
-          // Audio result - show music icon
           return (
             <div className="w-full h-full flex items-center justify-center text-green-400">
               <div className="text-center">
@@ -225,7 +218,6 @@ function ArchiveTaskCard({
             alt={getActionTypeLabel(actionType)}
             className="w-full h-full object-cover"
             onError={(e) => {
-              // Fallback on image load error
               e.currentTarget.style.display = 'none';
               e.currentTarget.parentElement!.innerHTML = `
                 <div class="w-full h-full flex items-center justify-center text-gray-400">
@@ -239,7 +231,6 @@ function ArchiveTaskCard({
           />
         );
       } else {
-        // No image URL available
         return (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
             <div className="text-center">
@@ -255,7 +246,6 @@ function ArchiveTaskCard({
       }
     }
 
-    // Default fallback
     return (
       <div className="w-full h-full flex items-center justify-center text-gray-400">
         <div className="text-center">
@@ -302,7 +292,6 @@ function ArchiveTaskCard({
         >
           {renderTaskPreview(task)}
         </div>
-
 
         {/* Selection Checkbox */}
         {isSelectionMode && (
@@ -380,7 +369,6 @@ function ArchiveTaskCard({
     </div>
   );
 
-  // Use SwipeableArchiveCard only on mobile
   return (
     <>
       <div className="md:hidden">
@@ -459,25 +447,20 @@ export default function ArchiveClient() {
     setIsDeleting(true);
     try {
       if (tasksToDelete) {
-        // 배치 삭제
         const response = await deleteBatchTasks(tasksToDelete);
         console.log('Batch delete result:', response.data);
 
-        // 선택 상태 초기화
         setSelectedTaskIds(new Set());
         setIsSelectionMode(false);
         setTasksToDelete(null);
       } else if (taskToDelete) {
-        // 단일 삭제
         await deleteTask(taskToDelete.taskId);
         setTaskToDelete(null);
       }
 
-      // 목록 새로고침
       refetch();
     } catch (error) {
       console.error('Failed to delete task(s):', error);
-      // 에러 처리 - 필요시 토스트나 알림 추가
     } finally {
       setIsDeleting(false);
     }
@@ -537,11 +520,9 @@ export default function ArchiveClient() {
         return;
       }
 
-      // Use the common download utility
       await downloadFile(downloadUrl, fileName);
     } catch (error) {
       console.error('Download failed:', error);
-      // TODO: Show error toast
     } finally {
       setIsDownloading(false);
     }
@@ -573,17 +554,15 @@ export default function ArchiveClient() {
   };
 
   const handleFilterSelect = (value: string) => {
-    setSelectedFilter(value); // 선택된 필터 상태 업데이트
+    setSelectedFilter(value);
 
     if (value === 'all') {
-      // 전체 선택 시 해당 카테고리만 유지, 특정 actionTypes는 제거
       setFilters({
         category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
         actionType: '',
         actionTypes: [],
       });
     } else {
-      // 특정 ActionType 선택 시 actionTypes로 필터링하면서 category도 유지
       setFilters({
         category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
         actionType: '',
@@ -595,17 +574,14 @@ export default function ArchiveClient() {
   const handlePageSizeSelect = (value: string) => {
     setPageSize(parseInt(value));
     setPageSizeDropdownOpen(false);
-    // TODO: Apply page size change to the API call
   };
 
-  // Handle page size dropdown position
   useEffect(() => {
     if (pageSizeDropdownOpen && pageSizeDropdownRef.current) {
       const rect = pageSizeDropdownRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
 
-      // If there's less than 150px below and more space above, show dropdown upward
       if (spaceBelow < 150 && spaceAbove > spaceBelow) {
         setPageSizeDropdownPosition('top');
       } else {
@@ -614,12 +590,10 @@ export default function ArchiveClient() {
     }
   }, [pageSizeDropdownOpen]);
 
-  // Calculate pagination info - 이제 서버에서 올바른 totalElements를 제공받음
-  const totalResults = tasks.length; // 현재 페이지의 항목 수 (임시)
+  const totalResults = tasks.length;
   const startResult = Math.min(page * pageSize + 1, totalResults);
   const endResult = Math.min((page + 1) * pageSize, totalResults);
 
-  // Generate page numbers for pagination
   const generatePageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
@@ -663,12 +637,12 @@ export default function ArchiveClient() {
           <button
             onClick={() => {
               setActiveTab('image');
-              setSelectedFilter('all'); // 탭 변경 시 필터 초기화
+              setSelectedFilter('all');
               setFilters({
                 category: 'IMAGE',
                 actionType: '',
                 actionTypes: [],
-              }); // Use category filter
+              });
             }}
             className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'image'
@@ -681,12 +655,12 @@ export default function ArchiveClient() {
           <button
             onClick={() => {
               setActiveTab('audio');
-              setSelectedFilter('all'); // 탭 변경 시 필터 초기화
+              setSelectedFilter('all');
               setFilters({
                 category: 'AUDIO',
                 actionType: '',
                 actionTypes: [],
-              }); // Use category filter
+              });
             }}
             className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'audio'
@@ -753,7 +727,6 @@ export default function ArchiveClient() {
 
         {/* Content */}
         {(() => {
-          // 이제 서버에서 필터링되므로 클라이언트 필터링 제거
           const filteredTasks = tasks;
 
           return isLoading && filteredTasks.length === 0 ? (

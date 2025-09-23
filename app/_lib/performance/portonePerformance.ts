@@ -13,12 +13,10 @@ class PortonePerformanceTracker {
   private metrics: Record<string, number | string | undefined> = {};
   private startTimes: Record<string, number> = {};
 
-  // Start timing for a specific operation
   startTiming(operation: keyof PortonePerformanceMetrics): void {
     this.startTimes[operation] = performance.now();
   }
 
-  // End timing and record the duration
   endTiming(operation: keyof PortonePerformanceMetrics): number {
     const startTime = this.startTimes[operation];
     if (!startTime) {
@@ -32,12 +30,10 @@ class PortonePerformanceTracker {
     return duration;
   }
 
-  // Get current metrics
   getMetrics(): Partial<PortonePerformanceMetrics> {
     return { ...this.metrics };
   }
 
-  // Get complete metrics with environment data
   getCompleteMetrics(): Partial<PortonePerformanceMetrics> {
     return {
       ...this.metrics,
@@ -48,7 +44,6 @@ class PortonePerformanceTracker {
     };
   }
 
-  // Get network connection type if available
   private getConnectionType(): string | undefined {
     if (typeof window === 'undefined') return undefined;
 
@@ -59,7 +54,6 @@ class PortonePerformanceTracker {
     return connection?.effectiveType || connection?.type;
   }
 
-  // Log performance metrics to console (development only)
   logMetrics(): void {
     const metrics = this.getCompleteMetrics();
 
@@ -95,28 +89,21 @@ class PortonePerformanceTracker {
     this.sendToAnalytics(metrics);
   }
 
-  // Send metrics to analytics
-  private sendToAnalytics(metrics: Partial<PortonePerformanceMetrics>): void {
-    // Future: Send to your analytics service
-    // analytics.track('portone_performance', metrics);
-  }
+  private sendToAnalytics(metrics: Partial<PortonePerformanceMetrics>): void {}
 
-  // Reset all metrics
   reset(): void {
     this.metrics = {};
     this.startTimes = {};
   }
 
-  // Check if performance is below threshold
   isPerformancePoor(): boolean {
     const { sdkLoadTime, billingKeyRequestTime, totalPaymentTime } =
       this.metrics;
 
-    // Define performance thresholds (in milliseconds)
     const thresholds = {
-      sdkLoadTime: 3000, // 3 seconds
-      billingKeyRequest: 5000, // 5 seconds
-      totalPayment: 10000, // 10 seconds
+      sdkLoadTime: 3000,
+      billingKeyRequest: 5000,
+      totalPayment: 10000,
     };
 
     return (
@@ -130,7 +117,6 @@ class PortonePerformanceTracker {
   }
 }
 
-// Global singleton instance
 let performanceTracker: PortonePerformanceTracker | null = null;
 
 export function getPortonePerformanceTracker(): PortonePerformanceTracker {
@@ -140,7 +126,6 @@ export function getPortonePerformanceTracker(): PortonePerformanceTracker {
   return performanceTracker;
 }
 
-// Utility hook for React components
 export function usePortonePerformanceTracking() {
   const tracker = getPortonePerformanceTracker();
 

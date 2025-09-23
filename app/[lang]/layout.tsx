@@ -34,7 +34,6 @@ export default async function RootLayout({
   const { lang } = await params;
   const { resources } = await initTranslations(lang, i18nNamespaces);
 
-  // 서버에서 사용자 정보를 미리 가져옵니다
   const preloadedUser = await getMeOnServer();
 
   return (

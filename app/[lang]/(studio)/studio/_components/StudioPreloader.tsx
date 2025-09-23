@@ -11,7 +11,6 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
   const { preloadTool, isToolPreloaded } = useStudioNavigation(lang);
 
   useEffect(() => {
-    // Stage 1: Preload most popular tools immediately
     const criticalTools = ['digital-goods', 'archive'];
     criticalTools.forEach((tool) => {
       if (!isToolPreloaded(tool)) {
@@ -19,7 +18,6 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
       }
     });
 
-    // Stage 2: Preload high-priority tools after a short delay
     const highPriorityTimer = setTimeout(() => {
       const highPriorityTools = ['stylist', 'virtual-casting'];
       highPriorityTools.forEach((tool) => {
@@ -29,11 +27,9 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
       });
     }, 500);
 
-    // Stage 3: Preload remaining tools when browser is idle
     const lowPriorityTimer = setTimeout(() => {
       const remainingTools = ['butter-cover', 'fanmeeting-studio'];
 
-      // Use requestIdleCallback if available, otherwise use setTimeout
       if ('requestIdleCallback' in window) {
         (window as any).requestIdleCallback(() => {
           remainingTools.forEach((tool) => {
@@ -53,9 +49,7 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
       }
     }, 1500);
 
-    // Stage 4: Prefetch component assets and images in background
     const assetPreloadTimer = setTimeout(() => {
-      // Preload common images used in tools
       const imagesToPreload = [
         '/studio/model-select/digital-goods.png',
         '/studio/model-select/stylist.png',
@@ -77,6 +71,5 @@ export default function StudioPreloader({ lang }: StudioPreloaderProps) {
     };
   }, [preloadTool, isToolPreloaded]);
 
-  // This component doesn't render anything, it just handles preloading
   return null;
 }

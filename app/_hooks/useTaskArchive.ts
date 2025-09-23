@@ -139,17 +139,16 @@ export function useTaskArchive() {
 
   const fetchArchive = useCallback(
     async (pageToFetch: number, filters: TaskFilters) => {
-      dispatch({ type: 'FETCH_START', forLoadMore: false }); // Always replace content for pagination
+      dispatch({ type: 'FETCH_START', forLoadMore: false });
 
       try {
-        // Always get full details for better UX
         const response = await getTaskHistory(pageToFetch, {
           ...filters,
           summary: false,
         });
         if (response.data) {
           dispatch({
-            type: 'FETCH_SUCCESS', // Always use FETCH_SUCCESS to replace content
+            type: 'FETCH_SUCCESS',
             payload: {
               tasks: response.data.content,
               totalPages: response.data.totalPages,
@@ -179,9 +178,8 @@ export function useTaskArchive() {
 
     if (tasksToCheck.length === 0) return;
 
-    // Smart polling with exponential backoff
-    let pollInterval = 10000; // Start with 10 seconds (less aggressive)
-    const maxInterval = 60000; // Max 1 minute
+    let pollInterval = 10000;
+    const maxInterval = 60000;
     let consecutiveNoChanges = 0;
 
     let timeoutId: NodeJS.Timeout;
@@ -191,25 +189,22 @@ export function useTaskArchive() {
       dispatch({ type: 'POLLING_START' });
 
       try {
-        // Get current in-progress tasks (they might have changed since effect started)
         const currentInProgressTasks = state.tasks.filter(
           (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
         );
 
         if (currentInProgressTasks.length === 0) {
           dispatch({ type: 'POLLING_END' });
-          return; // Stop polling if no more in-progress tasks
+          return;
         }
 
         const taskIds = currentInProgressTasks.map((t) => t.taskId);
 
-        // Use batch API instead of individual calls
         const response = await getBatchTaskStatus(taskIds);
 
         if (response.data && Array.isArray(response.data)) {
           let hasChanges = false;
 
-          // Update only changed tasks - Map API response to frontend Task format
           response.data.forEach((apiTask: BatchTaskResponse) => {
             const existingTask = state.tasks.find(
               (t) => t.taskId === apiTask.id
@@ -219,51 +214,47 @@ export function useTaskArchive() {
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
                 payload: {
-                  taskId: apiTask.id, // API uses 'id', frontend uses 'taskId'
-                  status: apiTask.status as any, // Cast to match GenerationStatus
+                  taskId: apiTask.id,
+                  status: apiTask.status as any,
                   createdAt: apiTask.createdAt,
-                  actionType: apiTask.actionType as any, // Cast to match ActionType
+                  actionType: apiTask.actionType as any,
                   details: apiTask.details,
                 } as Task,
               });
             }
           });
 
-          // Adjust polling interval based on activity
           if (hasChanges) {
             consecutiveNoChanges = 0;
-            pollInterval = 10000; // Reset to medium interval when there are changes
+            pollInterval = 10000;
           } else {
             consecutiveNoChanges++;
-            // Gradually increase interval if no changes
+
             if (consecutiveNoChanges >= 3) {
               pollInterval = Math.min(pollInterval * 1.3, maxInterval);
             }
           }
 
-          // Check if any tasks are still in progress
           const stillInProgress = response.data.filter(
             (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
           );
 
           if (stillInProgress.length === 0) {
             dispatch({ type: 'POLLING_END' });
-            return; // Stop polling when all tasks are complete
+            return;
           }
         }
       } catch (error) {
         console.warn('Polling error:', error);
-        // On error, increase polling interval to reduce server load
+
         pollInterval = Math.min(pollInterval * 1.5, maxInterval);
       } finally {
         dispatch({ type: 'POLLING_END' });
       }
 
-      // Schedule next poll with dynamic interval
       timeoutId = setTimeout(poll, pollInterval);
     };
 
-    // Start first poll after a short delay to avoid immediate polling
     timeoutId = setTimeout(poll, 2000);
 
     return () => {
@@ -277,7 +268,7 @@ export function useTaskArchive() {
       .filter((t) => t.status === 'PENDING' || t.status === 'PROCESSING')
       .map((t) => t.taskId)
       .join(','),
-  ]); // Only restart polling when in-progress task IDs change
+  ]);
 
   const loadMore = () => {
     if (state.page < state.totalPages - 1 && !state.isLoading) {
@@ -285,7 +276,6 @@ export function useTaskArchive() {
     }
   };
 
-  // Separate function for actually loading more items (appending to existing list)
   const loadMoreItems = useCallback(async () => {
     if (state.page < state.totalPages - 1 && !state.isLoading) {
       const nextPage = state.page + 1;

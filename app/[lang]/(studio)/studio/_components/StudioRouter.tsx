@@ -36,29 +36,24 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     checkAttendanceOnStudioMount,
   } = useAttendanceStore();
 
-  // checkAttendanceOnStudioMount를 메모이제이션하여 불필요한 재실행 방지
   const memoizedCheckAttendance = useCallback(() => {
     checkAttendanceOnStudioMount();
   }, [checkAttendanceOnStudioMount]);
 
-  // Get current tool from URL parameter
   const getCurrentToolFromUrl = useCallback(() => {
     return searchParams.get('tool') || 'dashboard';
   }, [searchParams]);
 
-  // Navigate to tool with smooth transition
   const navigateToTool = useCallback(
     (toolName: string) => {
       if (toolName === currentTool) return;
 
       setIsTransitioning(true);
 
-      // Preload the tool if not already preloaded
       if (!isToolPreloaded(toolName)) {
         preloadTool(toolName);
       }
 
-      // Update URL without page reload
       const newUrl =
         toolName === 'dashboard'
           ? `/${lang}/studio`
@@ -66,7 +61,6 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
 
       router.replace(newUrl, { scroll: false });
 
-      // Small delay for smooth transition
       setTimeout(() => {
         setCurrentTool(toolName);
         setIsTransitioning(false);
@@ -75,12 +69,11 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     [currentTool, isToolPreloaded, preloadTool, router, lang]
   );
 
-  // Update current tool when URL changes
   useEffect(() => {
     const toolFromUrl = getCurrentToolFromUrl();
     if (toolFromUrl !== currentTool) {
       setCurrentTool(toolFromUrl);
-      // Preload the tool when URL changes
+
       if (!isToolPreloaded(toolFromUrl)) {
         preloadTool(toolFromUrl);
       }
@@ -93,10 +86,8 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     preloadTool,
   ]);
 
-  // Get component for current tool
   const ToolComponent = getToolComponent(currentTool);
 
-  // Expose navigation function globally for other components to use
   useEffect(() => {
     if (typeof window !== 'undefined') {
       (window as any).studioNavigateToTool = navigateToTool;
@@ -106,17 +97,14 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     }
   }, [navigateToTool]);
 
-  // Check attendance status on Studio mount (한 번만 실행)
   useEffect(() => {
     memoizedCheckAttendance();
   }, [memoizedCheckAttendance]);
 
-  // Show loading state during transitions
   if (isTransitioning) {
     return <StudioToolSkeleton />;
   }
 
-  // Render the tool component (WithSidebar components handle their own layout)
   return (
     <div className="h-full w-full bg-studio-main">
       <Suspense fallback={<StudioToolSkeleton />}>

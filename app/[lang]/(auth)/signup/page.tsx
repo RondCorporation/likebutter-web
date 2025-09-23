@@ -36,7 +36,7 @@ export default function Signup() {
     pw2: '',
     name: '',
     gender: 'MALE',
-    nationalityCode: '', // code 필드를 사용
+    nationalityCode: '',
   });
   const [phoneNumber, setPhoneNumber] = useState<string | undefined>(undefined);
   const [err, setErr] = useState<string>('');
@@ -54,7 +54,7 @@ export default function Signup() {
           if (defaultCountry) {
             setForm((prevForm) => ({
               ...prevForm,
-              nationalityCode: defaultCountry.code, // code 필드를 사용
+              nationalityCode: defaultCountry.code,
             }));
           }
         } else {

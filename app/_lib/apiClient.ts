@@ -23,7 +23,6 @@ export const getAccessToken = () => {
 
 let refreshPromise: Promise<boolean> | null = null;
 
-// Request deduplication map for GET requests
 const pendingRequests = new Map<string, Promise<ApiResponse<any>>>();
 
 async function refreshToken(): Promise<boolean> {
@@ -52,7 +51,6 @@ async function refreshToken(): Promise<boolean> {
   return refreshPromise;
 }
 
-// --- Main API Fetch Function ---
 export async function apiFetch<T>(
   url: string,
   opts: Omit<RequestInit, 'body'> & { body?: any } = {},
@@ -61,10 +59,8 @@ export async function apiFetch<T>(
   const method = opts.method || 'GET';
   const isGetRequest = method === 'GET';
 
-  // Create request key for deduplication (only for GET requests)
   const requestKey = isGetRequest ? `${method}-${url}-${withAuth}` : null;
 
-  // Check for pending GET request and return existing promise
   if (requestKey && pendingRequests.has(requestKey)) {
     return pendingRequests.get(requestKey) as Promise<ApiResponse<T>>;
   }
@@ -94,7 +90,6 @@ export async function apiFetch<T>(
     return fetch(`${API_URL}${url}`, config);
   };
 
-  // Create the main request promise
   const requestPromise = (async (): Promise<ApiResponse<T>> => {
     try {
       const initialToken = getCookie('accessToken');
@@ -120,10 +115,9 @@ export async function apiFetch<T>(
         : { status: response.status, msg: response.statusText };
 
       if (!response.ok) {
-        // Handle insufficient credit error specifically - not an error, just show toast and return
         if (json.msg === 'INSUFFICIENT_CREDIT') {
           toast.error('크레딧이 부족합니다. 크레딧을 충전해주세요.');
-          // Return a special response indicating insufficient credit
+
           return {
             status: response.status,
             msg: 'INSUFFICIENT_CREDIT',
@@ -149,14 +143,12 @@ export async function apiFetch<T>(
       }
       throw error;
     } finally {
-      // Clean up pending request after completion
       if (requestKey) {
         pendingRequests.delete(requestKey);
       }
     }
   })();
 
-  // Store GET request promise for deduplication
   if (requestKey) {
     pendingRequests.set(requestKey, requestPromise);
   }

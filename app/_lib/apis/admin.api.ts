@@ -4,8 +4,6 @@ import { Payment } from '@/app/_types/payment';
 import { Subscription } from '@/app/_types/subscription';
 import { Task } from '@/app/_types/task';
 
-// --- Type Definitions ---
-
 export interface AdminStats {
   totalUsers: number;
   newUsers: number;
@@ -56,8 +54,6 @@ export interface AdminTask {
   details: string;
   createdAt: string;
 }
-
-// --- API Functions ---
 
 /**
  * GET /admin/stats/summary

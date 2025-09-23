@@ -27,7 +27,6 @@ const TaskCard = memo(
     }
   },
   (prevProps, nextProps) => {
-    // Custom comparison function for better memoization
     return (
       prevProps.task.taskId === nextProps.task.taskId &&
       prevProps.task.status === nextProps.task.status &&

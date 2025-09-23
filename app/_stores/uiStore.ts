@@ -11,11 +11,11 @@ interface UIState {
 
 export const useUIStore = create<UIState>((set) => ({
   isSettingsOpen: false,
-  initialSettingsTab: 'account', // Default tab
+  initialSettingsTab: 'account',
   serverError: null,
   openSettings: (tab = 'account') =>
     set({ isSettingsOpen: true, initialSettingsTab: tab }),
   closeSettings: () =>
-    set({ isSettingsOpen: false, initialSettingsTab: 'account' }), // Reset tab on close
+    set({ isSettingsOpen: false, initialSettingsTab: 'account' }),
   setServerError: (error: string | null) => set({ serverError: error }),
 }));

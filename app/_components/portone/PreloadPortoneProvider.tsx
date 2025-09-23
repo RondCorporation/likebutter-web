@@ -77,7 +77,6 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
         loadTime,
       });
 
-      // Performance logging
       if (typeof window !== 'undefined' && window.console) {
         console.debug(`PortOne SDK preloaded in ${loadTime.toFixed(2)}ms`);
       }
@@ -95,7 +94,6 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
         error: loadError,
       }));
 
-      // Log performance failure
       performanceTracker.logMetrics();
 
       throw loadError;
@@ -106,9 +104,7 @@ export function PreloadPortoneProvider({ children }: { children: ReactNode }) {
     return state.instance;
   };
 
-  // Preload SDK on provider mount for pages that might need it
   useEffect(() => {
-    // Check if we're on a billing/payment related page
     const shouldPreload =
       typeof window !== 'undefined' &&
       (window.location.pathname.includes('/billing') ||

@@ -24,14 +24,12 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
     });
   };
 
-  // SPA 네비게이션 함수
   const navigateToTool = (toolName: string) => {
     if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
       (window as any).studioNavigateToTool(toolName);
     }
   };
 
-  // 현재 선택된 메뉴 확인
   const getCurrentTool = () => {
     return searchParams.get('tool') || 'dashboard';
   };
@@ -104,7 +102,6 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
         <div className="flex flex-col items-center gap-1">
           <button
             onClick={() => {
-              // 실제 도움말 페이지가 구현되면 라우팅하고, 지금은 준비중 메시지
               handleComingSoon();
             }}
             className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-[10px] transition-colors ${selectedMenu === 'help' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}

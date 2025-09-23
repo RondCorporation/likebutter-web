@@ -9,14 +9,11 @@ interface StudioToolState {
 }
 
 interface StudioNavigationState {
-  // Tool states persistence
   toolStates: Record<string, StudioToolState>;
-  
-  // User preferences
+
   lastUsedTool: string;
   preloadedTools: string[];
-  
-  // Actions
+
   setToolState: (toolName: string, state: Partial<StudioToolState>) => void;
   getToolState: (toolName: string) => StudioToolState | undefined;
   setLastUsedTool: (toolName: string) => void;
@@ -55,7 +52,9 @@ const useStudioNavigationStore = create<StudioNavigationState>()(
 
       addPreloadedTool: (toolName) => {
         set((prev) => ({
-          preloadedTools: Array.from(new Set([...prev.preloadedTools, toolName])),
+          preloadedTools: Array.from(
+            new Set([...prev.preloadedTools, toolName])
+          ),
         }));
       },
 
@@ -78,16 +77,15 @@ const useStudioNavigationStore = create<StudioNavigationState>()(
     {
       name: 'studio-navigation-store',
       partialize: (state) => ({
-        // Only persist user preferences and lightweight data
         lastUsedTool: state.lastUsedTool,
         preloadedTools: state.preloadedTools,
-        // Don't persist heavy tool states to avoid localStorage bloat
+
         toolStates: Object.fromEntries(
           Object.entries(state.toolStates).map(([key, value]) => [
             key,
             {
               lastVisited: value.lastVisited,
-              // Only persist lightweight preferences, not form data
+
               preferences: value.preferences,
             },
           ])

@@ -1,11 +1,11 @@
 import { jwtDecode } from 'jwt-decode';
 
 interface JWTPayload {
-  sub: string; // user ID
+  sub: string;
   email?: string;
   roles?: string[];
-  exp: number; // expiration time
-  iat: number; // issued at
+  exp: number;
+  iat: number;
 }
 
 /**
@@ -24,7 +24,6 @@ export function extractUserFromJWT(token: string): {
   try {
     const payload = jwtDecode<JWTPayload>(token);
 
-    // 토큰 만료 확인
     const now = Math.floor(Date.now() / 1000);
     const isExpired = payload.exp < now;
 
@@ -36,7 +35,6 @@ export function extractUserFromJWT(token: string): {
       };
     }
 
-    // JWT에서 기본 사용자 정보 추출
     return {
       isAuthenticated: true,
       userInfo: {

@@ -10,9 +10,9 @@ interface StudioButtonProps {
   className?: string;
   textClassName?: string;
   disabled?: boolean;
-  creditCost?: number; // 소비될 크레딧 양
-  loading?: boolean; // 로딩 상태
-  icon?: ReactNode; // 왼쪽 아이콘
+  creditCost?: number;
+  loading?: boolean;
+  icon?: ReactNode;
 }
 
 export default function StudioButton({
@@ -27,7 +27,6 @@ export default function StudioButton({
 }: StudioButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
-  // PC 버전에서 크레딧이 완전히 들어갈 수 있는 가로 길이 설정
   const isPC = className.includes('px-3') || className.includes('h-[38px]');
   const buttonClassName = isPC
     ? `inline-flex items-center overflow-hidden rounded-md relative transition-colors w-[160px] ${className}`

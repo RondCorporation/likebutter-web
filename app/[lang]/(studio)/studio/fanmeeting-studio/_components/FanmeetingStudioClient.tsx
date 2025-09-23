@@ -120,13 +120,11 @@ const FanmeetingStudioClient = forwardRef<
   );
 
   const handleFileUpload = (file: File, type: 'idol' | 'user') => {
-    // Check file size (200MB limit)
     if (file.size > 200 * 1024 * 1024) {
       toast.error('파일 크기가 200MB를 초과합니다.');
       return;
     }
 
-    // Check file type
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
       toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
       return;
@@ -161,7 +159,6 @@ const FanmeetingStudioClient = forwardRef<
         request
       );
 
-      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
       if ((response as any).isInsufficientCredit) {
         setIsProcessing(false);
         return;
@@ -211,7 +208,7 @@ const FanmeetingStudioClient = forwardRef<
 
     setIsEditLoading(true);
     setIsEditPopupOpen(false);
-    setResultImage(null); // 기존 이미지 초기화
+    setResultImage(null);
 
     try {
       const response = await editTask(
@@ -220,14 +217,13 @@ const FanmeetingStudioClient = forwardRef<
         editRequest
       );
 
-      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
       if ((response as any).isInsufficientCredit) {
         return;
       }
 
       if (response.data) {
         toast.success('수정 요청이 전송되었습니다!');
-        // 새로운 edit task에 대해 폴링 시작
+
         startPolling(response.data.taskId);
       } else {
         toast.error('수정 요청에 실패했습니다.');
@@ -291,13 +287,10 @@ const FanmeetingStudioClient = forwardRef<
   );
 
   const isFormValid = () => {
-    // 두 개의 이미지 업로드 필수 (아이돌 + 사용자)
     if (!idolFile || !userFile) return false;
 
-    // sidebar에서 formData가 설정되어야 함
     if (!formData) return false;
 
-    // 배경 프롬프트와 상황 프롬프트 둘 다 필수
     if (
       !formData.backgroundPrompt ||
       formData.backgroundPrompt.trim().length < 2
@@ -310,7 +303,6 @@ const FanmeetingStudioClient = forwardRef<
   };
 
   const handleReset = () => {
-    // 모든 상태 초기화
     setIdolFile(null);
     setUserFile(null);
     setIdolPreviewUrl('');
@@ -322,7 +314,6 @@ const FanmeetingStudioClient = forwardRef<
     setIsEditLoading(false);
     setIsResetPopupOpen(false);
 
-    // URL 정리
     if (idolPreviewUrl) {
       URL.revokeObjectURL(idolPreviewUrl);
     }
@@ -333,8 +324,6 @@ const FanmeetingStudioClient = forwardRef<
     toast.success('작업이 초기화되었습니다.');
   };
 
-  // Mobile result view - 모바일에서만 전체 화면 전환
-  // PC에서는 이 조건을 실행하지 않고 메인 레이아웃을 유지
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   if (showMobileResult && resultImage && isMobile) {
     const beforeImage =
@@ -631,7 +620,6 @@ const FanmeetingStudioClient = forwardRef<
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
             {isProcessing ? (
-              // 로딩 상태
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
@@ -644,7 +632,6 @@ const FanmeetingStudioClient = forwardRef<
                 </div>
               </div>
             ) : isBackgroundProcessing ? (
-              // 백그라운드 처리 상태
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <div className="flex flex-col items-center gap-2 text-center text-blue-400">
                   <div className="text-base font-pretendard-medium">
@@ -654,7 +641,9 @@ const FanmeetingStudioClient = forwardRef<
                     작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
                   </div>
                   <button
-                    onClick={() => currentTaskId && checkTaskStatus(currentTaskId)}
+                    onClick={() =>
+                      currentTaskId && checkTaskStatus(currentTaskId)
+                    }
                     className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-pretendard-medium rounded-lg transition-colors"
                   >
                     상태 확인
@@ -662,7 +651,6 @@ const FanmeetingStudioClient = forwardRef<
                 </div>
               </div>
             ) : resultImage ? (
-              // 결과 이미지 표시
               <div className="relative w-full h-full group">
                 <img
                   src={resultImage}
@@ -678,7 +666,6 @@ const FanmeetingStudioClient = forwardRef<
                 </button>
               </div>
             ) : (
-              // 기본 상태
               <div className="flex flex-col items-center justify-center w-full h-full">
                 <div className="flex flex-col items-center text-center">
                   <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />

@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { getCreditBalance, CreditBalance } from '@/app/_lib/apis/credit.api';
 
 export function useCredit() {
-  const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(null);
+  const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +32,6 @@ export function useCredit() {
   useEffect(() => {
     fetchCreditBalance();
 
-    // 크레딧 업데이트 이벤트 리스너 추가
     const handleCreditUpdate = () => {
       fetchCreditBalance();
     };

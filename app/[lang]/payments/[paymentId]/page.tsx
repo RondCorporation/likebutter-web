@@ -61,7 +61,7 @@ export default function PaymentReceiptPage() {
   }
 
   if (!payment) {
-    return null; // Should be handled by notFound()
+    return null;
   }
 
   return (

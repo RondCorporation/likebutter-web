@@ -249,8 +249,8 @@ function PricingClientContent({
   currency,
 }: Props) {
   const searchParams = useSearchParams();
-  const selectedPlanParam = searchParams.get('plan'); // basic, pro, enterprise
-  const billingParam = searchParams.get('billing'); // monthly, yearly
+  const selectedPlanParam = searchParams.get('plan');
+  const billingParam = searchParams.get('billing');
 
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     (billingParam as 'monthly' | 'yearly') || 'yearly'
@@ -265,7 +265,6 @@ function PricingClientContent({
   const { isAuthenticated, user } = useAuthStore();
   const { openSettings } = useUIStore();
 
-  // Use the preload context
   const {
     preloadPortone,
     getPortone,
@@ -274,7 +273,6 @@ function PricingClientContent({
     error: sdkError,
   } = usePortonePreload();
 
-  // Preload SDK when component mounts
   useEffect(() => {
     if (!isLoaded && !sdkIsLoading) {
       preloadPortone()
@@ -285,7 +283,6 @@ function PricingClientContent({
     }
   }, [preloadPortone, isLoaded, sdkIsLoading]);
 
-  // Update SDK status based on preload context
   useEffect(() => {
     if (sdkError) {
       setSdkStatus('error');
@@ -316,10 +313,8 @@ function PricingClientContent({
   const activePlanKey = activeSubscription?.planKey ?? 'FREE';
   const activePlanRank = planRanks[activePlanKey] ?? 0;
 
-  // 현재 구독에 따른 플랜 필터링 및 추천 로직
   const getPersonalizedPlans = () => {
     if (!activeSubscription || activePlanKey === 'FREE') {
-      // 무료 사용자: 모든 유료 플랜 표시
       return plans.filter(
         (p) =>
           p.key !== 'Free' &&
@@ -327,7 +322,6 @@ function PricingClientContent({
       );
     }
 
-    // 현재 구독이 있는 사용자: 현재 플랜 + 업그레이드 가능한 플랜만 표시
     return plans.filter((p) => {
       if (p.key === 'Free') return false;
       if (!p.isCustom && !p.planKeyMonthly && !p.planKeyYearly) return false;
@@ -336,7 +330,6 @@ function PricingClientContent({
       const yearlyPlanRank = planRanks[p.planKeyYearly] ?? -1;
       const maxPlanRank = Math.max(monthlyPlanRank, yearlyPlanRank);
 
-      // 현재 플랜이거나 업그레이드 가능한 플랜만 표시
       return maxPlanRank >= activePlanRank;
     });
   };
@@ -345,7 +338,6 @@ function PricingClientContent({
 
   const handlePayment = async (plan: Plan) => {
     if (!isAuthenticated || !user) {
-      // searchParams를 사용하여 현재 쿼리 파라미터를 포함한 returnTo 생성
       const queryString = searchParams.toString();
       const currentUrl = `/${lang}/billing${queryString ? `?${queryString}` : ''}`;
       const returnToParam = encodeURIComponent(currentUrl);
@@ -366,7 +358,7 @@ function PricingClientContent({
     }
 
     setIsLoading(true);
-    // ✨ 사용자에게 즉각적인 피드백 제공
+
     const loadingToastId = toast.loading(
       translations.openingPaymentWindow || '결제 창을 열고 있습니다...'
     );
@@ -386,14 +378,12 @@ function PricingClientContent({
         throw new Error('Payment environment variables are not set.');
       }
 
-      // Use preloaded instance or fallback to dynamic loading
       let PortOne = getPortone();
 
       if (!PortOne) {
         PortOne = await loadPortone();
       }
 
-      // 이 함수 호출이 실제 네트워크 통신을 유발하는 지점입니다.
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
@@ -401,7 +391,6 @@ function PricingClientContent({
         redirectUrl: `${window.location.origin}/${lang}/billing/callback`,
       });
 
-      // 성공적으로 UI가 닫히면 로딩 토스트를 제거합니다.
       toast.dismiss(loadingToastId);
 
       if (!issueResponse || issueResponse.code) {
@@ -432,7 +421,6 @@ function PricingClientContent({
         );
       }
     } catch (error: any) {
-      // 에러 발생 시에도 즉시 토스트를 제거합니다.
       toast.dismiss(loadingToastId);
       toast.error(`An error occurred: ${error.message}`);
     } finally {
@@ -440,7 +428,6 @@ function PricingClientContent({
     }
   };
 
-  // 현재 플랜 정보 표시용 함수
   const getCurrentPlanInfo = () => {
     if (!activeSubscription) return null;
 

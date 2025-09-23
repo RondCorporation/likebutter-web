@@ -18,7 +18,6 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
   useEffect(() => {
     if (!isInitialized || isLoading) return;
 
-    // 초기화 후, 인증되지 않았다면 로그인 페이지로 보냅니다.
     if (!isAuthenticated) {
       const segments = pathname.split('/');
       const lang = segments[1];
@@ -37,7 +36,6 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
     searchParams,
   ]);
 
-  // 로딩 중이거나 아직 인증되지 않았다면 로더를 표시합니다.
   if (!isInitialized || isLoading || !isAuthenticated) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-black">
@@ -46,7 +44,6 @@ function StudioAuthGuardContent({ children }: StudioAuthGuardProps) {
     );
   }
 
-  // 인증이 확인된 경우에만 자식 컴포넌트를 렌더링합니다.
   return <>{children}</>;
 }
 

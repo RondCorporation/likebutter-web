@@ -22,7 +22,6 @@ export default function EditButton({ task, onEditSuccess }: Props) {
   }, [task.taskId, task.actionType, task.status]);
 
   const checkEditability = async () => {
-    // 먼저 클라이언트 사이드에서 체크
     if (!isEditableActionType(task.actionType) || task.status !== 'COMPLETED') {
       setCanEdit(false);
       return;
@@ -61,7 +60,6 @@ export default function EditButton({ task, onEditSuccess }: Props) {
     onEditSuccess?.(newTaskId);
   };
 
-  // 로딩 중이거나 수정 불가능한 경우 렌더하지 않음
   if (isCheckingEdit) {
     return (
       <button

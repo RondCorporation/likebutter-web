@@ -26,14 +26,12 @@ export default function MobileBottomNavigation({
     });
   };
 
-  // SPA 네비게이션 함수
   const navigateToTool = (toolName: string) => {
     if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
       (window as any).studioNavigateToTool(toolName);
     }
   };
 
-  // 현재 선택된 메뉴 확인
   const getCurrentTool = () => {
     return searchParams.get('tool') || 'dashboard';
   };

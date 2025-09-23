@@ -13,7 +13,7 @@ export function useUser() {
     },
     {
       revalidateOnFocus: false,
-      dedupingInterval: 60000, // 1분간 중복 요청 방지
+      dedupingInterval: 60000,
       errorRetryCount: 3,
       errorRetryInterval: 5000,
     }

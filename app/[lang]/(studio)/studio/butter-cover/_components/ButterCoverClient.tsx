@@ -34,7 +34,9 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [resultAudioUrl, setResultAudioUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
+  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
+    null
+  );
   const router = useRouter();
 
   const {
@@ -49,7 +51,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
     onCompleted: (result) => {
       const details = result.details as ButterCoverDetails;
       if (details?.result?.audioKey) {
-        // audioKey를 실제 URL로 변환 (API endpoint 필요)
         const audioUrl = `/api/audio/${details.result.audioKey}`;
         setResultAudioUrl(audioUrl);
         toast.success('AI 커버가 생성되었습니다!');
@@ -79,7 +80,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
     setResultAudioUrl(null);
 
     try {
-      // 실제 API 호출
       const voiceModel = artistData.customArtist || artistData.artist;
       const response = await createButterCoverTask(data.file, {
         voiceModel,
@@ -87,7 +87,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
         outputFormat: data.format,
       });
 
-      // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
       if ((response as any).isInsufficientCredit) {
         setCurrentStep(2);
         setIsLoading(false);
@@ -95,10 +94,8 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       }
 
       if (response.status === 200 && response.data) {
-        toast.success(
-          '음원 생성이 시작되었습니다!'
-        );
-        // 폴링 시작
+        toast.success('음원 생성이 시작되었습니다!');
+
         startPolling(response.data.taskId);
       } else {
         throw new Error(response.msg || '음원 생성에 실패했습니다.');
@@ -178,7 +175,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
           <div className="flex flex-col items-center justify-center flex-1 min-h-0 px-6 py-12">
             <div className="text-center space-y-10 max-w-md mx-auto">
               {isLoading || isPolling ? (
-                // 로딩 상태
                 <div className="space-y-8">
                   <div className="w-24 h-24 border-4 border-butter-yellow border-t-transparent rounded-full animate-spin mx-auto" />
                   <div className="space-y-4">
@@ -194,7 +190,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                   </div>
                 </div>
               ) : isBackgroundProcessing ? (
-                // 백그라운드 처리 상태
                 <div className="space-y-8">
                   <div className="space-y-4 text-center">
                     <h2 className="text-2xl font-medium text-blue-400">
@@ -204,7 +199,9 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                       작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
                     </p>
                     <button
-                      onClick={() => currentTaskId && checkTaskStatus(currentTaskId)}
+                      onClick={() =>
+                        currentTaskId && checkTaskStatus(currentTaskId)
+                      }
                       className="mt-4 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors"
                     >
                       상태 확인
@@ -212,7 +209,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                   </div>
                 </div>
               ) : resultAudioUrl ? (
-                // 완료 상태 - 오디오 플레이어
                 <div className="space-y-8">
                   <div className="space-y-4">
                     <h2 className="text-2xl font-medium text-white">
@@ -245,7 +241,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                   </div>
                 </div>
               ) : pollingError ? (
-                // 실패 상태
                 <div className="space-y-8">
                   <div className="space-y-4">
                     <h2 className="text-2xl font-medium text-red-400">

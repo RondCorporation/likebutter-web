@@ -74,7 +74,7 @@ export default {
         'gradient-end': '#2c5364',
         'butter-yellow': '#FFD84D',
         'butter-orange': '#FF9E2C',
-        // Studio2 Design System Colors
+
         studio: {
           header: '#202020',
           main: '#323232',

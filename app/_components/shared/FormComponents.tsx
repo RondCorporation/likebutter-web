@@ -4,7 +4,6 @@ import { ReactNode, SelectHTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/app/_lib/utils';
 import { Check, ChevronDown } from 'lucide-react';
 
-// Form Container
 interface FormGroupProps {
   children: ReactNode;
   className?: string;
@@ -14,7 +13,6 @@ export function FormGroup({ children, className }: FormGroupProps) {
   return <div className={cn('space-y-6', className)}>{children}</div>;
 }
 
-// Form Section
 interface FormSectionProps {
   title: string;
   description?: string;
@@ -44,7 +42,6 @@ export function FormSection({
   );
 }
 
-// Select Component
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
@@ -90,7 +87,6 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 
 Select.displayName = 'Select';
 
-// Checkbox Component
 interface CheckboxProps {
   label: string;
   checked: boolean;
@@ -133,7 +129,6 @@ export function Checkbox({
   );
 }
 
-// Radio Group Component
 interface RadioOption {
   value: string;
   label: string;

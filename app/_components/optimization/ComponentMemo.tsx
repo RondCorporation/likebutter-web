@@ -2,7 +2,6 @@
 
 import { memo, ReactNode } from 'react';
 
-// Generic memoized wrapper component
 interface MemoWrapperProps {
   children: ReactNode;
   className?: string;
@@ -15,7 +14,6 @@ export const MemoWrapper = memo(({ children, ...props }: MemoWrapperProps) => {
 
 MemoWrapper.displayName = 'MemoWrapper';
 
-// Memoized text component for frequently rendered text
 interface MemoTextProps {
   text: string;
   className?: string;
@@ -31,7 +29,6 @@ export const MemoText = memo(
 
 MemoText.displayName = 'MemoText';
 
-// Memoized icon wrapper
 interface MemoIconProps {
   icon: ReactNode;
   className?: string;

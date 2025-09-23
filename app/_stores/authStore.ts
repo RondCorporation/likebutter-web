@@ -42,7 +42,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initialize: async (force = false) => {
     const state = get();
 
-    // Check if already initialized (but allow force refresh)
     if (state.isInitialized && !force) {
       set({ isLoading: false });
       return;
@@ -51,11 +50,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ isLoading: true });
 
     try {
-      // 서버 세션 확인 - 가장 확실한 방법
       const { data: user } = await getMe();
 
       if (user) {
-        // 성공적으로 사용자 정보를 가져온 경우
         set({
           user,
           isAuthenticated: true,
@@ -63,12 +60,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           isLoading: false,
         });
       } else {
-        // API 응답에 data가 없는 비정상적인 경우
         throw new Error('User data not found');
       }
     } catch (error) {
-      // getMe() API 호출 실패는 세션이 없거나 만료된 것을 의미
-      // 확실하게 로그아웃 상태로 설정
       set({
         user: null,
         isAuthenticated: false,

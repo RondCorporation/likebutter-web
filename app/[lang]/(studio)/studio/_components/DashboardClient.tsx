@@ -70,14 +70,11 @@ export default function DashboardClient() {
   ];
 
   const handleToolClick = (route: string) => {
-    // Extract tool name from route
     const toolName = route.split('/').pop() || 'dashboard';
 
-    // Use the global navigation function if available (SPA mode)
     if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
       (window as any).studioNavigateToTool(toolName);
     } else {
-      // Fallback to traditional routing
       router.push(route);
     }
   };
@@ -155,7 +152,6 @@ export default function DashboardClient() {
                     className="w-full h-full object-cover"
                   />
                 )}
-
               </div>
 
               {/* Card Info */}

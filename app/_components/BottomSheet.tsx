@@ -5,11 +5,11 @@ import { useIsMobile } from '@/hooks/useMediaQuery';
 
 interface BottomSheetProps {
   children: ReactNode;
-  initialHeight?: number; // 초기 높이 (%)
-  maxHeight?: number; // 최대 높이 (%)
-  minHeight?: number; // 최소 높이 (%)
+  initialHeight?: number;
+  maxHeight?: number;
+  minHeight?: number;
   className?: string;
-  bottomButton?: ReactNode; // 하단 고정 버튼
+  bottomButton?: ReactNode;
 }
 
 export default function BottomSheet({
@@ -34,7 +34,6 @@ export default function BottomSheet({
 
   const handleTouchStart = useCallback(
     (e: React.TouchEvent) => {
-      // cancelable인 경우에만 preventDefault 호출
       if (e.nativeEvent.cancelable) {
         e.preventDefault();
       }
@@ -83,10 +82,10 @@ export default function BottomSheet({
 
       if (timeDelta > 0) {
         const clientYDelta = clientY - lastClientY;
-        // 속도 계산을 더 정밀하게
+
         const newVelocity =
           timeDelta > 16 ? clientYDelta / timeDelta : velocity;
-        setVelocity(newVelocity * 0.8 + velocity * 0.2); // 스무싱 적용
+        setVelocity(newVelocity * 0.8 + velocity * 0.2);
         setLastClientY(clientY);
         setLastMoveTime(now);
       }
@@ -96,13 +95,12 @@ export default function BottomSheet({
       const deltaPercent = (deltaY / viewportHeight) * 100;
       let newHeight = startHeight + deltaPercent;
 
-      // 경계 밖으로 나갈 때 저항 효과 추가
       if (newHeight > maxHeight) {
         const overshoot = newHeight - maxHeight;
-        newHeight = maxHeight + overshoot * 0.3; // 30% 저항
+        newHeight = maxHeight + overshoot * 0.3;
       } else if (newHeight < minHeight) {
         const undershoot = minHeight - newHeight;
-        newHeight = minHeight - undershoot * 0.3; // 30% 저항
+        newHeight = minHeight - undershoot * 0.3;
       }
 
       setHeight(newHeight);
@@ -122,7 +120,6 @@ export default function BottomSheet({
 
   const handleTouchMove = useCallback(
     (e: React.TouchEvent) => {
-      // cancelable인 경우에만 preventDefault 호출
       if (e.nativeEvent.cancelable) {
         e.preventDefault();
       }
@@ -142,7 +139,6 @@ export default function BottomSheet({
   const handleEnd = useCallback(() => {
     setIsDragging(false);
 
-    // 현재 높이가 경계를 벗어났으면 즉시 수정
     let currentHeight = height;
     if (currentHeight > maxHeight) {
       currentHeight = maxHeight;
@@ -150,20 +146,15 @@ export default function BottomSheet({
       currentHeight = minHeight;
     }
 
-    // 관성 기반 최종 위치 계산 (더 자연스러운 계수 적용)
-    const momentum = velocity * -300; // 관성 효과 조정
+    const momentum = velocity * -300;
     let finalHeight = currentHeight + momentum;
 
-    // 스냅 포인트 결정
     const snapPoints = [minHeight, initialHeight, maxHeight];
     let targetHeight = finalHeight;
 
-    // 속도 임계값 조정 및 개선된 스냅 로직
     const velocityThreshold = 0.3;
     if (Math.abs(velocity) > velocityThreshold) {
-      // 속도 방향에 따른 스냅 포인트 선택
       if (velocity > 0) {
-        // 위로 스와이프 - 더 높은 위치로
         const higherPoints = snapPoints.filter(
           (point) => point > currentHeight
         );
@@ -173,7 +164,6 @@ export default function BottomSheet({
           targetHeight = maxHeight;
         }
       } else {
-        // 아래로 스와이프 - 더 낮은 위치로
         const lowerPoints = snapPoints.filter((point) => point < currentHeight);
         if (lowerPoints.length > 0) {
           targetHeight = Math.max(...lowerPoints);
@@ -182,7 +172,6 @@ export default function BottomSheet({
         }
       }
     } else {
-      // 속도가 느리면 가장 가까운 스냅 포인트로
       let minDistance = Infinity;
       snapPoints.forEach((point) => {
         const distance = Math.abs(currentHeight - point);
@@ -193,20 +182,17 @@ export default function BottomSheet({
       });
     }
 
-    // 경계값 적용
     targetHeight = Math.max(minHeight, Math.min(maxHeight, targetHeight));
 
-    // 부드러운 애니메이션으로 최종 위치로 이동
     animateToHeight(targetHeight);
   }, [height, velocity, minHeight, maxHeight, initialHeight]);
 
-  // 개선된 애니메이션 함수
   const animateToHeight = useCallback(
     (targetHeight: number) => {
       const startHeight = height;
       const startTime = Date.now();
       const distance = Math.abs(targetHeight - startHeight);
-      // 거리에 따라 애니메이션 시간 조정 (최소 200ms, 최대 400ms)
+
       const duration = Math.max(200, Math.min(400, distance * 8));
 
       setIsAnimating(true);
@@ -215,7 +201,6 @@ export default function BottomSheet({
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
 
-        // easeOutQuart 이징 함수로 더 자연스러운 움직임
         const easeProgress = 1 - Math.pow(1 - progress, 4);
         const currentHeight =
           startHeight + (targetHeight - startHeight) * easeProgress;
@@ -235,7 +220,6 @@ export default function BottomSheet({
     [height]
   );
 
-  // 마우스 이벤트 리스너
   useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
@@ -248,7 +232,6 @@ export default function BottomSheet({
     }
   }, [isDragging, handleMouseMove, handleEnd]);
 
-  // 컴포넌트 언마운트 시 애니메이션 정리
   useEffect(() => {
     return () => {
       if (animationRef.current) {
@@ -257,7 +240,6 @@ export default function BottomSheet({
     };
   }, []);
 
-  // 데스크톱에서는 일반 사이드바로 표시
   if (!isMobile) {
     return (
       <div className={`flex flex-col w-[260px] h-full ${className}`}>
@@ -307,7 +289,6 @@ export default function BottomSheet({
             overscrollBehavior: 'contain',
           }}
           onTouchStart={(e) => {
-            // 콘텐츠 영역에서의 터치는 버블링을 방지
             e.stopPropagation();
           }}
         >

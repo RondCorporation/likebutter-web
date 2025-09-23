@@ -39,14 +39,12 @@ export default function StylistWithSidebar() {
     setFormData(newFormData);
   }, []);
 
-  // Track mobile result state from client ref
   useEffect(() => {
     if (clientRef?.showMobileResult !== undefined) {
       setShowMobileResult(clientRef.showMobileResult);
     }
   }, [clientRef?.showMobileResult]);
 
-  // Track PC sidebar visibility based on result image and processing state
   useEffect(() => {
     const resultImage = clientRef?.resultImage;
     const isProcessing = clientRef?.isProcessing || clientRef?.isPolling;
@@ -84,7 +82,6 @@ export default function StylistWithSidebar() {
     const isPolling = clientRef?.isPolling || false;
     const resultImage = clientRef?.resultImage || null;
 
-    // 결과 이미지가 있으면 숨김 (모바일에서는 Before/After 뷰로 전환)
     if (resultImage) {
       return null;
     }

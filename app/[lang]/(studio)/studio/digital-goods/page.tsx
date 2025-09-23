@@ -14,6 +14,5 @@ type Props = {
 export default async function DigitalGoodsPage({ params }: Props) {
   const { lang } = await params;
 
-  // Redirect to main studio page with tool parameter
   redirect(`/${lang}/studio?tool=digital-goods`);
 }

@@ -30,7 +30,6 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
       await downloadFile(url, filename);
     } catch (error) {
       console.error('Download failed:', error);
-      // TODO: Show error toast
     } finally {
       setIsDownloading(false);
     }
@@ -138,7 +137,12 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDownload(details.result!.audioKey, `butter-cover-${Date.now()}.mp3`)}
+                  onClick={() =>
+                    handleDownload(
+                      details.result!.audioKey,
+                      `butter-cover-${Date.now()}.mp3`
+                    )
+                  }
                   disabled={isDownloading}
                   className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
                   title="다운로드"
@@ -162,7 +166,12 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDownload(details.result!.vocalsKey!, `butter-cover-vocals-${Date.now()}.mp3`)}
+                  onClick={() =>
+                    handleDownload(
+                      details.result!.vocalsKey!,
+                      `butter-cover-vocals-${Date.now()}.mp3`
+                    )
+                  }
                   disabled={isDownloading}
                   className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
                   title="다운로드"
@@ -186,7 +195,12 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDownload(details.result!.instrumentalsKey!, `butter-cover-instrumentals-${Date.now()}.mp3`)}
+                  onClick={() =>
+                    handleDownload(
+                      details.result!.instrumentalsKey!,
+                      `butter-cover-instrumentals-${Date.now()}.mp3`
+                    )
+                  }
                   disabled={isDownloading}
                   className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
                   title="다운로드"

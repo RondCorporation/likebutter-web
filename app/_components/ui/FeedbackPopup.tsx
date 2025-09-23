@@ -18,7 +18,6 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFileUpload = (file: File) => {
-    // 5MB 제한
     if (file.size > 5 * 1024 * 1024) {
       toast.error('파일 크기가 5MB를 초과합니다.');
       return;
@@ -28,7 +27,6 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
   };
 
   const handleSubmit = async () => {
-    // 필수 필드 검증
     if (!email.trim()) {
       toast.error('이메일을 입력해주세요.');
       return;
@@ -39,7 +37,6 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
       return;
     }
 
-    // 이메일 형식 검증
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error('올바른 이메일 형식을 입력해주세요.');
@@ -49,12 +46,10 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
     setIsSubmitting(true);
 
     try {
-      // TODO: API 연결 시 실제 요청 로직 추가
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 임시 딜레이
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast.success('피드백이 성공적으로 제출되었습니다.');
 
-      // 폼 초기화
       setEmail('');
       setDescription('');
       setAttachedFile(null);
@@ -71,11 +66,7 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
   };
 
   return (
-    <BasePopup
-      isOpen={isOpen}
-      onClose={onClose}
-      title="피드백"
-    >
+    <BasePopup isOpen={isOpen} onClose={onClose} title="피드백">
       <div className="flex flex-col gap-6">
         {/* 이메일 입력 */}
         <div className="flex flex-col gap-2">
@@ -142,7 +133,9 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
                 accept="image/*,.pdf,.doc,.docx,.txt"
               />
               <button
-                onClick={() => document.getElementById('feedback-file')?.click()}
+                onClick={() =>
+                  document.getElementById('feedback-file')?.click()
+                }
                 className="flex items-center justify-center gap-2 w-full p-3 border-2 border-dashed border-studio-border rounded-md hover:border-studio-button-primary/50 transition-colors"
               >
                 <Upload className="w-4 h-4 text-studio-text-secondary" />

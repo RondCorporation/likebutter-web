@@ -20,7 +20,6 @@ export default function Logo({
     if (onClick) {
       onClick();
     } else {
-      // 현재 언어 추출 후 해당 언어의 랜딩페이지로 이동
       const lang = pathname.split('/')[1];
       router.push(`/${lang}`);
     }

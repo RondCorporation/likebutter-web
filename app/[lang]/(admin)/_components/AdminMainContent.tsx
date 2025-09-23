@@ -26,7 +26,6 @@ export default function AdminMainContent({
       '/admin/tasks': '작업 관리',
     };
 
-    // Remove language prefix and find matching title
     const pathWithoutLang = pathname.replace(/^\/[a-z]{2}/, '');
     return PAGE_TITLES[pathWithoutLang] || '관리자';
   }, [pathname]);

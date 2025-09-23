@@ -1,9 +1,7 @@
 'use client';
 
-// Google Analytics 추적 ID
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
-// gtag 타입 정의
 declare global {
   interface Window {
     gtag: (
@@ -86,8 +84,6 @@ export function setCustomDimensions(dimensions: Record<string, string>): void {
     ...dimensions,
   });
 }
-
-// 미리 정의된 이벤트 추적 함수들
 
 /**
  * 회원가입 추적
@@ -253,7 +249,6 @@ export function initializeAnalytics(userId?: string): void {
     });
   }
 
-  // 사용자 속성 설정
   setUserProperties({
     app_version: '1.0.0',
     platform: 'web',

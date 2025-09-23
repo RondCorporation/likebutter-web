@@ -38,7 +38,6 @@ export default function OverlayCheckoutClient({
     'loading'
   );
 
-  // Use the preload context
   const {
     preloadPortone,
     getPortone,
@@ -47,7 +46,6 @@ export default function OverlayCheckoutClient({
     error: sdkError,
   } = usePortonePreload();
 
-  // Preload SDK when component mounts
   useEffect(() => {
     if (!isLoaded && !sdkIsLoading) {
       preloadPortone()
@@ -58,7 +56,6 @@ export default function OverlayCheckoutClient({
     }
   }, [preloadPortone, isLoaded, sdkIsLoading]);
 
-  // Update SDK status based on preload context
   useEffect(() => {
     if (sdkError) {
       setSdkStatus('error');
@@ -86,13 +83,12 @@ export default function OverlayCheckoutClient({
     }
 
     setIsLoading(true);
-    // ✨ 사용자에게 즉각적인 피드백 제공
+
     const loadingToastId = toast.loading(
       t('openingPaymentWindow') || '결제 창을 열고 있습니다...'
     );
 
     try {
-      // Use preloaded instance or fallback to dynamic loading
       let PortOne = getPortone();
 
       if (!PortOne) {
@@ -113,7 +109,6 @@ export default function OverlayCheckoutClient({
         throw new Error(t('paymentEnvError'));
       }
 
-      // 이 함수 호출이 실제 네트워크 통신을 유발하는 지점입니다.
       const issueResponse = await PortOne.requestIssueBillingKey({
         storeId,
         channelKey,
@@ -121,7 +116,6 @@ export default function OverlayCheckoutClient({
         redirectUrl: `${window.location.origin}/${lang}/billing/callback`,
       });
 
-      // 성공적으로 UI가 닫히면 로딩 토스트를 제거합니다.
       toast.dismiss(loadingToastId);
 
       if (!issueResponse || issueResponse.code) {
@@ -151,7 +145,6 @@ export default function OverlayCheckoutClient({
         throw new Error(t('subscriptionIdError'));
       }
     } catch (error: any) {
-      // 에러 발생 시에도 즉시 토스트를 제거합니다.
       toast.dismiss(loadingToastId);
       toast.error(`${t('genericError')}: ${error.message}`);
     } finally {

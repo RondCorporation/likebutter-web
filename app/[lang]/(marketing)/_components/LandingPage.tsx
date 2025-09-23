@@ -1,7 +1,13 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Play, ArrowDown, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Play,
+  ArrowDown,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useScrollContext } from '../_context/ScrollContext';
 import Image from 'next/image';
@@ -10,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 import { motion, useInView } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
-// Dynamic import with no SSR to prevent hydration layout shift
 const RotatingHeroSection = dynamic(() => import('./RotatingHeroSection'), {
   ssr: false,
   loading: () => <div className="h-screen bg-black" />,
@@ -21,7 +26,6 @@ type LandingPageProps = {
   plans: Plan[];
 };
 
-// Animated element component for scroll-triggered animations
 const AnimatedElement = ({
   children,
   delay = 0,
@@ -61,7 +65,6 @@ const AnimatedElement = ({
   );
 };
 
-// Enhanced Page Section Component with viewport fitting
 const PageSection = ({
   children,
   className = '',
@@ -145,7 +148,6 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
   const [loading, setLoading] = useState(false);
   const [currentCard, setCurrentCard] = useState(0);
 
-  // Set viewport height CSS variable for mobile browsers
   useEffect(() => {
     const setVh = () => {
       const vh = window.innerHeight * 0.01;
@@ -163,13 +165,10 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
     }
   };
 
-  // Plans data is now passed as props from server-side rendering
-
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
-  // Process plans data
   const processedPlans = plans.reduce(
     (acc: { [key: string]: { monthly?: Plan; yearly?: Plan } }, plan) => {
       if (!acc[plan.planType]) {
@@ -196,7 +195,12 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
   const getYearlyMonthlyPrice = (planType: string) => {
     const yearlyPlan = processedPlans[planType]?.yearly;
-    if (!yearlyPlan || yearlyPlan.priceKrw === null || yearlyPlan.priceUsd === null) return 0;
+    if (
+      !yearlyPlan ||
+      yearlyPlan.priceKrw === null ||
+      yearlyPlan.priceUsd === null
+    )
+      return 0;
     const yearlyPrice = isKorean ? yearlyPlan.priceKrw : yearlyPlan.priceUsd;
     return Math.floor(yearlyPrice / 12);
   };
@@ -210,20 +214,20 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
       id: 1,
       src: `card_1_${lang}.png`,
       alt: 'Butter Talks',
-      delay: 0.2
+      delay: 0.2,
     },
     {
       id: 2,
       src: `card_2_${lang}.png`,
       alt: 'Butter Cover',
-      delay: 0.3
+      delay: 0.3,
     },
     {
       id: 3,
       src: `card_3_${lang}.png`,
       alt: 'Butter Brush',
-      delay: 0.4
-    }
+      delay: 0.4,
+    },
   ];
 
   const nextCard = () => {
@@ -301,7 +305,12 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             >
                               <Image
                                 src={`/${cards[(currentCard - 1 + cards.length) % cards.length].src}`}
-                                alt={cards[(currentCard - 1 + cards.length) % cards.length].alt}
+                                alt={
+                                  cards[
+                                    (currentCard - 1 + cards.length) %
+                                      cards.length
+                                  ].alt
+                                }
                                 width={302}
                                 height={418}
                                 className="w-[240px] h-[320px] rounded-2xl shadow-lg object-cover"
@@ -316,7 +325,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             className="z-10 relative"
                             initial={{ opacity: 0.7, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ 
+                            transition={{
                               duration: 0.5,
                               type: 'spring',
                               stiffness: 300,
@@ -343,7 +352,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             >
                               <Image
                                 src={`/${cards[(currentCard + 1) % cards.length].src}`}
-                                alt={cards[(currentCard + 1) % cards.length].alt}
+                                alt={
+                                  cards[(currentCard + 1) % cards.length].alt
+                                }
                                 width={302}
                                 height={418}
                                 className="w-[240px] h-[320px] rounded-2xl shadow-lg object-cover"
@@ -371,7 +382,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           key={index}
                           onClick={() => setCurrentCard(index)}
                           className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                            index === currentCard ? 'bg-[#FFD93B]' : 'bg-gray-500'
+                            index === currentCard
+                              ? 'bg-[#FFD93B]'
+                              : 'bg-gray-500'
                           }`}
                           aria-label={`Go to card ${index + 1}`}
                         />
@@ -477,11 +490,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                 <div className="w-full lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
                   {/* Mobile: Mockup below text */}
                   <div className="lg:hidden flex justify-center mt-8">
-                    <AnimatedElement
-                      direction="up"
-                      delay={0.2}
-                      duration={0.4}
-                    >
+                    <AnimatedElement direction="up" delay={0.2} duration={0.4}>
                       <motion.div
                         className="w-[280px] h-[420px] flex items-center justify-center shadow-2xl rounded-[28px]"
                         style={{ backgroundColor: '#2a2a2a' }}
@@ -500,9 +509,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       </motion.div>
                     </AnimatedElement>
                   </div>
-
                   {/* Desktop: Original layout */}
-                  <div className="hidden lg:block"></div> {/* Empty space for layout balance */}
+                  <div className="hidden lg:block"></div>{' '}
+                  {/* Empty space for layout balance */}
                   <div className="hidden lg:flex justify-center lg:justify-end">
                     <AnimatedElement
                       direction="right"

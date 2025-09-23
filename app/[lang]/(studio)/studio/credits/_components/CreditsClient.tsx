@@ -32,7 +32,6 @@ export default function CreditsClient() {
     { label: '50개씩', value: 50 },
   ];
 
-  // 크레딧 잔액 및 히스토리 조회
   const fetchCreditData = async (page: number = 0) => {
     try {
       setIsLoading(true);
@@ -83,7 +82,6 @@ export default function CreditsClient() {
     return `${year}.${month}.${day} ${hour}:${minute}`;
   };
 
-  // 페이지네이션 생성
   const generatePageNumbers = () => {
     if (!creditHistory) return [];
 

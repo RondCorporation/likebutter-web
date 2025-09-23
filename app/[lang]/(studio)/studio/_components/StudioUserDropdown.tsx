@@ -27,7 +27,13 @@ export default function StudioUserDropdown() {
   const { displayName, userEmail } = useAuth();
   const logout = useLogout();
   const openSettings = useOpenSettings();
-  const { isLoading, hasAttendedToday, showAttendanceModal, fetchTodayStatus, isInitialized } = useAttendanceStore();
+  const {
+    isLoading,
+    hasAttendedToday,
+    showAttendanceModal,
+    fetchTodayStatus,
+    isInitialized,
+  } = useAttendanceStore();
   const { currentBalance, isLoading: isCreditLoading } = useCredit();
   const [isOpen, setIsOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -36,7 +42,6 @@ export default function StudioUserDropdown() {
   const pathname = usePathname();
   const lang = pathname.split('/')[1];
 
-  // 더미 데이터
   const planName = 'Basic Plan';
 
   useEffect(() => {
@@ -62,7 +67,6 @@ export default function StudioUserDropdown() {
   const handleFreeCreditClick = async () => {
     if (isLoading) return;
 
-    // 아직 초기화되지 않았다면 상태를 먼저 가져옴
     if (!isInitialized) {
       await fetchTodayStatus();
     }

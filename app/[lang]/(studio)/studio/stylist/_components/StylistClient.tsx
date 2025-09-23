@@ -76,7 +76,14 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
     }>({});
     const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
 
-    const { taskData, isPolling, isBackgroundProcessing, startPolling, checkTaskStatus, currentTaskId } = useTaskPolling({
+    const {
+      taskData,
+      isPolling,
+      isBackgroundProcessing,
+      startPolling,
+      checkTaskStatus,
+      currentTaskId,
+    } = useTaskPolling({
       onCompleted: (result) => {
         if (result.details?.result?.imageUrl) {
           setResultImage(result.details.result.imageUrl);
@@ -105,17 +112,24 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         checkTaskStatus,
         currentTaskId,
       }),
-      [isProcessing, isPolling, isBackgroundProcessing, resultImage, uploadedFile, showMobileResult, checkTaskStatus, currentTaskId]
+      [
+        isProcessing,
+        isPolling,
+        isBackgroundProcessing,
+        resultImage,
+        uploadedFile,
+        showMobileResult,
+        checkTaskStatus,
+        currentTaskId,
+      ]
     );
 
     const handleFileUpload = (file: File) => {
-      // Check file size (200MB limit)
       if (file.size > 200 * 1024 * 1024) {
         toast.error('파일 크기가 200MB를 초과합니다.');
         return;
       }
 
-      // Check file type
       if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
         toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
         return;
@@ -123,7 +137,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
 
       setUploadedFile(file);
 
-      // Create preview URL
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     };
@@ -135,7 +148,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       setResultImage(null);
 
       try {
-        // Prepare request data
         const prompt =
           formData.mode === 'text'
             ? formData.textPrompt || ''
@@ -147,7 +159,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
             formData.mode === 'image' ? formData.imagePrompt : undefined,
         };
 
-        // Add files from uploadedFiles if in image mode
         if (formData.mode === 'image' && formData.uploadedFiles) {
           if (formData.uploadedFiles.hairStyleImage) {
             request.hairStyleImage = formData.uploadedFiles.hairStyleImage;
@@ -168,7 +179,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
 
         const response = await createStylistTask(uploadedFile, request);
 
-        // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
         if ((response as any).isInsufficientCredit) {
           setIsProcessing(false);
           return;
@@ -218,7 +228,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
 
       setIsEditLoading(true);
       setIsEditPopupOpen(false);
-      setResultImage(null); // 기존 이미지 초기화
+      setResultImage(null);
 
       try {
         const response = await editTask(
@@ -227,14 +237,13 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
           editRequest
         );
 
-        // 크레딧 부족인 경우 조용히 처리 (toast는 이미 apiClient에서 처리됨)
         if ((response as any).isInsufficientCredit) {
           return;
         }
 
         if (response.data) {
           toast.success('수정 요청이 전송되었습니다!');
-          // 새로운 edit task에 대해 폴링 시작
+
           startPolling(response.data.taskId);
         } else {
           toast.error('수정 요청에 실패했습니다.');
@@ -287,7 +296,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         [slotId]: url,
       }));
 
-      // Update formData.uploadedFiles
       if (formData?.uploadedFiles) {
         const fileKey = slotId as keyof typeof formData.uploadedFiles;
         (formData.uploadedFiles as any)[fileKey] = file;
@@ -301,7 +309,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         return newPreviews;
       });
 
-      // Remove from formData.uploadedFiles
       if (formData?.uploadedFiles) {
         const fileKey = slotId as keyof typeof formData.uploadedFiles;
         delete (formData.uploadedFiles as any)[fileKey];
@@ -309,7 +316,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
     };
 
     const handleReset = () => {
-      // 모든 상태 초기화
       setUploadedFile(null);
       setPreviewUrl('');
       setResultImage(null);
@@ -320,7 +326,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       setIsResetPopupOpen(false);
       setAdditionalImagePreviews({});
 
-      // URL 정리
       if (previewUrl) {
         URL.revokeObjectURL(previewUrl);
       }
@@ -377,21 +382,16 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
     };
 
     const isFormValid = () => {
-      // 이미지 업로드 필수
       if (!uploadedFile) return false;
 
-      // sidebar에서 formData가 설정되어야 함
       if (!formData) return false;
 
-      // mode가 설정되어야 함
       if (!formData.mode) return false;
 
       if (formData.mode === 'text') {
-        // 텍스트 모드: 텍스트 설명 + 이미지 필수
         if (!formData.textPrompt || formData.textPrompt.trim().length < 5)
           return false;
       } else if (formData.mode === 'image') {
-        // 이미지 모드: 최소 1개 이미지 첨부 + 기본 이미지 필수
         const hasUploadedFiles =
           formData.uploadedFiles &&
           Object.values(formData.uploadedFiles).some(
@@ -403,8 +403,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       return true;
     };
 
-    // Mobile result view - 모바일에서만 전체 화면 전환
-    // PC에서는 이 조건을 실행하지 않고 메인 레이아웃을 유지
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     if (showMobileResult && resultImage && isMobile) {
       return (
@@ -646,7 +644,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
           >
             <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
               {isProcessing ? (
-                // 로딩 상태
                 <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                   <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                   <div className="flex flex-col items-center gap-2 text-center">
@@ -659,7 +656,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                   </div>
                 </div>
               ) : resultImage ? (
-                // 결과 이미지 표시
                 <div className="relative w-full h-full group">
                   <img
                     src={resultImage}
@@ -675,7 +671,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                   </button>
                 </div>
               ) : (
-                // 기본 상태
                 <div className="flex flex-col items-center justify-center w-full h-full">
                   <div className="flex flex-col items-center text-center">
                     <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />

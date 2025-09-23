@@ -27,13 +27,11 @@ export default function DynamicImageUpload({
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
 
   const handleFileUpload = (file: File, slotId: string) => {
-    // Check file size (200MB limit)
     if (file.size > 200 * 1024 * 1024) {
       alert('파일 크기가 200MB를 초과합니다.');
       return;
     }
 
-    // Check file type
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
       alert('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
       return;

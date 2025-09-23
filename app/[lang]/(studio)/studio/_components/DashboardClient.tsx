@@ -23,7 +23,8 @@ export default function DashboardClient() {
     {
       id: 'digital-goods',
       title: '디지털 굿즈',
-      description: '내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.',
+      description:
+        '내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.',
       route: '/studio/digital-goods',
       preview: '/studio/model-select/digital-goods.png',
       isNew: true,
@@ -33,7 +34,8 @@ export default function DashboardClient() {
     {
       id: 'stylist',
       title: '스타일리스트',
-      description: '헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.',
+      description:
+        '헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.',
       route: '/studio/stylist',
       preview: '/studio/model-select/stylist.png',
       gradient:

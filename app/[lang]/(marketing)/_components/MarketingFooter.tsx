@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import Logo from '@/app/_components/Logo';
 import { usePathname } from 'next/navigation';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { COMPANY_INFO } from '@/app/_lib/companyInfo';
+import FeedbackPopup from '@/app/_components/ui/FeedbackPopup';
 
 interface MarketingFooterProps {
   isSnapSection?: boolean;
@@ -17,6 +18,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
     const { t } = useTranslation();
     const pathname = usePathname();
     const lang = pathname.split('/')[1];
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     // Unified footer styling for all marketing pages
     const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start' : 'pt-20'}`;
@@ -65,12 +67,6 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                     >
                       {t('footerStudioAccess')}
                     </Link>
-                    <a
-                      href={`mailto:${COMPANY_INFO.contact.business}`}
-                      className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
-                    >
-                      {t('footerBusinessInquiries')}
-                    </a>
                   </nav>
                 </div>
 
@@ -80,24 +76,18 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                     {t('customerCenter')}
                   </h3>
                   <nav className="flex flex-col space-y-3 text-sm">
+                    <button
+                      onClick={() => setIsFeedbackOpen(true)}
+                      className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit text-left"
+                    >
+                      피드백
+                    </button>
                     <a
-                      href={`mailto:${COMPANY_INFO.contact.support}`}
+                      href={`mailto:${COMPANY_INFO.contact.business}`}
                       className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
                     >
-                      {t('footerGeneralSupport')}
+                      비즈니스 문의
                     </a>
-                    <Link
-                      href={`/${lang}/faq`}
-                      className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
-                    >
-                      {t('faq')}
-                    </Link>
-                    <Link
-                      href={`/${lang}/notices`}
-                      className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
-                    >
-                      {t('notices')}
-                    </Link>
                   </nav>
                 </div>
 
@@ -185,10 +175,6 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                       © {new Date().getFullYear()} {t('companyName')}.{' '}
                       {t('footerRights')}
                     </p>
-                    <p className="mt-1">
-                      {t('companyBusinessType')} | {t('companyTaxType')} |{' '}
-                      {t('companyStatus')}
-                    </p>
                   </div>
                   <div className="text-sm text-slate-500 text-center lg:text-right">
                     <p>{t('companyBusinessSector')}</p>
@@ -199,6 +185,12 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
             </div>
           </div>
         </div>
+
+        {/* 피드백 팝업 */}
+        <FeedbackPopup
+          isOpen={isFeedbackOpen}
+          onClose={() => setIsFeedbackOpen(false)}
+        />
       </footer>
     );
   }

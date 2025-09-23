@@ -1,7 +1,14 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { HelpCircle, Upload, Loader2, Edit, RotateCcw, Download } from 'lucide-react';
+import {
+  HelpCircle,
+  Upload,
+  Loader2,
+  Edit,
+  RotateCcw,
+  Download,
+} from 'lucide-react';
 import {
   createDigitalGoodsTask,
   DigitalGoodsRequest,
@@ -357,18 +364,32 @@ const DigitalGoodsClient = forwardRef<
           {/* 드래그 앤 드롭 영역 */}
           <div
             className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
-              resultImage || isGenerating || isPolling ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
-            } ${
-              !previewUrl ? 'border-2 border-dashed' : ''
-            } ${
+              resultImage || isGenerating || isPolling
+                ? 'cursor-not-allowed opacity-60'
+                : 'cursor-pointer'
+            } ${!previewUrl ? 'border-2 border-dashed' : ''} ${
               isDragOver && !resultImage && !isGenerating && !isPolling
                 ? 'border-studio-button-primary scale-[1.02]'
                 : 'border-studio-border hover:border-studio-button-primary/50'
             }`}
-            onDragOver={resultImage || isGenerating || isPolling ? undefined : handleDragOver}
-            onDragLeave={resultImage || isGenerating || isPolling ? undefined : handleDragLeave}
-            onDrop={resultImage || isGenerating || isPolling ? undefined : handleDrop}
-            onClick={resultImage || isGenerating || isPolling ? undefined : () => document.getElementById('file-upload')?.click()}
+            onDragOver={
+              resultImage || isGenerating || isPolling
+                ? undefined
+                : handleDragOver
+            }
+            onDragLeave={
+              resultImage || isGenerating || isPolling
+                ? undefined
+                : handleDragLeave
+            }
+            onDrop={
+              resultImage || isGenerating || isPolling ? undefined : handleDrop
+            }
+            onClick={
+              resultImage || isGenerating || isPolling
+                ? undefined
+                : () => document.getElementById('file-upload')?.click()
+            }
           >
             {previewUrl ? (
               <img
@@ -405,7 +426,11 @@ const DigitalGoodsClient = forwardRef<
 
           {/* PC에서만 파일 찾아보기 버튼 표시 */}
           <button
-            onClick={resultImage || isGenerating || isPolling ? undefined : () => document.getElementById('file-upload')?.click()}
+            onClick={
+              resultImage || isGenerating || isPolling
+                ? undefined
+                : () => document.getElementById('file-upload')?.click()
+            }
             disabled={!!resultImage || isGenerating || isPolling}
             className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
           >

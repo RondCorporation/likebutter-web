@@ -1,9 +1,6 @@
-import { redirect } from 'next/navigation';
-import initTranslations from '@/app/_lib/i18n-server';
 import BillingDashboard from './_components/BillingDashboard';
 import nextI18NextConfig from '../../../../next-i18next.config.mjs';
 import { getPlansOnServer } from '@/app/_lib/apis/subscription.api.server';
-import { Plan } from '@/app/_types/plan';
 
 export const revalidate = 3600;
 

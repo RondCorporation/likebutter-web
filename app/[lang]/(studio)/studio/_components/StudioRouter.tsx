@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useStudioNavigation } from '../_hooks/useStudioNavigation';
-import { useAttendance } from '@/app/_hooks/useAttendance';
+import { useAttendanceStore } from '@/app/_stores/attendanceStore';
 import { Suspense } from 'react';
 import DailyAttendanceModal from '@/app/_components/studio/DailyAttendanceModal';
 
@@ -28,18 +28,18 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
   const { getToolComponent, preloadTool, isToolPreloaded } =
     useStudioNavigation(lang);
 
-  const attendance = useAttendance();
   const {
     shouldShowModal,
     checkAttendanceFromModal,
     closeModal,
     isLoading: isAttendanceLoading,
-  } = attendance;
+    checkAttendanceOnStudioMount,
+  } = useAttendanceStore();
 
   // checkAttendanceOnStudioMount를 메모이제이션하여 불필요한 재실행 방지
   const memoizedCheckAttendance = useCallback(() => {
-    attendance.checkAttendanceOnStudioMount();
-  }, [attendance.checkAttendanceOnStudioMount]);
+    checkAttendanceOnStudioMount();
+  }, [checkAttendanceOnStudioMount]);
 
   // Get current tool from URL parameter
   const getCurrentToolFromUrl = useCallback(() => {

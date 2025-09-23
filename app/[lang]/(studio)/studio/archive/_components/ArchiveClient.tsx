@@ -14,7 +14,11 @@ import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
 import DeleteConfirmModal from '@/components/studio/archive/DeleteConfirmModal';
 import SwipeableArchiveCard from '@/components/studio/archive/SwipeableArchiveCard';
-import { deleteTask, deleteBatchTasks, BatchDeleteResponse } from '@/lib/apis/task.api';
+import {
+  deleteTask,
+  deleteBatchTasks,
+  BatchDeleteResponse,
+} from '@/lib/apis/task.api';
 import { Task } from '@/types/task';
 
 interface DropdownProps {
@@ -283,10 +287,14 @@ function ArchiveTaskCard({
       <div className="relative w-full h-[200px] md:h-[165px] bg-[#4a4a4b] rounded-xl md:rounded-2xl overflow-hidden transition-transform md:group-hover:scale-105">
         <div
           className="w-full h-full cursor-pointer"
-          onClick={isSelectionMode ? (e) => {
-            e.stopPropagation();
-            onToggleSelect(task.taskId);
-          } : onClick}
+          onClick={
+            isSelectionMode
+              ? (e) => {
+                  e.stopPropagation();
+                  onToggleSelect(task.taskId);
+                }
+              : onClick
+          }
         >
           {renderTaskPreview(task)}
         </div>
@@ -324,11 +332,13 @@ function ArchiveTaskCard({
 
         {/* Action Type badge */}
         <div className="absolute top-3 right-3">
-          <div className={`px-2 py-1 text-xs font-medium rounded ${
-            task.isEditTask
-              ? 'bg-blue-500 text-white'
-              : 'bg-[#e8fa07] text-[#292c31]'
-          }`}>
+          <div
+            className={`px-2 py-1 text-xs font-medium rounded ${
+              task.isEditTask
+                ? 'bg-blue-500 text-white'
+                : 'bg-[#e8fa07] text-[#292c31]'
+            }`}
+          >
             {getActionTypeLabel(task.actionType)}
             {task.editSequence && task.editSequence > 1 && (
               <span className="ml-1">#{task.editSequence}</span>
@@ -359,9 +369,7 @@ function ArchiveTaskCard({
           {cardContent}
         </SwipeableArchiveCard>
       </div>
-      <div className="hidden md:block">
-        {cardContent}
-      </div>
+      <div className="hidden md:block">{cardContent}</div>
     </>
   );
 }
@@ -392,7 +400,9 @@ export default function ArchiveClient() {
   >('bottom');
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
   const [isSelectionMode, setIsSelectionMode] = useState(false);
-  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(new Set());
+  const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(
+    new Set()
+  );
   const [tasksToDelete, setTasksToDelete] = useState<number[] | null>(null);
   const [selectedFilter, setSelectedFilter] = useState('all');
 
@@ -486,14 +496,14 @@ export default function ArchiveClient() {
       setFilters({
         category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
         actionType: '',
-        actionTypes: []
+        actionTypes: [],
       });
     } else {
       // 특정 ActionType 선택 시 actionTypes로 필터링
       setFilters({
         category: undefined, // category 제거
         actionType: '',
-        actionTypes: [value]
+        actionTypes: [value],
       });
     }
   };
@@ -570,7 +580,11 @@ export default function ArchiveClient() {
             onClick={() => {
               setActiveTab('image');
               setSelectedFilter('all'); // 탭 변경 시 필터 초기화
-              setFilters({ category: 'IMAGE', actionType: '', actionTypes: [] }); // Use category filter
+              setFilters({
+                category: 'IMAGE',
+                actionType: '',
+                actionTypes: [],
+              }); // Use category filter
             }}
             className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'image'
@@ -584,7 +598,11 @@ export default function ArchiveClient() {
             onClick={() => {
               setActiveTab('audio');
               setSelectedFilter('all'); // 탭 변경 시 필터 초기화
-              setFilters({ category: 'AUDIO', actionType: '', actionTypes: [] }); // Use category filter
+              setFilters({
+                category: 'AUDIO',
+                actionType: '',
+                actionTypes: [],
+              }); // Use category filter
             }}
             className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
               activeTab === 'audio'
@@ -603,7 +621,11 @@ export default function ArchiveClient() {
               <Dropdown
                 isOpen={dropdownOpen}
                 onToggle={() => setDropdownOpen(!dropdownOpen)}
-                placeholder={actionTypeOptions.find(option => option.value === selectedFilter)?.label || "옵션 선택"}
+                placeholder={
+                  actionTypeOptions.find(
+                    (option) => option.value === selectedFilter
+                  )?.label || '옵션 선택'
+                }
                 options={actionTypeOptions}
                 onSelect={handleFilterSelect}
               />

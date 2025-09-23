@@ -67,7 +67,10 @@ export default function ModelSelectPopup({
     // Navigate after a brief delay to ensure popup close animation
     setTimeout(() => {
       // Use SPA navigation if available
-      if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
+      if (
+        typeof window !== 'undefined' &&
+        (window as any).studioNavigateToTool
+      ) {
         (window as any).studioNavigateToTool(toolName);
       } else {
         // Fallback to traditional routing
@@ -228,7 +231,6 @@ export default function ModelSelectPopup({
             </>
           )}
         </div>
-
       </div>
     </div>
   );

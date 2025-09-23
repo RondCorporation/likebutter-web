@@ -11,21 +11,26 @@ import {
   Globe,
   Calendar,
   Check,
+  MessageCircle,
+  Gift,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useLogout } from '@/app/_hooks/useLogout';
 import { useAuth } from '@/app/_hooks/useAuth';
 import { useOpenSettings } from '@/app/_hooks/useUIStore';
-import { useAttendance } from '@/app/_hooks/useAttendance';
+import { useAttendanceStore } from '@/app/_stores/attendanceStore';
 import { useCredit } from '@/app/_hooks/useCredit';
+import FeedbackPopup from '@/app/_components/ui/FeedbackPopup';
+import { toast } from 'react-hot-toast';
 
 export default function StudioUserDropdown() {
   const { displayName, userEmail } = useAuth();
   const logout = useLogout();
   const openSettings = useOpenSettings();
-  const { checkAttendance, isLoading, hasAttendedToday } = useAttendance();
+  const { isLoading, hasAttendedToday, showAttendanceModal, fetchTodayStatus, isInitialized } = useAttendanceStore();
   const { currentBalance, isLoading: isCreditLoading } = useCredit();
   const [isOpen, setIsOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const pathname = usePathname();
@@ -54,10 +59,23 @@ export default function StudioUserDropdown() {
     action();
   };
 
-  const handleAttendanceCheck = async () => {
-    if (!hasAttendedToday && !isLoading) {
-      await checkAttendance();
+  const handleFreeCreditClick = async () => {
+    if (isLoading) return;
+
+    // 아직 초기화되지 않았다면 상태를 먼저 가져옴
+    if (!isInitialized) {
+      await fetchTodayStatus();
     }
+
+    if (hasAttendedToday) {
+      toast.error('이미 오늘 출석체크를 완료했습니다.');
+    } else {
+      showAttendanceModal();
+    }
+  };
+
+  const handleFeedbackClick = () => {
+    setIsFeedbackOpen(true);
   };
 
   return (
@@ -117,33 +135,6 @@ export default function StudioUserDropdown() {
           {/* 구분선 */}
           <hr className="border-studio-border my-2" />
 
-          {/* 출석체크 */}
-          <div className="px-2">
-            <button
-              onClick={() => handleAction(handleAttendanceCheck)}
-              disabled={hasAttendedToday || isLoading}
-              className={`flex w-full items-center gap-3 px-2 py-2.5 text-sm rounded-md transition ${
-                hasAttendedToday
-                  ? 'text-studio-text-secondary cursor-not-allowed'
-                  : 'text-studio-text-primary hover:bg-studio-button-primary/10'
-              }`}
-            >
-              {hasAttendedToday ? (
-                <Check size={16} className="text-green-500" />
-              ) : (
-                <Calendar size={16} className="text-studio-text-secondary" />
-              )}
-              {isLoading
-                ? '출석체크 중...'
-                : hasAttendedToday
-                  ? '출석체크 완료'
-                  : '출석체크'}
-            </button>
-          </div>
-
-          {/* 구분선 */}
-          <hr className="border-studio-border my-2" />
-
           {/* 언어 및 설정 */}
           <div className="px-2">
             <button
@@ -192,13 +183,31 @@ export default function StudioUserDropdown() {
               요금제 업그레이드
             </button>
             <button
-              onClick={() =>
-                handleAction(() => router.push(`/${lang}/billing/history`))
-              }
+              onClick={() => handleAction(handleFreeCreditClick)}
+              disabled={hasAttendedToday || isLoading}
+              className={`flex w-full items-center gap-3 px-2 py-2.5 text-sm rounded-md transition ${
+                hasAttendedToday
+                  ? 'text-studio-text-secondary cursor-not-allowed'
+                  : 'text-studio-text-primary hover:bg-studio-button-primary/10'
+              }`}
+            >
+              {hasAttendedToday ? (
+                <Check size={16} className="text-green-500" />
+              ) : (
+                <Gift size={16} className="text-studio-text-secondary" />
+              )}
+              {isLoading
+                ? '크레딧 받는 중...'
+                : hasAttendedToday
+                  ? '오늘 크레딧 받음'
+                  : '무료 크레딧 얻기'}
+            </button>
+            <button
+              onClick={() => handleAction(handleFeedbackClick)}
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
-              <History size={16} className="text-studio-text-secondary" />
-              결제 내역
+              <MessageCircle size={16} className="text-studio-text-secondary" />
+              피드백
             </button>
           </div>
 
@@ -217,6 +226,12 @@ export default function StudioUserDropdown() {
           </div>
         </div>
       )}
+
+      {/* 피드백 팝업 */}
+      <FeedbackPopup
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+      />
     </div>
   );
 }

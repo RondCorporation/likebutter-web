@@ -409,25 +409,41 @@ const FanmeetingStudioClient = forwardRef<
                 </div>
                 <div
                   className={`flex flex-col h-[140px] w-full items-center justify-center bg-black rounded-[16px] transition-all duration-200 ease-out ${
-                    resultImage || isProcessing || isPolling ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
-                  } ${
-                    !idolPreviewUrl ? 'border-2 border-dashed' : ''
-                  } ${
-                    isDragOverIdol && !(resultImage || isProcessing || isPolling)
+                    resultImage || isProcessing || isPolling
+                      ? 'cursor-not-allowed opacity-60'
+                      : 'cursor-pointer'
+                  } ${!idolPreviewUrl ? 'border-2 border-dashed' : ''} ${
+                    isDragOverIdol &&
+                    !(resultImage || isProcessing || isPolling)
                       ? 'border-studio-button-primary scale-[1.02]'
                       : 'border-studio-border hover:border-studio-button-primary/50'
                   }`}
-                  onDragOver={resultImage || isProcessing || isPolling ? undefined : (e) => {
-                    handleDragOver(e);
-                    setIsDragOverIdol(true);
-                  }}
-                  onDragLeave={resultImage || isProcessing || isPolling ? undefined : (e) => {
-                    handleDragLeave(e);
-                    setIsDragOverIdol(false);
-                  }}
-                  onDrop={resultImage || isProcessing || isPolling ? undefined : handleDropIdol}
-                  onClick={resultImage || isProcessing || isPolling ? undefined : () =>
-                    document.getElementById('idol-file-upload')?.click()
+                  onDragOver={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : (e) => {
+                          handleDragOver(e);
+                          setIsDragOverIdol(true);
+                        }
+                  }
+                  onDragLeave={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : (e) => {
+                          handleDragLeave(e);
+                          setIsDragOverIdol(false);
+                        }
+                  }
+                  onDrop={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : handleDropIdol
+                  }
+                  onClick={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : () =>
+                          document.getElementById('idol-file-upload')?.click()
                   }
                 >
                   {idolPreviewUrl ? (
@@ -473,25 +489,41 @@ const FanmeetingStudioClient = forwardRef<
                 </div>
                 <div
                   className={`flex flex-col h-[140px] w-full items-center justify-center bg-black rounded-[16px] transition-all duration-200 ease-out ${
-                    resultImage || isProcessing || isPolling ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
-                  } ${
-                    !userPreviewUrl ? 'border-2 border-dashed' : ''
-                  } ${
-                    isDragOverUser && !(resultImage || isProcessing || isPolling)
+                    resultImage || isProcessing || isPolling
+                      ? 'cursor-not-allowed opacity-60'
+                      : 'cursor-pointer'
+                  } ${!userPreviewUrl ? 'border-2 border-dashed' : ''} ${
+                    isDragOverUser &&
+                    !(resultImage || isProcessing || isPolling)
                       ? 'border-studio-button-primary scale-[1.02]'
                       : 'border-studio-border hover:border-studio-button-primary/50'
                   }`}
-                  onDragOver={resultImage || isProcessing || isPolling ? undefined : (e) => {
-                    handleDragOver(e);
-                    setIsDragOverUser(true);
-                  }}
-                  onDragLeave={resultImage || isProcessing || isPolling ? undefined : (e) => {
-                    handleDragLeave(e);
-                    setIsDragOverUser(false);
-                  }}
-                  onDrop={resultImage || isProcessing || isPolling ? undefined : handleDropUser}
-                  onClick={resultImage || isProcessing || isPolling ? undefined : () =>
-                    document.getElementById('user-file-upload')?.click()
+                  onDragOver={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : (e) => {
+                          handleDragOver(e);
+                          setIsDragOverUser(true);
+                        }
+                  }
+                  onDragLeave={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : (e) => {
+                          handleDragLeave(e);
+                          setIsDragOverUser(false);
+                        }
+                  }
+                  onDrop={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : handleDropUser
+                  }
+                  onClick={
+                    resultImage || isProcessing || isPolling
+                      ? undefined
+                      : () =>
+                          document.getElementById('user-file-upload')?.click()
                   }
                 >
                   {userPreviewUrl ? (
@@ -527,8 +559,10 @@ const FanmeetingStudioClient = forwardRef<
             {/* PC에서만 파일 찾아보기 버튼들 표시 */}
             <div className="gap-3 hidden md:flex">
               <button
-                onClick={resultImage || isProcessing || isPolling ? undefined : () =>
-                  document.getElementById('idol-file-upload')?.click()
+                onClick={
+                  resultImage || isProcessing || isPolling
+                    ? undefined
+                    : () => document.getElementById('idol-file-upload')?.click()
                 }
                 disabled={!!(resultImage || isProcessing || isPolling)}
                 className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
@@ -539,8 +573,10 @@ const FanmeetingStudioClient = forwardRef<
               </button>
 
               <button
-                onClick={resultImage || isProcessing || isPolling ? undefined : () =>
-                  document.getElementById('user-file-upload')?.click()
+                onClick={
+                  resultImage || isProcessing || isPolling
+                    ? undefined
+                    : () => document.getElementById('user-file-upload')?.click()
                 }
                 disabled={!!(resultImage || isProcessing || isPolling)}
                 className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"

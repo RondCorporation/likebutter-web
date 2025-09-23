@@ -91,7 +91,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   // Batch status checking with SWR
   const { data: batchStatusData, mutate: mutateBatchStatus } = useSWR(
     shouldPoll
-      ? `/tasks/batch?ids=${inProgressTaskIds.join(',')}&summary=false`
+      ? `/tasks/batch?taskIds=${inProgressTaskIds.join(',')}&summary=false`
       : null,
     () => getBatchTaskStatus(inProgressTaskIds).then((res) => res.data),
     {

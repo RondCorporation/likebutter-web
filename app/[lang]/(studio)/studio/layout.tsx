@@ -4,6 +4,7 @@ import { ReactNode, use } from 'react';
 import { Toaster } from 'react-hot-toast';
 import StudioAuthGuard from '../_components/StudioAuthGuard';
 import { Crown } from 'lucide-react';
+import Image from 'next/image';
 import StudioSidebar from './_components/StudioSidebar';
 import MobileBottomNavigation from './_components/MobileBottomNavigation';
 import StudioPreloader from './_components/StudioPreloader';
@@ -11,6 +12,8 @@ import StudioUserDropdown from './_components/StudioUserDropdown';
 import Logo from '@/components/Logo';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/app/_hooks/useAuth';
+import { useCredit } from '@/app/_hooks/useCredit';
 
 type Props = {
   children: ReactNode;
@@ -21,10 +24,15 @@ export default function StudioLayout({ children, params }: Props) {
   const { lang } = use(params);
   const isDesktop = useIsDesktop();
   const router = useRouter();
+  const { user } = useAuth();
+  const { currentBalance, isLoading: isCreditLoading } = useCredit();
 
   const handleUpgradeClick = () => {
     router.push(`/${lang}/billing`);
   };
+
+  // Show upgrade button only for FREE plan users
+  const showUpgradeButton = user?.planKey === 'FREE';
 
   return (
     <StudioAuthGuard>
@@ -34,15 +42,36 @@ export default function StudioLayout({ children, params }: Props) {
           <Logo className="relative flex-1 mt-[-3.00px] mb-[-1.00px] tracking-[0]" />
 
           <div className="inline-flex items-center justify-end gap-4 relative flex-[0_0_auto]">
-            <button
-              onClick={handleUpgradeClick}
-              className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 border-yellow-400 hover:bg-yellow-50 transition-colors"
-            >
-              <Crown className="w-4 h-4 text-yellow-400" />
-              <span className="font-semibold text-sm text-yellow-400 whitespace-nowrap">
-                업그레이드
+            {/* Credit Information */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-2 rounded-md bg-studio-sidebar border border-studio-border">
+              <Image
+                src="/credit.svg"
+                alt="credit"
+                width={16}
+                height={16}
+                className="flex-shrink-0"
+              />
+              <span className="text-studio-text-primary text-sm font-semibold">
+                {isCreditLoading ? '...' : currentBalance.toLocaleString()}
               </span>
-            </button>
+              <span className="text-studio-text-secondary text-xs">
+                크레딧
+              </span>
+            </div>
+
+            {/* Upgrade Button - Only for FREE plan users */}
+            {showUpgradeButton && (
+              <button
+                onClick={handleUpgradeClick}
+                className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-md border-2 border-yellow-400 hover:bg-yellow-50 transition-colors"
+              >
+                <Crown className="w-4 h-4 text-yellow-400" />
+                <span className="font-semibold text-sm text-yellow-400 whitespace-nowrap">
+                  업그레이드
+                </span>
+              </button>
+            )}
+
             <div className="inline-flex items-center justify-center gap-4 relative flex-[0_0_auto]">
               <StudioUserDropdown />
             </div>

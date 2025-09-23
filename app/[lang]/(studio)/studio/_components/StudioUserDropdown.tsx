@@ -82,7 +82,7 @@ export default function StudioUserDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-10 h-10 rounded-full bg-studio-header flex items-center justify-center hover:bg-gray-600 transition-colors border-2 border-white"
+        className="w-10 h-10 rounded-full bg-studio-header flex items-center justify-center hover:bg-gray-600 transition-colors border border-gray-600"
       >
         <User className="w-5 h-5 text-gray-400" />
       </button>

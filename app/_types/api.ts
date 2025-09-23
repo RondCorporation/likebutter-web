@@ -35,6 +35,21 @@ export interface PaginatedResponse<T> {
   empty: boolean;
 }
 
+export enum PlanType {
+  FREE = 0,
+  BASIC = 1,
+  STANDARD = 2,
+  ENTERPRISE = 3,
+}
+
+export type PlanKey =
+  | 'FREE'
+  | 'BASIC_MONTHLY'
+  | 'BASIC_YEARLY'
+  | 'STANDARD_MONTHLY'
+  | 'STANDARD_YEARLY'
+  | 'ENTERPRISE';
+
 export interface Subscription {
   id: number;
   status: 'ACTIVE' | 'CANCELED' | 'INACTIVE';
@@ -49,6 +64,8 @@ export interface User {
   countryCode: string;
   countryName: string;
   phoneNumber: string | null;
+  planKey: PlanKey;
+  planName: string;
   roles: string;
   subscription?: Subscription | null;
 }

@@ -74,6 +74,7 @@ export default function DigitalGoodsDetailsView({ details, onClose }: Props) {
             subtitle={`${getStyleName(details.request.style)} 스타일로 변환`}
             imageUrl={details.result.imageUrl}
             alt="생성된 디지털 굿즈"
+            downloadFilename={`digital-goods-${Date.now()}.png`}
           />
         )}
       </div>

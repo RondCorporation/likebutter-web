@@ -3,6 +3,8 @@ import { Music, Download, Headphones, Settings } from 'lucide-react';
 import InfoCard from '../ui/InfoCard';
 import ParameterBadge from '../ui/ParameterBadge';
 import DetailsModal from '../ui/DetailsModal';
+import { downloadFile } from '@/app/_utils/download';
+import { useState } from 'react';
 
 interface Props {
   details?: ButterCoverDetails;
@@ -10,6 +12,8 @@ interface Props {
 }
 
 export default function ButterCoverDetailsView({ details, onClose }: Props) {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
@@ -17,6 +21,20 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
       </div>
     );
   }
+
+  const handleDownload = async (url: string, filename: string) => {
+    if (isDownloading) return;
+
+    setIsDownloading(true);
+    try {
+      await downloadFile(url, filename);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // TODO: Show error toast
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   const content = (
     <div className="text-studio-text-primary space-y-6">
@@ -119,6 +137,14 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                     메인 처리된 오디오 파일
                   </div>
                 </div>
+                <button
+                  onClick={() => handleDownload(details.result!.audioKey, `butter-cover-${Date.now()}.mp3`)}
+                  disabled={isDownloading}
+                  className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
+                  title="다운로드"
+                >
+                  <Download className="h-4 w-4 text-studio-header" />
+                </button>
               </div>
             )}
 
@@ -135,6 +161,14 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                     분리된 보컬 트랙
                   </div>
                 </div>
+                <button
+                  onClick={() => handleDownload(details.result!.vocalsKey!, `butter-cover-vocals-${Date.now()}.mp3`)}
+                  disabled={isDownloading}
+                  className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
+                  title="다운로드"
+                >
+                  <Download className="h-4 w-4 text-studio-header" />
+                </button>
               </div>
             )}
 
@@ -151,6 +185,14 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                     분리된 인스트루멘털 트랙
                   </div>
                 </div>
+                <button
+                  onClick={() => handleDownload(details.result!.instrumentalsKey!, `butter-cover-instrumentals-${Date.now()}.mp3`)}
+                  disabled={isDownloading}
+                  className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
+                  title="다운로드"
+                >
+                  <Download className="h-4 w-4 text-studio-header" />
+                </button>
               </div>
             )}
           </div>

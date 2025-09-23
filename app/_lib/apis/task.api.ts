@@ -7,7 +7,7 @@ import {
   EditTaskRequest,
   EditTaskResponse,
   TaskHistoryResponse,
-  ActionType
+  ActionType,
 } from '@/types/task';
 
 interface TaskCreationResponse {
@@ -70,7 +70,7 @@ export const getBatchTaskStatus = (
   taskIds: number[]
 ): Promise<ApiResponse<BatchTaskResponse[]>> => {
   const params = new URLSearchParams({
-    ids: taskIds.join(','),
+    taskIds: taskIds.join(','),
     summary: 'false',
   });
   return apiFetch<BatchTaskResponse[]>(`/tasks/batch?${params.toString()}`);
@@ -149,9 +149,9 @@ export const createPhotoEditorTask = (
 };
 
 export interface ButterCoverRequest {
-  voiceModel: string;              // 필수: AI 보이스 모델명
-  pitchAdjust?: number;            // 선택: 목소리 높낮이 조절 (-12 ~ +12, 기본값: 0)
-  outputFormat?: string;           // 선택: 출력 파일 형식 (mp3/wav, 기본값: "mp3")
+  voiceModel: string; // 필수: AI 보이스 모델명
+  pitchAdjust?: number; // 선택: 목소리 높낮이 조절 (-12 ~ +12, 기본값: 0)
+  outputFormat?: string; // 선택: 출력 파일 형식 (mp3/wav, 기본값: "mp3")
 }
 
 export const createButterCoverTask = (
@@ -337,7 +337,9 @@ export interface BatchDeleteResponse {
   failedTaskIds: number[];
 }
 
-export const deleteBatchTasks = (taskIds: number[]): Promise<ApiResponse<BatchDeleteResponse>> => {
+export const deleteBatchTasks = (
+  taskIds: number[]
+): Promise<ApiResponse<BatchDeleteResponse>> => {
   return apiFetch<BatchDeleteResponse>('/tasks', {
     method: 'DELETE',
     body: { taskIds },
@@ -377,7 +379,9 @@ export const getTaskEditHistory = (
   actionType: ActionType
 ): Promise<ApiResponse<TaskHistoryResponse[]>> => {
   const endpoint = getActionTypeEndpoint(actionType);
-  return apiFetch<TaskHistoryResponse[]>(`/tasks/${endpoint}/${taskId}/history`);
+  return apiFetch<TaskHistoryResponse[]>(
+    `/tasks/${endpoint}/${taskId}/history`
+  );
 };
 
 // ActionType에 따른 엔드포인트 매핑
@@ -402,21 +406,33 @@ const getActionTypeEndpoint = (actionType: ActionType): string => {
 
 // 수정 가능한 ActionType인지 확인
 export const isEditableActionType = (actionType: ActionType): boolean => {
-  return ['DIGITAL_GOODS', 'FANMEETING_STUDIO', 'STYLIST', 'VIRTUAL_CASTING'].includes(actionType);
+  return [
+    'DIGITAL_GOODS',
+    'FANMEETING_STUDIO',
+    'STYLIST',
+    'VIRTUAL_CASTING',
+  ].includes(actionType);
 };
 
 // Edit ActionType인지 확인
 export const isEditActionType = (actionType: ActionType): boolean => {
-  return ['DIGITAL_GOODS_EDIT', 'FANMEETING_STUDIO_EDIT', 'STYLIST_EDIT', 'VIRTUAL_CASTING_EDIT'].includes(actionType);
+  return [
+    'DIGITAL_GOODS_EDIT',
+    'FANMEETING_STUDIO_EDIT',
+    'STYLIST_EDIT',
+    'VIRTUAL_CASTING_EDIT',
+  ].includes(actionType);
 };
 
 // 원본 ActionType 가져오기
-export const getOriginalActionType = (editActionType: ActionType): ActionType => {
+export const getOriginalActionType = (
+  editActionType: ActionType
+): ActionType => {
   const mapping: { [key: string]: ActionType } = {
-    'DIGITAL_GOODS_EDIT': 'DIGITAL_GOODS',
-    'FANMEETING_STUDIO_EDIT': 'FANMEETING_STUDIO',
-    'STYLIST_EDIT': 'STYLIST',
-    'VIRTUAL_CASTING_EDIT': 'VIRTUAL_CASTING',
+    DIGITAL_GOODS_EDIT: 'DIGITAL_GOODS',
+    FANMEETING_STUDIO_EDIT: 'FANMEETING_STUDIO',
+    STYLIST_EDIT: 'STYLIST',
+    VIRTUAL_CASTING_EDIT: 'VIRTUAL_CASTING',
   };
   return mapping[editActionType] || editActionType;
 };

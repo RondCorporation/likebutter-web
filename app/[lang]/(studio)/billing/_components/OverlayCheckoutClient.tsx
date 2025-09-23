@@ -133,6 +133,7 @@ export default function OverlayCheckoutClient({
       }
 
       await registerBillingKey(issueResponse.billingKey);
+
       const createSubResponse = await createSubscription(planKey);
 
       if (createSubResponse.data?.subscriptionId) {

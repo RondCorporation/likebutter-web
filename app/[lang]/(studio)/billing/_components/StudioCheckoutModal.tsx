@@ -148,6 +148,7 @@ export default function StudioCheckoutModal({
       }
 
       await registerBillingKey(issueResponse.billingKey);
+
       const createSubResponse = await createSubscription(planKey);
 
       if (createSubResponse.data?.subscriptionId) {

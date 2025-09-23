@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import TabItem from './ui/TabItem';
 import SelectCard from './ui/SelectCard';
-import Badge from './ui/Badge';
 import StudioButton from './ui/StudioButton';
 import { useRouter } from 'next/navigation';
 import { useIsMobile } from '@/hooks/useMediaQuery';
@@ -160,11 +159,6 @@ export default function ModelSelectPopup({
                   backgroundImage="/studio/model-select/digital-goods.png"
                   onClick={() => navigateToTool('digital-goods')}
                 >
-                  <Badge
-                    text="New"
-                    className="!absolute !right-2 !top-2 !bg-[#4f0089] !px-2 !py-1"
-                    textClassName="!text-[10px] !leading-[10px]"
-                  />
                 </SelectCard>
 
                 <SelectCard

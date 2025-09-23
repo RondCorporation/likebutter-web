@@ -10,7 +10,6 @@ interface ToolCard {
   description: string;
   route: string;
   preview: string;
-  isNew?: boolean;
   gradient?: string;
   bgColor?: string;
 }
@@ -27,7 +26,6 @@ export default function DashboardClient() {
         '내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.',
       route: '/studio/digital-goods',
       preview: '/studio/model-select/digital-goods.png',
-      isNew: true,
       gradient:
         'radial-gradient(50% 50% at 50% 50%, rgba(192,236,245,1) 0%, rgba(238,242,219,1) 100%)',
     },
@@ -47,7 +45,6 @@ export default function DashboardClient() {
       description: '아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요.',
       route: '/studio/fanmeeting-studio',
       preview: '/studio/model-select/fanmeeting-studio.png',
-      isNew: true,
       bgColor: '#f5f5f5',
     },
     {
@@ -56,7 +53,6 @@ export default function DashboardClient() {
       description: '아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.',
       route: '/studio/virtual-casting',
       preview: '/studio/model-select/virtual_casting.png',
-      isNew: true,
       bgColor: '#202020',
     },
   ];
@@ -68,7 +64,6 @@ export default function DashboardClient() {
       description: '좋아하는 곡을 내 목소리로 커버해보세요',
       route: '/studio/butter-cover',
       preview: '/studio/model-select/butter-cover.png',
-      isNew: true,
       gradient:
         'linear-gradient(135deg, rgba(255,108,108,1) 0%, rgba(255,159,67,1) 100%)',
     },
@@ -161,12 +156,6 @@ export default function DashboardClient() {
                   />
                 )}
 
-                {/* New Badge */}
-                {tool.isNew && (
-                  <div className="absolute top-3 right-3 bg-[#4f0089] text-white text-xs px-2 py-1 rounded">
-                    New
-                  </div>
-                )}
               </div>
 
               {/* Card Info */}

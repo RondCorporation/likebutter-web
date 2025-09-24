@@ -36,23 +36,18 @@ const convertPlansFormat = (
   };
 
   const planDescMap: { [key: string]: string } = {
-    BASIC: '크리에이터를 위한 기본 플랜',
-    STANDARD: '프로페셔널을 위한 고급 플랜',
+    BASIC: t('billing:plans.creator.basicDesc'),
+    STANDARD: t('billing:plans.professional.advancedDesc'),
   };
 
   const featuresMap: { [key: string]: string[] } = {
     BASIC: [
-      '매일 출석체크 시 10크레딧',
-      '매달 추가 100크레딧',
-      '워터마크 없음',
-      '기본 생성 속도',
+      t('billing:plans.creator.attendanceCredit'),
+      t('billing:plans.creator.extraCredits'),
     ],
     STANDARD: [
-      '매일 출석체크 시 10크레딧',
-      '매달 추가 300크레딧',
-      '우선 생성 속도',
-      '워터마크 없음',
-      '무제한 크레딧 이월',
+      t('billing:plans.professional.attendanceCredit'),
+      t('billing:plans.professional.extraCredits'),
     ],
   };
 
@@ -74,16 +69,14 @@ const convertPlansFormat = (
     {
       key: 'free',
       name: 'Free Plan',
-      description: '무료로 시작하기',
+      description: t('billing:plans.free.desc'),
       priceMonthly: 'Free',
       priceYearly: 'Free',
       features: [
-        '매일 출석체크 시 10크레딧',
-        '워터마크 포함',
-        '기본 생성 속도',
+        t('billing:plans.free.attendanceCredit'),
       ],
       isPopular: false,
-      cta: '무료 시작',
+      cta: t('billing:plans.free.name'),
     },
   ];
 
@@ -111,7 +104,7 @@ const convertPlansFormat = (
         priceYearly: yearlyMonthlyPrice as number | string,
         features: featuresMap[planType] || [],
         isPopular: planType === 'BASIC',
-        cta: planType === 'BASIC' ? '시작하기' : '업그레이드',
+        cta: planType === 'BASIC' ? t('billing:plans.startButton') : t('billing:plans.upgradePlan'),
       });
     }
   });
@@ -142,20 +135,20 @@ export default function SimpleBillingClient({
     setLoading(true);
 
     try {
-      toast.success(`${planKey} ${billingCycle} 플랜을 선택하셨습니다.`);
+      toast.success(t('billing:plans.planSelected', { planKey, billingCycle }));
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       router.push(`/${lang}/billing?plan=${planKey}&billing=${billingCycle}`);
     } catch (error) {
-      toast.error('플랜 선택 중 오류가 발생했습니다.');
+      toast.error(t('billing:plans.planSelectionError'));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <StudioOverlay title="요금제 선택" backUrl={`/${lang}/studio`}>
+    <StudioOverlay title={t('billing:plans.title')} backUrl={`/${lang}/studio`}>
       <SimplePricingView
         plans={plans}
         onPlanSelect={handlePlanSelect}

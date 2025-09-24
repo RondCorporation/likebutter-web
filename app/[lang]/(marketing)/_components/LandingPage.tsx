@@ -138,7 +138,7 @@ const SectionHeader = ({
 );
 
 export default function LandingPage({ lang, plans }: LandingPageProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['marketing', 'common']);
   const { sectionRefs } = useScrollContext();
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -608,7 +608,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           <div className="h-[72px] flex flex-col items-center justify-center">
                             <div className="text-[#FFD93B] text-3xl font-bold mb-2">
                               Free
-                              <span className="text-gray-400 text-lg">/월</span>
+                              <span className="text-gray-400 text-lg">{t('marketing:pricing.perMonth')}</span>
                             </div>
                             <div className="h-[20px]"></div>
                           </div>
@@ -618,7 +618,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                매일 출석체크 시 10크레딧
+                                {t('marketing:pricing.planFree.attendanceCredit')}
                               </span>
                             </li>
                           </ul>
@@ -645,7 +645,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                              크리에이터를 위한 기본 플랜
+                              {t('marketing:pricing.planCreator.basicDesc')}
                             </p>
                           </div>
                           <div className="h-[72px] flex flex-col items-center justify-center">
@@ -656,11 +656,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                                   ? getYearlyMonthlyPrice('BASIC')
                                   : getPrice('BASIC', 'monthly')
                               )}
-                              <span className="text-gray-400 text-lg">/월</span>
+                              <span className="text-gray-400 text-lg">{t('marketing:pricing.perMonth')}</span>
                             </div>
                             {billingCycle === 'yearly' ? (
                               <p className="text-gray-500 text-sm">
-                                연간 결제시 20% 할인!
+                                {t('marketing:pricing.yearlyDiscount')}
                               </p>
                             ) : (
                               <div className="h-[20px]"></div>
@@ -672,13 +672,13 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                매일 출석체크 시 10크레딧
+                                {t('marketing:pricing.planFree.attendanceCredit')}
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                매달 추가 100크레딧
+                                {t('marketing:pricing.planCreator.extraCredits')}
                               </span>
                             </li>
                           </ul>
@@ -689,7 +689,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           href={`/${lang}/billing?plan=basic&billing=${billingCycle}`}
                           className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
                         >
-                          시작하기
+                          {t('marketing:pricing.startButton')}
                         </Link>
                       </div>
                     </div>
@@ -705,7 +705,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                              프로페셔널을 위한 고급 플랜
+                              {t('marketing:pricing.planProfessional.advancedDesc')}
                             </p>
                           </div>
                           <div className="h-[72px] flex flex-col items-center justify-center">
@@ -716,11 +716,11 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                                   ? getYearlyMonthlyPrice('STANDARD')
                                   : getPrice('STANDARD', 'monthly')
                               )}
-                              <span className="text-gray-400 text-lg">/월</span>
+                              <span className="text-gray-400 text-lg">{t('marketing:pricing.perMonth')}</span>
                             </div>
                             {billingCycle === 'yearly' ? (
                               <p className="text-gray-500 text-sm">
-                                연간 결제시 20% 할인!
+                                {t('marketing:pricing.yearlyDiscount')}
                               </p>
                             ) : (
                               <div className="h-[20px]"></div>
@@ -732,13 +732,13 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                매일 출석체크 시 10크레딧
+                                {t('marketing:pricing.planFree.attendanceCredit')}
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                매달 추가 300크레딧
+                                {t('marketing:pricing.planProfessional.extraCredits')}
                               </span>
                             </li>
                           </ul>
@@ -749,7 +749,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           href={`/${lang}/billing?plan=standard&billing=${billingCycle}`}
                           className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
                         >
-                          업그레이드
+                          {t('marketing:pricing.upgradeButton')}
                         </Link>
                       </div>
                     </div>

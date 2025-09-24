@@ -1,0 +1,160 @@
+{
+  "hero": {
+    "title": "팬심이 녹아드는 순간\n상상하던 덕질, 지금 바로 시작해요",
+    "titleLine1": "팬심이 녹아드는 순간",
+    "titleLine2": "상상하던 덕질, 지금 바로 시작해요",
+    "titleSoft": "버터처럼 부드러운",
+    "titleMain": "AI 경험, LikeButter",
+    "ctaMain": "Butter Studio 시작하기",
+    "ctaDemo": "라이브 데모 보기",
+    "scroll": "스크롤",
+    "rotating": {
+      "styleSwitch": "그림체부터 무드까지,\n내가 상상한 스타일로 스위치!",
+      "changePhotoMood": "내 사진 분위기 바꾸기",
+      "dreamStage": "AI가 만들어주는 꿈의 무대,\n나만의 아이돌 커버송",
+      "createCoverSong": "나만의 커버송 만들기",
+      "onePhotoOneSentence": "사진 한 장, 문장 한 줄이면 충분해요\n지금 나만의 아트를 만들어 보세요",
+      "createAiArt": "AI 아트 만들기"
+    }
+  },
+  "features": {
+    "title": "당신의 모든 감정이 작품이 되는 곳",
+    "subtitle": "LikeButter의 AI 요정 '버터'가 당신의 팬심을 다채로운 콘텐츠로 녹여낼 수 있도록 안내할게요.",
+    "butterTalks": {
+      "title": "ButterTalks",
+      "desc": "최애와 나누고 싶은 이야기를 AI와 함께 나눠보세요. 감정을 쏟아내는 것만으로 시작돼요."
+    },
+    "butterCover": {
+      "title": "ButterCover",
+      "desc": "나의 감정을 담아 세상에 하나뿐인 팬송을 만들거나, 최애의 목소리로 커버곡을 만들어보세요."
+    },
+    "butterBrush": {
+      "title": "ButterBrush",
+      "desc": "마음속에 떠오른 이미지를 텍스트로 입력하거나 그림을 업로드하여 AI 팬아트를 완성할 수 있어요."
+    },
+    "butterCuts": {
+      "title": "ButterCuts",
+      "desc": "생성된 이미지와 음악, 나의 영상들을 조합하여 감각적인 팬메이드 비디오를 손쉽게 편집해보세요."
+    }
+  },
+  "demo": {
+    "title": "How it Works",
+    "subtitle": "단 몇 번의 클릭으로 당신의 아이디어가 실현되는 과정을 확인하세요.",
+    "comingSoon": "인터랙티브 '스크롤리텔링' 데모가 곧 제공됩니다!"
+  },
+  "pricing": {
+    "sectionTitle": "Unlock Your Creativity",
+    "sectionSubtitle": "무료로 시작하고, 더 전문적인 창작 활동이 필요할 때 Pro 플랜으로 업그레이드하세요.",
+    "title": "요금제",
+    "subtitle": "당신에게 맞는 플랜을 선택하세요. 언제든지 취소할 수 있습니다.",
+    "viewPricing": "자세한 요금제 보기",
+    "monthly": "월간",
+    "yearly": "연간",
+    "save20": "20% 할인",
+    "billedAs": "연간",
+    "perMonth": "/월",
+    "yearlyDiscount": "연간 결제시 20% 할인!",
+    "startButton": "시작하기",
+    "upgradeButton": "업그레이드",
+    "planFree": {
+      "name": "무료 플랜",
+      "desc": "처음이라면 가볍게\n시작해보세요!",
+      "cta": "플랜 시작하기",
+      "feature1": "첫 가입시 300 크레딧 제공",
+      "feature2": "기본 속도로 사용 가능",
+      "feature3": "결과물에 워터마크 포함",
+      "attendanceCredit": "매일 출석체크 시 10크레딧"
+    },
+    "planCreator": {
+      "name": "크리에이터 플랜",
+      "desc": "더 많은 창작 활동을 위해!\n지금 바로 업그레이드",
+      "basicDesc": "크리에이터를 위한 기본 플랜",
+      "cta": "플랜 시작하기",
+      "feature1": "매달 4,000 크레딧 제공",
+      "feature2": "빠른 생성 속도",
+      "feature3": "결과물에 워터마크 없음",
+      "attendanceCredit": "매일 출석체크 시 10크레딧",
+      "extraCredits": "매달 추가 100크레딧"
+    },
+    "planProfessional": {
+      "name": "프로페셔널 플랜",
+      "desc": "비즈니스 및 에이전시를 위해",
+      "advancedDesc": "프로페셔널을 위한 고급 플랜",
+      "cta": "구독하기",
+      "attendanceCredit": "매일 출석체크 시 10크레딧",
+      "extraCredits": "매달 추가 300크레딧"
+    },
+    "planEnterprise": {
+      "name": "엔터프라이즈",
+      "desc": "대규모 맞춤형 요구사항을 위해",
+      "cta": "문의하기",
+      "price": "맞춤"
+    }
+  },
+  "sectionAboutTitle": "AI로 표현하는\n당신의 팬심",
+  "sectionAboutDesc": "상상했던 순간을 재현하고 환상을 현실로 만들어내는\n제약 없는 팬심 표현, LikeButter가 함께합니다.",
+  "sectionDemoTitle": "창작의 마법을\n직접 경험하세요",
+  "sectionDemoDesc": "아이디어를 멋진 콘텐츠로 변환하는 과정이 얼마나 쉬운지 확인하세요.\n인터랙티브 데모를 통해 전체 창작 과정을 체험할 수 있습니다.",
+  "sectionContactTitle": "창작 여정을\n시작할 준비가 되셨나요?",
+  "contactFormEmail": "이메일을 입력하세요",
+  "contactFormMessage": "문의사항을 남겨주세요",
+  "contactFormSubmit": "메시지 보내기",
+  "planFreeName": "무료 플랜",
+  "planFreeDesc": "처음이시라면\n가볍게 시작하세요!",
+  "planFreeCta": "플랜 시작하기",
+  "contact": {
+    "title": "Contact Us",
+    "email": "이메일",
+    "message": "메시지",
+    "send": "메시지 보내기",
+    "formEmail": "이메일을 입력하세요",
+    "formMessage": "문의사항을 남겨주세요",
+    "formSubmit": "메시지 보내기"
+  },
+  "navigation": {
+    "about": "소개",
+    "features": "기능",
+    "demo": "데모",
+    "pricing": "요금제",
+    "contact": "문의",
+    "services": "제공 서비스",
+    "serviceIntro": "서비스 안내",
+    "liveDemo": "라이브 데모"
+  },
+  "footer": {
+    "rights": "모든 권리 보유.",
+    "navigate": "탐색",
+    "studioAccess": "스튜디오 바로가기",
+    "contactLegal": "문의 및 법적 고지",
+    "businessInquiries": "비즈니스 문의",
+    "generalSupport": "일반 지원",
+    "privacyPolicy": "개인정보처리방침",
+    "businessInfo": "사업자 정보",
+    "services": "제공 서비스",
+    "feedback": "피드백",
+    "companyName": "상호",
+    "ceo": "대표자",
+    "businessNumber": "사업자등록번호",
+    "businessAddress": "사업장 주소",
+    "customerCenter": "고객센터",
+    "phone": "전화:",
+    "email": "이메일:",
+    "feedbackPopup": "피드백 팝업"
+  },
+  "company": {
+    "name": "론드코퍼레이션(Rond Corporation)",
+    "address": "서울특별시 강남구 테헤란로70길 12, H타워",
+    "ceo": "김동연",
+    "businessNumber": "645-86-03935",
+    "fullAddress": "서울특별시 강남구 테헤란로70길 12, 402-제이143호(대치동, H 타워)",
+    "businessType": "영리법인의 본점",
+    "businessSector": "정보통신업",
+    "businessDescription": "인공지능, 응용 소프트웨어 개발 및 공급",
+    "taxType": "부가가치세 일반과세자",
+    "status": "계속사업자"
+  },
+  "mainNavigation": "메인 메뉴",
+  "navServiceIntro": "서비스 소개",
+  "navLiveDemo": "실시간 데모",
+  "navPricing": "요금제"
+}

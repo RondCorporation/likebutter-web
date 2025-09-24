@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePathname } from 'next/navigation';
 import { Menu, Shield } from 'lucide-react';
 import UserDropdown from '@/components/UserDropdown';
@@ -14,21 +15,23 @@ export default function AdminMainContent({
   children,
   onSidebarToggle,
 }: AdminMainContentProps) {
+  const { t } = useTranslation(['admin', 'common']);
   const pathname = usePathname();
 
   const pageTitle = useMemo(() => {
-    const PAGE_TITLES: { [key: string]: string } = {
-      '/admin': '대시보드',
-      '/admin/users': '전체 사용자',
-      '/admin/accounts': '계정 관리',
-      '/admin/subscriptions': '구독 관리',
-      '/admin/payments': '결제 내역',
-      '/admin/tasks': '작업 관리',
+    const PAGE_TITLE_KEYS: { [key: string]: string } = {
+      '/admin': 'admin:pages.dashboard',
+      '/admin/users': 'admin:pages.users',
+      '/admin/accounts': 'admin:pages.accounts',
+      '/admin/subscriptions': 'admin:pages.subscriptions',
+      '/admin/payments': 'admin:pages.payments',
+      '/admin/tasks': 'admin:pages.tasks',
     };
 
     const pathWithoutLang = pathname.replace(/^\/[a-z]{2}/, '');
-    return PAGE_TITLES[pathWithoutLang] || '관리자';
-  }, [pathname]);
+    const titleKey = PAGE_TITLE_KEYS[pathWithoutLang];
+    return titleKey ? t(titleKey) : t('admin:title');
+  }, [pathname, t]);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">

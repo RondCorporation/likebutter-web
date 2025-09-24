@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, Music2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -15,15 +16,15 @@ interface ToolCard {
 }
 
 export default function DashboardClient() {
+  const { t } = useTranslation(['studio', 'common']);
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<'image' | 'audio'>('image');
 
   const imageToolCards: ToolCard[] = [
     {
       id: 'digital-goods',
-      title: '디지털 굿즈',
-      description:
-        '내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.',
+      title: t('studio:tools.digitalGoods.title'),
+      description: t('studio:tools.digitalGoods.description'),
       route: '/studio/digital-goods',
       preview: '/studio/model-select/digital-goods.png',
       gradient:
@@ -31,9 +32,8 @@ export default function DashboardClient() {
     },
     {
       id: 'stylist',
-      title: '스타일리스트',
-      description:
-        '헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.',
+      title: t('studio:tools.stylist.title'),
+      description: t('studio:tools.stylist.description'),
       route: '/studio/stylist',
       preview: '/studio/model-select/stylist.png',
       gradient:
@@ -41,16 +41,16 @@ export default function DashboardClient() {
     },
     {
       id: 'fanmeeting-studio',
-      title: '온라인 팬미팅',
-      description: '아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요.',
+      title: t('studio:tools.fanmeetingStudio.title'),
+      description: t('studio:tools.fanmeetingStudio.description'),
       route: '/studio/fanmeeting-studio',
       preview: '/studio/model-select/fanmeeting-studio.png',
       bgColor: '#f5f5f5',
     },
     {
       id: 'virtual-casting',
-      title: '가상 캐스팅',
-      description: '아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.',
+      title: t('studio:tools.virtualCasting.title'),
+      description: t('studio:tools.virtualCasting.description'),
       route: '/studio/virtual-casting',
       preview: '/studio/model-select/virtual_casting.png',
       bgColor: '#202020',
@@ -60,8 +60,8 @@ export default function DashboardClient() {
   const audioToolCards: ToolCard[] = [
     {
       id: 'butter-cover',
-      title: '버터 커버',
-      description: '좋아하는 곡을 내 목소리로 커버해보세요',
+      title: t('studio:tools.butterCoverTool.title'),
+      description: t('studio:tools.butterCoverTool.description'),
       route: '/studio/butter-cover',
       preview: '/studio/model-select/butter-cover.png',
       gradient:
@@ -82,7 +82,7 @@ export default function DashboardClient() {
   const currentToolCards =
     selectedTab === 'image' ? imageToolCards : audioToolCards;
   const currentSectionTitle =
-    selectedTab === 'image' ? '이미지 생성' : '음원 생성';
+    selectedTab === 'image' ? t('studio:dashboard.imageGeneration') : t('studio:dashboard.audioGeneration');
 
   return (
     <div className="w-full min-h-screen bg-[#25282c]">
@@ -90,7 +90,7 @@ export default function DashboardClient() {
       <div className="relative w-full pt-2 md:pt-7 px-0 md:px-[90px]">
         <div className="relative w-full h-[140px] md:h-[150px] rounded-none md:rounded-2xl bg-gradient-to-r from-[#ffd83b] via-[#f2eb1e] to-[#e5ff00] flex items-center justify-center">
           <h1 className="text-black text-xl md:text-3xl font-bold text-center px-4">
-            오늘은 어떻게 놀아볼까요?
+            {t('studio:dashboard.heroTitle')}
           </h1>
         </div>
 
@@ -106,7 +106,7 @@ export default function DashboardClient() {
             style={{ fontSize: '14px' }}
           >
             <Image className="w-5 h-5 md:w-5 md:h-5" />
-            이미지 생성
+            {t('studio:dashboard.imageGeneration')}
           </button>
           <button
             onClick={() => setSelectedTab('audio')}
@@ -118,7 +118,7 @@ export default function DashboardClient() {
             style={{ fontSize: '14px' }}
           >
             <Music2 className="w-5 h-5 md:w-5 md:h-5" />
-            음원 생성
+            {t('studio:dashboard.audioGeneration')}
           </button>
         </div>
       </div>

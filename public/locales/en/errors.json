@@ -1,0 +1,43 @@
+{
+  "serverError": {
+    "title": "Service Connection Error",
+    "message": "We couldn't connect to the server. Please check your network or try again in a moment.",
+    "retry": "Retry"
+  },
+  "network": {
+    "error": "Network Error",
+    "description": "Please check your internet connection and try again"
+  },
+  "server": {
+    "error": "Server Error",
+    "description": "A temporary server error occurred. Please try again later"
+  },
+  "generic": {
+    "error": "An error occurred",
+    "description": "An unknown error occurred"
+  },
+  "plan": {
+    "dataNotAvailable": "Plan data is not available",
+    "invalidPlanData": "Invalid plan data",
+    "unknownError": "Unknown error"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidFormat": "Invalid format",
+    "minLength": "Please enter at least {min} characters",
+    "maxLength": "Maximum {max} characters allowed",
+    "invalidEmail": "Invalid email format",
+    "invalidPhone": "Invalid phone number format"
+  },
+  "common": {
+    "noData": "No data available",
+    "loadingFailed": "Failed to load data",
+    "saveFailed": "Failed to save",
+    "deleteFailed": "Failed to delete",
+    "updateFailed": "Failed to update",
+    "connectionTimeout": "Connection timeout",
+    "unauthorized": "Authentication required",
+    "forbidden": "Access denied",
+    "notFound": "Page not found"
+  }
+}

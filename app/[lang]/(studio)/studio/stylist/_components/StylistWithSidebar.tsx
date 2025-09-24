@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import StylistClient from './StylistClient';
 import StylistSidebar from './StylistSidebar';
@@ -28,31 +29,36 @@ interface StylistFormData {
 }
 
 export default function StylistWithSidebar() {
+  const { t } = useTranslation(['studio']);
   const [formData, setFormData] = useState<StylistFormData>({
     mode: 'text',
   });
-  const [clientRef, setClientRef] = useState<any>(null);
+  const clientRef = useRef<any>(null);
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
+
+  const setClientRefCallback = useCallback((ref: any) => {
+    clientRef.current = ref;
+  }, []);
 
   const handleFormChange = useCallback((newFormData: StylistFormData) => {
     setFormData(newFormData);
   }, []);
 
   useEffect(() => {
-    if (clientRef?.showMobileResult !== undefined) {
-      setShowMobileResult(clientRef.showMobileResult);
+    if (clientRef.current?.showMobileResult !== undefined) {
+      setShowMobileResult(clientRef.current.showMobileResult);
     }
-  }, [clientRef?.showMobileResult]);
+  }, []);
 
   useEffect(() => {
-    const resultImage = clientRef?.resultImage;
-    const isProcessing = clientRef?.isProcessing || clientRef?.isPolling;
+    const resultImage = clientRef.current?.resultImage;
+    const isProcessing = clientRef.current?.isProcessing || clientRef.current?.isPolling;
     setHidePCSidebar(!!resultImage || !!isProcessing);
-  }, [clientRef?.resultImage, clientRef?.isProcessing, clientRef?.isPolling]);
+  }, []);
 
   const isFormValid = () => {
-    if (!clientRef?.uploadedFile) return false;
+    if (!clientRef.current?.uploadedFile) return false;
     if (!formData) return false;
     if (!formData.mode) return false;
 
@@ -72,15 +78,15 @@ export default function StylistWithSidebar() {
   };
 
   const handleGenerate = () => {
-    if (clientRef?.handleGenerate) {
-      clientRef.handleGenerate();
+    if (clientRef.current?.handleGenerate) {
+      clientRef.current.handleGenerate();
     }
   };
 
   const getMobileButton = () => {
-    const isProcessing = clientRef?.isProcessing || false;
-    const isPolling = clientRef?.isPolling || false;
-    const resultImage = clientRef?.resultImage || null;
+    const isProcessing = clientRef.current?.isProcessing || false;
+    const isPolling = clientRef.current?.isPolling || false;
+    const resultImage = clientRef.current?.resultImage || null;
 
     if (resultImage) {
       return null;
@@ -88,7 +94,7 @@ export default function StylistWithSidebar() {
 
     return (
       <StudioButton
-        text={isProcessing || isPolling ? '스타일링중...' : '스타일링시작'}
+        text={isProcessing || isPolling ? t('stylist.styling') : t('stylist.startStyling')}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
         loading={isProcessing || isPolling}
@@ -112,7 +118,7 @@ export default function StylistWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <StylistClient formData={formData} ref={setClientRef} />
+      <StylistClient formData={formData} ref={setClientRefCallback} />
     </StudioLayout>
   );
 }

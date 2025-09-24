@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import {
   User,
   Settings,
@@ -24,6 +25,7 @@ import FeedbackPopup from '@/app/_components/ui/FeedbackPopup';
 import { toast } from 'react-hot-toast';
 
 export default function StudioUserDropdown() {
+  const { t } = useTranslation(['studio', 'common']);
   const { displayName, userEmail } = useAuth();
   const logout = useLogout();
   const openSettings = useOpenSettings();
@@ -72,7 +74,7 @@ export default function StudioUserDropdown() {
     }
 
     if (hasAttendedToday) {
-      toast.error('이미 오늘 출석체크를 완료했습니다.');
+      toast.error(t('studio:attendance.messages.alreadyChecked'));
     } else {
       showAttendanceModal();
     }
@@ -130,7 +132,7 @@ export default function StudioUserDropdown() {
                   </span>
                 </div>
                 <div className="text-studio-text-secondary text-xs text-right">
-                  크레딧
+                  {t('studio:userDropdown.credits')}
                 </div>
               </div>
             </div>
@@ -146,14 +148,14 @@ export default function StudioUserDropdown() {
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <Globe size={16} className="text-studio-text-secondary" />
-              언어 설정
+              {t('studio:userDropdown.languageSettings')}
             </button>
             <button
               onClick={() => handleAction(() => openSettings())}
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <Settings size={16} className="text-studio-text-secondary" />
-              설정
+              {t('studio:userDropdown.settings')}
             </button>
           </div>
 
@@ -175,7 +177,7 @@ export default function StudioUserDropdown() {
                 height={16}
                 className="flex-shrink-0"
               />
-              크레딧 관리
+              {t('studio:userDropdown.creditManagement')}
             </button>
             <button
               onClick={() =>
@@ -184,7 +186,7 @@ export default function StudioUserDropdown() {
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <Crown size={16} className="text-studio-text-secondary" />
-              요금제 업그레이드
+              {t('studio:userDropdown.upgradePlan')}
             </button>
             <button
               onClick={() => handleAction(handleFreeCreditClick)}
@@ -201,17 +203,17 @@ export default function StudioUserDropdown() {
                 <Gift size={16} className="text-studio-text-secondary" />
               )}
               {isLoading
-                ? '크레딧 받는 중...'
+                ? t('studio:userDropdown.receivingCredits')
                 : hasAttendedToday
-                  ? '오늘 크레딧 받음'
-                  : '무료 크레딧 얻기'}
+                  ? t('studio:userDropdown.alreadyReceived')
+                  : t('studio:userDropdown.getFreeCredits')}
             </button>
             <button
               onClick={() => handleAction(handleFeedbackClick)}
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <MessageCircle size={16} className="text-studio-text-secondary" />
-              피드백
+              {t('studio:userDropdown.feedback')}
             </button>
           </div>
 
@@ -225,7 +227,7 @@ export default function StudioUserDropdown() {
               className="flex w-full items-center gap-3 px-2 py-2.5 text-sm text-red-400 hover:bg-studio-button-primary/10 rounded-md transition"
             >
               <LogOut size={16} />
-              로그아웃
+              {t('studio:userDropdown.logout')}
             </button>
           </div>
         </div>

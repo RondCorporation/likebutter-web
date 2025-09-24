@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Trash2,
   ChevronDown,
@@ -110,8 +111,20 @@ function ArchiveTaskCard({
   onToggleSelect: (taskId: number) => void;
   onDownload: (task: Task) => void;
 }) {
+  const { t } = useTranslation(['studio', 'common']);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
+    return t('studio:archive.dateFormat', { year, month, day, hour, minute });
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -127,16 +140,6 @@ function ArchiveTaskCard({
       };
     }
   }, [showMobileMenu]);
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-
-    return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
-  };
 
   const renderTaskPreview = (task: Task) => {
     const { status, actionType } = task;
@@ -146,7 +149,7 @@ function ArchiveTaskCard({
         <div className="w-full h-full flex items-center justify-center text-red-400">
           <div className="text-center">
             <X className="w-8 h-8 mx-auto mb-2" />
-            <div className="text-sm font-medium">처리 실패</div>
+            <div className="text-sm font-medium">{t('studio:archive.processingFailed')}</div>
           </div>
         </div>
       );
@@ -156,7 +159,7 @@ function ArchiveTaskCard({
       return (
         <div className="w-full h-full flex items-center justify-center text-gray-400">
           <div className="text-center">
-            <div className="text-sm font-medium">생성 중...</div>
+            <div className="text-sm font-medium">{t('studio:archive.generating')}</div>
           </div>
         </div>
       );
@@ -166,7 +169,7 @@ function ArchiveTaskCard({
       return (
         <div className="w-full h-full flex items-center justify-center text-yellow-400">
           <div className="text-center">
-            <div className="text-sm font-medium">생성 중...</div>
+            <div className="text-sm font-medium">{t('studio:archive.generating')}</div>
           </div>
         </div>
       );
@@ -203,7 +206,7 @@ function ArchiveTaskCard({
             <div className="w-full h-full flex items-center justify-center text-green-400">
               <div className="text-center">
                 <Music className="w-8 h-8 mx-auto mb-2" />
-                <div className="text-sm font-medium">음성 생성 완료</div>
+                <div className="text-sm font-medium">{t('studio:archive.audioGenComplete')}</div>
               </div>
             </div>
           );
@@ -222,7 +225,7 @@ function ArchiveTaskCard({
               e.currentTarget.parentElement!.innerHTML = `
                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                   <div class="text-center">
-                    <div class="text-sm font-medium">이미지를 불러올 수 없습니다</div>
+                    <div className="text-sm font-medium">{t('studio:archive.imageLoadFailed')}</div>
                     <div class="text-xs mt-1">${getActionTypeLabel(actionType)}</div>
                   </div>
                 </div>
@@ -235,7 +238,7 @@ function ArchiveTaskCard({
           <div className="w-full h-full flex items-center justify-center text-gray-400">
             <div className="text-center">
               <div className="text-sm font-medium">
-                이미지를 불러올 수 없습니다
+                {t('studio:archive.imageLoadFailed')}
               </div>
               <div className="text-xs mt-1">
                 {getActionTypeLabel(actionType)}
@@ -260,17 +263,17 @@ function ArchiveTaskCard({
 
   const getActionTypeLabel = (actionType: string) => {
     const labels: { [key: string]: string } = {
-      DIGITAL_GOODS: '디지털 굿즈',
-      BUTTER_COVER: '버터 커버',
-      FANMEETING_STUDIO: '팬미팅 스튜디오',
-      PHOTO_EDITOR: '포토 에디터',
-      STYLIST: 'AI 스타일리스트',
-      DREAM_CONTI: '드림 컨티',
-      VIRTUAL_CASTING: '가상 캐스팅',
-      DIGITAL_GOODS_EDIT: '디지털 굿즈 (수정)',
-      FANMEETING_STUDIO_EDIT: '팬미팅 스튜디오 (수정)',
-      STYLIST_EDIT: 'AI 스타일리스트 (수정)',
-      VIRTUAL_CASTING_EDIT: '가상 캐스팅 (수정)',
+      DIGITAL_GOODS: t('studio:tools.digitalGoods.title'),
+      BUTTER_COVER: t('studio:tools.butterCoverTool.title'),
+      FANMEETING_STUDIO: t('studio:tools.fanmeetingStudio.title'),
+      PHOTO_EDITOR: t('studio:archive.taskTypes.photoEditor'),
+      STYLIST: t('studio:tools.stylist.title'),
+      DREAM_CONTI: t('studio:archive.taskTypes.dreamConti'),
+      VIRTUAL_CASTING: t('studio:tools.virtualCasting.title'),
+      DIGITAL_GOODS_EDIT: t('studio:archive.taskTypes.digitalGoodsEdit'),
+      FANMEETING_STUDIO_EDIT: t('studio:archive.taskTypes.fanmeetingStudioEdit'),
+      STYLIST_EDIT: t('studio:archive.taskTypes.stylistEdit'),
+      VIRTUAL_CASTING_EDIT: t('studio:archive.taskTypes.virtualCastingEdit'),
     };
     return labels[actionType] || actionType;
   };
@@ -348,7 +351,7 @@ function ArchiveTaskCard({
               onDownload(task);
             }}
             className="absolute bottom-3 right-3 w-8 h-8 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 md:opacity-0 md:group-hover:opacity-100 backdrop-blur-sm"
-            title="다운로드"
+            title={t('studio:archive.download')}
           >
             <Download className="w-4 h-4 text-white" />
           </button>
@@ -362,7 +365,7 @@ function ArchiveTaskCard({
         </p>
         {task.parentTaskId && (
           <p className="text-[#888] text-xs mt-1">
-            원본 Task #{task.parentTaskId}에서 수정됨
+            {t('studio:archive.editedFromOriginal', { taskId: task.parentTaskId })}
           </p>
         )}
       </div>
@@ -382,6 +385,7 @@ function ArchiveTaskCard({
 }
 
 export default function ArchiveClient() {
+  const { t } = useTranslation(['studio', 'common']);
   const {
     tasks,
     isLoading,
@@ -394,6 +398,17 @@ export default function ArchiveClient() {
     goToNextPage,
     refetch,
   } = useTaskArchive();
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+
+    return t('studio:archive.dateFormat', { year, month, day, hour, minute });
+  };
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
@@ -415,18 +430,18 @@ export default function ArchiveClient() {
   const [isDownloading, setIsDownloading] = useState(false);
 
   const actionTypeOptions = [
-    { label: '전체', value: 'all' },
-    { label: '디지털 굿즈', value: 'DIGITAL_GOODS' },
-    { label: '스타일리스트', value: 'STYLIST' },
-    { label: '가상 캐스팅', value: 'VIRTUAL_CASTING' },
-    { label: '팬미팅 스튜디오', value: 'FANMEETING_STUDIO' },
+    { label: t('studio:archive.filters.all'), value: 'all' },
+    { label: t('studio:tools.digitalGoods.title'), value: 'DIGITAL_GOODS' },
+    { label: t('studio:tools.stylist.title'), value: 'STYLIST' },
+    { label: t('studio:tools.virtualCasting.title'), value: 'VIRTUAL_CASTING' },
+    { label: t('studio:tools.fanmeetingStudio.title'), value: 'FANMEETING_STUDIO' },
   ];
 
   const pageSizeOptions = [
-    { label: '5개씩', value: '5' },
-    { label: '10개씩', value: '10' },
-    { label: '20개씩', value: '20' },
-    { label: '50개씩', value: '50' },
+    { label: '5' + t('studio:archive.pagination.perPage'), value: '5' },
+    { label: '10' + t('studio:archive.pagination.perPage'), value: '10' },
+    { label: '20' + t('studio:archive.pagination.perPage'), value: '20' },
+    { label: '50' + t('studio:archive.pagination.perPage'), value: '50' },
   ];
 
   const handleTaskClick = (task: Task) => {
@@ -617,7 +632,7 @@ export default function ArchiveClient() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-red-400 text-center">
-          <h3 className="text-lg font-semibold mb-2">오류가 발생했습니다</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('studio:archive.messages.errorOccurred')}</h3>
           <p className="text-sm">{error}</p>
         </div>
       </div>
@@ -629,7 +644,7 @@ export default function ArchiveClient() {
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
         <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">
-          내 보관함
+          {t('studio:archive.title')}
         </h1>
 
         {/* Tabs */}
@@ -650,7 +665,7 @@ export default function ArchiveClient() {
                 : 'text-gray-400 border-transparent hover:text-white'
             }`}
           >
-            이미지 생성
+            {t('studio:archive.tabs.imageGeneration')}
           </button>
           <button
             onClick={() => {
@@ -668,7 +683,7 @@ export default function ArchiveClient() {
                 : 'text-gray-400 border-transparent hover:text-white'
             }`}
           >
-            음원 생성
+            {t('studio:archive.tabs.audioGeneration')}
           </button>
         </div>
 
@@ -682,7 +697,7 @@ export default function ArchiveClient() {
                 placeholder={
                   actionTypeOptions.find(
                     (option) => option.value === selectedFilter
-                  )?.label || '옵션 선택'
+                  )?.label || t('studio:archive.pagination.selectOption')
                 }
                 options={actionTypeOptions}
                 onSelect={handleFilterSelect}
@@ -695,20 +710,20 @@ export default function ArchiveClient() {
             {isSelectionMode && (
               <>
                 <span className="text-gray-400 text-sm">
-                  {selectedTaskIds.size}개 선택됨
+                  {selectedTaskIds.size}{t('studio:archive.pagination.selected')}
                 </span>
                 <button
                   onClick={handleBatchDelete}
                   disabled={selectedTaskIds.size === 0}
                   className="px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg text-sm transition-colors"
                 >
-                  삭제
+                  {t('studio:archive.delete')}
                 </button>
                 <button
                   onClick={toggleSelectionMode}
                   className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-colors"
                 >
-                  취소
+                  {t('studio:archive.pagination.cancel')}
                 </button>
               </>
             )}
@@ -717,7 +732,7 @@ export default function ArchiveClient() {
               <button
                 onClick={toggleSelectionMode}
                 className="p-2 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg transition-colors"
-                title="일괄 삭제"
+                title={t('studio:archive.batchDelete')}
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -731,18 +746,18 @@ export default function ArchiveClient() {
 
           return isLoading && filteredTasks.length === 0 ? (
             <div className="flex items-center justify-center h-64">
-              <div className="text-gray-400">로딩 중...</div>
+              <div className="text-gray-400">{t('studio:archive.messages.loading')}</div>
             </div>
           ) : filteredTasks.length === 0 ? (
             <div className="flex items-center justify-center h-64">
               <div className="text-gray-400 text-center">
                 <h3 className="text-lg font-semibold mb-2">
                   {activeTab === 'audio'
-                    ? '생성된 음원이 없습니다'
-                    : '아직 생성된 작업이 없습니다'}
+                    ? t('studio:archive.messages.noAudioGenerated')
+                    : t('studio:archive.messages.noTasksGenerated')}
                 </h3>
                 <p className="text-sm">
-                  스튜디오에서 첫 번째 작업을 시작해보세요!
+                  {t('studio:archive.messages.startFirstTask')}
                 </p>
               </div>
             </div>
@@ -768,7 +783,7 @@ export default function ArchiveClient() {
               <div className="flex items-center justify-between mt-8">
                 {/* Left side - Show and page size selector */}
                 <div className="flex items-center gap-4">
-                  <span className="text-white text-sm">표시</span>
+                  <span className="text-white text-sm">{t('studio:archive.pagination.display')}</span>
                   <div className="relative" ref={pageSizeDropdownRef}>
                     <button
                       onClick={() =>
@@ -776,7 +791,7 @@ export default function ArchiveClient() {
                       }
                       className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
                     >
-                      <span>{pageSize}개씩</span>
+                      <span>{pageSize}{t('studio:archive.pagination.perPage')}</span>
                       <ChevronDown
                         className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`}
                       />
@@ -809,8 +824,8 @@ export default function ArchiveClient() {
                   {/* Results info */}
                   <span className="text-white text-sm">
                     {totalResults > 0
-                      ? `${startResult} ~ ${endResult}개 / 총 ${totalResults}개`
-                      : '결과 없음'}
+                      ? t('studio:archive.messages.resultsCount', { start: startResult, end: endResult, total: totalResults })
+                      : t('studio:archive.pagination.noResults')}
                   </span>
 
                   {/* Page navigation */}

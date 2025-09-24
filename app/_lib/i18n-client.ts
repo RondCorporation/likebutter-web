@@ -20,7 +20,7 @@ i18next
     fallbackLng: i18n.defaultLocale,
     supportedLngs: i18n.locales,
 
-    ns: ['common'],
+    ns: ['common', 'auth', 'marketing', 'billing', 'studio', 'admin', 'errors'],
     defaultNS: 'common',
     detection: {
       order: ['path', 'htmlTag', 'cookie', 'navigator'],

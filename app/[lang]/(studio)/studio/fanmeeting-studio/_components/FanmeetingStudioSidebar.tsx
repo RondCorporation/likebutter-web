@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 
 interface FanmeetingStudioSidebarProps {
@@ -13,26 +14,27 @@ interface FanmeetingStudioSidebarProps {
 export default function FanmeetingStudioSidebar({
   onFormChange,
 }: FanmeetingStudioSidebarProps = {}) {
+  const { t } = useTranslation(['studio']);
   const [backgroundPrompt, setBackgroundPrompt] = useState('');
   const [situationPrompt, setSituationPrompt] = useState('');
 
   const placePrompts = [
-    '팬싸인회장',
-    '홍대 앞',
-    '카페',
-    '공항',
-    '바닷가',
-    '뉴욕 맨헤튼',
+    t('fanmeeting.places.fanSigningVenue'),
+    t('fanmeeting.places.hongdaeFront'),
+    t('fanmeeting.places.cafe'),
+    t('fanmeeting.places.airport'),
+    t('fanmeeting.places.beach'),
+    t('fanmeeting.places.newYorkManhattan'),
   ];
 
   const posePrompts = [
-    '손가락 하트',
-    '함께 하트 포즈',
-    '포옹',
-    '어깨동무',
-    '손잡기',
-    '머리 쓰다듬기',
-    '서로 마주보기',
+    t('fanmeeting.poses.fingerHeart'),
+    t('fanmeeting.poses.heartPoseTogether'),
+    t('fanmeeting.poses.hug'),
+    t('fanmeeting.poses.armInArm'),
+    t('fanmeeting.poses.holdHands'),
+    t('fanmeeting.poses.patHead'),
+    t('fanmeeting.poses.facingEachOther'),
   ];
 
   const handleBackgroundChange = (value: string) => {
@@ -70,7 +72,7 @@ export default function FanmeetingStudioSidebar({
       {/* 배경 */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-          배경 <span className="text-red-400">*</span>
+          {t('fanmeeting.background')} <span className="text-red-400">*</span>
         </div>
 
         <div className="relative self-stretch w-full h-[unset] gap-4 flex-[0_0_auto] bg-studio-sidebar">
@@ -80,7 +82,7 @@ export default function FanmeetingStudioSidebar({
                 <textarea
                   value={backgroundPrompt}
                   onChange={(e) => handleBackgroundChange(e.target.value)}
-                  placeholder="어떤 배경에서 만나고 싶나요?"
+                  placeholder={t('fanmeeting.backgroundPlaceholder')}
                   className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                 />
               </div>
@@ -105,7 +107,7 @@ export default function FanmeetingStudioSidebar({
       {/* 상황 */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-          상황 <span className="text-red-400">*</span>
+          {t('fanmeeting.situation')} <span className="text-red-400">*</span>
         </div>
 
         <div className="relative self-stretch w-full h-[unset] gap-4 flex-[0_0_auto] bg-studio-sidebar">
@@ -115,7 +117,7 @@ export default function FanmeetingStudioSidebar({
                 <textarea
                   value={situationPrompt}
                   onChange={(e) => handleSituationChange(e.target.value)}
-                  placeholder="어떤 상황으로 사진을 찍고 싶나요?"
+                  placeholder={t('fanmeeting.situationPlaceholder')}
                   className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                 />
               </div>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import DigitalGoodsClient from './DigitalGoodsClient';
 import DigitalGoodsStyleSidebar from './DigitalGoodsStyleSidebar';
@@ -10,6 +11,7 @@ import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 export default function DigitalGoodsWithSidebar() {
+  const { t } = useTranslation(['studio', 'common']);
   const [formData, setFormData] = useState<{
     style?: DigitalGoodsStyle;
     customPrompt?: string;
@@ -19,25 +21,30 @@ export default function DigitalGoodsWithSidebar() {
     productName?: string;
     brandName?: string;
   }>({});
-  const [clientRef, setClientRef] = useState<any>(null);
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
+  const clientRef = useRef<any>(null);
 
   const handleFormChange = useCallback((newFormData: typeof formData) => {
     setFormData(newFormData);
   }, []);
 
-  useEffect(() => {
-    if (clientRef?.showMobileResult !== undefined) {
-      setShowMobileResult(clientRef.showMobileResult);
-    }
-  }, [clientRef?.showMobileResult]);
+  const setClientRefCallback = useCallback((ref: any) => {
+    clientRef.current = ref;
+  }, []);
 
   useEffect(() => {
-    const resultImage = clientRef?.resultImage;
-    const isProcessing = clientRef?.isGenerating || clientRef?.isPolling;
-    setHidePCSidebar(!!resultImage || !!isProcessing);
-  }, [clientRef?.resultImage, clientRef?.isGenerating, clientRef?.isPolling]);
+    const interval = setInterval(() => {
+      if (clientRef.current?.showMobileResult !== undefined) {
+        setShowMobileResult(clientRef.current.showMobileResult);
+      }
+      const resultImage = clientRef.current?.resultImage;
+      const isProcessing = clientRef.current?.isGenerating || clientRef.current?.isPolling;
+      setHidePCSidebar(!!resultImage || !!isProcessing);
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const isFormValid = () => {
     if (!formData) return false;
@@ -46,23 +53,22 @@ export default function DigitalGoodsWithSidebar() {
   };
 
   const handleGenerate = () => {
-    if (clientRef?.handleGenerate) {
-      clientRef.handleGenerate();
+    if (clientRef.current?.handleGenerate) {
+      clientRef.current.handleGenerate();
     }
   };
 
   const handleEdit = () => {
-    if (clientRef?.handleEdit) {
-      clientRef.handleEdit();
+    if (clientRef.current?.handleEdit) {
+      clientRef.current.handleEdit();
     }
   };
 
   const getMobileButton = () => {
-    const isGenerating = clientRef?.isGenerating || false;
-    const isPolling = clientRef?.isPolling || false;
-    const isBackgroundProcessing = clientRef?.isBackgroundProcessing || false;
-    const resultImage = clientRef?.resultImage || null;
-    const isEditLoading = clientRef?.isEditLoading || false;
+    const isGenerating = clientRef.current?.isGenerating || false;
+    const isPolling = clientRef.current?.isPolling || false;
+    const resultImage = clientRef.current?.resultImage || null;
+    const isEditLoading = clientRef.current?.isEditLoading || false;
 
     if (resultImage) {
       return (
@@ -74,7 +80,7 @@ export default function DigitalGoodsWithSidebar() {
           {isEditLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           {!isEditLoading && <Edit className="w-4 h-4 mr-2" />}
           <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-            {isEditLoading ? '수정중...' : '수정하기'}
+            {isEditLoading ? t('studio:digitalGoods.editingInProgress') : t('studio:digitalGoods.edit')}
           </div>
         </button>
       );
@@ -82,7 +88,7 @@ export default function DigitalGoodsWithSidebar() {
 
     return (
       <StudioButton
-        text={isGenerating || isPolling ? '생성중...' : '굿즈생성'}
+        text={isGenerating || isPolling ? t('studio:digitalGoods.generating') : t('studio:digitalGoods.generate')}
         onClick={handleGenerate}
         disabled={isGenerating || isPolling || !isFormValid()}
         loading={isGenerating || isPolling}
@@ -106,7 +112,7 @@ export default function DigitalGoodsWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <DigitalGoodsClient formData={formData} ref={setClientRef} />
+      <DigitalGoodsClient formData={formData} ref={setClientRefCallback} />
     </StudioLayout>
   );
 }

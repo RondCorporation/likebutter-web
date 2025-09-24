@@ -11,7 +11,7 @@ import { useAuth } from '@/app/_hooks/useAuth';
 import UserDropdown from '@/app/_components/UserDropdown';
 
 export default function MarketingHeader() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['marketing', 'common']);
   const pathname = usePathname();
   const lang = pathname.split('/')[1];
   const { isAuthenticated, isInitialized, isLoading, hasBasicInfo } = useAuth();
@@ -90,13 +90,13 @@ export default function MarketingHeader() {
                       onClick={() => handleLangChange('ko')}
                       className="w-full text-left px-4 py-2 hover:bg-white/10"
                     >
-                      한국어
+                      {t('common:korean')}
                     </button>
                     <button
                       onClick={() => handleLangChange('en')}
                       className="w-full text-left px-4 py-2 hover:bg-white/10"
                     >
-                      English
+                      {t('common:english')}
                     </button>
                   </motion.div>
                 )}

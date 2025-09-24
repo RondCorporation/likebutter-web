@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
   Upload,
@@ -53,6 +54,7 @@ const FanmeetingStudioClient = forwardRef<
   FanmeetingStudioClientRef,
   FanmeetingStudioClientProps
 >(function FanmeetingStudioClient({ formData }, ref) {
+  const { t } = useTranslation(['studio']);
   const [idolFile, setIdolFile] = useState<File | null>(null);
   const [userFile, setUserFile] = useState<File | null>(null);
   const [idolPreviewUrl, setIdolPreviewUrl] = useState<string>('');
@@ -78,12 +80,12 @@ const FanmeetingStudioClient = forwardRef<
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
         setShowMobileResult(true);
-        toast.success('팬미팅 사진이 완성되었습니다!');
+        toast.success(t('fanmeeting.messages.fanmeetingComplete'));
       }
       setIsProcessing(false);
     },
     onFailed: () => {
-      toast.error('팬미팅 사진 생성에 실패했습니다.');
+      toast.error(t('fanmeeting.messages.fanmeetingFailed'));
       setIsProcessing(false);
     },
   });
@@ -121,12 +123,12 @@ const FanmeetingStudioClient = forwardRef<
 
   const handleFileUpload = (file: File, type: 'idol' | 'user') => {
     if (file.size > 200 * 1024 * 1024) {
-      toast.error('파일 크기가 200MB를 초과합니다.');
+      toast.error(t('fanmeeting.messages.fileSizeExceeded'));
       return;
     }
 
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-      toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
+      toast.error(t('fanmeeting.messages.unsupportedFormat'));
       return;
     }
 
@@ -165,14 +167,14 @@ const FanmeetingStudioClient = forwardRef<
       }
 
       if (response.status === 200 && response.data) {
-        toast.success('팬미팅 사진 생성 요청이 전송되었습니다!');
+        toast.success(t('fanmeeting.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
         throw new Error('API request failed');
       }
     } catch (error: any) {
       console.error('Failed to generate fanmeeting result:', error);
-      toast.error('팬미팅 사진 생성 요청에 실패했습니다.');
+      toast.error(t('fanmeeting.messages.requestFailed'));
       setIsProcessing(false);
     }
   };
@@ -193,16 +195,16 @@ const FanmeetingStudioClient = forwardRef<
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success('이미지가 다운로드되었습니다!');
+      toast.success(t('fanmeeting.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
-      toast.error('다운로드에 실패했습니다.');
+      toast.error(t('fanmeeting.messages.downloadFailed'));
     }
   };
 
   const handleEditRequest = async (editRequest: string) => {
     if (!taskData || !taskData.taskId) {
-      toast.error('원본 작업을 찾을 수 없습니다.');
+      toast.error(t('fanmeeting.messages.originalNotFound'));
       return;
     }
 
@@ -222,15 +224,15 @@ const FanmeetingStudioClient = forwardRef<
       }
 
       if (response.data) {
-        toast.success('수정 요청이 전송되었습니다!');
+        toast.success(t('fanmeeting.messages.editRequestSent'));
 
         startPolling(response.data.taskId);
       } else {
-        toast.error('수정 요청에 실패했습니다.');
+        toast.error(t('fanmeeting.messages.editRequestFailed'));
       }
     } catch (error: any) {
       console.error('Edit request failed:', error);
-      toast.error('수정 요청에 실패했습니다.');
+      toast.error(t('fanmeeting.messages.editRequestFailed'));
     } finally {
       setIsEditLoading(false);
     }
@@ -321,7 +323,7 @@ const FanmeetingStudioClient = forwardRef<
       URL.revokeObjectURL(userPreviewUrl);
     }
 
-    toast.success('작업이 초기화되었습니다.');
+    toast.success(t('fanmeeting.messages.workReset'));
   };
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
@@ -336,7 +338,7 @@ const FanmeetingStudioClient = forwardRef<
         onDownload={handleDownload}
         onEdit={() => setIsEditPopupOpen(true)}
         showEditButton={true}
-        editButtonText="수정하기"
+        editButtonText={t('fanmeeting.edit')}
         isEditLoading={isEditLoading}
       />
     );
@@ -354,7 +356,7 @@ const FanmeetingStudioClient = forwardRef<
           {resultImage ? (
             <>
               <StudioButton
-                text={isEditLoading ? '수정중...' : '수정하기'}
+                text={isEditLoading ? t('fanmeeting.editing') : t('fanmeeting.edit')}
                 onClick={() => setIsEditPopupOpen(true)}
                 disabled={isEditLoading}
                 loading={isEditLoading}
@@ -375,7 +377,7 @@ const FanmeetingStudioClient = forwardRef<
             </>
           ) : (
             <StudioButton
-              text={isProcessing ? '생성중...' : '생성하기'}
+              text={isProcessing ? t('fanmeeting.generating') : t('fanmeeting.generate')}
               onClick={handleGenerate}
               disabled={isProcessing || !isFormValid()}
               loading={isProcessing}
@@ -473,7 +475,7 @@ const FanmeetingStudioClient = forwardRef<
                             : 'text-studio-text-secondary'
                         }`}
                       >
-                        {isDragOverIdol ? '놓아주세요' : '아이돌 사진'}
+                        {isDragOverIdol ? t('fanmeeting.dropHere') : t('fanmeeting.idolPhoto')}
                       </div>
                     </div>
                   )}
@@ -553,7 +555,7 @@ const FanmeetingStudioClient = forwardRef<
                             : 'text-studio-text-secondary'
                         }`}
                       >
-                        {isDragOverUser ? '놓아주세요' : '내 사진'}
+                        {isDragOverUser ? t('fanmeeting.dropHere') : t('fanmeeting.myPhoto')}
                       </div>
                     </div>
                   )}
@@ -675,7 +677,7 @@ const FanmeetingStudioClient = forwardRef<
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
                     사이드바에서 설정을 완료하고
                     <br />
-                    '팬미팅생성'을 눌러주세요
+                    {t('fanmeeting.pressStartFanmeeting')}
                   </div>
                 </div>
               </div>
@@ -686,8 +688,8 @@ const FanmeetingStudioClient = forwardRef<
 
       <MobileLoadingOverlay
         isVisible={isProcessing || isPolling}
-        title="팬미팅 사진 생성중"
-        description="잠시 기다리시면 결과가 나옵니다"
+        title={t('fanmeeting.generatingTitle')}
+        description={t('fanmeeting.generatingDescription')}
       />
 
       <EditRequestPopup

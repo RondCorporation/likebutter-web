@@ -35,7 +35,7 @@ type CheckoutClientProps = {
 };
 
 export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['billing', 'common']);
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +73,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
 
   const handlePayment = async () => {
     if (!isAuthenticated || !user) {
-      toast.error(t('loginRequiredForPayment'));
+      toast.error(t('billing:payment.errors.loginRequired'));
       router.push(
         `/${lang}/login?returnTo=${encodeURIComponent(
           window.location.pathname + window.location.search
@@ -83,14 +83,14 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
     }
 
     if (sdkStatus === 'error') {
-      toast.error(t('sdkLoadError') || 'SDK 로딩 중 오류가 발생했습니다.');
+      toast.error(t('billing:payment.errors.sdkLoad'));
       return;
     }
 
     setIsLoading(true);
 
     const loadingToastId = toast.loading(
-      t('openingPaymentWindow') || '결제 창을 열고 있습니다...'
+      t('billing:checkout.openingPaymentWindow')
     );
 
     try {
@@ -103,7 +103,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
 
       const { planKey } = plan;
       if (!planKey) {
-        throw new Error(t('planNotAvailableError'));
+        throw new Error(t('billing:payment.errors.planNotAvailable'));
       }
 
       localStorage.setItem('selectedPlanKey', planKey);
@@ -111,7 +111,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
       const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
       if (!storeId || !channelKey) {
-        throw new Error(t('paymentEnvError'));
+        throw new Error(t('billing:payment.errors.paymentEnv'));
       }
 
       const issueResponse = await PortOne.requestIssueBillingKey({
@@ -125,8 +125,8 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
 
       if (!issueResponse || issueResponse.code) {
         throw new Error(
-          `${t('billingKeyError')}: ${
-            issueResponse?.message || t('userCancelled')
+          `${t('billing:payment.errors.billingKey')}: ${
+            issueResponse?.message || t('billing:payment.errors.userCancelled')
           }`
         );
       }
@@ -147,11 +147,11 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
           router.push(`/${lang}/billing/success`);
         }
       } else {
-        throw new Error(t('subscriptionIdError'));
+        throw new Error(t('billing:payment.errors.subscriptionId'));
       }
     } catch (error: any) {
       toast.dismiss(loadingToastId);
-      toast.error(`${t('genericError')}: ${error.message}`);
+      toast.error(`${t('billing:payment.errors.generic')}: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -169,7 +169,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                 className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
-                스튜디오로 돌아가기
+                {t('billing:plans.backToStudio')}
               </Link>
             </div>
           </div>
@@ -183,10 +183,10 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
         <div className="mx-auto w-full max-w-4xl">
           <div className="mb-10 text-center">
             <h1 className="text-4xl font-extrabold text-white md:text-5xl">
-              {t('checkoutTitle')}
+              {t('billing:checkout.title')}
             </h1>
             <p className="mt-4 text-lg text-slate-300 md:text-xl">
-              {t('checkoutSubtitle')}
+              {t('billing:checkout.subtitle')}
             </p>
           </div>
 
@@ -194,11 +194,11 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
             {/* Left Side: Plan Summary */}
             <div className="rounded-2xl border border-slate-700 bg-slate-800/50 p-8">
               <h2 className="mb-6 text-2xl font-bold text-butter-yellow">
-                {t('orderSummary')}
+                {t('billing:checkout.orderSummary')}
               </h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300">{t('plan')}:</span>
+                  <span className="text-slate-300">{t('billing:checkout.plan')}:</span>
                   <span className="text-lg font-semibold">{plan.name}</span>
                 </div>
                 <div className="border-t border-slate-700"></div>
@@ -212,7 +212,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                 </ul>
                 <div className="border-t border-slate-700"></div>
                 <div className="flex items-center justify-between pt-4">
-                  <span className="text-lg text-slate-300">{t('total')}:</span>
+                  <span className="text-lg text-slate-300">{t('billing:checkout.total')}:</span>
                   <span className="text-3xl font-extrabold text-butter-yellow">
                     {plan.priceFormatted}
                   </span>
@@ -224,7 +224,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                   className="flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-butter-yellow"
                 >
                   <ArrowLeft size={16} />
-                  {t('changePlan')}
+                  {t('billing:checkout.changePlan')}
                 </Link>
               </div>
             </div>
@@ -233,18 +233,18 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
             <div className="flex flex-col justify-between rounded-2xl border-2 border-butter-yellow bg-slate-800/80 p-8 shadow-2xl shadow-butter-yellow/20">
               <div>
                 <h2 className="mb-6 text-2xl font-bold text-white">
-                  {t('paymentDetails')}
+                  {t('billing:checkout.paymentDetails')}
                 </h2>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 rounded-lg bg-slate-700/50 p-3">
                     <CreditCard className="h-6 w-6 text-butter-yellow" />
                     <span className="font-semibold text-slate-200">
-                      {t('creditCard')}
+                      {t('billing:checkout.creditCard')}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 text-sm text-slate-400">
                     <Shield className="h-5 w-5 text-green-400" />
-                    <span>{t('securePayment')}</span>
+                    <span>{t('billing:checkout.securePayment')}</span>
                   </div>
                 </div>
               </div>
@@ -257,17 +257,17 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                   {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      {t('processing')}
+                      {t('billing:plans.processing')}
                     </div>
                   ) : sdkStatus === 'loading' ? (
                     <div className="flex items-center justify-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      SDK 준비 중...
+                      {t('billing:plans.sdkPreparing')}
                     </div>
                   ) : sdkStatus === 'error' ? (
-                    'SDK 로딩 오류'
+                    t('billing:plans.sdkError')
                   ) : (
-                    `${t('pay')} ${plan.priceFormatted}`
+                    `${t('billing:checkout.pay')} ${plan.priceFormatted}`
                   )}
                 </button>
 
@@ -275,14 +275,14 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                 {sdkStatus === 'loading' && (
                   <div className="mt-3 flex items-center justify-center gap-2 text-sm text-slate-400">
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    결제 모듈 준비 중...
+                    {t('billing:checkout.preparingPayment')}
                   </div>
                 )}
 
                 {sdkStatus === 'ready' && (
                   <div className="mt-3 flex items-center justify-center gap-2 text-sm text-green-400">
                     <CheckCircle2 className="h-4 w-4" />
-                    결제 준비 완료
+                    {t('billing:checkout.paymentReady')}
                   </div>
                 )}
               </div>

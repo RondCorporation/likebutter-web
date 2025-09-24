@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { HeroImage } from './HeroImageGallery';
 import HeroImageGalleryPlaceholder from './HeroImageGalleryPlaceholder';
 
@@ -31,6 +32,7 @@ const ANIMATION_DURATION = 2000;
 export default function RotatingHeroSection({
   lang,
 }: RotatingHeroSectionProps) {
+  const { t } = useTranslation('marketing');
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [animationPhase, setAnimationPhase] = useState<
     'entering' | 'visible' | 'exiting'
@@ -40,9 +42,9 @@ export default function RotatingHeroSection({
     {
       id: 1,
       title: 'Mood Switch',
-      subtitle: '그림체부터 무드까지,\n내가 상상한 스타일로 스위치!',
-      buttonText: '내 사진 분위기 바꾸기',
-      buttonHref: `/studio`,
+      subtitle: t('hero.rotating.styleSwitch'),
+      buttonText: t('hero.rotating.changePhotoMood'),
+      buttonHref: `/${lang}/studio`,
       images: [
         {
           id: 1,
@@ -98,9 +100,9 @@ export default function RotatingHeroSection({
     {
       id: 2,
       title: 'Idol Cover',
-      subtitle: 'AI가 만들어주는 꿈의 무대,\n나만의 아이돌 커버송',
-      buttonText: '나만의 커버송 만들기',
-      buttonHref: `/studio`,
+      subtitle: t('hero.rotating.dreamStage'),
+      buttonText: t('hero.rotating.createCoverSong'),
+      buttonHref: `/${lang}/studio`,
       images: [
         {
           id: 1,
@@ -156,10 +158,9 @@ export default function RotatingHeroSection({
     {
       id: 3,
       title: 'Art Maker',
-      subtitle:
-        '사진 한 장, 문장 한 줄이면 충분해요\n지금 나만의 아트를 만들어 보세요',
-      buttonText: 'AI 아트 만들기',
-      buttonHref: `/studio`,
+      subtitle: t('hero.rotating.onePhotoOneSentence'),
+      buttonText: t('hero.rotating.createAiArt'),
+      buttonHref: `/${lang}/studio`,
       images: [
         {
           id: 1,

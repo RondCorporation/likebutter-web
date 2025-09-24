@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { loadPortone } from '@/lib/portone';
@@ -83,6 +84,7 @@ const PlanCard = ({
   onUpgradeClick,
   features,
   sdkStatus,
+  t,
 }: {
   plan: Plan;
   billingCycle: 'monthly' | 'yearly';
@@ -96,6 +98,7 @@ const PlanCard = ({
   onUpgradeClick: () => void;
   features: string[];
   sdkStatus: 'loading' | 'ready' | 'error';
+  t: any;
 }) => {
   const formatPrice = (price: number | string) => {
     if (typeof price === 'string') return price;
@@ -161,10 +164,10 @@ const PlanCard = ({
         ) : sdkStatus === 'loading' ? (
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" />
-            SDK 준비 중...
+            {translations.sdkPreparing || 'SDK 준비 중...'}
           </div>
         ) : sdkStatus === 'error' ? (
-          'SDK 로딩 오류'
+          translations.sdkError || 'SDK 로딩 오류'
         ) : (
           plan.cta
         )}
@@ -182,7 +185,7 @@ const PlanCard = ({
     >
       {plan.isPopular && (
         <div className="absolute top-0 right-0 bg-gradient-to-r from-butter-yellow to-butter-orange text-black text-xs font-bold px-4 py-1 rounded-bl-2xl">
-          인기
+          {translations.mostPopular || '인기'}
         </div>
       )}
 
@@ -230,10 +233,10 @@ const PlanCard = ({
           <div className="mt-4 text-center text-xs text-slate-500 space-y-1">
             <div>
               {billingCycle === 'monthly'
-                ? translations.monthlyBilling
-                : translations.yearlyBilling}
+                ? t('billing:serviceTerms.monthlyBilling')
+                : t('billing:serviceTerms.yearlyBilling')}
             </div>
-            <div>{translations.autoRenewing}</div>
+            <div>{t('billing:serviceTerms.autoRenewing')}</div>
           </div>
         )}
       </div>
@@ -248,6 +251,7 @@ function PricingClientContent({
   translations,
   currency,
 }: Props) {
+  const { t } = useTranslation(['billing', 'common']);
   const searchParams = useSearchParams();
   const selectedPlanParam = searchParams.get('plan');
   const billingParam = searchParams.get('billing');
@@ -351,16 +355,14 @@ function PricingClientContent({
     }
 
     if (sdkStatus === 'error') {
-      toast.error(
-        translations.sdkLoadError || 'SDK 로딩 중 오류가 발생했습니다.'
-      );
+      toast.error(t('billing:plans.sdkLoadError'));
       return;
     }
 
     setIsLoading(true);
 
     const loadingToastId = toast.loading(
-      translations.openingPaymentWindow || '결제 창을 열고 있습니다...'
+      t('billing:plans.openingPaymentWindow')
     );
 
     try {
@@ -453,7 +455,7 @@ function PricingClientContent({
                 className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
-                스튜디오로 돌아가기
+                {translations.backToStudio || '스튜디오로 돌아가기'}
               </Link>
             </div>
           </div>
@@ -463,11 +465,11 @@ function PricingClientContent({
       <div className="container mx-auto px-4 sm:px-6 py-16 text-white">
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-            {activeSubscription ? '플랜 관리' : translations.title}
+            {activeSubscription ? (translations.planManagement || '플랜 관리') : translations.title}
           </h1>
           <p className="mt-4 text-lg md:text-xl text-slate-300">
             {activeSubscription
-              ? `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다`
+              ? (translations.currentPlanStatus || `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다`).replace('{plan}', currentPlan?.name || activePlanKey)
               : translations.subtitle}
           </p>
         </div>
@@ -482,7 +484,7 @@ function PricingClientContent({
                       <Shield className="h-5 w-5 text-butter-yellow" />
                     </div>
                     <h3 className="text-2xl font-bold text-butter-yellow">
-                      현재 플랜
+                      {translations.currentPlan || '현재 플랜'}
                     </h3>
                   </div>
                   <h4 className="text-3xl font-extrabold text-white mb-2">
@@ -492,18 +494,18 @@ function PricingClientContent({
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-4 w-4" />
                       <span>
-                        {isYearlySubscription ? '연간 결제' : '월간 결제'}
+                        {isYearlySubscription ? (translations.yearlyBilling || '연간 결제') : (translations.monthlyBilling || '월간 결제')}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
                       <span>
-                        만료일:{' '}
+                        {translations.expiryDate || '만료일'}:{' '}
                         {new Date(
                           activeSubscription.endDate
                         ).toLocaleDateString('ko-KR')}
                         <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full">
-                          자동갱신
+                          {translations.autoRenewal || '자동갱신'}
                         </span>
                       </span>
                     </div>
@@ -519,12 +521,12 @@ function PricingClientContent({
                         ? `₩${currentPlan.priceMonthly.toLocaleString()}`
                         : currentPlan.priceMonthly}
                     <span className="text-lg text-slate-400 ml-1">
-                      /{isYearlySubscription ? '년' : '월'}
+                      /{isYearlySubscription ? (translations.year || '년') : (translations.month || '월')}
                     </span>
                   </div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 text-green-300 text-sm rounded-full">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    활성
+                    {translations.statusActive || '활성'}
                   </div>
                 </div>
               </div>
@@ -535,10 +537,10 @@ function PricingClientContent({
         {activeSubscription && personalizedPlans.length > 1 && (
           <div className="mt-16 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">
-              🚀 더 나은 플랜으로 업그레이드하세요
+              🚀 {translations.upgradePrompt || '더 나은 플랜으로 업그레이드하세요'}
             </h2>
             <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-              현재 플랜보다 더 많은 기능을 이용할 수 있는 플랜을 확인해보세요
+              {translations.upgradeDescription || '현재 플랜보다 더 많은 기능을 이용할 수 있는 플랜을 확인해보세요'}
             </p>
           </div>
         )}
@@ -631,6 +633,7 @@ function PricingClientContent({
                 onUpgradeClick={() => openSettings('subscription')}
                 features={planFeatures}
                 sdkStatus={sdkStatus}
+                t={t}
               />
             );
           })}

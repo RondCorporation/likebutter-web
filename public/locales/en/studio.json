@@ -1,0 +1,586 @@
+{
+  "navigation": {
+    "home": "Home",
+    "history": "Archive",
+    "tools": "Tools",
+    "vault": "ButterVault",
+    "showLess": "Show Less",
+    "showMore": "Show More",
+    "create": "Create",
+    "help": "Help",
+    "archive": "Archive"
+  },
+  "common": {
+    "detailsNotAvailable": "Unable to load details"
+  },
+  "tools": {
+    "butterGen": "ButterGen",
+    "butterTest": "ButterTest",
+    "butterTalks": "ButterTalks",
+    "butterBrush": "ButterBrush",
+    "butterCover": "ButterCover",
+    "butterCuts": "ButterCuts",
+    "digitalGoods": {
+      "title": "Digital Goods",
+      "description": "Transform your favorite idol photos into artwork for merchandise."
+    },
+    "stylist": {
+      "title": "Stylist",
+      "description": "Style hair, outfits, accessories, and backgrounds to your taste."
+    },
+    "fanmeetingStudio": {
+      "title": "Online Fan Meeting",
+      "description": "Create fan meeting photos as if taken with your idol."
+    },
+    "virtualCasting": {
+      "title": "Virtual Casting",
+      "description": "Cast your idol as the main character in movies or dramas."
+    },
+    "butterCoverTool": {
+      "title": "Butter Cover",
+      "description": "Cover your favorite songs with your own voice"
+    }
+  },
+  "titles": {
+    "home": "Studio Home",
+    "history": "My Archive",
+    "butterGen": "ButterGen",
+    "butterTest": "ButterTest",
+    "butterCover": "ButterCover",
+    "butterBrush": "ButterBrush",
+    "butterCuts": "ButterCuts",
+    "butterTalks": "ButterTalks",
+    "vault": "Vault: {assetName}"
+  },
+  "dashboard": {
+    "welcome": "Welcome, {{name}}! 🧈",
+    "subtitle": "Here's a quick overview of your creative space.",
+    "noTasksTitle": "Ready to Create?",
+    "noTasksSubtitle": "Start a new task using the quick start menu or explore the tools.",
+    "accountStatus": "Account Status",
+    "plan": "Plan",
+    "credits": "Credits Used",
+    "manageSubscription": "Manage Subscription",
+    "quickStart": "Quick Start",
+    "homeWelcome": "Select a tool from the left menu to begin. 🦆",
+    "heroTitle": "What would you like to create today?",
+    "imageGeneration": "Image Generation",
+    "audioGeneration": "Audio Generation"
+  },
+  "messages": {
+    "comingSoon": "Feature coming soon."
+  },
+  "archive": {
+    "title": "My Archive",
+    "generating": "Generating...",
+    "processingFailed": "Processing failed",
+    "audioGenComplete": "Audio generation complete",
+    "imageLoadFailed": "Cannot load image",
+    "download": "Download",
+    "delete": "Delete",
+    "batchDelete": "Batch Delete",
+    "dateFormat": "{year}/{month}/{day} {hour}:{minute}",
+    "editedFromOriginal": "Edited from original Task #{taskId}",
+    "filters": {
+      "all": "All"
+    },
+    "tabs": {
+      "imageGeneration": "Image Generation",
+      "audioGeneration": "Audio Generation"
+    },
+    "pagination": {
+      "display": "Display",
+      "perPage": " per page",
+      "selected": " selected",
+      "cancel": "Cancel",
+      "noResults": "No results",
+      "selectOption": "Select option"
+    },
+    "messages": {
+      "errorOccurred": "An error occurred",
+      "loading": "Loading...",
+      "noAudioGenerated": "No audio generated",
+      "noTasksGenerated": "No tasks generated yet",
+      "startFirstTask": "Start your first task in Studio!",
+      "resultsCount": "{start} ~ {end} / Total {total}"
+    },
+    "taskTypes": {
+      "photoEditor": "Photo Editor",
+      "dreamConti": "Dream Conti",
+      "digitalGoodsEdit": "Digital Goods (Edit)",
+      "fanmeetingStudioEdit": "Online Fan Meeting (Edit)",
+      "stylistEdit": "Stylist (Edit)",
+      "virtualCastingEdit": "Virtual Casting (Edit)"
+    }
+  },
+  "dropdown": {
+    "studio": "Studio",
+    "subscription": "Subscription",
+    "paymentHistory": "Payment History",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "tabGeneral": "General",
+    "tabNotifications": "Notifications",
+    "tabAccount": "Account",
+    "tabSubscription": "Subscription",
+    "loading": "Loading user data...",
+    "accountInfo": "Account Information",
+    "accountEmail": "Email:",
+    "accountName": "Name:",
+    "accountGender": "Gender:",
+    "accountCountry": "Country:",
+    "accountPhone": "Phone:",
+    "notProvided": "Not provided",
+    "generalComingSoon": "General settings coming soon.",
+    "notificationsComingSoon": "Notification settings coming soon.",
+    "subscriptionTitle": "Subscription Management",
+    "subscriptionComingSoon": "Subscription management coming soon.",
+    "viewPlans": "View Plans"
+  },
+  "history": {
+    "title": "History",
+    "subtitle": "Track your ongoing creations and browse your completed AI art.",
+    "inProgress": "In Progress",
+    "loading": "Loading...",
+    "error": "Error: {error}",
+    "noTasks": "No tasks found that match your criteria.",
+    "loadMore": "Load More",
+    "filters": {
+      "statusAll": "All Statuses",
+      "statusCompleted": "Completed",
+      "statusFailed": "Failed",
+      "statusProcessing": "Processing",
+      "statusPending": "Pending",
+      "typeAll": "All Types",
+      "typeButterGen": "ButterGen",
+      "typeButterTest": "ButterTest"
+    }
+  },
+  "butterGen": {
+    "title": "Generate with ButterGen",
+    "subtitle": "Enter the name of your desired idol or upload a photo to create new AI art.",
+    "step1": "1. Choose a Face",
+    "step2": "2. Describe Your Scene",
+    "step3": "3. Adjust Settings",
+    "idolNameLabel": "By Idol Name",
+    "idolNamePlaceholder": "e.g., Jungkook, V, Jimin...",
+    "or": "OR",
+    "uploadLabel": "By Uploading Image",
+    "uploadPlaceholder": "Click or drag to upload face",
+    "promptPlaceholder": "e.g., A cyberpunk warrior in neon-lit Seoul, cinematic lighting, highly detailed...",
+    "imageCount": "Image Count",
+    "width": "Width",
+    "height": "Height",
+    "button": "Generate Image",
+    "buttonLoading": "Generating...",
+    "errorPrompt": "Please provide a face (by name or image) and a prompt.",
+    "success": {
+      "title": "Task submitted successfully!",
+      "taskId": "Task ID:",
+      "status": "Status:",
+      "link": "Check progress in your History page →"
+    }
+  },
+  "butterTest": {
+    "title": "Test with ButterTest",
+    "subtitle": "Test new AI models. Freely enter prompts to generate images.",
+    "step1": "1. Describe Your Scene",
+    "promptPlaceholder": "e.g., A photo of a cat sitting on a chair in a spaceship, cinematic lighting...",
+    "button": "Generate Test Image",
+    "buttonLoading": "Generating...",
+    "errorPrompt": "Please provide a prompt."
+  },
+  "butterTalks": {
+    "title": "Welcome to ButterTalks!",
+    "subtitle": "Feel free to express your emotions and talk to your favorite artist. Allow webcam and microphone for a real-time conversation.",
+    "prompt": "Who would you like to talk to?",
+    "button": "Start Conversation",
+    "members": {
+      "jungkook": "Jungkook",
+      "v": "V",
+      "jimin": "Jimin",
+      "rm": "RM"
+    }
+  },
+  "butterArt": {
+    "title": "Create with Butter Art",
+    "subtitle": "Describe the fan art you want to draw as text, or upload your own sketch to complete it with AI.",
+    "step1": "Describe your vision",
+    "step2": "Upload a sketch (optional)",
+    "promptPlaceholder": "e.g., A watercolor painting of V from BTS in a field of purple flowers, impressionistic style...",
+    "or": "OR",
+    "uploadPlaceholder": "Click to browse or drag & drop your image",
+    "button": "Generate Art"
+  },
+  "butterCover": {
+    "title": "Create a Butter Cover",
+    "subtitle": "Select the voice of the BTS member you want and upload the song you want to cover to create an AI cover.",
+    "step1": "1. Select Voice Model",
+    "step2": "2. Upload Your Song",
+    "uploadPlaceholder": "Click to browse or drag & drop your audio file",
+    "button": "Generate Cover",
+    "notifications": {
+      "generationStarted": "AI cover generation has started!",
+      "processingAudio": "Processing audio file...",
+      "estimatedTime": "Estimated time: 2-3 minutes",
+      "checkHistory": "Check progress in History",
+      "generationComplete": "AI cover generation completed!",
+      "downloadReady": "Download ready"
+    }
+  },
+  "butterCuts": {
+    "title": "Edit with Butter Cuts",
+    "subtitle": "Enter text that contains your emotions, or upload images and videos to create a sensational video.",
+    "step1": "Describe the video style",
+    "step2": "Upload your images & videos",
+    "promptPlaceholder": "e.g., A nostalgic and dreamy edit with slow motion, add soft light leaks...",
+    "uploadPlaceholder": "Click to browse or drag & drop your media",
+    "button": "Generate Video",
+    "fileCount": "{count} file(s) selected"
+  },
+  "voiceModel": {
+    "jungkook": "Jungkook (BTS)",
+    "iu": "IU",
+    "newjeans": "NewJeans"
+  },
+  "credits": {
+    "pagination": {
+      "5items": "5 per page",
+      "10items": "10 per page",
+      "20items": "20 per page",
+      "50items": "50 per page"
+    },
+    "errors": {
+      "loadFailed": "Failed to load credit history.",
+      "noData": "No credit usage history."
+    }
+  },
+  "attendance": {
+    "modal": {
+      "title": "Get Credits",
+      "description": "Visit Like Butter daily and earn 10 credits as a bonus.",
+      "subDescription": "Use credits to make the most of AI features.",
+      "checkIn": "Get 10 Credits",
+      "receiving": "Receiving credits...",
+      "alreadyChecked": "Already checked in today"
+    },
+    "messages": {
+      "success": "Check-in complete! Earned 10 credits.",
+      "alreadyChecked": "Already checked in today.",
+      "error": "Error occurred during check-in.",
+      "streakBonus": "Streak bonus! +{bonus} credits earned!",
+      "weeklyBonus": "Weekly completion bonus! +50 credits!",
+      "monthlyBonus": "Monthly completion bonus! +200 credits!"
+    }
+  },
+  "digitalGoods": {
+    "title": "Digital Goods",
+    "generating": "Generating...",
+    "editingInProgress": "Editing...",
+    "edit": "Edit",
+    "resetWork": "Start Over",
+    "generate": "Generate Goods",
+    "uploadFile": "Browse File",
+    "dragAndDrop": "Drag files here or click to browse",
+    "fileSizeLimit": "200MB limit per file (png, jpg, jpeg)",
+    "resultImage": "Result Image",
+    "completeSettings": "Complete settings in sidebar and click 'Generate Goods'",
+    "generationInProgress": "Digital goods generation in progress...",
+    "pleaseWait": "Please wait for the result",
+    "backgroundProcessing": "Processing in background",
+    "takingLong": "The task is taking longer. Processing in background.",
+    "checkStatus": "Check Status",
+    "generationFailed": "Generation failed",
+    "details": {
+      "cannotLoadDetails": "Cannot load detailed information",
+      "creationTitle": "Digital Goods Creation",
+      "styleLabel": "Style",
+      "originalImage": "Original Image",
+      "originalImageSubtitle": "Uploaded original image",
+      "generatedResult": "Generated Result",
+      "generatedResultSubtitle": "Converted to {style} style",
+      "generatedGoods": "Generated Digital Goods",
+      "generationFailed": "Generation Failed"
+    },
+    "styles": {
+      "GHIBLI": "Ghibli Style",
+      "PIXEL_ART": "Pixel Art",
+      "ANIMATION": "Animation",
+      "CARTOON": "Cartoon",
+      "SKETCH": "Sketch",
+      "GRADUATION_PHOTO": "Graduation Photo",
+      "LEGO": "Lego",
+      "STICKER": "Sticker",
+      "FIGURE": "Figure"
+    },
+    "messages": {
+      "fileSizeExceeded": "File size exceeds 200MB.",
+      "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
+      "requestSent": "Digital goods generation request sent!",
+      "generationComplete": "Digital goods has been generated!",
+      "downloadComplete": "Image downloaded!",
+      "downloadFailed": "Download failed.",
+      "workReset": "Work has been reset.",
+      "imageLoadFailed": "Failed to load image."
+    }
+  },
+  "userDropdown": {
+    "languageSettings": "Language Settings",
+    "settings": "Settings",
+    "creditManagement": "Credit Management",
+    "upgradePlan": "Upgrade Plan",
+    "getFreeCredits": "Get Free Credits",
+    "alreadyReceived": "Today's credits received",
+    "receivingCredits": "Receiving credits...",
+    "feedback": "Feedback",
+    "logout": "Logout",
+    "credits": "Credits"
+  },
+  "creditsPage": {
+    "title": "My Credits",
+    "availableCredits": "Available Credits",
+    "purchaseCredits": "Purchase Credits",
+    "usageHistory": "Usage History",
+    "display": "Display",
+    "time": "Time",
+    "type": "Type",
+    "description": "Description",
+    "loading": "Loading...",
+    "noHistory": "No usage history.",
+    "errorOccurred": "An error occurred",
+    "errorMessage": "Failed to load data."
+  },
+  "modelSelect": {
+    "title": "Let's Create",
+    "imageGeneration": "Image Generation",
+    "audioGeneration": "Audio Generation",
+    "imageCreationTitle": "Create Images",
+    "howToUse": "How to use",
+    "idolVoiceAI": "Idol Voice AI",
+    "aiCompletedIdolVoice": "AI-completed idol voice",
+    "aiReproducedIdolVoice": "Idol's voice reproduced by AI technology.",
+    "tools": {
+      "digitalGoods": {
+        "title": "Digital Goods",
+        "subtitle": "Transform your favorite idol photos into artwork for merchandise."
+      },
+      "stylist": {
+        "title": "Stylist",
+        "subtitle": "Style hair, outfits, accessories, and backgrounds to your taste."
+      },
+      "fanmeeting": {
+        "title": "Online Fan Meeting",
+        "subtitle": "Create fan meeting photos as if taken with your idol."
+      },
+      "virtualCasting": {
+        "title": "Virtual Casting",
+        "subtitle": "Cast your idol as the main character in movies or dramas."
+      }
+    }
+  },
+  "stylist": {
+    "styling": "Styling...",
+    "startStyling": "Start Styling",
+    "edit": "Edit",
+    "editing": "Editing...",
+    "generate": "Generate",
+    "dropFile": "Drop file here",
+    "dragFileHere": "Drag file here",
+    "pressStartStyling": "Press 'Start Styling'",
+    "stylingInProgress": "Styling in progress",
+    "pleaseWaitForResults": "Please wait a moment for the results",
+    "changeStyle": "Change Style",
+    "categories": {
+      "hairstyle": "Hairstyle",
+      "costume": "Costume",
+      "background": "Background",
+      "accessory": "Accessory",
+      "mood": "Mood"
+    },
+    "suggestions": {
+      "changeToBlonde": "Change to blonde",
+      "wearHanbok": "Wear hanbok",
+      "wearSuit": "Wear suit",
+      "gyeongbokgungBackground": "Make Gyeongbokgung background",
+      "wearSunglasses": "Wear sunglasses",
+      "wearHat": "Wear hat"
+    },
+    "form": {
+      "textDescription": "Text Description",
+      "imageAttachment": "Image Attachment",
+      "promptPlaceholder": "Please enter prompt",
+      "additionalRequestsPlaceholder": "Please enter additional requests"
+    },
+    "messages": {
+      "stylingComplete": "Styling has been completed!",
+      "stylingFailed": "Styling generation failed.",
+      "fileSizeExceeded": "File size exceeds 200MB.",
+      "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
+      "requestSent": "Styling generation request sent!",
+      "requestFailed": "Styling generation request failed.",
+      "downloadComplete": "Image downloaded!",
+      "downloadFailed": "Download failed.",
+      "originalNotFound": "Cannot find original work.",
+      "editRequestSent": "Edit request sent!",
+      "editRequestFailed": "Edit request failed.",
+      "workReset": "Work has been reset."
+    },
+    "details": {
+      "cannotLoadDetails": "Cannot load detailed information",
+      "creationTitle": "AI Stylist",
+      "mode": "Mode",
+      "textMode": "Text Mode",
+      "imageMode": "Image Mode",
+      "prompt": "Prompt",
+      "hairstyle": "Hairstyle Reference",
+      "outfit": "Outfit Reference",
+      "background": "Background Reference",
+      "accessory": "Accessory Reference",
+      "mood": "Mood Reference",
+      "originalImage": "Original Image",
+      "originalImageSubtitle": "Uploaded original image",
+      "generatedResult": "Generated Result",
+      "styledResult": "Styled with AI",
+      "generationFailed": "Generation Failed",
+      "referenceImages": "Reference Images",
+      "referenceImagesUsed": "Reference Images Used"
+    }
+  },
+  "virtualCasting": {
+    "generating": "Casting...",
+    "startCasting": "Start Casting",
+    "download": "Download",
+    "title": "Virtual Casting",
+    "character": "Character",
+    "originalImage": "Original Image",
+    "originalImageSubtitle": "Base image to transform into character",
+    "originalImageAlt": "Uploaded original image",
+    "transformedResult": "Transformed Result",
+    "transformedSubtitle": "Transformed into {{character}} character",
+    "transformedImageAlt": "Character transformed image",
+    "characterInfo": "Character Information",
+    "aiAnalysisDescription": "AI analyzed this character's features and transformed naturally.",
+    "aiTransform": "AI Transform",
+    "transformFailed": "Transform Failed",
+    "edit": "Edit",
+    "editing": "Editing...",
+    "generate": "Generate",
+    "dropFile": "Drop file here",
+    "dragFileHere": "Drag file here",
+    "pressStartCasting": "Press 'Start Casting'",
+    "generatingTitle": "Generating virtual casting",
+    "generatingDescription": "Please wait a moment for the results",
+    "categories": {
+      "disney": "Disney, Pixar & Hollywood Animation",
+      "fantasy": "Fantasy & SF (Movies & Games)",
+      "webtoon": "Webtoon Originals & K-Dramas",
+      "anime": "Japanese Animation"
+    },
+    "styles": {
+      "FROZEN": "Frozen Style",
+      "MINIONS": "Minions Style",
+      "SPONGEBOB": "SpongeBob Style",
+      "ALADDIN": "Aladdin Style",
+      "INSIDE_OUT": "Inside Out Style",
+      "ZOOTOPIA": "Zootopia Style",
+      "TOY_STORY": "Toy Story Style",
+      "LORD_OF_THE_RINGS": "Lord of the Rings Style",
+      "STAR_WARS": "Star Wars Style",
+      "AVENGERS": "Avengers Style",
+      "OVERWATCH": "Overwatch Style",
+      "TWILIGHT": "Twilight Style",
+      "HARRY_POTTER": "Harry Potter Style",
+      "TRUE_BEAUTY": "True Beauty Style",
+      "SQUID_GAME": "Squid Game Style",
+      "LOOKISM": "Lookism Style",
+      "ITAEWON_CLASS": "Itaewon Class Style",
+      "KENGAN_ASHURA": "Kengan Ashura Style",
+      "VOLCANO_RETURNS": "Return of the Mount Hua Sect Style"
+    },
+    "messages": {
+      "castingComplete": "Virtual casting has been completed!",
+      "castingFailed": "Virtual casting generation failed.",
+      "fileSizeExceeded": "File size exceeds 200MB.",
+      "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
+      "requestSent": "Virtual casting generation request sent!",
+      "requestFailed": "Virtual casting generation request failed.",
+      "downloadComplete": "Image downloaded!",
+      "downloadFailed": "Download failed.",
+      "originalNotFound": "Cannot find original work.",
+      "editRequestSent": "Edit request sent!",
+      "editRequestFailed": "Edit request failed.",
+      "workReset": "Work has been reset."
+    }
+  },
+  "fanmeeting": {
+    "generating": "Creating...",
+    "startFanmeeting": "Start Fanmeeting",
+    "download": "Download",
+    "background": "Background",
+    "situation": "Situation",
+    "backgroundPlaceholder": "What background would you like to meet in?",
+    "situationPlaceholder": "What situation would you like to take a photo in?",
+    "edit": "Edit",
+    "editing": "Editing...",
+    "generate": "Generate",
+    "dropHere": "Drop here",
+    "idolPhoto": "Idol Photo",
+    "myPhoto": "My Photo",
+    "pressStartFanmeeting": "Press 'Start Fanmeeting'",
+    "generatingTitle": "Generating fan meeting photo",
+    "generatingDescription": "Please wait a moment for the results",
+    "places": {
+      "fanSigningVenue": "Fan signing venue",
+      "hongdaeFront": "Hongdae front",
+      "cafe": "Cafe",
+      "airport": "Airport",
+      "beach": "Beach",
+      "newYorkManhattan": "New York Manhattan"
+    },
+    "poses": {
+      "fingerHeart": "Finger heart",
+      "heartPoseTogether": "Heart pose together",
+      "hug": "Hug",
+      "armInArm": "Arm in arm",
+      "holdHands": "Hold hands",
+      "patHead": "Pat head",
+      "facingEachOther": "Facing each other"
+    },
+    "messages": {
+      "fanmeetingComplete": "Fan meeting has been completed!",
+      "fanmeetingFailed": "Fan meeting generation failed.",
+      "fileSizeExceeded": "File size exceeds 200MB.",
+      "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
+      "requestSent": "Fan meeting generation request sent!",
+      "requestFailed": "Fan meeting generation request failed.",
+      "downloadComplete": "Image downloaded!",
+      "downloadFailed": "Download failed.",
+      "originalNotFound": "Cannot find original work.",
+      "editRequestSent": "Edit request sent!",
+      "editRequestFailed": "Edit request failed.",
+      "workReset": "Work has been reset."
+    }
+  },
+  "butterCover": {
+    "downloadAudio": "Download Audio",
+    "generationFailed": "Music generation failed.",
+    "generationFailedRetry": "Music generation failed. Please try again.",
+    "goToArchive": "Go to Archive",
+    "messages": {
+      "coverComplete": "AI cover has been generated!",
+      "coverFailed": "AI cover generation failed.",
+      "fileSizeExceeded": "File size exceeds 200MB.",
+      "unsupportedFormat": "Unsupported audio format.",
+      "requestSent": "Music generation has started!",
+      "requestFailed": "AI cover generation request failed.",
+      "downloadComplete": "Music has been downloaded!",
+      "downloadFailed": "Download failed.",
+      "workReset": "Work has been reset.",
+      "audioPlaybackFailed": "Audio playback failed."
+    }
+  }
+}

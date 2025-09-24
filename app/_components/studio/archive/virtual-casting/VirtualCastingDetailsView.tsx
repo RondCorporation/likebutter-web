@@ -1,5 +1,6 @@
 import { VirtualCastingDetails } from '@/types/task';
 import { Wand2, Star, Film, Sparkles } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import InfoCard from '../ui/InfoCard';
 import ParameterBadge from '../ui/ParameterBadge';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
@@ -11,32 +12,22 @@ interface Props {
 }
 
 export default function VirtualCastingDetailsView({ details, onClose }: Props) {
+  const { t } = useTranslation(['studio']);
+
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
-        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+        <p className="text-studio-text-muted">{t('common.detailsNotAvailable')}</p>
       </div>
     );
   }
 
   const getCharacterName = (style: string) => {
-    const characterNames: { [key: string]: string } = {
-      ELSA: '겨울왕국 엘사',
-      ANNA: '겨울왕국 안나',
-      BELLE: '미녀와 야수 벨',
-      ARIEL: '인어공주 에리얼',
-      MOANA: '모아나',
-      RAPUNZEL: '라푼젤',
-      MULAN: '뮬란',
-      TIANA: '공주와 개구리 티아나',
-      MERIDA: '메리다',
-      POCAHONTAS: '포카혼타스',
-      JASMINE: '알라딘 자스민',
-      CINDERELLA: '신데렐라',
-      AURORA: '잠자는 숲속의 미녀 오로라',
-      SNOW_WHITE: '백설공주',
-    };
-    return characterNames[style] || style;
+    try {
+      return t(`virtualCasting.styles.${style}`);
+    } catch {
+      return style;
+    }
   };
 
   const content = (
@@ -47,12 +38,12 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Wand2 className="h-5 w-5 text-studio-header" />
           </div>
-          <h3 className="text-xl font-semibold">가상 캐스팅</h3>
+          <h3 className="text-xl font-semibold">{t('virtualCasting.title')}</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           {details.request.style && (
             <ParameterBadge
-              label="캐릭터"
+              label={t('virtualCasting.character')}
               value={getCharacterName(details.request.style)}
               variant="accent"
             />
@@ -65,20 +56,20 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
         {/* Before Image */}
         {details.request.idolImageUrl && (
           <ImageDisplayCard
-            title="원본 이미지"
-            subtitle="캐릭터로 변환할 기본 이미지"
+            title={t('virtualCasting.originalImage')}
+            subtitle={t('virtualCasting.originalImageSubtitle')}
             imageUrl={details.request.idolImageUrl}
-            alt="업로드한 원본 이미지"
+            alt={t('virtualCasting.originalImageAlt')}
           />
         )}
 
         {/* After Image */}
         {details.result?.imageUrl && (
           <ImageDisplayCard
-            title="변환된 결과"
-            subtitle={`${getCharacterName(details.request.style)} 캐릭터로 변환`}
+            title={t('virtualCasting.transformedResult')}
+            subtitle={t('virtualCasting.transformedSubtitle', { character: getCharacterName(details.request.style) })}
             imageUrl={details.result.imageUrl}
-            alt="캐릭터로 변환된 이미지"
+            alt={t('virtualCasting.transformedImageAlt')}
           />
         )}
       </div>
@@ -86,7 +77,7 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
       {/* Character Info Card */}
       {details.request.style && (
         <div className="mt-6">
-          <InfoCard title="캐릭터 정보">
+          <InfoCard title={t('virtualCasting.characterInfo')}>
             <div className="flex items-center gap-4">
               <div className="p-3 bg-studio-border rounded-lg">
                 <Film className="h-6 w-6 text-studio-text-secondary" />
@@ -96,13 +87,13 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
                   {getCharacterName(details.request.style)}
                 </h5>
                 <p className="text-sm text-studio-text-secondary">
-                  AI가 이 캐릭터의 특징을 분석하여 자연스럽게 변환했습니다.
+                  {t('virtualCasting.aiAnalysisDescription')}
                 </p>
               </div>
               <div className="flex items-center gap-1">
                 <Star className="h-4 w-4 text-butter-yellow" />
                 <span className="text-sm font-medium text-studio-text-primary">
-                  AI 변환
+                  {t('virtualCasting.aiTransform')}
                 </span>
               </div>
             </div>
@@ -114,7 +105,7 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
       {details.error && (
         <div className="mt-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-            <h4 className="text-red-400 font-medium mb-2">변환 실패</h4>
+            <h4 className="text-red-400 font-medium mb-2">{t('virtualCasting.transformFailed')}</h4>
             <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>

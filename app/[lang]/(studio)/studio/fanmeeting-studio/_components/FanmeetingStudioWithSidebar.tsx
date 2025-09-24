@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import FanmeetingStudioClient from './FanmeetingStudioClient';
 import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
@@ -14,29 +15,34 @@ interface FanmeetingFormData {
 }
 
 export default function FanmeetingStudioWithSidebar() {
+  const { t } = useTranslation(['studio']);
   const [formData, setFormData] = useState<FanmeetingFormData>({
     backgroundPrompt: '',
     situationPrompt: '',
   });
-  const [clientRef, setClientRef] = useState<any>(null);
+  const clientRef = useRef<any>(null);
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
+
+  const setClientRefCallback = useCallback((ref: any) => {
+    clientRef.current = ref;
+  }, []);
 
   const handleFormChange = useCallback((newFormData: FanmeetingFormData) => {
     setFormData(newFormData);
   }, []);
 
   useEffect(() => {
-    if (clientRef?.showMobileResult !== undefined) {
-      setShowMobileResult(clientRef.showMobileResult);
+    if (clientRef.current?.showMobileResult !== undefined) {
+      setShowMobileResult(clientRef.current.showMobileResult);
     }
-  }, [clientRef?.showMobileResult]);
+  }, []);
 
   useEffect(() => {
-    const resultImage = clientRef?.resultImage;
-    const isProcessing = clientRef?.isProcessing || clientRef?.isPolling;
+    const resultImage = clientRef.current?.resultImage;
+    const isProcessing = clientRef.current?.isProcessing || clientRef.current?.isPolling;
     setHidePCSidebar(!!resultImage || !!isProcessing);
-  }, [clientRef?.resultImage, clientRef?.isProcessing, clientRef?.isPolling]);
+  }, []);
 
   const isFormValid = () => {
     if (!formData) return false;
@@ -47,26 +53,26 @@ export default function FanmeetingStudioWithSidebar() {
       return false;
     if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2)
       return false;
-    if (!clientRef?.idolFile || !clientRef?.userFile) return false;
+    if (!clientRef.current?.idolFile || !clientRef.current?.userFile) return false;
     return true;
   };
 
   const handleGenerate = () => {
-    if (clientRef?.handleGenerate) {
-      clientRef.handleGenerate();
+    if (clientRef.current?.handleGenerate) {
+      clientRef.current.handleGenerate();
     }
   };
 
   const handleDownload = () => {
-    if (clientRef?.handleDownload) {
-      clientRef.handleDownload();
+    if (clientRef.current?.handleDownload) {
+      clientRef.current.handleDownload();
     }
   };
 
   const getMobileButton = () => {
-    const isProcessing = clientRef?.isProcessing || false;
-    const isPolling = clientRef?.isPolling || false;
-    const resultImage = clientRef?.resultImage || null;
+    const isProcessing = clientRef.current?.isProcessing || false;
+    const isPolling = clientRef.current?.isPolling || false;
+    const resultImage = clientRef.current?.resultImage || null;
 
     if (resultImage) {
       return (
@@ -76,7 +82,7 @@ export default function FanmeetingStudioWithSidebar() {
         >
           <Download className="w-4 h-4 mr-2" />
           <div className="text-studio-button-primary text-sm font-bold font-pretendard-bold">
-            다운로드
+            {t('fanmeeting.download')}
           </div>
         </button>
       );
@@ -84,7 +90,7 @@ export default function FanmeetingStudioWithSidebar() {
 
     return (
       <StudioButton
-        text={isProcessing || isPolling ? '생성중...' : '팬미팅생성'}
+        text={isProcessing || isPolling ? t('fanmeeting.generating') : t('fanmeeting.startFanmeeting')}
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
         loading={isProcessing || isPolling}
@@ -108,7 +114,7 @@ export default function FanmeetingStudioWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <FanmeetingStudioClient formData={formData} ref={setClientRef} />
+      <FanmeetingStudioClient formData={formData} ref={setClientRefCallback} />
     </StudioLayout>
   );
 }

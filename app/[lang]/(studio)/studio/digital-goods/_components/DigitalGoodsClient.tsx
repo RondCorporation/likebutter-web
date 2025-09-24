@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
   Upload,
@@ -48,6 +49,7 @@ const DigitalGoodsClient = forwardRef<
   DigitalGoodsClientRef,
   DigitalGoodsClientProps
 >(function DigitalGoodsClient({ formData = {} }, ref) {
+  const { t } = useTranslation(['studio', 'common']);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -72,24 +74,24 @@ const DigitalGoodsClient = forwardRef<
       if (details?.result?.imageUrl) {
         setResultImage(details.result.imageUrl);
         setShowMobileResult(true);
-        toast.success('디지털 굿즈가 생성되었습니다!');
+        toast.success(t('studio:digitalGoods.messages.generationComplete'));
       }
       setIsGenerating(false);
     },
     onFailed: () => {
-      toast.error('디지털 굿즈 생성에 실패했습니다.');
+      toast.error(t('studio:digitalGoods.generationFailed'));
       setIsGenerating(false);
     },
   });
 
   const handleFileUpload = (file: File) => {
     if (file.size > 200 * 1024 * 1024) {
-      toast.error('파일 크기가 200MB를 초과합니다.');
+      toast.error(t('studio:digitalGoods.messages.fileSizeExceeded'));
       return;
     }
 
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-      toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
+      toast.error(t('studio:digitalGoods.messages.unsupportedFormat'));
       return;
     }
 
@@ -123,7 +125,7 @@ const DigitalGoodsClient = forwardRef<
       }
 
       if (response.status === 200 && response.data) {
-        toast.success('디지털 굿즈 생성 요청이 전송되었습니다!');
+        toast.success(t('studio:digitalGoods.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
         console.error(
@@ -136,7 +138,7 @@ const DigitalGoodsClient = forwardRef<
       }
     } catch (error: any) {
       console.error('Error creating digital goods task:', error);
-      toast.error('디지털 굿즈 생성 요청에 실패했습니다.');
+      toast.error(t('studio:digitalGoods.generationFailed'));
       setIsGenerating(false);
     }
   };
@@ -157,10 +159,10 @@ const DigitalGoodsClient = forwardRef<
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success('이미지가 다운로드되었습니다!');
+      toast.success(t('studio:digitalGoods.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
-      toast.error('다운로드에 실패했습니다.');
+      toast.error(t('studio:digitalGoods.messages.downloadFailed'));
     }
   };
 
@@ -199,7 +201,7 @@ const DigitalGoodsClient = forwardRef<
 
   const handleEditRequest = async (editRequest: string) => {
     if (!taskData || !taskData.taskId) {
-      toast.error('원본 작업을 찾을 수 없습니다.');
+      toast.error('Cannot find original task.');
       return;
     }
 
@@ -219,15 +221,15 @@ const DigitalGoodsClient = forwardRef<
       }
 
       if (response.data) {
-        toast.success('수정 요청이 전송되었습니다!');
+        toast.success('Edit request has been sent!');
 
         startPolling(response.data.taskId);
       } else {
-        toast.error('수정 요청에 실패했습니다.');
+        toast.error('Edit request failed.');
       }
     } catch (error: any) {
       console.error('Edit request failed:', error);
-      toast.error('수정 요청에 실패했습니다.');
+      toast.error('Edit request failed.');
     } finally {
       setIsEditLoading(false);
     }
@@ -247,7 +249,7 @@ const DigitalGoodsClient = forwardRef<
       URL.revokeObjectURL(previewUrl);
     }
 
-    toast.success('작업이 초기화되었습니다.');
+    toast.success(t('studio:digitalGoods.messages.workReset'));
   };
 
   useImperativeHandle(
@@ -294,7 +296,7 @@ const DigitalGoodsClient = forwardRef<
           onDownload={handleDownload}
           onEdit={() => setIsEditPopupOpen(true)}
           showEditButton={true}
-          editButtonText="수정하기"
+          editButtonText={t('studio:digitalGoods.edit')}
           isEditLoading={isEditLoading}
         />
         <EditRequestPopup
@@ -311,14 +313,14 @@ const DigitalGoodsClient = forwardRef<
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
         <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
-          디지털 굿즈
+          {t('studio:digitalGoods.title')}
         </div>
 
         {/* PC에서만 표시되는 버튼들 */}
         <div className="items-center gap-2 hidden md:flex">
           {resultImage ? (
             <StudioButton
-              text={isEditLoading ? '수정중...' : '수정하기'}
+              text={isEditLoading ? t('studio:digitalGoods.editingInProgress') : t('studio:digitalGoods.edit')}
               onClick={() => setIsEditPopupOpen(true)}
               disabled={isEditLoading}
               loading={isEditLoading}
@@ -329,7 +331,7 @@ const DigitalGoodsClient = forwardRef<
             />
           ) : (
             <StudioButton
-              text={isGenerating || isPolling ? '생성중...' : '생성하기'}
+              text={isGenerating || isPolling ? t('studio:digitalGoods.generating') : t('studio:digitalGoods.generate')}
               onClick={handleGenerate}
               disabled={isGenerating || isPolling || !isFormValid()}
               loading={isGenerating || isPolling}
@@ -346,7 +348,7 @@ const DigitalGoodsClient = forwardRef<
             >
               <RotateCcw className="w-4 h-4 mr-1" />
               <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                다시 만들기
+                {t('studio:digitalGoods.resetWork')}
               </div>
             </button>
           )}
@@ -420,11 +422,11 @@ const DigitalGoodsClient = forwardRef<
                   }`}
                 >
                   {isDragOver
-                    ? '파일을 놓아주세요'
-                    : '파일을 여기다 끌어다 놓으세요'}
+                    ? 'Release the file here'
+                    : t('studio:digitalGoods.dragAndDrop')}
                 </div>
                 <div className="text-studio-text-muted text-xs font-pretendard">
-                  파일당 200mb 제한 (png, jpg, jpeg)
+                  {t('studio:digitalGoods.fileSizeLimit')}
                 </div>
               </div>
             )}
@@ -441,7 +443,7 @@ const DigitalGoodsClient = forwardRef<
             className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-              파일 찾아보기
+              {t('studio:digitalGoods.uploadFile')}
             </div>
           </button>
 
@@ -469,11 +471,11 @@ const DigitalGoodsClient = forwardRef<
                 <div className="flex flex-col items-center gap-2 text-center">
                   <div className="text-studio-text-primary text-base font-pretendard-medium">
                     {isGenerating
-                      ? '디지털 굿즈 생성 중...'
-                      : '생성 진행 중...'}
+                      ? t('studio:digitalGoods.generationInProgress')
+                      : t('studio:digitalGoods.generating')}
                   </div>
                   <div className="text-studio-text-muted text-sm font-pretendard">
-                    잠시 기다리시면 결과가 나옵니다
+                    {t('studio:digitalGoods.pleaseWait')}
                   </div>
                 </div>
               </div>
@@ -486,7 +488,7 @@ const DigitalGoodsClient = forwardRef<
                   onError={(e) => {
                     console.error('Image load error:', e);
                     setResultImage(null);
-                    toast.error('이미지 로드에 실패했습니다.');
+                    toast.error(t('digitalGoods.messages.imageLoadFailed'));
                   }}
                 />
                 {/* PC 다운로드 아이콘 - 우측 상단 */}
@@ -501,10 +503,10 @@ const DigitalGoodsClient = forwardRef<
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <div className="flex flex-col items-center gap-2 text-center text-blue-400">
                   <div className="text-base font-pretendard-medium">
-                    백그라운드에서 처리 중
+                    {t('studio:digitalGoods.backgroundProcessing')}
                   </div>
                   <div className="text-sm font-pretendard max-w-[200px]">
-                    작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                    {t('studio:digitalGoods.takingLong')}
                   </div>
                   <button
                     onClick={() =>
@@ -512,7 +514,7 @@ const DigitalGoodsClient = forwardRef<
                     }
                     className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-pretendard-medium rounded-lg transition-colors"
                   >
-                    상태 확인
+                    {t('studio:digitalGoods.checkStatus')}
                   </button>
                 </div>
               </div>
@@ -520,7 +522,7 @@ const DigitalGoodsClient = forwardRef<
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <div className="flex flex-col items-center gap-2 text-center text-red-400">
                   <div className="text-base font-pretendard-medium">
-                    생성 실패
+                    {t('studio:digitalGoods.generationFailed')}
                   </div>
                   <div className="text-sm font-pretendard max-w-[200px]">
                     {pollingError}
@@ -532,12 +534,10 @@ const DigitalGoodsClient = forwardRef<
                 <div className="flex flex-col items-center text-center">
                   <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />
                   <div className="font-pretendard-medium text-studio-text-secondary text-base leading-6 mb-2">
-                    결과 이미지
+                    {t('studio:digitalGoods.resultImage')}
                   </div>
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
-                    사이드바에서 설정을 완료하고
-                    <br />
-                    '굿즈생성'을 눌러주세요
+                    {t('studio:digitalGoods.completeSettings')}
                   </div>
                 </div>
               </div>
@@ -561,8 +561,8 @@ const DigitalGoodsClient = forwardRef<
 
       <MobileLoadingOverlay
         isVisible={isGenerating || isPolling}
-        title="디지털 굿즈 생성중"
-        description="잠시 기다리시면 결과가 나옵니다"
+        title={t('studio:digitalGoods.generationInProgress')}
+        description={t('studio:digitalGoods.pleaseWait')}
       />
     </div>
   );

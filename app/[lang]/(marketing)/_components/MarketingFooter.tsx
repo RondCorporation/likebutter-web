@@ -15,7 +15,7 @@ interface MarketingFooterProps {
 
 const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
   ({ isSnapSection = false, ...props }, ref) => {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['marketing', 'common']);
     const pathname = usePathname();
     const lang = pathname.split('/')[1];
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -77,13 +77,13 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                       onClick={() => setIsFeedbackOpen(true)}
                       className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit text-left"
                     >
-                      피드백
+                      {t('marketing:footer.feedback')}
                     </button>
                     <a
                       href={`mailto:${COMPANY_INFO.contact.business}`}
                       className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
                     >
-                      비즈니스 문의
+                      {t('marketing:footer.businessInquiries')}
                     </a>
                   </nav>
                 </div>
@@ -116,32 +116,32 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                   </h3>
                   <div className="flex flex-col space-y-3 text-xs text-slate-400">
                     <div>
-                      <span className="text-slate-500 block mb-1">상호</span>
+                      <span className="text-slate-500 block mb-1">{t('marketing:footer.companyName')}</span>
                       <span>{t('companyName')}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block mb-1">대표자</span>
+                      <span className="text-slate-500 block mb-1">{t('marketing:footer.ceo')}</span>
                       <span>{t('companyCEO')}</span>
                     </div>
                     <div>
                       <span className="text-slate-500 block mb-1">
-                        사업자등록번호
+                        {t('marketing:footer.businessNumber')}
                       </span>
                       <span>{t('companyBusinessNumber')}</span>
                     </div>
                     <div>
                       <span className="text-slate-500 block mb-1">
-                        사업장 주소
+                        {t('marketing:footer.businessAddress')}
                       </span>
                       <span>{t('companyFullAddress')}</span>
                     </div>
                     <div>
                       <span className="text-slate-500 block mb-1">
-                        고객센터
+                        {t('marketing:footer.customerCenter')}
                       </span>
                       <div className="space-y-1">
                         <div>
-                          <span className="text-slate-400">전화: </span>
+                          <span className="text-slate-400">{t('marketing:footer.phone')} </span>
                           <a
                             href={`tel:${COMPANY_INFO.contact.phone}`}
                             className="hover:text-accent transition-colors duration-200"
@@ -150,7 +150,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                           </a>
                         </div>
                         <div>
-                          <span className="text-slate-400">이메일: </span>
+                          <span className="text-slate-400">{t('marketing:footer.email')} </span>
                           <a
                             href={`mailto:${COMPANY_INFO.contact.support}`}
                             className="hover:text-accent transition-colors duration-200"
@@ -183,7 +183,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
           </div>
         </div>
 
-        {/* 피드백 팝업 */}
+        {/* {t('marketing:footer.feedbackPopup')} */}
         <FeedbackPopup
           isOpen={isFeedbackOpen}
           onClose={() => setIsFeedbackOpen(false)}

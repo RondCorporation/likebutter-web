@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
   Upload,
@@ -57,6 +58,7 @@ const VirtualCastingClient = forwardRef<
   VirtualCastingClientRef,
   VirtualCastingClientProps
 >(function VirtualCastingClient({ formData }, ref) {
+  const { t } = useTranslation(['studio']);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -79,12 +81,12 @@ const VirtualCastingClient = forwardRef<
       if (result.details?.result?.imageUrl) {
         setResultImage(result.details.result.imageUrl);
         setShowMobileResult(true);
-        toast.success('가상 캐스팅이 완성되었습니다!');
+        toast.success(t('virtualCasting.messages.castingComplete'));
       }
       setIsProcessing(false);
     },
     onFailed: () => {
-      toast.error('가상 캐스팅 생성에 실패했습니다.');
+      toast.error(t('virtualCasting.messages.castingFailed'));
       setIsProcessing(false);
     },
   });
@@ -120,12 +122,12 @@ const VirtualCastingClient = forwardRef<
 
   const handleFileUpload = (file: File) => {
     if (file.size > 200 * 1024 * 1024) {
-      toast.error('파일 크기가 200MB를 초과합니다.');
+      toast.error(t('virtualCasting.messages.fileSizeExceeded'));
       return;
     }
 
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-      toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
+      toast.error(t('virtualCasting.messages.unsupportedFormat'));
       return;
     }
 
@@ -154,14 +156,14 @@ const VirtualCastingClient = forwardRef<
       }
 
       if (response.status === 200 && response.data) {
-        toast.success('가상 캐스팅 생성 요청이 전송되었습니다!');
+        toast.success(t('virtualCasting.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
         throw new Error('API request failed');
       }
     } catch (error: any) {
       console.error('Failed to generate virtual casting result:', error);
-      toast.error('가상 캐스팅 생성 요청에 실패했습니다.');
+      toast.error(t('virtualCasting.messages.requestFailed'));
       setIsProcessing(false);
     }
   };
@@ -182,16 +184,16 @@ const VirtualCastingClient = forwardRef<
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success('이미지가 다운로드되었습니다!');
+      toast.success(t('virtualCasting.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
-      toast.error('다운로드에 실패했습니다.');
+      toast.error(t('virtualCasting.messages.downloadFailed'));
     }
   };
 
   const handleEditRequest = async (editRequest: string) => {
     if (!taskData || !taskData.taskId) {
-      toast.error('원본 작업을 찾을 수 없습니다.');
+      toast.error(t('virtualCasting.messages.originalNotFound'));
       return;
     }
 
@@ -211,15 +213,15 @@ const VirtualCastingClient = forwardRef<
       }
 
       if (response.data) {
-        toast.success('수정 요청이 전송되었습니다!');
+        toast.success(t('virtualCasting.messages.editRequestSent'));
 
         startPolling(response.data.taskId);
       } else {
-        toast.error('수정 요청에 실패했습니다.');
+        toast.error(t('virtualCasting.messages.editRequestFailed'));
       }
     } catch (error: any) {
       console.error('Edit request failed:', error);
-      toast.error('수정 요청에 실패했습니다.');
+      toast.error(t('virtualCasting.messages.editRequestFailed'));
     } finally {
       setIsEditLoading(false);
     }
@@ -272,7 +274,7 @@ const VirtualCastingClient = forwardRef<
       URL.revokeObjectURL(previewUrl);
     }
 
-    toast.success('작업이 초기화되었습니다.');
+    toast.success(t('virtualCasting.messages.workReset'));
   };
 
   const isFormValid = () => {
@@ -294,7 +296,7 @@ const VirtualCastingClient = forwardRef<
         onDownload={handleDownload}
         onEdit={() => setIsEditPopupOpen(true)}
         showEditButton={true}
-        editButtonText="수정하기"
+        editButtonText={t('virtualCasting.edit')}
         isEditLoading={isEditLoading}
       />
     );
@@ -304,7 +306,7 @@ const VirtualCastingClient = forwardRef<
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
         <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
-          가상 캐스팅
+          {t('virtualCasting.title')}
         </div>
 
         {/* PC에서만 표시되는 버튼들 */}
@@ -312,7 +314,7 @@ const VirtualCastingClient = forwardRef<
           {resultImage ? (
             <>
               <StudioButton
-                text={isEditLoading ? '수정중...' : '수정하기'}
+                text={isEditLoading ? t('virtualCasting.editing') : t('virtualCasting.edit')}
                 onClick={() => setIsEditPopupOpen(true)}
                 disabled={isEditLoading}
                 loading={isEditLoading}
@@ -333,7 +335,7 @@ const VirtualCastingClient = forwardRef<
             </>
           ) : (
             <StudioButton
-              text={isProcessing ? '생성중...' : '생성하기'}
+              text={isProcessing ? t('virtualCasting.generating') : t('virtualCasting.generate')}
               onClick={handleGenerate}
               disabled={isProcessing || !isFormValid()}
               loading={isProcessing}
@@ -419,8 +421,8 @@ const VirtualCastingClient = forwardRef<
                   }`}
                 >
                   {isDragOver
-                    ? '파일을 놓아주세요'
-                    : '파일을 여기다 끌어다 놓으세요'}
+                    ? t('virtualCasting.dropFile')
+                    : t('virtualCasting.dragFileHere')}
                 </div>
                 <div className="text-studio-text-muted text-xs font-pretendard">
                   파일당 200mb 제한 (png, jpg, jpeg)
@@ -518,7 +520,7 @@ const VirtualCastingClient = forwardRef<
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
                     사이드바에서 설정을 완료하고
                     <br />
-                    '캐스팅생성'을 눌러주세요
+                    {t('virtualCasting.pressStartCasting')}
                   </div>
                 </div>
               </div>
@@ -529,8 +531,8 @@ const VirtualCastingClient = forwardRef<
 
       <MobileLoadingOverlay
         isVisible={isProcessing || isPolling}
-        title="가상 캐스팅 생성중"
-        description="잠시 기다리시면 결과가 나옵니다"
+        title={t('virtualCasting.generatingTitle')}
+        description={t('virtualCasting.generatingDescription')}
       />
 
       <EditRequestPopup

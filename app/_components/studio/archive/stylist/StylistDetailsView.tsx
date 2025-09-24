@@ -1,5 +1,6 @@
 import { StylistDetails } from '@/types/task';
 import { Scissors, FileText, Image as ImageIcon, Palette } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import InfoCard from '../ui/InfoCard';
 import ParameterBadge from '../ui/ParameterBadge';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
@@ -11,10 +12,12 @@ interface Props {
 }
 
 export default function StylistDetailsView({ details, onClose }: Props) {
+  const { t } = useTranslation(['studio']);
+
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
-        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+        <p className="text-studio-text-muted">{t('stylist.details.cannotLoadDetails')}</p>
       </div>
     );
   }
@@ -25,7 +28,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
     if (details.request.hairStyleImageUrl) {
       references.push({
         url: details.request.hairStyleImageUrl,
-        label: '헤어스타일 참고',
+        label: t('stylist.details.hairstyle'),
         key: 'hair',
       });
     }
@@ -33,7 +36,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
     if (details.request.outfitImageUrl) {
       references.push({
         url: details.request.outfitImageUrl,
-        label: '의상 참고',
+        label: t('stylist.details.outfit'),
         key: 'outfit',
       });
     }
@@ -41,7 +44,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
     if (details.request.backgroundImageUrl) {
       references.push({
         url: details.request.backgroundImageUrl,
-        label: '배경 참고',
+        label: t('stylist.details.background'),
         key: 'background',
       });
     }
@@ -49,7 +52,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
     if (details.request.accessoryImageUrl) {
       references.push({
         url: details.request.accessoryImageUrl,
-        label: '액세서리 참고',
+        label: t('stylist.details.accessory'),
         key: 'accessory',
       });
     }
@@ -57,7 +60,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
     if (details.request.moodImageUrl) {
       references.push({
         url: details.request.moodImageUrl,
-        label: '분위기 참고',
+        label: t('stylist.details.mood'),
         key: 'mood',
       });
     }
@@ -75,12 +78,12 @@ export default function StylistDetailsView({ details, onClose }: Props) {
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Scissors className="h-5 w-5 text-studio-header" />
           </div>
-          <h3 className="text-xl font-semibold">AI 스타일리스트</h3>
+          <h3 className="text-xl font-semibold">{t('stylist.details.creationTitle')}</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           <ParameterBadge
-            label="참고 이미지"
-            value={`${referenceImages.length}개`}
+            label={t('stylist.details.referenceImages')}
+            value={`${referenceImages.length}`}
             variant="accent"
           />
         </div>
@@ -93,27 +96,27 @@ export default function StylistDetailsView({ details, onClose }: Props) {
           {/* Original Image */}
           {details.request.idolImageUrl && (
             <ImageDisplayCard
-              title="원본 이미지"
-              subtitle="스타일링할 기본 이미지"
+              title={t('stylist.details.originalImage')}
+              subtitle={t('stylist.details.originalImageSubtitle')}
               imageUrl={details.request.idolImageUrl}
-              alt="업로드한 원본 이미지"
+              alt={t('stylist.details.originalImageSubtitle')}
             />
           )}
 
           {/* Result Image */}
           {details.result?.imageUrl && (
             <ImageDisplayCard
-              title="스타일링된 결과"
-              subtitle="AI가 생성한 최종 결과물"
+              title={t('stylist.details.generatedResult')}
+              subtitle={t('stylist.details.styledResult')}
               imageUrl={details.result.imageUrl}
-              alt="AI가 스타일링한 이미지"
+              alt={t('stylist.details.styledResult')}
             />
           )}
         </div>
 
         {/* Reference Images Grid */}
         {referenceImages.length > 0 && (
-          <InfoCard title="사용된 참고 이미지">
+          <InfoCard title={t('stylist.details.referenceImagesUsed')}>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {referenceImages.map((ref) => (
                 <div key={ref.key} className="bg-studio-border rounded-lg p-2">
@@ -139,7 +142,7 @@ export default function StylistDetailsView({ details, onClose }: Props) {
       {details.error && (
         <div className="mt-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-            <h4 className="text-red-400 font-medium mb-2">스타일링 실패</h4>
+            <h4 className="text-red-400 font-medium mb-2">{t('stylist.details.generationFailed')}</h4>
             <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>

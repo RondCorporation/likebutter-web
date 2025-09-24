@@ -40,23 +40,19 @@ const convertPlansFormat = (
   };
 
   const planDescMap: { [key: string]: string } = {
-    BASIC: '크리에이터를 위한 기본 플랜',
-    STANDARD: '프로페셔널을 위한 고급 플랜',
+    BASIC: t('billing:plans.creator.basicDesc'),
+    STANDARD: t('billing:plans.professional.advancedDesc'),
   };
 
   const featuresMap: { [key: string]: string[] } = {
     BASIC: [
-      '매일 출석체크 시 10크레딧',
-      '매달 추가 100크레딧',
-      '워터마크 없음',
-      '기본 생성 속도',
+      t('billing:plans.creator.attendanceCredit'),
+      t('billing:plans.creator.extraCredits'),
     ],
     STANDARD: [
-      '매일 출석체크 시 10크레딧',
-      '매달 추가 300크레딧',
-      '우선 생성 속도',
-      '워터마크 없음',
-      '무제한 크레딧 이월',
+      t('billing:plans.professional.attendanceCredit'),
+      t('billing:plans.professional.extraCredits'),
+      t('billing:plans.professional.features.creditRollover'),
     ],
   };
 
@@ -64,10 +60,10 @@ const convertPlansFormat = (
     {
       key: 'FREE',
       name: 'Free Plan',
-      description: '무료로 시작하기',
+      description: t('billing:plans.free.desc'),
       priceMonthly: 'Free',
       priceYearly: 'Free',
-      features: [{ text: '매일 출석체크 시 10크레딧' }],
+      features: [{ text: t('billing:plans.free.attendanceCredit') }],
       isPopular: false,
     },
   ];
@@ -132,7 +128,7 @@ export default function BillingDashboard({
   plans: apiPlans,
   currency,
 }: BillingDashboardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['billing', 'common']);
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuthStore();

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { Upload, X } from 'lucide-react';
 import BasePopup from './BasePopup';
@@ -12,6 +13,7 @@ interface FeedbackPopupProps {
 }
 
 export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
+  const { t } = useTranslation(['common']);
   const [email, setEmail] = useState('');
   const [description, setDescription] = useState('');
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
@@ -19,7 +21,7 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
 
   const handleFileUpload = (file: File) => {
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('파일 크기가 5MB를 초과합니다.');
+      toast.error(t('common:feedback.errors.fileSizeExceeded'));
       return;
     }
 
@@ -28,18 +30,18 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
 
   const handleSubmit = async () => {
     if (!email.trim()) {
-      toast.error('이메일을 입력해주세요.');
+      toast.error(t('common:feedback.errors.emailRequired'));
       return;
     }
 
     if (!description.trim()) {
-      toast.error('설명을 입력해주세요.');
+      toast.error(t('common:feedback.errors.descriptionRequired'));
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error('올바른 이메일 형식을 입력해주세요.');
+      toast.error(t('common:feedback.errors.invalidEmailFormat'));
       return;
     }
 
@@ -48,14 +50,14 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      toast.success('피드백이 성공적으로 제출되었습니다.');
+      toast.success(t('common:feedback.success.submitSuccess'));
 
       setEmail('');
       setDescription('');
       setAttachedFile(null);
       onClose();
     } catch (error) {
-      toast.error('피드백 제출에 실패했습니다.');
+      toast.error(t('common:feedback.errors.submitFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -66,18 +68,18 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
   };
 
   return (
-    <BasePopup isOpen={isOpen} onClose={onClose} title="피드백">
+    <BasePopup isOpen={isOpen} onClose={onClose} title={t('common:feedback.title')}>
       <div className="flex flex-col gap-6">
         {/* 이메일 입력 */}
         <div className="flex flex-col gap-2">
           <label className="text-studio-text-primary text-sm font-medium">
-            이메일 <span className="text-red-400">*</span>
+            {t('common:feedback.email')} <span className="text-red-400">*</span>
           </label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="연락받을 이메일을 입력해주세요"
+            placeholder={t('common:feedback.emailPlaceholder')}
             className="w-full px-3 py-2.5 bg-studio-sidebar border border-studio-border rounded-md text-studio-text-primary placeholder-studio-text-secondary focus:outline-none focus:border-studio-button-primary transition-colors"
           />
         </div>
@@ -85,12 +87,12 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
         {/* 설명 입력 */}
         <div className="flex flex-col gap-2">
           <label className="text-studio-text-primary text-sm font-medium">
-            설명 <span className="text-red-400">*</span>
+            {t('common:feedback.description')} <span className="text-red-400">*</span>
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="경험한 문제를 신고하여 새로운 아이디어로 서비스를 개선할 수 있게 도와주세요."
+            placeholder={t('common:feedback.descriptionPlaceholder')}
             rows={4}
             className="w-full px-3 py-2.5 bg-studio-sidebar border border-studio-border rounded-md text-studio-text-primary placeholder-studio-text-secondary focus:outline-none focus:border-studio-button-primary transition-colors resize-none"
           />
@@ -99,7 +101,7 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
         {/* 첨부파일 */}
         <div className="flex flex-col gap-2">
           <label className="text-studio-text-primary text-sm font-medium">
-            첨부파일 (5MB 이하)
+            {t('common:feedback.attachment')}
           </label>
 
           {attachedFile ? (
@@ -140,7 +142,7 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
               >
                 <Upload className="w-4 h-4 text-studio-text-secondary" />
                 <span className="text-studio-text-secondary text-sm">
-                  파일을 선택하거나 드래그해주세요
+                  {t('common:feedback.attachmentPlaceholder')}
                 </span>
               </button>
             </>
@@ -154,10 +156,10 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
             disabled={isSubmitting}
             className="flex-1 h-12 border border-studio-border rounded-xl text-studio-text-primary hover:bg-studio-border/50 transition-colors disabled:opacity-50"
           >
-            취소
+            {t('common:cancel')}
           </button>
           <StudioButton
-            text={isSubmitting ? '제출 중...' : '제출'}
+            text={isSubmitting ? t('common:feedback.submitting') : t('common:feedback.submit')}
             onClick={handleSubmit}
             disabled={isSubmitting}
             loading={isSubmitting}

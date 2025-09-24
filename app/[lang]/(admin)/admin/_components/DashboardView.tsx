@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { getStatsSummary } from '@/app/_lib/apis/admin.api';
 import {
@@ -100,6 +101,7 @@ const TaskStatusChart = ({ data }: TaskStatusChartProps) => {
 };
 
 export default function DashboardView() {
+  const { t } = useTranslation(['admin', 'common']);
   const {
     data: stats,
     error,

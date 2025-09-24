@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import {
@@ -12,6 +13,7 @@ import {
 import { useRouter } from 'next/navigation';
 
 export default function CreditsClient() {
+  const { t } = useTranslation(['studio', 'common']);
   const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(
     null
   );
@@ -26,10 +28,10 @@ export default function CreditsClient() {
   const router = useRouter();
 
   const pageSizeOptions = [
-    { label: '5개씩', value: 5 },
-    { label: '10개씩', value: 10 },
-    { label: '20개씩', value: 20 },
-    { label: '50개씩', value: 50 },
+    { label: t('studio:credits.pagination.5items'), value: 5 },
+    { label: t('studio:credits.pagination.10items'), value: 10 },
+    { label: t('studio:credits.pagination.20items'), value: 20 },
+    { label: t('studio:credits.pagination.50items'), value: 50 },
   ];
 
   const fetchCreditData = async (page: number = 0) => {
@@ -48,7 +50,7 @@ export default function CreditsClient() {
         setCreditHistory(historyResponse.data);
       }
     } catch (err: any) {
-      setError(err.message || '데이터를 불러오는 중 오류가 발생했습니다.');
+      setError(err.message || t('studio:creditsPage.errorMessage'));
     } finally {
       setIsLoading(false);
     }
@@ -108,7 +110,7 @@ export default function CreditsClient() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-red-400 text-center">
-          <h3 className="text-lg font-semibold mb-2">오류가 발생했습니다</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('studio:creditsPage.errorOccurred')}</h3>
           <p className="text-sm">{error}</p>
         </div>
       </div>
@@ -119,7 +121,7 @@ export default function CreditsClient() {
     <div className="w-full bg-[#25282c] min-h-screen">
       <div className="px-[90px] py-[44px]">
         {/* Header */}
-        <h1 className="text-white text-3xl font-bold mb-8">내 크레딧</h1>
+        <h1 className="text-white text-3xl font-bold mb-8">{t('studio:creditsPage.title')}</h1>
 
         {/* 크레딧 잔액 및 구매 버튼 */}
         <div className="mb-8">
@@ -128,7 +130,7 @@ export default function CreditsClient() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-white text-lg font-semibold mb-2">
-                  사용 가능한 크레딧
+                  {t('studio:creditsPage.availableCredits')}
                 </h3>
                 <div className="flex items-center gap-2">
                   <Image
@@ -150,7 +152,7 @@ export default function CreditsClient() {
                 onClick={handlePurchaseCredits}
                 className="px-6 py-3 bg-[#ffd83b] hover:bg-[#f7c80d] text-black font-semibold rounded-lg transition-colors"
               >
-                크레딧 구매
+                {t('studio:creditsPage.purchaseCredits')}
               </button>
             </div>
           </div>
@@ -158,18 +160,18 @@ export default function CreditsClient() {
 
         {/* 사용 내역 */}
         <div className="mb-4">
-          <h2 className="text-white text-xl font-semibold mb-6">사용 내역</h2>
+          <h2 className="text-white text-xl font-semibold mb-6">{t('studio:creditsPage.usageHistory')}</h2>
 
           {/* 페이지 크기 선택 */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <span className="text-white text-sm">표시</span>
+              <span className="text-white text-sm">{t('studio:creditsPage.display')}</span>
               <div className="relative">
                 <button
                   onClick={() => setPageSizeDropdownOpen(!pageSizeDropdownOpen)}
                   className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
                 >
-                  <span>{pageSize}개씩</span>
+                  <span>{pageSize}{t('studio:archive.pagination.perPage')}</span>
                   <ChevronDown
                     className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`}
                   />
@@ -198,16 +200,16 @@ export default function CreditsClient() {
               <thead>
                 <tr className="border-b border-[#4a4a4b]">
                   <th className="text-left text-white font-medium px-6 py-4">
-                    Time
+                    {t('studio:creditsPage.time')}
                   </th>
                   <th className="text-left text-white font-medium px-6 py-4">
-                    Type
+                    {t('studio:creditsPage.type')}
                   </th>
                   <th className="text-left text-white font-medium px-6 py-4">
-                    Description
+                    {t('studio:creditsPage.description')}
                   </th>
                   <th className="text-right text-white font-medium px-6 py-4">
-                    Credits
+                    {t('studio:userDropdown.credits')}
                   </th>
                 </tr>
               </thead>
@@ -218,7 +220,7 @@ export default function CreditsClient() {
                       colSpan={4}
                       className="text-center text-gray-400 px-6 py-8"
                     >
-                      로딩 중...
+                      {t('studio:creditsPage.loading')}
                     </td>
                   </tr>
                 ) : creditHistory?.content.length === 0 ? (
@@ -227,7 +229,7 @@ export default function CreditsClient() {
                       colSpan={4}
                       className="text-center text-gray-400 px-6 py-8"
                     >
-                      사용 내역이 없습니다.
+                      {t('studio:creditsPage.noHistory')}
                     </td>
                   </tr>
                 ) : (
@@ -271,8 +273,8 @@ export default function CreditsClient() {
               {/* 결과 정보 */}
               <span className="text-white text-sm">
                 {creditHistory.totalElements > 0
-                  ? `${currentPage * pageSize + 1} ~ ${Math.min((currentPage + 1) * pageSize, creditHistory.totalElements)}개 / 총 ${creditHistory.totalElements}개`
-                  : '결과 없음'}
+                  ? t('studio:archive.messages.resultsCount', { start: currentPage * pageSize + 1, end: Math.min((currentPage + 1) * pageSize, creditHistory.totalElements), total: creditHistory.totalElements })
+                  : t('studio:archive.pagination.noResults')}
               </span>
 
               {/* 페이지 네비게이션 */}

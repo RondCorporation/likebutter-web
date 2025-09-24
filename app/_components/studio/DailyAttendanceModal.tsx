@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 
@@ -16,6 +17,8 @@ export default function DailyAttendanceModal({
   onClaimCredit,
   isLoading = false,
 }: Props) {
+  const { t } = useTranslation(['studio', 'common']);
+
   if (!isOpen) return null;
 
   return (
@@ -23,7 +26,7 @@ export default function DailyAttendanceModal({
       <div className="w-full max-w-2xl mx-4 bg-[#25282c] border border-white/10 rounded-2xl p-6">
         {/* Header with title and close button */}
         <div className="relative flex items-center justify-center mb-6">
-          <h2 className="text-xl font-semibold text-white">크레딧 얻기</h2>
+          <h2 className="text-xl font-semibold text-white">{t('studio:attendance.modal.title')}</h2>
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -47,10 +50,10 @@ export default function DailyAttendanceModal({
         {/* Content */}
         <div className="text-center mb-8">
           <p className="text-white text-base mb-3">
-            매일 Like Butter에 접속하면 10크레딧을 보너스로 받을 수 있습니다.
+            {t('studio:attendance.modal.description')}
           </p>
           <p className="text-gray-400 text-sm">
-            크레딧을 사용하여 AI 기능을 최대한 활용하세요.
+            {t('studio:attendance.modal.subDescription')}
           </p>
         </div>
 
@@ -68,7 +71,7 @@ export default function DailyAttendanceModal({
               height={24}
               className="flex-shrink-0"
             />
-            {isLoading ? '크레딧 받는 중...' : '10 크레딧 받기'}
+            {isLoading ? t('studio:attendance.modal.receiving') : t('studio:attendance.modal.checkIn')}
           </button>
         </div>
       </div>

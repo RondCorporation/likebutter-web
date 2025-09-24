@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import SquareToggleButton from '../../_components/ui/SquareToggleButton';
@@ -32,6 +33,7 @@ interface StylistSidebarProps {
 export default function StylistSidebar({
   onFormChange,
 }: StylistSidebarProps = {}) {
+  const { t } = useTranslation(['studio']);
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
   const [imagePrompt, setImagePrompt] = useState('');
@@ -52,38 +54,38 @@ export default function StylistSidebar({
   }>({});
 
   const recommendedPrompts = [
-    '금발로 변경해줘',
-    '한복 입혀줘',
-    '정장 입혀줘',
-    '경복궁 배경으로 만들어줘',
-    '선글라스 착용해줘',
-    '모자 씌워줘',
+    t('stylist.suggestions.changeToBlonde'),
+    t('stylist.suggestions.wearHanbok'),
+    t('stylist.suggestions.wearSuit'),
+    t('stylist.suggestions.gyeongbokgungBackground'),
+    t('stylist.suggestions.wearSunglasses'),
+    t('stylist.suggestions.wearHat'),
   ];
 
   const imageCategories = [
     {
       key: 'hairstyle',
-      label: '헤어 스타일',
+      label: t('stylist.categories.hairstyle'),
       icon: '/studio/stylist/sidebar-hairstyle.svg',
     },
     {
       key: 'costume',
-      label: '의상',
+      label: t('stylist.categories.costume'),
       icon: '/studio/stylist/sidebar-costume.svg',
     },
     {
       key: 'background',
-      label: '배경',
+      label: t('stylist.categories.background'),
       icon: '/studio/stylist/sidebar-background.svg',
     },
     {
       key: 'accessory',
-      label: '액세서리',
+      label: t('stylist.categories.accessory'),
       icon: '/studio/stylist/sidebar-accessory.svg',
     },
     {
       key: 'atmosphere',
-      label: '분위기',
+      label: t('stylist.categories.mood'),
       icon: '/studio/stylist/sidebar-atmosphere.svg',
     },
   ];
@@ -153,11 +155,11 @@ export default function StylistSidebar({
       {/* 스타일 바꾸기 토글 */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
-          스타일 바꾸기
+          {t('stylist.changeStyle')}
         </div>
         <SquareToggleButton
-          leftLabel="텍스트 설명"
-          rightLabel="이미지 첨부"
+          leftLabel={t('stylist.form.textDescription')}
+          rightLabel={t('stylist.form.imageAttachment')}
           onToggle={handleModeToggle}
           initialValue="left"
         />
@@ -179,7 +181,7 @@ export default function StylistSidebar({
                     <textarea
                       value={textPrompt}
                       onChange={(e) => handleTextPromptChange(e.target.value)}
-                      placeholder="프롬프트를 입력해주세요"
+                      placeholder={t('stylist.form.promptPlaceholder')}
                       className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                     />
                   </div>
@@ -308,7 +310,7 @@ export default function StylistSidebar({
                     <textarea
                       value={imagePrompt}
                       onChange={(e) => handleImagePromptChange(e.target.value)}
-                      placeholder="추가 요청사항을 입력해주세요"
+                      placeholder={t('stylist.form.additionalRequestsPlaceholder')}
                       className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                     />
                   </div>

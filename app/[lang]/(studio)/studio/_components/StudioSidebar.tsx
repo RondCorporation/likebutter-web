@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'next/navigation';
 import { Plus, Home, FolderOpen, Users } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -11,11 +12,12 @@ interface StudioSidebarProps {
 }
 
 export default function StudioSidebar({ lang }: StudioSidebarProps) {
+  const { t } = useTranslation(['studio', 'common']);
   const searchParams = useSearchParams();
   const [showModelPopup, setShowModelPopup] = useState(false);
 
   const handleComingSoon = () => {
-    toast('준비 중인 기능입니다.', {
+    toast(t('studio:messages.comingSoon'), {
       icon: '🚧',
       style: {
         background: '#333',
@@ -60,7 +62,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
             className="text-white text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}
           >
-            만들기
+            {t('studio:navigation.create')}
           </div>
         </div>
 
@@ -77,7 +79,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
             className="text-[#a8a8aa] text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}
           >
-            홈
+            {t('studio:navigation.home')}
           </div>
         </div>
 
@@ -94,7 +96,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
             className="text-[#a8a8aa] text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}
           >
-            보관함
+            {t('studio:navigation.archive')}
           </div>
         </div>
 
@@ -112,7 +114,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
             className="text-[#a8a8aa] text-xs text-center font-medium"
             style={{ fontFamily: 'Pretendard, Helvetica' }}
           >
-            도움말
+            {t('studio:navigation.help')}
           </div>
         </div>
       </div>

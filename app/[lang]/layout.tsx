@@ -22,7 +22,7 @@ export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
 
-const i18nNamespaces = ['common'];
+const i18nNamespaces = ['common', 'auth', 'marketing', 'billing', 'studio', 'admin', 'errors'];
 
 export default async function RootLayout({
   children,

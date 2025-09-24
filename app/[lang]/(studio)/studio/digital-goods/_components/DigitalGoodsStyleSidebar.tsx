@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import ScrollableGrid from '../../_components/ScrollableGrid';
 
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
@@ -12,7 +13,8 @@ interface DigitalGoodsStyleSidebarProps {
 export default function DigitalGoodsStyleSidebar({
   onFormChange,
 }: DigitalGoodsStyleSidebarProps = {}) {
-  const [selectedPreset, setSelectedPreset] = useState('지브리 스타일');
+  const { t } = useTranslation(['studio']);
+  const [selectedPreset, setSelectedPreset] = useState(t('digitalGoods.styles.GHIBLI'));
 
   const getStyleImage = (style: string) => {
     const styleImageMap: Record<string, string> = {
@@ -30,15 +32,15 @@ export default function DigitalGoodsStyleSidebar({
   };
 
   const stylePresets = [
-    { name: '지브리 스타일', value: 'GHIBLI' },
-    { name: '픽셀아트 풍', value: 'PIXEL_ART' },
-    { name: '애니메이션 스타일', value: 'ANIMATION' },
-    { name: '카툰 풍', value: 'CARTOON' },
-    { name: '스케치 풍', value: 'SKETCH' },
-    { name: '졸업사진 스타일', value: 'GRADUATION_PHOTO' },
-    { name: '레고 스타일', value: 'LEGO' },
-    { name: '스티커 풍', value: 'STICKER' },
-    { name: '피규어 스타일', value: 'FIGURE' },
+    { name: t('digitalGoods.styles.GHIBLI'), value: 'GHIBLI' },
+    { name: t('digitalGoods.styles.PIXEL_ART'), value: 'PIXEL_ART' },
+    { name: t('digitalGoods.styles.ANIMATION'), value: 'ANIMATION' },
+    { name: t('digitalGoods.styles.CARTOON'), value: 'CARTOON' },
+    { name: t('digitalGoods.styles.SKETCH'), value: 'SKETCH' },
+    { name: t('digitalGoods.styles.GRADUATION_PHOTO'), value: 'GRADUATION_PHOTO' },
+    { name: t('digitalGoods.styles.LEGO'), value: 'LEGO' },
+    { name: t('digitalGoods.styles.STICKER'), value: 'STICKER' },
+    { name: t('digitalGoods.styles.FIGURE'), value: 'FIGURE' },
   ];
 
   useEffect(() => {

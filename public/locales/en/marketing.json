@@ -1,0 +1,162 @@
+{
+  "hero": {
+    "title": "The moment your fan heart melts\nStart the fan life you've always imagined",
+    "titleLine1": "The moment your fan heart melts",
+    "titleLine2": "Start the fan life you've always imagined",
+    "titleSoft": "A buttery-smooth",
+    "titleMain": "AI experience, LikeButter",
+    "ctaMain": "Start Butter Studio",
+    "ctaDemo": "View Live Demo",
+    "scroll": "SCROLL",
+    "rotating": {
+      "styleSwitch": "From art style to mood,\nswitch to the style you imagined!",
+      "changePhotoMood": "Change my photo's mood",
+      "dreamStage": "A dream stage created by AI,\nyour own idol cover song",
+      "createCoverSong": "Create my own cover song",
+      "onePhotoOneSentence": "One photo, one sentence is enough\nCreate your own art now",
+      "createAiArt": "Create AI Art"
+    }
+  },
+  "features": {
+    "title": "Where all your emotions become a masterpiece",
+    "subtitle": "LikeButter's AI fairy 'Butter' will guide you to melt your fandom into diverse content.",
+    "butterTalks": {
+      "title": "ButterTalks",
+      "desc": "Share the stories you want to share with your favorite artist with our AI. It all starts with pouring out your feelings."
+    },
+    "butterCover": {
+      "title": "ButterCover",
+      "desc": "Create a one-of-a-kind fan song with your emotions, or create a cover song with your favorite artist's voice."
+    },
+    "butterBrush": {
+      "title": "ButterBrush",
+      "desc": "Complete your AI fan art by entering the image that comes to your mind as text or by uploading a picture."
+    },
+    "butterCuts": {
+      "title": "ButterCuts",
+      "desc": "Easily edit a sensational fan-made video by combining generated images, music, and your own videos."
+    }
+  },
+  "demo": {
+    "title": "How it Works",
+    "subtitle": "See how your ideas come to life in just a few clicks.",
+    "comingSoon": "Interactive 'Scrollytelling' Demo Coming Soon!"
+  },
+  "pricing": {
+    "sectionTitle": "Unlock Your Creativity",
+    "sectionSubtitle": "Start for free, and upgrade to the Pro plan when you need more professional creative activities.",
+    "title": "Pricing Plans",
+    "subtitle": "Choose the plan that's right for you. Cancel anytime.",
+    "viewPricing": "View Detailed Pricing",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "save20": "Save 20%",
+    "billedAs": "Billed as",
+    "perMonth": "/month",
+    "yearlyDiscount": "20% off with annual billing!",
+    "startButton": "Get Started",
+    "upgradeButton": "Upgrade",
+    "planFree": {
+      "name": "Free Plan",
+      "desc": "If you're new,\nstart lightly!",
+      "cta": "Start Plan",
+      "feature1": "300 credits provided upon first signup",
+      "feature2": "Standard speed usage",
+      "feature3": "Watermark included in results",
+      "attendanceCredit": "10 credits for daily check-in"
+    },
+    "planCreator": {
+      "name": "Creator Plan",
+      "desc": "For more creative activities!\nUpgrade now",
+      "basicDesc": "Basic plan for creators",
+      "cta": "Start Plan",
+      "feature1": "4,000 credits provided monthly",
+      "feature2": "Fast generation speed",
+      "feature3": "No watermark in results",
+      "attendanceCredit": "10 credits for daily check-in",
+      "extraCredits": "Additional 100 credits monthly"
+    },
+    "planProfessional": {
+      "name": "Professional Plan",
+      "desc": "For businesses and agencies",
+      "advancedDesc": "Advanced plan for professionals",
+      "cta": "Subscribe",
+      "attendanceCredit": "10 credits for daily check-in",
+      "extraCredits": "Additional 300 credits monthly"
+    },
+    "planEnterprise": {
+      "name": "Enterprise",
+      "desc": "For large-scale custom needs",
+      "cta": "Contact Us",
+      "price": "Custom"
+    }
+  },
+  "sectionAboutTitle": "Express your fan heart\nwith AI",
+  "sectionAboutDesc": "From recreating imagined moments to bringing fantasies to life,\nLikeButter helps you express your fan heart without limits.",
+  "sectionDemoTitle": "Experience the Magic\nof Creation",
+  "sectionDemoDesc": "See how easy it is to transform your ideas into stunning content.\nOur interactive demo shows the full creative process.",
+  "sectionContactTitle": "Ready to start\nyour creative journey?",
+  "contactFormEmail": "Enter your email",
+  "contactFormMessage": "Leave your inquiry",
+  "contactFormSubmit": "Send Message",
+  "monthly": "Monthly",
+  "yearly": "Yearly",
+  "planFreeName": "Free Plan",
+  "planFreeDesc": "If you're new,\nstart lightly!",
+  "planFreeCta": "Start Plan",
+  "contact": {
+    "title": "Contact Us",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message",
+    "formEmail": "Enter your email",
+    "formMessage": "Leave your inquiry",
+    "formSubmit": "Send Message"
+  },
+  "navigation": {
+    "about": "About",
+    "features": "Features",
+    "demo": "Demo",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "services": "Services",
+    "serviceIntro": "Service Info",
+    "liveDemo": "Live Demo"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "navigate": "Navigate",
+    "studioAccess": "Studio Access",
+    "contactLegal": "Contact & Legal",
+    "businessInquiries": "Business Inquiries",
+    "generalSupport": "General Support",
+    "privacyPolicy": "Privacy Policy",
+    "businessInfo": "Business Information",
+    "services": "Services",
+    "feedback": "Feedback",
+    "companyName": "Company",
+    "ceo": "CEO",
+    "businessNumber": "Business Registration Number",
+    "businessAddress": "Business Address",
+    "customerCenter": "Customer Center",
+    "phone": "Phone:",
+    "email": "Email:",
+    "feedbackPopup": "Feedback Popup"
+  },
+  "company": {
+    "name": "Rond Corporation",
+    "address": "H-Tower, 12 Teheran-ro 70-gil, Gangnam-gu, Seoul, Republic of Korea",
+    "ceo": "Kim Dong-Yeon",
+    "businessNumber": "645-86-03935",
+    "fullAddress": "Rm 402-J143, H-Tower, 12 Teheran-ro 70-gil, Daechi-dong, Gangnam-gu, Seoul, Republic of Korea",
+    "businessType": "Head office of a for-profit corporation",
+    "businessSector": "Information and communications",
+    "businessDescription": "Artificial intelligence, application software development and supply",
+    "taxType": "General VAT taxpayer",
+    "status": "Continuing business"
+  },
+  "mainNavigation": "Main Navigation",
+  "navServiceIntro": "Service Info",
+  "navLiveDemo": "Live Demo",
+  "navPricing": "Pricing"
+}

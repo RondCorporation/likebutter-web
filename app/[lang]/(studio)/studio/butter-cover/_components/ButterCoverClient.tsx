@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import StepNavigation from './StepNavigation';
 import ArtistSelection from './ArtistSelection';
 import MusicUpload from './MusicUpload';
@@ -29,6 +30,7 @@ interface MusicData {
 }
 
 export default function ButterCoverClient({}: ButterCoverClientProps) {
+  const { t } = useTranslation(['studio']);
   const [currentStep, setCurrentStep] = useState(1);
   const [artistData, setArtistData] = useState<ArtistData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,12 +55,12 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       if (details?.result?.audioKey) {
         const audioUrl = `/api/audio/${details.result.audioKey}`;
         setResultAudioUrl(audioUrl);
-        toast.success('AI 커버가 생성되었습니다!');
+        toast.success(t('butterCover.messages.coverComplete'));
       }
       setIsLoading(false);
     },
     onFailed: () => {
-      toast.error('AI 커버 생성에 실패했습니다.');
+      toast.error(t('butterCover.messages.coverFailed'));
       setIsLoading(false);
     },
   });
@@ -94,18 +96,18 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       }
 
       if (response.status === 200 && response.data) {
-        toast.success('음원 생성이 시작되었습니다!');
+        toast.success(t('butterCover.messages.requestSent'));
 
         startPolling(response.data.taskId);
       } else {
-        throw new Error(response.msg || '음원 생성에 실패했습니다.');
+        throw new Error(response.msg || t('butterCover.generationFailed'));
       }
     } catch (error: any) {
       console.error('Music generation failed:', error);
       const errorMessage =
         error instanceof Error
           ? error.message
-          : '음원 생성에 실패했습니다. 다시 시도해주세요.';
+          : t('butterCover.generationFailedRetry');
       toast.error(errorMessage);
       setCurrentStep(2);
       setIsLoading(false);
@@ -119,7 +121,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       const audio = new Audio(resultAudioUrl);
       audio.addEventListener('ended', () => setIsPlaying(false));
       audio.addEventListener('error', () => {
-        toast.error('오디오 재생에 실패했습니다.');
+        toast.error(t('butterCover.messages.audioPlaybackFailed'));
         setIsPlaying(false);
       });
       setAudioElement(audio);
@@ -152,10 +154,10 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success('음원이 다운로드되었습니다!');
+      toast.success(t('butterCover.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
-      toast.error('다운로드에 실패했습니다.');
+      toast.error(t('butterCover.messages.downloadFailed'));
     }
   };
 
@@ -256,14 +258,14 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
               <div className="w-full max-w-sm space-y-3">
                 {resultAudioUrl && (
                   <StudioButton
-                    text="음원 다운로드"
+                    text={t('butterCover.downloadAudio')}
                     onClick={handleDownload}
                     className="w-full h-12"
                     icon={<Download className="w-4 h-4 text-black" />}
                   />
                 )}
                 <StudioButton
-                  text="보관함으로 가기"
+                  text={t('butterCover.goToArchive')}
                   onClick={() => router.push('/studio/archive')}
                   className="w-full h-12"
                 />

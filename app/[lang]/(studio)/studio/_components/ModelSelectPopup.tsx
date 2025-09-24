@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import TabItem from './ui/TabItem';
 import SelectCard from './ui/SelectCard';
@@ -17,6 +18,7 @@ export default function ModelSelectPopup({
   onClose,
   lang,
 }: ModelSelectPopupProps) {
+  const { t } = useTranslation(['studio', 'common']);
   const router = useRouter();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
@@ -100,7 +102,7 @@ export default function ModelSelectPopup({
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex-1 text-center font-bold text-studio-text-primary text-lg">
-            만들어보기
+            {t('studio:modelSelect.title')}
           </div>
           <button
             onClick={onClose}
@@ -114,13 +116,13 @@ export default function ModelSelectPopup({
           <button onClick={() => setActiveTab('image')}>
             <TabItem
               state={activeTab === 'image' ? 'selected' : 'default'}
-              text="이미지 생성"
+              text={t('studio:modelSelect.imageGeneration')}
             />
           </button>
           <button onClick={() => setActiveTab('audio')}>
             <TabItem
               state={activeTab === 'audio' ? 'selected' : 'default'}
-              text="음원 생성"
+              text={t('studio:modelSelect.audioGeneration')}
             />
           </button>
         </div>
@@ -137,10 +139,10 @@ export default function ModelSelectPopup({
             <>
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-studio-text-primary text-sm">
-                  이미지 생성하기
+                  {t('studio:modelSelect.imageCreationTitle')}
                 </h3>
                 <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
-                  How to use
+                  {t('studio:modelSelect.howToUse')}
                 </span>
               </div>
 
@@ -149,32 +151,32 @@ export default function ModelSelectPopup({
               >
                 <SelectCard
                   state="default"
-                  title="디지털 굿즈"
-                  subtitle="내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요."
+                  title={t('studio:modelSelect.tools.digitalGoods.title')}
+                  subtitle={t('studio:modelSelect.tools.digitalGoods.subtitle')}
                   backgroundImage="/studio/model-select/digital-goods.png"
                   onClick={() => navigateToTool('digital-goods')}
                 ></SelectCard>
 
                 <SelectCard
                   state="default"
-                  title="스타일리스트"
-                  subtitle="헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요."
+                  title={t('studio:modelSelect.tools.stylist.title')}
+                  subtitle={t('studio:modelSelect.tools.stylist.subtitle')}
                   backgroundImage="/studio/model-select/stylist.png"
                   onClick={() => navigateToTool('stylist')}
                 />
 
                 <SelectCard
                   state="default"
-                  title="온라인 팬미팅"
-                  subtitle="아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요."
+                  title={t('studio:modelSelect.tools.fanmeeting.title')}
+                  subtitle={t('studio:modelSelect.tools.fanmeeting.subtitle')}
                   backgroundImage="/studio/model-select/fanmeeting-studio.png"
                   onClick={() => navigateToTool('fanmeeting')}
                 />
 
                 <SelectCard
                   state="default"
-                  title="가상 캐스팅"
-                  subtitle="아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요."
+                  title={t('studio:modelSelect.tools.virtualCasting.title')}
+                  subtitle={t('studio:modelSelect.tools.virtualCasting.subtitle')}
                   backgroundImage="/studio/model-select/virtual_casting.png"
                   onClick={() => navigateToTool('virtual-casting')}
                 />
@@ -184,10 +186,10 @@ export default function ModelSelectPopup({
             <>
               <div className="flex items-center justify-between">
                 <h3 className="font-bold text-studio-text-primary text-sm">
-                  아이돌 보이스 AI
+                  {t('studio:modelSelect.idolVoiceAI')}
                 </h3>
                 <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
-                  How to use
+                  {t('studio:modelSelect.howToUse')}
                 </span>
               </div>
 
@@ -208,10 +210,10 @@ export default function ModelSelectPopup({
 
                   <div className="absolute bottom-6 left-6 text-white z-10">
                     <h2 className="text-2xl font-bold mb-1">
-                      AI로 완성된 아이돌 음성
+                      {t('studio:modelSelect.aiCompletedIdolVoice')}
                     </h2>
                     <p className="text-sm font-light opacity-90">
-                      AI 기술로 재현된 아이돌의 목소리.
+                      {t('studio:modelSelect.aiReproducedIdolVoice')}
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
   Upload,
@@ -63,6 +64,7 @@ export interface StylistClientRef {
 
 const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
   function StylistClient({ formData }, ref) {
+    const { t } = useTranslation(['studio']);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [isDragOver, setIsDragOver] = useState(false);
@@ -88,12 +90,12 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         if (result.details?.result?.imageUrl) {
           setResultImage(result.details.result.imageUrl);
           setShowMobileResult(true);
-          toast.success('스타일링이 완성되었습니다!');
+          toast.success(t('stylist.messages.stylingComplete'));
         }
         setIsProcessing(false);
       },
       onFailed: () => {
-        toast.error('스타일링 생성에 실패했습니다.');
+        toast.error(t('stylist.messages.stylingFailed'));
         setIsProcessing(false);
       },
     });
@@ -126,12 +128,12 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
 
     const handleFileUpload = (file: File) => {
       if (file.size > 200 * 1024 * 1024) {
-        toast.error('파일 크기가 200MB를 초과합니다.');
+        toast.error(t('stylist.messages.fileSizeExceeded'));
         return;
       }
 
       if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-        toast.error('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
+        toast.error(t('stylist.messages.unsupportedFormat'));
         return;
       }
 
@@ -185,14 +187,14 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         }
 
         if (response.status === 200 && response.data) {
-          toast.success('스타일링 생성 요청이 전송되었습니다!');
+          toast.success(t('stylist.messages.requestSent'));
           startPolling(response.data.taskId);
         } else {
           throw new Error('API request failed');
         }
       } catch (error: any) {
         console.error('Failed to generate stylist result:', error);
-        toast.error('스타일링 생성 요청에 실패했습니다.');
+        toast.error(t('stylist.messages.requestFailed'));
         setIsProcessing(false);
       }
     };
@@ -213,16 +215,16 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
 
-        toast.success('이미지가 다운로드되었습니다!');
+        toast.success(t('stylist.messages.downloadComplete'));
       } catch (error) {
         console.error('Download failed:', error);
-        toast.error('다운로드에 실패했습니다.');
+        toast.error(t('stylist.messages.downloadFailed'));
       }
     };
 
     const handleEditRequest = async (editRequest: string) => {
       if (!taskData || !taskData.taskId) {
-        toast.error('원본 작업을 찾을 수 없습니다.');
+        toast.error(t('stylist.messages.originalNotFound'));
         return;
       }
 
@@ -242,15 +244,15 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         }
 
         if (response.data) {
-          toast.success('수정 요청이 전송되었습니다!');
+          toast.success(t('stylist.messages.editRequestSent'));
 
           startPolling(response.data.taskId);
         } else {
-          toast.error('수정 요청에 실패했습니다.');
+          toast.error(t('stylist.messages.editRequestFailed'));
         }
       } catch (error: any) {
         console.error('Edit request failed:', error);
-        toast.error('수정 요청에 실패했습니다.');
+        toast.error(t('stylist.messages.editRequestFailed'));
       } finally {
         setIsEditLoading(false);
       }
@@ -333,7 +335,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         URL.revokeObjectURL(url);
       });
 
-      toast.success('작업이 초기화되었습니다.');
+      toast.success(t('stylist.messages.workReset'));
     };
 
     const getImageUploadSlots = () => {
@@ -345,35 +347,35 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       if (settings.hairstyle) {
         slots.push({
           id: 'hairStyleImage',
-          label: '헤어스타일',
+          label: t('stylist.categories.hairstyle'),
           previewUrl: additionalImagePreviews['hairStyleImage'],
         });
       }
       if (settings.costume) {
         slots.push({
           id: 'outfitImage',
-          label: '코스튬',
+          label: t('stylist.categories.costume'),
           previewUrl: additionalImagePreviews['outfitImage'],
         });
       }
       if (settings.background) {
         slots.push({
           id: 'backgroundImage',
-          label: '배경',
+          label: t('stylist.categories.background'),
           previewUrl: additionalImagePreviews['backgroundImage'],
         });
       }
       if (settings.accessory) {
         slots.push({
           id: 'accessoryImage',
-          label: '액세서리',
+          label: t('stylist.categories.accessory'),
           previewUrl: additionalImagePreviews['accessoryImage'],
         });
       }
       if (settings.atmosphere) {
         slots.push({
           id: 'moodImage',
-          label: '분위기',
+          label: t('stylist.categories.mood'),
           previewUrl: additionalImagePreviews['moodImage'],
         });
       }
@@ -412,7 +414,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
           onDownload={handleDownload}
           onEdit={() => setIsEditPopupOpen(true)}
           showEditButton={true}
-          editButtonText="수정하기"
+          editButtonText={t('stylist.edit')}
           isEditLoading={isEditLoading}
         />
       );
@@ -430,7 +432,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
             {resultImage ? (
               <>
                 <StudioButton
-                  text={isEditLoading ? '수정중...' : '수정하기'}
+                  text={isEditLoading ? t('stylist.editing') : t('stylist.edit')}
                   onClick={() => setIsEditPopupOpen(true)}
                   disabled={isEditLoading}
                   loading={isEditLoading}
@@ -451,7 +453,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
               </>
             ) : (
               <StudioButton
-                text={isProcessing ? '생성중...' : '생성하기'}
+                text={isProcessing ? t('stylist.styling') : t('stylist.generate')}
                 onClick={handleGenerate}
                 disabled={isProcessing || !isFormValid()}
                 loading={isProcessing}
@@ -600,8 +602,8 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                     }`}
                   >
                     {isDragOver
-                      ? '파일을 놓아주세요'
-                      : '파일을 여기다 끌어다 놓으세요'}
+                      ? t('stylist.dropFile')
+                      : t('stylist.dragFileHere')}
                   </div>
                   <div className="text-studio-text-muted text-xs font-pretendard">
                     파일당 200mb 제한 (png, jpg, jpeg)
@@ -680,7 +682,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                     <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
                       사이드바에서 설정을 완료하고
                       <br />
-                      '스타일링시작'을 눌러주세요
+                      {t('stylist.pressStartStyling')}
                     </div>
                   </div>
                 </div>
@@ -691,8 +693,8 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
 
         <MobileLoadingOverlay
           isVisible={isProcessing || isPolling}
-          title="스타일링 중"
-          description="잠시 기다리시면 결과가 나옵니다"
+          title={t('stylist.stylingInProgress')}
+          description={t('stylist.pleaseWaitForResults')}
         />
 
         <EditRequestPopup

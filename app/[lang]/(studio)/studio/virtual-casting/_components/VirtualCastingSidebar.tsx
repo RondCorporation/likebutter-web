@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import ScrollableGrid from '../../_components/ScrollableGrid';
@@ -29,6 +30,7 @@ interface Character {
 export default function VirtualCastingSidebar({
   onFormChange,
 }: VirtualCastingSidebarProps = {}) {
+  const { t } = useTranslation(['studio']);
   const [selectedCharacter, setSelectedCharacter] = useState<{
     category: string;
     name: string;
@@ -39,41 +41,41 @@ export default function VirtualCastingSidebar({
   const categories = [
     {
       id: 'disney',
-      title: '디즈니, 픽사 & 할리우드 애니메이션',
+      title: t('virtualCasting.categories.disney'),
       folder: 'sidebar-menu-image-1',
       characters: [
         {
-          name: '겨울왕국 스타일',
+          name: t('virtualCasting.styles.FROZEN'),
           image: '겨울왕국.png',
           style: VIRTUAL_CASTING_STYLES.FROZEN,
         },
         {
-          name: '미니언즈 스타일',
+          name: t('virtualCasting.styles.MINIONS'),
           image: '미니언즈.png',
           style: VIRTUAL_CASTING_STYLES.MINIONS,
         },
         {
-          name: '스폰지밥 스타일',
+          name: t('virtualCasting.styles.SPONGEBOB'),
           image: '스폰지밥.png',
           style: VIRTUAL_CASTING_STYLES.SPONGEBOB,
         },
         {
-          name: '알라딘 스타일',
+          name: t('virtualCasting.styles.ALADDIN'),
           image: '알라딘.png',
           style: VIRTUAL_CASTING_STYLES.ALADDIN,
         },
         {
-          name: '인사이드아웃 스타일',
+          name: t('virtualCasting.styles.INSIDE_OUT'),
           image: '인사이드아웃.png',
           style: VIRTUAL_CASTING_STYLES.INSIDE_OUT,
         },
         {
-          name: '주토피아 스타일',
+          name: t('virtualCasting.styles.ZOOTOPIA'),
           image: '주토피아.png',
           style: VIRTUAL_CASTING_STYLES.ZOOTOPIA,
         },
         {
-          name: '토이스토리 스타일',
+          name: t('virtualCasting.styles.TOY_STORY'),
           image: '토이스토리.png',
           style: VIRTUAL_CASTING_STYLES.TOY_STORY,
         },
@@ -81,36 +83,36 @@ export default function VirtualCastingSidebar({
     },
     {
       id: 'fantasy',
-      title: '판타지 & SF (영화 & 게임)',
+      title: t('virtualCasting.categories.fantasy'),
       folder: 'sidebar-menu-image-2',
       characters: [
         {
-          name: '반지의제왕 스타일',
+          name: t('virtualCasting.styles.LORD_OF_THE_RINGS'),
           image: '반지의제왕.png',
           style: VIRTUAL_CASTING_STYLES.LORD_OF_THE_RINGS,
         },
         {
-          name: '스타워즈 스타일',
+          name: t('virtualCasting.styles.STAR_WARS'),
           image: '스타워즈.png',
           style: VIRTUAL_CASTING_STYLES.STAR_WARS,
         },
         {
-          name: '어벤져스 스타일',
+          name: t('virtualCasting.styles.AVENGERS'),
           image: '어벤져스.png',
           style: VIRTUAL_CASTING_STYLES.AVENGERS,
         },
         {
-          name: '오버워치 스타일',
+          name: t('virtualCasting.styles.OVERWATCH'),
           image: '오버워치.png',
           style: VIRTUAL_CASTING_STYLES.OVERWATCH,
         },
         {
-          name: '트와일라잇 스타일',
+          name: t('virtualCasting.styles.TWILIGHT'),
           image: '트와일라잇.png',
           style: VIRTUAL_CASTING_STYLES.TWILIGHT,
         },
         {
-          name: '해리포터 스타일',
+          name: t('virtualCasting.styles.HARRY_POTTER'),
           image: '해리포터.png',
           style: VIRTUAL_CASTING_STYLES.HARRY_POTTER,
         },
@@ -118,36 +120,36 @@ export default function VirtualCastingSidebar({
     },
     {
       id: 'webtoon',
-      title: '웹툰 원작 & 한국 드라마',
+      title: t('virtualCasting.categories.webtoon'),
       folder: 'sidebar-menu-image-3',
       characters: [
         {
-          name: '여신강림 스타일',
+          name: t('virtualCasting.styles.TRUE_BEAUTY'),
           image: '여신강림.png',
           style: VIRTUAL_CASTING_STYLES.TRUE_BEAUTY,
         },
         {
-          name: '오징어게임 스타일',
+          name: t('virtualCasting.styles.SQUID_GAME'),
           image: '오징어게임.png',
           style: VIRTUAL_CASTING_STYLES.SQUID_GAME,
         },
         {
-          name: '외모지상주의 스타일',
+          name: t('virtualCasting.styles.LOOKISM'),
           image: '외모지상주의.png',
           style: VIRTUAL_CASTING_STYLES.LOOKISM,
         },
         {
-          name: '이태원클라스 스타일',
+          name: t('virtualCasting.styles.ITAEWON_CLASS'),
           image: '이태원클라스.png',
           style: VIRTUAL_CASTING_STYLES.ITAEWON_CLASS,
         },
         {
-          name: '케데헌 스타일',
+          name: t('virtualCasting.styles.KENGAN_ASHURA'),
           image: '케데헌.png',
           style: VIRTUAL_CASTING_STYLES.KENGAN_ASHURA,
         },
         {
-          name: '화산귀환 스타일',
+          name: t('virtualCasting.styles.VOLCANO_RETURNS'),
           image: '화산귀환.png',
           style: VIRTUAL_CASTING_STYLES.VOLCANO_RETURNS,
         },
@@ -155,67 +157,71 @@ export default function VirtualCastingSidebar({
     },
     {
       id: 'anime',
-      title: '일본 애니메이션',
+      title: t('virtualCasting.categories.anime'),
       folder: 'sidebar-menu-image-4',
       characters: [
         {
-          name: '너에게 닿기를 스타일',
+          name: t('virtualCasting.styles.KIMI_NI_TODOKE'),
           image: '너에게 닿기를.png',
           style: VIRTUAL_CASTING_STYLES.KIMI_NI_TODOKE,
         },
         {
-          name: '명탐정 코난 스타일',
+          name: t('virtualCasting.styles.DETECTIVE_CONAN'),
           image: '명탐정 코난.png',
           style: VIRTUAL_CASTING_STYLES.DETECTIVE_CONAN,
         },
         {
-          name: '장송의 프리렌 스타일',
+          name: t('virtualCasting.styles.FRIEREN'),
           image: '장송의 프리렌.png',
           style: VIRTUAL_CASTING_STYLES.FRIEREN,
         },
         {
-          name: '짱구는 못말려 스타일',
+          name: t('virtualCasting.styles.CRAYON_SHIN_CHAN'),
           image: '짱구는 못말려.png',
           style: VIRTUAL_CASTING_STYLES.CRAYON_SHIN_CHAN,
         },
         {
-          name: '최애의 아이 스타일',
+          name: t('virtualCasting.styles.MY_LOVE_MIX_UP'),
           image: '최애의 아이.png',
           style: VIRTUAL_CASTING_STYLES.MY_LOVE_MIX_UP,
         },
-        { name: '나나 스타일', image: '나나.png', style: VIRTUAL_CASTING_STYLES.NANA },
         {
-          name: '나루토 스타일',
+          name: t('virtualCasting.styles.NANA'),
+          image: '나나.png',
+          style: VIRTUAL_CASTING_STYLES.NANA
+        },
+        {
+          name: t('virtualCasting.styles.NARUTO'),
           image: '나루토.png',
           style: VIRTUAL_CASTING_STYLES.NARUTO,
         },
         {
-          name: '너의이름은 스타일',
+          name: t('virtualCasting.styles.YOUR_NAME'),
           image: '너의이름은.png',
           style: VIRTUAL_CASTING_STYLES.YOUR_NAME,
         },
         {
-          name: '도라에몽 스타일',
+          name: t('virtualCasting.styles.DORAEMON'),
           image: '도라에몽.png',
           style: VIRTUAL_CASTING_STYLES.DORAEMON,
         },
         {
-          name: '스파이패밀리 스타일',
+          name: t('virtualCasting.styles.SPY_FAMILY'),
           image: '스파이패밀리.png',
           style: VIRTUAL_CASTING_STYLES.SPY_FAMILY,
         },
         {
-          name: '슬램덩크 스타일',
+          name: t('virtualCasting.styles.SLAM_DUNK'),
           image: '슬램덩크.png',
           style: VIRTUAL_CASTING_STYLES.SLAM_DUNK,
         },
         {
-          name: '오란고교 스타일',
+          name: t('virtualCasting.styles.OURAN_HIGH_SCHOOL'),
           image: '오란고교.png',
           style: VIRTUAL_CASTING_STYLES.OURAN_HIGH_SCHOOL,
         },
         {
-          name: '주술회전 스타일',
+          name: t('virtualCasting.styles.JUJUTSU_KAISEN'),
           image: '주술회전.png',
           style: VIRTUAL_CASTING_STYLES.JUJUTSU_KAISEN,
         },

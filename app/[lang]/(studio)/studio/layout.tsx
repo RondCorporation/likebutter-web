@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, use } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Toaster } from 'react-hot-toast';
 import StudioAuthGuard from '../_components/StudioAuthGuard';
 import { Crown } from 'lucide-react';
@@ -22,6 +23,7 @@ type Props = {
 
 export default function StudioLayout({ children, params }: Props) {
   const { lang } = use(params);
+  const { t } = useTranslation(['studio', 'common']);
   const isDesktop = useIsDesktop();
   const router = useRouter();
   const { user } = useAuth();
@@ -53,7 +55,7 @@ export default function StudioLayout({ children, params }: Props) {
               <span className="text-studio-text-primary text-sm font-semibold">
                 {isCreditLoading ? '...' : currentBalance.toLocaleString()}
               </span>
-              <span className="text-studio-text-secondary text-xs">크레딧</span>
+              <span className="text-studio-text-secondary text-xs">{t('studio:userDropdown.credits')}</span>
             </div>
 
             {/* Upgrade Button - Only for FREE plan users */}
@@ -64,7 +66,7 @@ export default function StudioLayout({ children, params }: Props) {
               >
                 <Crown className="w-4 h-4 text-yellow-400" />
                 <span className="font-semibold text-sm text-yellow-400 whitespace-nowrap">
-                  업그레이드
+                  {t('studio:userDropdown.upgradePlan')}
                 </span>
               </button>
             )}

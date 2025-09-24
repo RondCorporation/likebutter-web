@@ -1,5 +1,5 @@
 import { StylistDetails } from '@/types/task';
-import { Scissors, FileText, Image as ImageIcon, Palette } from 'lucide-react';
+import { Scissors, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InfoCard from '../ui/InfoCard';
 import ParameterBadge from '../ui/ParameterBadge';
@@ -17,7 +17,9 @@ export default function StylistDetailsView({ details, onClose }: Props) {
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
-        <p className="text-studio-text-muted">{t('stylist.details.cannotLoadDetails')}</p>
+        <p className="text-studio-text-muted">
+          {t('stylist.details.cannotLoadDetails')}
+        </p>
       </div>
     );
   }
@@ -78,7 +80,9 @@ export default function StylistDetailsView({ details, onClose }: Props) {
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Scissors className="h-5 w-5 text-studio-header" />
           </div>
-          <h3 className="text-xl font-semibold">{t('stylist.details.creationTitle')}</h3>
+          <h3 className="text-xl font-semibold">
+            {t('stylist.details.creationTitle')}
+          </h3>
         </div>
         <div className="flex flex-wrap gap-2">
           <ParameterBadge
@@ -142,7 +146,9 @@ export default function StylistDetailsView({ details, onClose }: Props) {
       {details.error && (
         <div className="mt-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-            <h4 className="text-red-400 font-medium mb-2">{t('stylist.details.generationFailed')}</h4>
+            <h4 className="text-red-400 font-medium mb-2">
+              {t('stylist.details.generationFailed')}
+            </h4>
             <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>

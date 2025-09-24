@@ -53,7 +53,8 @@ export default function StylistWithSidebar() {
 
   useEffect(() => {
     const resultImage = clientRef.current?.resultImage;
-    const isProcessing = clientRef.current?.isProcessing || clientRef.current?.isPolling;
+    const isProcessing =
+      clientRef.current?.isProcessing || clientRef.current?.isPolling;
     setHidePCSidebar(!!resultImage || !!isProcessing);
   }, []);
 
@@ -94,7 +95,11 @@ export default function StylistWithSidebar() {
 
     return (
       <StudioButton
-        text={isProcessing || isPolling ? t('stylist.styling') : t('stylist.startStyling')}
+        text={
+          isProcessing || isPolling
+            ? t('stylist.styling')
+            : t('stylist.startStyling')
+        }
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
         loading={isProcessing || isPolling}

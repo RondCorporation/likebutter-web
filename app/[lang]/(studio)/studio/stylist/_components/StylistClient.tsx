@@ -424,15 +424,17 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       <div className="flex flex-col flex-1 h-full bg-studio-content">
         <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
           <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
-            스타일리스트
+            {t('stylist.title')}
           </div>
 
-          {/* PC에서만 표시되는 버튼들 */}
+          {/* PC-only buttons */}
           <div className="items-center gap-2 hidden md:flex">
             {resultImage ? (
               <>
                 <StudioButton
-                  text={isEditLoading ? t('stylist.editing') : t('stylist.edit')}
+                  text={
+                    isEditLoading ? t('stylist.editing') : t('stylist.edit')
+                  }
                   onClick={() => setIsEditPopupOpen(true)}
                   disabled={isEditLoading}
                   loading={isEditLoading}
@@ -447,13 +449,15 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                 >
                   <RotateCcw className="w-4 h-4 mr-1" />
                   <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                    다시 만들기
+                    {t('stylist.resetWork')}
                   </div>
                 </button>
               </>
             ) : (
               <StudioButton
-                text={isProcessing ? t('stylist.styling') : t('stylist.generate')}
+                text={
+                  isProcessing ? t('stylist.styling') : t('stylist.generate')
+                }
                 onClick={handleGenerate}
                 disabled={isProcessing || !isFormValid()}
                 loading={isProcessing}
@@ -479,7 +483,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
               overscrollBehavior: 'contain',
             }}
           >
-            {/* 이미지 모드일 때 상단에 3열 그리드 이미지 업로드 */}
+            {/* 3-column grid image upload when in image mode */}
             {formData?.mode === 'image' && formData.imageSettings && (
               <div className="grid grid-cols-3 gap-2 mb-4">
                 {getImageUploadSlots().map((slot) => (
@@ -540,14 +544,14 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
               </div>
             )}
 
-            {/* 제목 */}
+            {/* Title */}
             <div className="flex items-center justify-between">
               <div className="text-studio-text-primary text-sm font-pretendard-medium">
-                아이돌 이미지
+                {t('stylist.idolPhoto')}
               </div>
             </div>
 
-            {/* 드래그 앤 드롭 영역 */}
+            {/* Drag and drop area */}
             <div
               className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
                 resultImage || isProcessing || isPolling
@@ -606,13 +610,13 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                       : t('stylist.dragFileHere')}
                   </div>
                   <div className="text-studio-text-muted text-xs font-pretendard">
-                    파일당 200mb 제한 (png, jpg, jpeg)
+                    {t('stylist.fileSizeLimit')}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* PC에서만 파일 찾아보기 버튼 표시 */}
+            {/* Browse file button (PC only) */}
             <button
               onClick={
                 resultImage || isProcessing || isPolling
@@ -623,7 +627,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
               className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
             >
               <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-                파일 찾아보기
+                {t('stylist.browseFile')}
               </div>
             </button>
 
@@ -636,7 +640,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
             />
           </div>
 
-          {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+          {/* Result area (PC only, hidden on mobile) */}
           <div
             className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
             style={{
@@ -650,10 +654,10 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                   <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                   <div className="flex flex-col items-center gap-2 text-center">
                     <div className="text-studio-text-primary text-base font-pretendard-medium">
-                      스타일링 중...
+                      {t('stylist.stylingInProgress')}
                     </div>
                     <div className="text-studio-text-muted text-sm font-pretendard">
-                      잠시 기다리시면 결과가 나옵니다
+                      {t('stylist.pleaseWait')}
                     </div>
                   </div>
                 </div>
@@ -664,7 +668,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                     alt="Generated stylist result"
                     className="w-full h-full object-contain rounded-[20px]"
                   />
-                  {/* PC 다운로드 아이콘 - 우측 상단 */}
+                  {/* PC download icon - top right */}
                   <button
                     onClick={handleDownload}
                     className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
@@ -677,10 +681,10 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
                   <div className="flex flex-col items-center text-center">
                     <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />
                     <div className="font-pretendard-medium text-studio-text-secondary text-base leading-6 mb-2">
-                      결과 이미지
+                      {t('stylist.resultImage')}
                     </div>
                     <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
-                      사이드바에서 설정을 완료하고
+                      {t('stylist.completeSettings')}
                       <br />
                       {t('stylist.pressStartStyling')}
                     </div>
@@ -690,7 +694,6 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
             </div>
           </div>
         </div>
-
         <MobileLoadingOverlay
           isVisible={isProcessing || isPolling}
           title={t('stylist.stylingInProgress')}

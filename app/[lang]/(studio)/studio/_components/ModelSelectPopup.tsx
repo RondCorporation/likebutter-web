@@ -176,7 +176,9 @@ export default function ModelSelectPopup({
                 <SelectCard
                   state="default"
                   title={t('studio:modelSelect.tools.virtualCasting.title')}
-                  subtitle={t('studio:modelSelect.tools.virtualCasting.subtitle')}
+                  subtitle={t(
+                    'studio:modelSelect.tools.virtualCasting.subtitle'
+                  )}
                   backgroundImage="/studio/model-select/virtual_casting.png"
                   onClick={() => navigateToTool('virtual-casting')}
                 />

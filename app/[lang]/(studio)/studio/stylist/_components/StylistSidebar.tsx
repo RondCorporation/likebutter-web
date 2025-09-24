@@ -152,7 +152,7 @@ export default function StylistSidebar({
 
   return (
     <StudioSidebarBase>
-      {/* 스타일 바꾸기 토글 */}
+      {/* Toggle style change */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
           {t('stylist.changeStyle')}
@@ -165,13 +165,14 @@ export default function StylistSidebar({
         />
       </div>
 
-      {/* 텍스트 모드 */}
+      {/* Text mode */}
       {mode === 'text' && (
         <>
-          {/* 프롬프트 입력 */}
+          {/* Prompt input */}
           <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
             <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-              텍스트 설명 <span className="text-red-400">*</span>
+              {t('stylist.form.textDescription')}{' '}
+              <span className="text-red-400">*</span>
             </div>
 
             <div className="relative self-stretch w-full h-[unset] gap-4 flex-[0_0_auto] bg-studio-sidebar">
@@ -190,10 +191,10 @@ export default function StylistSidebar({
             </div>
           </div>
 
-          {/* 추천 프롬프트 */}
+          {/* Recommended prompts */}
           <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
             <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-              추천 프롬프트
+              {t('stylist.suggestions.title')}
             </div>
             <div className="flex flex-wrap gap-2">
               {recommendedPrompts.map((prompt, index) => (
@@ -210,18 +211,18 @@ export default function StylistSidebar({
         </>
       )}
 
-      {/* 이미지 모드 */}
+      {/* Image mode */}
       {mode === 'image' && (
         <>
           <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
             <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-              바꾸고 싶은 요소
+              {t('stylist.changeElement')}
             </div>
 
             <div className="flex flex-col gap-4 w-full">
               {imageCategories.map((category) => (
                 <div key={category.key} className="flex flex-col gap-2">
-                  {/* 토글 항목 */}
+                  {/* Toggle item */}
                   <div className="flex items-center justify-between py-2">
                     <div className="flex items-center gap-3">
                       <Image
@@ -248,7 +249,7 @@ export default function StylistSidebar({
                     />
                   </div>
 
-                  {/* 업로드 영역 (토글 활성화 시) - 모바일에서만 표시 */}
+                  {/* Upload area (visible on toggle) - mobile only */}
                   {imageSettings[category.key as keyof typeof imageSettings] &&
                     !isDesktop && (
                       <div className="w-full">
@@ -287,8 +288,8 @@ export default function StylistSidebar({
                               atmosphere: 'moodImage',
                             }[category.key] as keyof typeof uploadedFiles
                           ]
-                            ? `${category.label} 변경`
-                            : `${category.label} 첨부`}
+                            ? `${category.label} ${t('stylist.change')}`
+                            : `${category.label} ${t('stylist.attach')}`}
                         </button>
                       </div>
                     )}
@@ -297,10 +298,10 @@ export default function StylistSidebar({
             </div>
           </div>
 
-          {/* 프롬프트 입력 (이미지 모드용) */}
+          {/* Prompt input (for image mode) */}
           <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
             <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
-              추가 프롬프트
+              {t('stylist.additionalPrompt')}
             </div>
 
             <div className="relative self-stretch w-full h-[unset] gap-4 flex-[0_0_auto] bg-studio-sidebar">
@@ -310,7 +311,9 @@ export default function StylistSidebar({
                     <textarea
                       value={imagePrompt}
                       onChange={(e) => handleImagePromptChange(e.target.value)}
-                      placeholder={t('stylist.form.additionalRequestsPlaceholder')}
+                      placeholder={t(
+                        'stylist.form.additionalRequestsPlaceholder'
+                      )}
                       className="mt-[-1px] font-pretendard-medium text-studio-text-secondary text-sm tracking-[0] leading-[19.6px] relative flex-1 self-stretch bg-transparent border-0 resize-none focus:outline-none placeholder-studio-text-secondary"
                     />
                   </div>

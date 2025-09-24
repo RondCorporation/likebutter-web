@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface BeforeAfterToggleProps {
   beforeImage: string;
@@ -18,20 +19,23 @@ export default function BeforeAfterToggle({
   onDownload,
   onEdit,
   showEditButton = false,
-  editButtonText = '수정하기',
+  editButtonText,
   isEditLoading = false,
 }: BeforeAfterToggleProps) {
+  const { t } = useTranslation('studio');
   const [currentView, setCurrentView] = useState<'before' | 'after'>('after');
+
+  const finalEditButtonText = editButtonText || t('beforeAfter.edit');
 
   return (
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       {/* Header */}
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
         <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
-          결과
+          {t('beforeAfter.result')}
         </div>
 
-        {/* Before/After Toggle - 우측 상단 */}
+        {/* Before/After Toggle - Top right */}
         <div className="flex bg-studio-sidebar rounded-full p-1">
           <button
             onClick={() => setCurrentView('before')}
@@ -79,7 +83,7 @@ export default function BeforeAfterToggle({
             className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-              {isEditLoading ? '수정중...' : editButtonText}
+              {isEditLoading ? t('beforeAfter.editing') : finalEditButtonText}
             </div>
           </button>
         )}
@@ -89,7 +93,7 @@ export default function BeforeAfterToggle({
           className="w-full h-12 border border-studio-button-primary hover:bg-studio-button-primary/10 active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200"
         >
           <div className="text-studio-button-primary text-sm font-bold font-pretendard-bold">
-            사진 저장
+            {t('beforeAfter.savePhoto')}
           </div>
         </button>
       </div>

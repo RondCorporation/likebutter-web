@@ -78,14 +78,14 @@ export default function OverlayCheckoutClient({
     }
 
     if (sdkStatus === 'error') {
-      toast.error(t('sdkLoadError') || 'SDK 로딩 중 오류가 발생했습니다.');
+      toast.error(t('billing:plans.sdkLoadError'));
       return;
     }
 
     setIsLoading(true);
 
     const loadingToastId = toast.loading(
-      t('openingPaymentWindow') || '결제 창을 열고 있습니다...'
+      t('billing:plans.openingPaymentWindow')
     );
 
     try {
@@ -231,12 +231,12 @@ export default function OverlayCheckoutClient({
             ) : sdkStatus === 'loading' ? (
               <div className="flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                SDK 준비 중...
+                {t('billing:plans.sdkPreparing')}
               </div>
             ) : sdkStatus === 'error' ? (
-              'SDK 로딩 오류'
+              t('billing:plans.sdkError')
             ) : (
-              `${t('pay')} ${plan.priceFormatted}`
+              `${t('billing:checkout.pay')} ${plan.priceFormatted}`
             )}
           </button>
 
@@ -244,14 +244,14 @@ export default function OverlayCheckoutClient({
           {sdkStatus === 'loading' && (
             <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-400">
               <Loader2 className="h-3 w-3 animate-spin" />
-              결제 모듈 준비 중...
+              {t('billing:checkout.preparingPayment')}
             </div>
           )}
 
           {sdkStatus === 'ready' && (
             <div className="mt-2 flex items-center justify-center gap-2 text-sm text-green-400">
               <CheckCircle2 className="h-3 w-3" />
-              결제 준비 완료
+              {t('billing:checkout.paymentReady')}
             </div>
           )}
         </div>

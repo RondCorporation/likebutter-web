@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { Check } from 'lucide-react';
 import StudioButton from './StudioButton';
 import { cn } from '@/app/_lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface PricingCardProps {
   name: string;
@@ -34,6 +35,7 @@ export default function PricingCard({
   disabled = false,
   className,
 }: PricingCardProps) {
+  const { t } = useTranslation(['billing']);
   const formatPrice = (price: string | number) => {
     if (typeof price === 'string') return price;
     return price.toLocaleString();
@@ -52,7 +54,7 @@ export default function PricingCard({
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="rounded-full bg-butter-yellow px-4 py-1 text-sm font-semibold text-black">
-            Most Popular
+            {t('plans.mostPopular')}
           </span>
         </div>
       )}
@@ -109,9 +111,9 @@ export default function PricingCard({
           size="lg"
         >
           {isCurrentPlan
-            ? '현재 플랜'
+            ? t('plans.currentPlan')
             : isDowngrade
-              ? '다운그레이드 불가'
+              ? t('plans.downgradeNotAvailable')
               : ctaText}
         </StudioButton>
       </div>

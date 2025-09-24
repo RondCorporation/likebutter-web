@@ -26,7 +26,9 @@ export default function DailyAttendanceModal({
       <div className="w-full max-w-2xl mx-4 bg-[#25282c] border border-white/10 rounded-2xl p-6">
         {/* Header with title and close button */}
         <div className="relative flex items-center justify-center mb-6">
-          <h2 className="text-xl font-semibold text-white">{t('studio:attendance.modal.title')}</h2>
+          <h2 className="text-xl font-semibold text-white">
+            {t('studio:attendance.modal.title')}
+          </h2>
           <button
             onClick={onClose}
             disabled={isLoading}
@@ -71,7 +73,9 @@ export default function DailyAttendanceModal({
               height={24}
               className="flex-shrink-0"
             />
-            {isLoading ? t('studio:attendance.modal.receiving') : t('studio:attendance.modal.checkIn')}
+            {isLoading
+              ? t('studio:attendance.modal.receiving')
+              : t('studio:attendance.modal.checkIn')}
           </button>
         </div>
       </div>

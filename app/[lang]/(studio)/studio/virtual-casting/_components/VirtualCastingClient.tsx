@@ -309,12 +309,16 @@ const VirtualCastingClient = forwardRef<
           {t('virtualCasting.title')}
         </div>
 
-        {/* PC에서만 표시되는 버튼들 */}
+        {/* PC-only buttons */}
         <div className="items-center gap-2 hidden md:flex">
           {resultImage ? (
             <>
               <StudioButton
-                text={isEditLoading ? t('virtualCasting.editing') : t('virtualCasting.edit')}
+                text={
+                  isEditLoading
+                    ? t('virtualCasting.editing')
+                    : t('virtualCasting.edit')
+                }
                 onClick={() => setIsEditPopupOpen(true)}
                 disabled={isEditLoading}
                 loading={isEditLoading}
@@ -329,13 +333,17 @@ const VirtualCastingClient = forwardRef<
               >
                 <RotateCcw className="w-4 h-4 mr-1" />
                 <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                  다시 만들기
+                  {t('virtualCasting.resetWork')}
                 </div>
               </button>
             </>
           ) : (
             <StudioButton
-              text={isProcessing ? t('virtualCasting.generating') : t('virtualCasting.generate')}
+              text={
+                isProcessing
+                  ? t('virtualCasting.generating')
+                  : t('virtualCasting.generate')
+              }
               onClick={handleGenerate}
               disabled={isProcessing || !isFormValid()}
               loading={isProcessing}
@@ -361,14 +369,14 @@ const VirtualCastingClient = forwardRef<
             overscrollBehavior: 'contain',
           }}
         >
-          {/* 제목 */}
+          {/* Title */}
           <div className="flex items-center justify-between">
             <div className="text-studio-text-primary text-sm font-pretendard-medium">
-              내 사진
+              {t('virtualCasting.myPhoto')}
             </div>
           </div>
 
-          {/* 드래그 앤 드롭 영역 */}
+          {/* Drag and drop area */}
           <div
             className={`flex flex-col h-[280px] w-full items-center justify-center bg-black rounded-[20px] transition-all duration-200 ease-out flex-shrink-0 ${
               resultImage || isProcessing || isPolling
@@ -425,13 +433,13 @@ const VirtualCastingClient = forwardRef<
                     : t('virtualCasting.dragFileHere')}
                 </div>
                 <div className="text-studio-text-muted text-xs font-pretendard">
-                  파일당 200mb 제한 (png, jpg, jpeg)
+                  {t('virtualCasting.fileSizeLimit')}
                 </div>
               </div>
             )}
           </div>
 
-          {/* PC에서만 파일 찾아보기 버튼 표시 */}
+          {/* Browse file button (PC only) */}
           <button
             onClick={
               resultImage || isProcessing || isPolling
@@ -442,7 +450,7 @@ const VirtualCastingClient = forwardRef<
             className="w-full h-[38px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 flex-shrink-0 active:scale-[0.98] hidden md:flex disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
           >
             <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-              파일 찾아보기
+              {t('virtualCasting.browseFile')}
             </div>
           </button>
 
@@ -455,7 +463,7 @@ const VirtualCastingClient = forwardRef<
           />
         </div>
 
-        {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+        {/* Result area (PC only, hidden on mobile) */}
         <div
           className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
           style={{
@@ -469,10 +477,10 @@ const VirtualCastingClient = forwardRef<
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
                   <div className="text-studio-text-primary text-base font-pretendard-medium">
-                    가상 캐스팅 생성 중...
+                    {t('virtualCasting.generatingInProgress')}
                   </div>
                   <div className="text-studio-text-muted text-sm font-pretendard">
-                    잠시 기다리시면 결과가 나옵니다
+                    {t('virtualCasting.pleaseWait')}
                   </div>
                 </div>
               </div>
@@ -480,10 +488,10 @@ const VirtualCastingClient = forwardRef<
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <div className="flex flex-col items-center gap-2 text-center text-blue-400">
                   <div className="text-base font-pretendard-medium">
-                    백그라운드에서 처리 중
+                    {t('virtualCasting.backgroundProcessing')}
                   </div>
                   <div className="text-sm font-pretendard max-w-[200px]">
-                    작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                    {t('virtualCasting.takingLong')}
                   </div>
                   <button
                     onClick={() =>
@@ -491,7 +499,7 @@ const VirtualCastingClient = forwardRef<
                     }
                     className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-pretendard-medium rounded-lg transition-colors"
                   >
-                    상태 확인
+                    {t('virtualCasting.checkStatus')}
                   </button>
                 </div>
               </div>
@@ -502,7 +510,7 @@ const VirtualCastingClient = forwardRef<
                   alt="Generated virtual casting result"
                   className="w-full h-full object-contain rounded-[20px]"
                 />
-                {/* PC 다운로드 아이콘 - 우측 상단 */}
+                {/* PC download icon - top right */}
                 <button
                   onClick={handleDownload}
                   className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
@@ -515,10 +523,10 @@ const VirtualCastingClient = forwardRef<
                 <div className="flex flex-col items-center text-center">
                   <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />
                   <div className="font-pretendard-medium text-studio-text-secondary text-base leading-6 mb-2">
-                    결과 이미지
+                    {t('virtualCasting.resultImage')}
                   </div>
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
-                    사이드바에서 설정을 완료하고
+                    {t('virtualCasting.completeSettings')}
                     <br />
                     {t('virtualCasting.pressStartCasting')}
                   </div>

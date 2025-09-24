@@ -68,9 +68,13 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
   };
 
   return (
-    <BasePopup isOpen={isOpen} onClose={onClose} title={t('common:feedback.title')}>
+    <BasePopup
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t('common:feedback.title')}
+    >
       <div className="flex flex-col gap-6">
-        {/* 이메일 입력 */}
+        {/* Email Input */}
         <div className="flex flex-col gap-2">
           <label className="text-studio-text-primary text-sm font-medium">
             {t('common:feedback.email')} <span className="text-red-400">*</span>
@@ -84,10 +88,11 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
           />
         </div>
 
-        {/* 설명 입력 */}
+        {/* Description Input */}
         <div className="flex flex-col gap-2">
           <label className="text-studio-text-primary text-sm font-medium">
-            {t('common:feedback.description')} <span className="text-red-400">*</span>
+            {t('common:feedback.description')}{' '}
+            <span className="text-red-400">*</span>
           </label>
           <textarea
             value={description}
@@ -98,7 +103,7 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
           />
         </div>
 
-        {/* 첨부파일 */}
+        {/* File Attachment */}
         <div className="flex flex-col gap-2">
           <label className="text-studio-text-primary text-sm font-medium">
             {t('common:feedback.attachment')}
@@ -149,7 +154,7 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
           )}
         </div>
 
-        {/* 제출 버튼 */}
+        {/* Submit Button */}
         <div className="flex gap-3 pt-4">
           <button
             onClick={onClose}
@@ -159,7 +164,11 @@ export default function FeedbackPopup({ isOpen, onClose }: FeedbackPopupProps) {
             {t('common:cancel')}
           </button>
           <StudioButton
-            text={isSubmitting ? t('common:feedback.submitting') : t('common:feedback.submit')}
+            text={
+              isSubmitting
+                ? t('common:feedback.submitting')
+                : t('common:feedback.submit')
+            }
             onClick={handleSubmit}
             disabled={isSubmitting}
             loading={isSubmitting}

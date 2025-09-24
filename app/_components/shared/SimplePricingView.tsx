@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import PricingCard from './PricingCard';
 import StudioToolCard from './StudioToolCard';
-import StudioButton from './StudioButton';
+import { useTranslation } from 'react-i18next';
 
 interface Plan {
   key: string;
@@ -29,6 +29,7 @@ export default function SimplePricingView({
   currentPlanKey,
   loading = false,
 }: SimplePricingViewProps) {
+  const { t } = useTranslation(['billing']);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
   );
@@ -42,10 +43,11 @@ export default function SimplePricingView({
       {/* Header */}
       <StudioToolCard>
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">요금제 선택</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            {t('plans.title')}
+          </h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            창작 활동에 필요한 AI 도구들을 마음껏 사용해보세요. 언제든지 플랜을
-            변경할 수 있습니다.
+            {t('plans.subtitle')}
           </p>
         </div>
       </StudioToolCard>
@@ -61,7 +63,7 @@ export default function SimplePricingView({
                 : 'text-slate-300 hover:text-white'
             }`}
           >
-            월간 결제
+            {t('plans.monthlyBilling')}
           </button>
           <button
             onClick={() => setBillingCycle('yearly')}
@@ -71,7 +73,8 @@ export default function SimplePricingView({
                 : 'text-slate-300 hover:text-white'
             }`}
           >
-            연간 결제 <span className="text-xs opacity-75">(-20%)</span>
+            {t('plans.yearlyBilling')}{' '}
+            <span className="text-xs opacity-75">(-20%)</span>
           </button>
         </div>
       </div>
@@ -89,7 +92,7 @@ export default function SimplePricingView({
               name={plan.name}
               description={plan.description}
               price={price}
-              period="월"
+              period={t('plans.month')}
               features={plan.features}
               isPopular={plan.isPopular}
               isCurrentPlan={isCurrentPlan}
@@ -105,20 +108,20 @@ export default function SimplePricingView({
       <StudioToolCard className="text-center">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-white">
-            모든 플랜에 포함된 기능
+            {t('plans.allPlansInclude')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-300">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-butter-yellow rounded-full"></div>
-              무료 체험 기간
+              {t('plans.freeTrial')}
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-butter-yellow rounded-full"></div>
-              24/7 고객 지원
+              {t('plans.support247')}
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-butter-yellow rounded-full"></div>
-              언제든 취소 가능
+              {t('plans.cancelAnytime')}
             </div>
           </div>
         </div>

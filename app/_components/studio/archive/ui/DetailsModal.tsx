@@ -33,7 +33,7 @@ export default function DetailsModal({ children, onClose }: DetailsModalProps) {
             : '85vh',
         }}
       >
-        {/* 닫기 버튼 */}
+        {/* Close button */}
         <div className="absolute top-4 right-4 z-10">
           <button
             onClick={onClose}
@@ -43,7 +43,7 @@ export default function DetailsModal({ children, onClose }: DetailsModalProps) {
           </button>
         </div>
 
-        {/* 컨텐츠 */}
+        {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">{children}</div>
       </div>
     </div>

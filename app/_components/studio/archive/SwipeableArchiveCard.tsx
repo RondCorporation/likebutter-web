@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { Trash2 } from 'lucide-react';
 import { Task } from '@/types/task';
+import { useTranslation } from 'react-i18next';
 
 interface SwipeableArchiveCardProps {
   task: Task;
@@ -16,6 +17,7 @@ export default function SwipeableArchiveCard({
   children,
   onDelete,
 }: SwipeableArchiveCardProps) {
+  const { t } = useTranslation('common');
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
 
@@ -73,7 +75,7 @@ export default function SwipeableArchiveCard({
         <button
           onClick={handleDeleteClick}
           className="p-3 text-white hover:bg-red-600 rounded-full transition-colors"
-          aria-label="삭제"
+          aria-label={t('delete')}
         >
           <Trash2 className="h-5 w-5" />
         </button>

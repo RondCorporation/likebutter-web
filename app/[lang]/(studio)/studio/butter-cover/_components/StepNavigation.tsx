@@ -1,16 +1,20 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
+
 interface StepNavigationProps {
   currentStep: number;
 }
 
-const steps = [
-  { number: 1, title: '아티스트 선택' },
-  { number: 2, title: '노래 업로드' },
-  { number: 3, title: '음원생성' },
-];
-
 export default function StepNavigation({ currentStep }: StepNavigationProps) {
+  const { t } = useTranslation(['studio']);
+
+  const steps = [
+    { number: 1, title: t('butterCover.steps.artistSelection') },
+    { number: 2, title: t('butterCover.steps.songUpload') },
+    { number: 3, title: t('butterCover.steps.generateAudio') },
+  ];
+
   return (
     <div className="flex items-center justify-center gap-4 sm:gap-9 py-8">
       {steps.map((step, index) => (

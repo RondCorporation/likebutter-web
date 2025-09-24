@@ -4,6 +4,7 @@ import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface StudioOverlayProps {
   children: ReactNode;
@@ -23,6 +24,7 @@ export default function StudioOverlay({
   className = '',
 }: StudioOverlayProps) {
   const router = useRouter();
+  const { t } = useTranslation('common');
 
   const handleClose = () => {
     if (onClose) {
@@ -93,7 +95,7 @@ export default function StudioOverlay({
               <button
                 onClick={handleClose}
                 className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
-                aria-label="닫기"
+                aria-label={t('close')}
               >
                 <X size={20} />
               </button>

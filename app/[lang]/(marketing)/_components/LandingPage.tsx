@@ -608,7 +608,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           <div className="h-[72px] flex flex-col items-center justify-center">
                             <div className="text-[#FFD93B] text-3xl font-bold mb-2">
                               Free
-                              <span className="text-gray-400 text-lg">{t('marketing:pricing.perMonth')}</span>
+                              <span className="text-gray-400 text-lg">
+                                {t('marketing:pricing.perMonth')}
+                              </span>
                             </div>
                             <div className="h-[20px]"></div>
                           </div>
@@ -618,7 +620,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('marketing:pricing.planFree.attendanceCredit')}
+                                {t(
+                                  'marketing:pricing.planFree.attendanceCredit'
+                                )}
                               </span>
                             </li>
                           </ul>
@@ -656,7 +660,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                                   ? getYearlyMonthlyPrice('BASIC')
                                   : getPrice('BASIC', 'monthly')
                               )}
-                              <span className="text-gray-400 text-lg">{t('marketing:pricing.perMonth')}</span>
+                              <span className="text-gray-400 text-lg">
+                                {t('marketing:pricing.perMonth')}
+                              </span>
                             </div>
                             {billingCycle === 'yearly' ? (
                               <p className="text-gray-500 text-sm">
@@ -672,13 +678,17 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('marketing:pricing.planFree.attendanceCredit')}
+                                {t(
+                                  'marketing:pricing.planFree.attendanceCredit'
+                                )}
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('marketing:pricing.planCreator.extraCredits')}
+                                {t(
+                                  'marketing:pricing.planCreator.extraCredits'
+                                )}
                               </span>
                             </li>
                           </ul>
@@ -705,7 +715,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
-                              {t('marketing:pricing.planProfessional.advancedDesc')}
+                              {t(
+                                'marketing:pricing.planProfessional.advancedDesc'
+                              )}
                             </p>
                           </div>
                           <div className="h-[72px] flex flex-col items-center justify-center">
@@ -716,7 +728,9 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                                   ? getYearlyMonthlyPrice('STANDARD')
                                   : getPrice('STANDARD', 'monthly')
                               )}
-                              <span className="text-gray-400 text-lg">{t('marketing:pricing.perMonth')}</span>
+                              <span className="text-gray-400 text-lg">
+                                {t('marketing:pricing.perMonth')}
+                              </span>
                             </div>
                             {billingCycle === 'yearly' ? (
                               <p className="text-gray-500 text-sm">
@@ -732,13 +746,17 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('marketing:pricing.planFree.attendanceCredit')}
+                                {t(
+                                  'marketing:pricing.planFree.attendanceCredit'
+                                )}
                               </span>
                             </li>
                             <li className="flex items-center gap-3">
                               <Check className="text-[#FFD93B] w-4 h-4 flex-shrink-0" />
                               <span className="text-gray-300">
-                                {t('marketing:pricing.planProfessional.extraCredits')}
+                                {t(
+                                  'marketing:pricing.planProfessional.extraCredits'
+                                )}
                               </span>
                             </li>
                           </ul>

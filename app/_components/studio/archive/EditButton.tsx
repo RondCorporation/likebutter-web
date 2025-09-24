@@ -5,6 +5,7 @@ import { Edit3, Loader2 } from 'lucide-react';
 import { Task } from '@/types/task';
 import { canEditTask, isEditableActionType } from '@/lib/apis/task.api';
 import EditTaskModal from './EditTaskModal';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   task: Task;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 export default function EditButton({ task, onEditSuccess }: Props) {
+  const { t } = useTranslation('studio');
   const [canEdit, setCanEdit] = useState<boolean | null>(null);
   const [isCheckingEdit, setIsCheckingEdit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,7 +69,7 @@ export default function EditButton({ task, onEditSuccess }: Props) {
         className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-gray-400 rounded-lg cursor-not-allowed"
       >
         <Loader2 size={16} className="animate-spin" />
-        확인 중...
+        {t('editButton.checking')}
       </button>
     );
   }
@@ -83,7 +85,7 @@ export default function EditButton({ task, onEditSuccess }: Props) {
         className="flex items-center gap-2 px-4 py-2 bg-[#e8fa07] text-[#292c31] font-medium rounded-lg hover:bg-[#d4e006] transition-colors"
       >
         <Edit3 size={16} />
-        수정하기
+        {t('editButton.edit')}
       </button>
 
       <EditTaskModal

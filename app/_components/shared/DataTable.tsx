@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { cn } from '@/app/_lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface Column {
   key: string;
@@ -32,10 +33,10 @@ interface TableCellProps {
 
 export function TableRow({ children, className, onClick }: TableRowProps) {
   return (
-    <tr 
+    <tr
       className={cn(
-        "border-b border-slate-700 transition-colors hover:bg-slate-800/50",
-        onClick && "cursor-pointer",
+        'border-b border-slate-700 transition-colors hover:bg-slate-800/50',
+        onClick && 'cursor-pointer',
         className
       )}
       onClick={onClick}
@@ -47,8 +48,8 @@ export function TableRow({ children, className, onClick }: TableRowProps) {
 
 export function TableCell({ children, className, width }: TableCellProps) {
   return (
-    <td 
-      className={cn("px-4 py-3 text-sm text-slate-300", className)}
+    <td
+      className={cn('px-4 py-3 text-sm text-slate-300', className)}
       style={{ width }}
     >
       {children}
@@ -56,10 +57,17 @@ export function TableCell({ children, className, width }: TableCellProps) {
   );
 }
 
-export function TableHeaderCell({ children, className, width }: TableCellProps) {
+export function TableHeaderCell({
+  children,
+  className,
+  width,
+}: TableCellProps) {
   return (
-    <th 
-      className={cn("px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider", className)}
+    <th
+      className={cn(
+        'px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider',
+        className
+      )}
       style={{ width }}
     >
       {children}
@@ -72,15 +80,26 @@ export default function DataTable({
   data,
   loading = false,
   className,
-  emptyMessage = "데이터가 없습니다"
+  emptyMessage,
 }: DataTableProps) {
+  const { t } = useTranslation('common');
+  const finalEmptyMessage = emptyMessage || t('noData');
+
   if (loading) {
     return (
-      <div className={cn("rounded-xl border border-slate-700 bg-slate-800/50 overflow-hidden", className)}>
+      <div
+        className={cn(
+          'rounded-xl border border-slate-700 bg-slate-800/50 overflow-hidden',
+          className
+        )}
+      >
         <div className="animate-pulse">
           <div className="h-12 bg-slate-700/50 border-b border-slate-600"></div>
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-slate-800/30 border-b border-slate-700/50 last:border-b-0"></div>
+            <div
+              key={i}
+              className="h-16 bg-slate-800/30 border-b border-slate-700/50 last:border-b-0"
+            ></div>
           ))}
         </div>
       </div>
@@ -88,15 +107,17 @@ export default function DataTable({
   }
 
   return (
-    <div className={cn("rounded-xl border border-slate-700 bg-slate-800/50 overflow-hidden", className)}>
+    <div
+      className={cn(
+        'rounded-xl border border-slate-700 bg-slate-800/50 overflow-hidden',
+        className
+      )}
+    >
       <table className="w-full">
         <thead className="bg-slate-900/50 border-b border-slate-700">
           <tr>
             {columns.map((column) => (
-              <TableHeaderCell 
-                key={column.key} 
-                width={column.width}
-              >
+              <TableHeaderCell key={column.key} width={column.width}>
                 {column.title}
               </TableHeaderCell>
             ))}
@@ -105,11 +126,11 @@ export default function DataTable({
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td 
+              <td
                 colSpan={columns.length}
                 className="px-4 py-12 text-center text-slate-400"
               >
-                {emptyMessage}
+                {finalEmptyMessage}
               </td>
             </tr>
           ) : (
@@ -117,7 +138,9 @@ export default function DataTable({
               <TableRow key={row.id || index}>
                 {columns.map((column) => (
                   <TableCell key={column.key} width={column.width}>
-                    {column.render ? column.render(row[column.key], row) : row[column.key]}
+                    {column.render
+                      ? column.render(row[column.key], row)
+                      : row[column.key]}
                   </TableCell>
                 ))}
               </TableRow>

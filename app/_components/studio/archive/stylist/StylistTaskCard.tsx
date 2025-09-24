@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function StylistTaskCard({ task, onClick }: Props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('studio');
   const details = task.details as StylistDetails | undefined;
 
   const styleRefCount = [
@@ -53,14 +53,16 @@ export default function StylistTaskCard({ task, onClick }: Props) {
       {styleRefCount > 0 && (
         <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
           <Shirt className="h-4 w-4" />
-          <span>스타일 참조 {styleRefCount}개</span>
+          <span>
+            {t('stylist.taskCard.styleReferences', { count: styleRefCount })}
+          </span>
         </div>
       )}
 
       {/* Idol Image Info */}
       <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
         <Image className="h-4 w-4" />
-        <span>아이돌 이미지 업로드됨</span>
+        <span>{t('stylist.taskCard.idolImageUploaded')}</span>
       </div>
 
       {/* Result Info */}
@@ -68,7 +70,7 @@ export default function StylistTaskCard({ task, onClick }: Props) {
         <div className="mt-3 border-t border-white/10 pt-3">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <Palette className="h-4 w-4" />
-            <span>AI 스타일링 완료</span>
+            <span>{t('stylist.taskCard.aiStylingComplete')}</span>
           </div>
           {details.result.filename && (
             <div className="mt-1 text-xs text-slate-500 font-mono">
@@ -80,27 +82,27 @@ export default function StylistTaskCard({ task, onClick }: Props) {
           <div className="mt-2 flex flex-wrap gap-1">
             {details.result.hairStyleUsed && (
               <span className="rounded bg-purple-500/20 px-2 py-1 text-xs text-purple-300">
-                헤어
+                {t('stylist.taskCard.hair')}
               </span>
             )}
             {details.result.outfitUsed && (
               <span className="rounded bg-blue-500/20 px-2 py-1 text-xs text-blue-300">
-                의상
+                {t('stylist.taskCard.outfit')}
               </span>
             )}
             {details.result.backgroundUsed && (
               <span className="rounded bg-green-500/20 px-2 py-1 text-xs text-green-300">
-                배경
+                {t('stylist.taskCard.background')}
               </span>
             )}
             {details.result.accessoryUsed && (
               <span className="rounded bg-yellow-500/20 px-2 py-1 text-xs text-yellow-300">
-                액세서리
+                {t('stylist.taskCard.accessory')}
               </span>
             )}
             {details.result.moodUsed && (
               <span className="rounded bg-pink-500/20 px-2 py-1 text-xs text-pink-300">
-                무드
+                {t('stylist.taskCard.mood')}
               </span>
             )}
           </div>

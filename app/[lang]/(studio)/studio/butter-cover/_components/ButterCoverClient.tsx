@@ -181,13 +181,13 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                   <div className="w-24 h-24 border-4 border-butter-yellow border-t-transparent rounded-full animate-spin mx-auto" />
                   <div className="space-y-4">
                     <h2 className="text-2xl font-medium text-white">
-                      AI 커버를 생성하고 있습니다...
+                      {t('butterCover.generatingCover')}
                     </h2>
                     <p className="text-slate-400 text-lg leading-relaxed">
-                      잠시만 기다려주세요. 평균 7-20분 정도 소요됩니다.
+                      {t('butterCover.generatingCoverWait')}
                     </p>
                     <p className="text-slate-300 text-sm leading-relaxed">
-                      생성이 완료되면 이 화면에서 바로 들으실 수 있습니다.
+                      {t('butterCover.generatingCoverListen')}
                     </p>
                   </div>
                 </div>
@@ -195,10 +195,10 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                 <div className="space-y-8">
                   <div className="space-y-4 text-center">
                     <h2 className="text-2xl font-medium text-blue-400">
-                      백그라운드에서 처리 중
+                      {t('butterCover.backgroundProcessing')}
                     </h2>
                     <p className="text-slate-400 text-lg leading-relaxed max-w-[300px] mx-auto">
-                      작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                      {t('butterCover.backgroundProcessingDescription')}
                     </p>
                     <button
                       onClick={() =>
@@ -206,7 +206,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                       }
                       className="mt-4 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg transition-colors"
                     >
-                      상태 확인
+                      {t('butterCover.checkStatus')}
                     </button>
                   </div>
                 </div>
@@ -214,14 +214,14 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                 <div className="space-y-8">
                   <div className="space-y-4">
                     <h2 className="text-2xl font-medium text-white">
-                      🎵 AI 커버가 완성되었습니다!
+                      {t('butterCover.coverCompleteTitle')}
                     </h2>
                     <p className="text-slate-400 text-lg leading-relaxed">
-                      생성된 음원을 바로 들어보세요
+                      {t('butterCover.listenToCover')}
                     </p>
                   </div>
 
-                  {/* 오디오 플레이어 */}
+                  {/* Audio Player */}
                   <div className="bg-studio-border rounded-2xl p-6 space-y-4">
                     <div className="flex items-center justify-center space-x-4">
                       <button
@@ -238,7 +238,9 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
 
                     <div className="flex items-center justify-center space-x-2 text-slate-400">
                       <Volume2 className="w-4 h-4" />
-                      <span className="text-sm">AI 커버 음원</span>
+                      <span className="text-sm">
+                        {t('butterCover.aiCoverAudio')}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -246,7 +248,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                 <div className="space-y-8">
                   <div className="space-y-4">
                     <h2 className="text-2xl font-medium text-red-400">
-                      생성에 실패했습니다
+                      {t('butterCover.generationFailedTitle')}
                     </h2>
                     <p className="text-slate-400 text-lg leading-relaxed">
                       {pollingError}

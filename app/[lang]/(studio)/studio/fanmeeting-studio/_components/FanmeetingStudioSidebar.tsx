@@ -69,7 +69,7 @@ export default function FanmeetingStudioSidebar({
 
   return (
     <StudioSidebarBase>
-      {/* 배경 */}
+      {/* Background */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
           {t('fanmeeting.background')} <span className="text-red-400">*</span>
@@ -90,7 +90,7 @@ export default function FanmeetingStudioSidebar({
           </div>
         </div>
 
-        {/* 장소 추천 프롬프트 */}
+        {/* Recommended place prompts */}
         <div className="flex flex-wrap gap-2">
           {placePrompts.map((prompt, index) => (
             <button
@@ -104,7 +104,7 @@ export default function FanmeetingStudioSidebar({
         </div>
       </div>
 
-      {/* 상황 */}
+      {/* Situation */}
       <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] self-stretch w-full">
         <div className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center tracking-[0] leading-[19.6px] whitespace-nowrap">
           {t('fanmeeting.situation')} <span className="text-red-400">*</span>
@@ -125,7 +125,7 @@ export default function FanmeetingStudioSidebar({
           </div>
         </div>
 
-        {/* 포즈 추천 프롬프트 */}
+        {/* Recommended pose prompts */}
         <div className="flex flex-wrap gap-2">
           {posePrompts.map((prompt, index) => (
             <button

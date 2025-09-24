@@ -219,5 +219,9 @@
   "dropdownStudio": "Studio",
   "dropdownSubscription": "Subscription",
   "dropdownPaymentHistory": "Payment History",
-  "dropdownSettings": "Settings"
+  "dropdownSettings": "Settings",
+  "insufficientCredits": "Insufficient credits. Please recharge your credits.",
+  "comingSoon": "Feature coming soon.",
+  "selectPlaceholder": "Please select",
+  "noData": "No data available"
 }

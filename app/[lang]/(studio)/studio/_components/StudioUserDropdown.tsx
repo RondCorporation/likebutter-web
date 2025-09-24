@@ -95,14 +95,14 @@ export default function StudioUserDropdown() {
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] md:w-72 rounded-lg bg-studio-sidebar border border-studio-border shadow-lg py-4 z-50 animate-fadeIn">
-          {/* 프로필 정보 섹션 */}
+          {/* Profile Info Section */}
           <div className="px-4 pb-4">
-            {/* 이메일 */}
+            {/* Email */}
             <div className="text-studio-text-secondary text-xs mb-3">
               {userEmail}
             </div>
 
-            {/* 프로필 이미지 + 이름 + 크레딧 */}
+            {/* Profile Image + Name + Credits */}
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className="w-10 h-10 rounded-full bg-studio-button-primary flex items-center justify-center flex-shrink-0">
@@ -138,10 +138,10 @@ export default function StudioUserDropdown() {
             </div>
           </div>
 
-          {/* 구분선 */}
+          {/* Divider */}
           <hr className="border-studio-border my-2" />
 
-          {/* 언어 및 설정 */}
+          {/* Language and Settings */}
           <div className="px-2">
             <button
               onClick={() => handleAction(() => {})}
@@ -159,10 +159,10 @@ export default function StudioUserDropdown() {
             </button>
           </div>
 
-          {/* 구분선 */}
+          {/* Divider */}
           <hr className="border-studio-border my-2" />
 
-          {/* 크레딧 및 결제 관리 */}
+          {/* Credit and Payment Management */}
           <div className="px-2">
             <button
               onClick={() =>
@@ -217,10 +217,10 @@ export default function StudioUserDropdown() {
             </button>
           </div>
 
-          {/* 구분선 */}
+          {/* Divider */}
           <hr className="border-studio-border my-2" />
 
-          {/* 로그아웃 */}
+          {/* Logout */}
           <div className="px-2">
             <button
               onClick={() => handleAction(logout)}
@@ -233,7 +233,7 @@ export default function StudioUserDropdown() {
         </div>
       )}
 
-      {/* 피드백 팝업 */}
+      {/* Feedback Popup */}
       <FeedbackPopup
         isOpen={isFeedbackOpen}
         onClose={() => setIsFeedbackOpen(false)}

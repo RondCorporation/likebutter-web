@@ -5,6 +5,7 @@ import {
   TodayAttendanceStatus,
 } from '@/app/_types/api';
 import { toast } from 'react-hot-toast';
+import i18n from '@/app/_lib/i18n-client';
 
 interface AttendanceState {
   isLoading: boolean;
@@ -61,7 +62,9 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
 
       if (response.data) {
         toast.success(
-          `출석체크 완료! ${response.data.creditGranted} 크레딧을 획득했습니다.`
+          i18n.t('studio:attendance.messages.success', {
+            credit: response.data.creditGranted,
+          })
         );
 
         get().fetchTodayStatus(false);
@@ -73,9 +76,9 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
       return null;
     } catch (error: any) {
       if (error.message === 'ALREADY_CHECKED_ATTENDANCE') {
-        toast.error('이미 오늘 출석체크를 완료했습니다.');
+        toast.error(i18n.t('studio:attendance.messages.alreadyChecked'));
       } else {
-        toast.error('출석체크에 실패했습니다. 다시 시도해주세요.');
+        toast.error(i18n.t('studio:attendance.messages.error'));
       }
       return null;
     } finally {
@@ -145,7 +148,9 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
 
       if (response.data) {
         toast.success(
-          `출석체크 완료! ${response.data.creditGranted} 크레딧을 획득했습니다.`
+          i18n.t('studio:attendance.messages.success', {
+            credit: response.data.creditGranted,
+          })
         );
 
         const { todayStatus } = get();
@@ -170,11 +175,11 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
       return false;
     } catch (error: any) {
       if (error.message === 'ALREADY_CHECKED_ATTENDANCE') {
-        toast.error('이미 오늘 출석체크를 완료했습니다.');
+        toast.error(i18n.t('studio:attendance.messages.alreadyChecked'));
         set({ shouldShowModal: false });
         setModalShownToday();
       } else {
-        toast.error('출석체크에 실패했습니다. 다시 시도해주세요.');
+        toast.error(i18n.t('studio:attendance.messages.error'));
       }
       return false;
     } finally {

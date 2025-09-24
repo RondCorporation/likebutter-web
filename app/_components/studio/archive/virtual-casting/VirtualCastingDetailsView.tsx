@@ -17,7 +17,9 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
-        <p className="text-studio-text-muted">{t('common.detailsNotAvailable')}</p>
+        <p className="text-studio-text-muted">
+          {t('common.detailsNotAvailable')}
+        </p>
       </div>
     );
   }
@@ -67,7 +69,9 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
         {details.result?.imageUrl && (
           <ImageDisplayCard
             title={t('virtualCasting.transformedResult')}
-            subtitle={t('virtualCasting.transformedSubtitle', { character: getCharacterName(details.request.style) })}
+            subtitle={t('virtualCasting.transformedSubtitle', {
+              character: getCharacterName(details.request.style),
+            })}
             imageUrl={details.result.imageUrl}
             alt={t('virtualCasting.transformedImageAlt')}
           />
@@ -105,7 +109,9 @@ export default function VirtualCastingDetailsView({ details, onClose }: Props) {
       {details.error && (
         <div className="mt-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-            <h4 className="text-red-400 font-medium mb-2">{t('virtualCasting.transformFailed')}</h4>
+            <h4 className="text-red-400 font-medium mb-2">
+              {t('virtualCasting.transformFailed')}
+            </h4>
             <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>

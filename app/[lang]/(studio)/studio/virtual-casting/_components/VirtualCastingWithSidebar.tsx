@@ -66,7 +66,8 @@ export default function VirtualCastingWithSidebar() {
 
   useEffect(() => {
     const resultImage = clientRef.current?.resultImage;
-    const isProcessing = clientRef.current?.isProcessing || clientRef.current?.isPolling;
+    const isProcessing =
+      clientRef.current?.isProcessing || clientRef.current?.isPolling;
     setHidePCSidebar(!!resultImage || !!isProcessing);
   }, []);
 
@@ -91,7 +92,11 @@ export default function VirtualCastingWithSidebar() {
 
     return (
       <StudioButton
-        text={isProcessing || isPolling ? t('virtualCasting.generating') : t('virtualCasting.startCasting')}
+        text={
+          isProcessing || isPolling
+            ? t('virtualCasting.generating')
+            : t('virtualCasting.startCasting')
+        }
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
         loading={isProcessing || isPolling}

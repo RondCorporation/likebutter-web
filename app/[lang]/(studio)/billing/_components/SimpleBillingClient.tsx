@@ -72,9 +72,7 @@ const convertPlansFormat = (
       description: t('billing:plans.free.desc'),
       priceMonthly: 'Free',
       priceYearly: 'Free',
-      features: [
-        t('billing:plans.free.attendanceCredit'),
-      ],
+      features: [t('billing:plans.free.attendanceCredit')],
       isPopular: false,
       cta: t('billing:plans.free.name'),
     },
@@ -104,7 +102,10 @@ const convertPlansFormat = (
         priceYearly: yearlyMonthlyPrice as number | string,
         features: featuresMap[planType] || [],
         isPopular: planType === 'BASIC',
-        cta: planType === 'BASIC' ? t('billing:plans.startButton') : t('billing:plans.upgradePlan'),
+        cta:
+          planType === 'BASIC'
+            ? t('billing:plans.startButton')
+            : t('billing:plans.upgradePlan'),
       });
     }
   });

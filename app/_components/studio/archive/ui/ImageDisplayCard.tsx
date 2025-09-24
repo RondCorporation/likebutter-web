@@ -1,6 +1,7 @@
 import { Download } from 'lucide-react';
 import { downloadFile } from '@/app/_utils/download';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ImageDisplayCardProps {
   title: string;
@@ -23,6 +24,7 @@ export default function ImageDisplayCard({
   downloadFilename,
   showDownload = true,
 }: ImageDisplayCardProps) {
+  const { t } = useTranslation('common');
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownload = async () => {
@@ -58,7 +60,7 @@ export default function ImageDisplayCard({
             onClick={handleDownload}
             disabled={isDownloading}
             className="p-2 bg-studio-button-primary hover:bg-studio-button-primary/80 disabled:opacity-50 rounded-lg transition-colors"
-            title="다운로드"
+            title={t('download')}
           >
             <Download className="h-4 w-4 text-studio-header" />
           </button>

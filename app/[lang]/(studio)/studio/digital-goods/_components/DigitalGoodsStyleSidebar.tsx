@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import ScrollableGrid from '../../_components/ScrollableGrid';
-
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 
 interface DigitalGoodsStyleSidebarProps {
@@ -14,7 +12,9 @@ export default function DigitalGoodsStyleSidebar({
   onFormChange,
 }: DigitalGoodsStyleSidebarProps = {}) {
   const { t } = useTranslation(['studio']);
-  const [selectedPreset, setSelectedPreset] = useState(t('digitalGoods.styles.GHIBLI'));
+  const [selectedPreset, setSelectedPreset] = useState(
+    t('digitalGoods.styles.GHIBLI')
+  );
 
   const getStyleImage = (style: string) => {
     const styleImageMap: Record<string, string> = {
@@ -37,7 +37,10 @@ export default function DigitalGoodsStyleSidebar({
     { name: t('digitalGoods.styles.ANIMATION'), value: 'ANIMATION' },
     { name: t('digitalGoods.styles.CARTOON'), value: 'CARTOON' },
     { name: t('digitalGoods.styles.SKETCH'), value: 'SKETCH' },
-    { name: t('digitalGoods.styles.GRADUATION_PHOTO'), value: 'GRADUATION_PHOTO' },
+    {
+      name: t('digitalGoods.styles.GRADUATION_PHOTO'),
+      value: 'GRADUATION_PHOTO',
+    },
     { name: t('digitalGoods.styles.LEGO'), value: 'LEGO' },
     { name: t('digitalGoods.styles.STICKER'), value: 'STICKER' },
     { name: t('digitalGoods.styles.FIGURE'), value: 'FIGURE' },
@@ -57,10 +60,10 @@ export default function DigitalGoodsStyleSidebar({
   return (
     <div className="flex flex-col w-full md:w-[260px] h-full items-start gap-6 md:gap-10 pt-3 md:pt-6 pb-3 px-3 relative bg-studio-sidebar md:border-r border-solid border-studio-border-light overflow-y-auto">
       <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">
-        {/* 스타일 프리셋 */}
+        {/* Style Preset */}
         <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] w-full">
           <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
-            스타일 프리셋
+            {t('digitalGoods.stylePreset')}
           </div>
 
           <div className="grid grid-cols-2 gap-3 w-full">

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import StudioOverlay from '@/components/studio/StudioOverlay';
 import OverlayCheckoutClient from './OverlayCheckoutClient';
+import { useTranslation } from 'react-i18next';
 
 type PlanForCheckout = {
   name: string;
@@ -20,6 +21,7 @@ interface CheckoutOverlayProps {
 export default function CheckoutOverlay({ lang, plan }: CheckoutOverlayProps) {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
+  const { t } = useTranslation(['billing']);
 
   const handleClose = () => {
     if (isAuthenticated) {
@@ -31,7 +33,7 @@ export default function CheckoutOverlay({ lang, plan }: CheckoutOverlayProps) {
 
   return (
     <StudioOverlay
-      title={`${plan.name} 구독`}
+      title={t('subscription.subscribeToPlan', { planName: plan.name })}
       onClose={handleClose}
       backUrl={isAuthenticated ? `/${lang}/studio` : `/${lang}`}
     >

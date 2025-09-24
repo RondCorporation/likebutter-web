@@ -12,7 +12,12 @@ interface Props {
   onSuccess: (newTaskId: number) => void;
 }
 
-export default function EditTaskModal({ task, isOpen, onClose, onSuccess }: Props) {
+export default function EditTaskModal({
+  task,
+  isOpen,
+  onClose,
+  onSuccess,
+}: Props) {
   const [editPrompt, setEditPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +32,11 @@ export default function EditTaskModal({ task, isOpen, onClose, onSuccess }: Prop
     setError(null);
 
     try {
-      const response = await editTask(task.taskId, task.actionType, editPrompt.trim());
+      const response = await editTask(
+        task.taskId,
+        task.actionType,
+        editPrompt.trim()
+      );
       if (response.data) {
         onSuccess(response.data.taskId);
         handleClose();
@@ -105,15 +114,15 @@ export default function EditTaskModal({ task, isOpen, onClose, onSuccess }: Prop
             <div className="px-3 py-1 bg-[#e8fa07] text-[#292c31] text-sm font-medium rounded">
               {getActionTypeLabel(task.actionType)}
             </div>
-            <span className="text-gray-400 text-sm">
-              Task #{task.taskId}
-            </span>
+            <span className="text-gray-400 text-sm">Task #{task.taskId}</span>
           </div>
 
           {/* Original Image Preview */}
           {imageUrl && (
             <div className="mb-4">
-              <h3 className="text-white text-sm font-medium mb-2">원본 이미지</h3>
+              <h3 className="text-white text-sm font-medium mb-2">
+                원본 이미지
+              </h3>
               <div className="w-full h-[200px] bg-[#4a4a4b] rounded-lg overflow-hidden">
                 <img
                   src={imageUrl}

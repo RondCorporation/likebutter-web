@@ -348,15 +348,17 @@ const FanmeetingStudioClient = forwardRef<
     <div className="flex flex-col flex-1 h-full bg-studio-content">
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
         <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
-          온라인 팬미팅
+          {t('fanmeeting.title')}
         </div>
 
-        {/* PC에서만 표시되는 버튼들 */}
+        {/* PC-only buttons */}
         <div className="items-center gap-2 hidden md:flex">
           {resultImage ? (
             <>
               <StudioButton
-                text={isEditLoading ? t('fanmeeting.editing') : t('fanmeeting.edit')}
+                text={
+                  isEditLoading ? t('fanmeeting.editing') : t('fanmeeting.edit')
+                }
                 onClick={() => setIsEditPopupOpen(true)}
                 disabled={isEditLoading}
                 loading={isEditLoading}
@@ -371,13 +373,17 @@ const FanmeetingStudioClient = forwardRef<
               >
                 <RotateCcw className="w-4 h-4 mr-1" />
                 <div className="text-studio-button-primary text-xs md:text-sm font-bold leading-[14px] whitespace-nowrap font-pretendard-bold">
-                  다시 만들기
+                  {t('fanmeeting.resetWork')}
                 </div>
               </button>
             </>
           ) : (
             <StudioButton
-              text={isProcessing ? t('fanmeeting.generating') : t('fanmeeting.generate')}
+              text={
+                isProcessing
+                  ? t('fanmeeting.generating')
+                  : t('fanmeeting.generate')
+              }
               onClick={handleGenerate}
               disabled={isProcessing || !isFormValid()}
               loading={isProcessing}
@@ -403,15 +409,15 @@ const FanmeetingStudioClient = forwardRef<
             overscrollBehavior: 'contain',
           }}
         >
-          {/* 두 이미지 업로드 영역 */}
+          {/* Two image upload areas */}
           <div className="flex flex-col gap-4">
-            {/* 상단 이미지 영역 */}
+            {/* Top image area */}
             <div className="flex items-center gap-3">
-              {/* 아이돌 이미지 */}
+              {/* Idol image */}
               <div className="flex-1">
                 <div className="mb-2">
                   <div className="text-studio-text-primary text-xs font-pretendard-medium">
-                    아이돌 사진
+                    {t('fanmeeting.idolPhoto')}
                   </div>
                 </div>
                 <div
@@ -475,23 +481,25 @@ const FanmeetingStudioClient = forwardRef<
                             : 'text-studio-text-secondary'
                         }`}
                       >
-                        {isDragOverIdol ? t('fanmeeting.dropHere') : t('fanmeeting.idolPhoto')}
+                        {isDragOverIdol
+                          ? t('fanmeeting.dropHere')
+                          : t('fanmeeting.idolPhoto')}
                       </div>
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Plus 아이콘 */}
+              {/* Plus icon */}
               <div className="flex items-center justify-center">
                 <Plus className="w-6 h-6 text-white" />
               </div>
 
-              {/* 사용자 이미지 */}
+              {/* User image */}
               <div className="flex-1">
                 <div className="mb-2">
                   <div className="text-studio-text-primary text-xs font-pretendard-medium">
-                    내 사진
+                    {t('fanmeeting.myPhoto')}
                   </div>
                 </div>
                 <div
@@ -555,7 +563,9 @@ const FanmeetingStudioClient = forwardRef<
                             : 'text-studio-text-secondary'
                         }`}
                       >
-                        {isDragOverUser ? t('fanmeeting.dropHere') : t('fanmeeting.myPhoto')}
+                        {isDragOverUser
+                          ? t('fanmeeting.dropHere')
+                          : t('fanmeeting.myPhoto')}
                       </div>
                     </div>
                   )}
@@ -563,7 +573,7 @@ const FanmeetingStudioClient = forwardRef<
               </div>
             </div>
 
-            {/* PC에서만 파일 찾아보기 버튼들 표시 */}
+            {/* Browse file buttons (PC only) */}
             <div className="gap-3 hidden md:flex">
               <button
                 onClick={
@@ -575,7 +585,7 @@ const FanmeetingStudioClient = forwardRef<
                 className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
               >
                 <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-                  아이돌 사진 찾기
+                  {t('fanmeeting.findIdolPhoto')}
                 </div>
               </button>
 
@@ -589,7 +599,7 @@ const FanmeetingStudioClient = forwardRef<
                 className="w-[calc(50%-6px)] h-[32px] bg-[#414141] hover:bg-[#515151] active:bg-[#313131] rounded-md flex items-center justify-center transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#414141]"
               >
                 <div className="text-studio-text-secondary text-xs font-semibold font-pretendard">
-                  내 사진 찾기
+                  {t('fanmeeting.findMyPhoto')}
                 </div>
               </button>
             </div>
@@ -612,7 +622,7 @@ const FanmeetingStudioClient = forwardRef<
           />
         </div>
 
-        {/* PC에서만 결과 영역 표시, 모바일에서는 숨김 */}
+        {/* Result area (PC only, hidden on mobile) */}
         <div
           className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
           style={{
@@ -626,10 +636,10 @@ const FanmeetingStudioClient = forwardRef<
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
                   <div className="text-studio-text-primary text-base font-pretendard-medium">
-                    팬미팅 사진 생성 중...
+                    {t('fanmeeting.generatingInProgress')}
                   </div>
                   <div className="text-studio-text-muted text-sm font-pretendard">
-                    잠시 기다리시면 결과가 나옵니다
+                    {t('fanmeeting.pleaseWait')}
                   </div>
                 </div>
               </div>
@@ -637,10 +647,10 @@ const FanmeetingStudioClient = forwardRef<
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <div className="flex flex-col items-center gap-2 text-center text-blue-400">
                   <div className="text-base font-pretendard-medium">
-                    백그라운드에서 처리 중
+                    {t('fanmeeting.backgroundProcessing')}
                   </div>
                   <div className="text-sm font-pretendard max-w-[200px]">
-                    작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.
+                    {t('fanmeeting.takingLong')}
                   </div>
                   <button
                     onClick={() =>
@@ -648,7 +658,7 @@ const FanmeetingStudioClient = forwardRef<
                     }
                     className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-pretendard-medium rounded-lg transition-colors"
                   >
-                    상태 확인
+                    {t('fanmeeting.checkStatus')}
                   </button>
                 </div>
               </div>
@@ -659,7 +669,7 @@ const FanmeetingStudioClient = forwardRef<
                   alt="Generated fanmeeting result"
                   className="w-full h-full object-contain rounded-[20px]"
                 />
-                {/* PC 다운로드 아이콘 - 우측 상단 */}
+                {/* PC download icon - top right */}
                 <button
                   onClick={handleDownload}
                   className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
@@ -672,10 +682,10 @@ const FanmeetingStudioClient = forwardRef<
                 <div className="flex flex-col items-center text-center">
                   <HelpCircle className="w-12 h-12 text-studio-text-muted mb-4" />
                   <div className="font-pretendard-medium text-studio-text-secondary text-base leading-6 mb-2">
-                    결과 이미지
+                    {t('fanmeeting.resultImage')}
                   </div>
                   <div className="font-pretendard text-studio-text-muted text-xs leading-[18px]">
-                    사이드바에서 설정을 완료하고
+                    {t('fanmeeting.completeSettings')}
                     <br />
                     {t('fanmeeting.pressStartFanmeeting')}
                   </div>

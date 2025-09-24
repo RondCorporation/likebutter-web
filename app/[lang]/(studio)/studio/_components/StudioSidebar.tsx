@@ -48,9 +48,9 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
 
   return (
     <>
-      {/* 화면 전체 높이를 사용하는 사이드바 */}
+      {/* Full-height sidebar */}
       <div className="flex flex-col w-20 items-center gap-6 pt-6 pb-3 px-3 bg-[#202020] border-r border-solid border-[#4a4a4b]">
-        {/* 만들기 버튼 */}
+        {/* Create button */}
         <div className="flex flex-col items-center gap-1">
           <button
             onClick={() => setShowModelPopup(true)}
@@ -66,7 +66,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
           </div>
         </div>
 
-        {/* 홈 버튼 */}
+        {/* Home button */}
         <div className="flex flex-col items-center gap-1">
           <button onClick={() => navigateToTool('dashboard')}>
             <div
@@ -83,7 +83,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
           </div>
         </div>
 
-        {/* 보관함 버튼 */}
+        {/* Archive button */}
         <div className="flex flex-col items-center gap-1">
           <button onClick={() => navigateToTool('archive')}>
             <div
@@ -100,7 +100,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
           </div>
         </div>
 
-        {/* 도움말 버튼 */}
+        {/* Help button */}
         <div className="flex flex-col items-center gap-1">
           <button
             onClick={() => {

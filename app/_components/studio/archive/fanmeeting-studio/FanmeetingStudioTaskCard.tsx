@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('studio');
   const details = task.details as FanmeetingStudioDetails | undefined;
 
   return (
@@ -58,7 +58,7 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
       {/* Images Info */}
       <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
         <Users className="h-4 w-4" />
-        <span>팬 & 아이돌 이미지</span>
+        <span>{t('fanmeeting.taskCard.fanAndIdolImages')}</span>
       </div>
 
       {/* Result Info */}
@@ -66,7 +66,7 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
         <div className="mt-3 border-t border-white/10 pt-3">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <Image className="h-4 w-4" />
-            <span>팬미팅 장면 생성 완료</span>
+            <span>{t('fanmeeting.taskCard.sceneGenerationComplete')}</span>
           </div>
           {details.result.filename && (
             <div className="mt-1 text-xs text-slate-500 font-mono">

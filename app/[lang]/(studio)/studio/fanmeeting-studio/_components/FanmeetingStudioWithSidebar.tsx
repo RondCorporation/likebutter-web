@@ -40,7 +40,8 @@ export default function FanmeetingStudioWithSidebar() {
 
   useEffect(() => {
     const resultImage = clientRef.current?.resultImage;
-    const isProcessing = clientRef.current?.isProcessing || clientRef.current?.isPolling;
+    const isProcessing =
+      clientRef.current?.isProcessing || clientRef.current?.isPolling;
     setHidePCSidebar(!!resultImage || !!isProcessing);
   }, []);
 
@@ -53,7 +54,8 @@ export default function FanmeetingStudioWithSidebar() {
       return false;
     if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2)
       return false;
-    if (!clientRef.current?.idolFile || !clientRef.current?.userFile) return false;
+    if (!clientRef.current?.idolFile || !clientRef.current?.userFile)
+      return false;
     return true;
   };
 
@@ -90,7 +92,11 @@ export default function FanmeetingStudioWithSidebar() {
 
     return (
       <StudioButton
-        text={isProcessing || isPolling ? t('fanmeeting.generating') : t('fanmeeting.startFanmeeting')}
+        text={
+          isProcessing || isPolling
+            ? t('fanmeeting.generating')
+            : t('fanmeeting.startFanmeeting')
+        }
         onClick={handleGenerate}
         disabled={isProcessing || isPolling || !isFormValid()}
         loading={isProcessing || isPolling}

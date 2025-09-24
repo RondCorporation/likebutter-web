@@ -116,11 +116,15 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                   </h3>
                   <div className="flex flex-col space-y-3 text-xs text-slate-400">
                     <div>
-                      <span className="text-slate-500 block mb-1">{t('marketing:footer.companyName')}</span>
+                      <span className="text-slate-500 block mb-1">
+                        {t('marketing:footer.companyName')}
+                      </span>
                       <span>{t('companyName')}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block mb-1">{t('marketing:footer.ceo')}</span>
+                      <span className="text-slate-500 block mb-1">
+                        {t('marketing:footer.ceo')}
+                      </span>
                       <span>{t('companyCEO')}</span>
                     </div>
                     <div>
@@ -141,7 +145,9 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                       </span>
                       <div className="space-y-1">
                         <div>
-                          <span className="text-slate-400">{t('marketing:footer.phone')} </span>
+                          <span className="text-slate-400">
+                            {t('marketing:footer.phone')}{' '}
+                          </span>
                           <a
                             href={`tel:${COMPANY_INFO.contact.phone}`}
                             className="hover:text-accent transition-colors duration-200"
@@ -150,7 +156,9 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                           </a>
                         </div>
                         <div>
-                          <span className="text-slate-400">{t('marketing:footer.email')} </span>
+                          <span className="text-slate-400">
+                            {t('marketing:footer.email')}{' '}
+                          </span>
                           <a
                             href={`mailto:${COMPANY_INFO.contact.support}`}
                             className="hover:text-accent transition-colors duration-200"

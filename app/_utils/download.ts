@@ -1,7 +1,10 @@
 /**
  * 파일을 다운로드하는 유틸리티 함수
  */
-export async function downloadFile(url: string, filename: string): Promise<void> {
+export async function downloadFile(
+  url: string,
+  filename: string
+): Promise<void> {
   try {
     const response = await fetch(url);
     if (!response.ok) {

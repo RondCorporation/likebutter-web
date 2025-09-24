@@ -1,6 +1,7 @@
 import { useUIStore } from '@/stores/uiStore';
 import { ApiResponse } from '@/app/_types/api';
 import { toast } from 'react-hot-toast';
+import i18n from '@/app/_lib/i18n-client';
 
 const API_URL =
   process.env.NODE_ENV === 'development'
@@ -116,7 +117,7 @@ export async function apiFetch<T>(
 
       if (!response.ok) {
         if (json.msg === 'INSUFFICIENT_CREDIT') {
-          toast.error('크레딧이 부족합니다. 크레딧을 충전해주세요.');
+          toast.error(i18n.t('common:insufficientCredits'));
 
           return {
             status: response.status,

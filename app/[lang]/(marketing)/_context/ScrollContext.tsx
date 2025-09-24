@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, MutableRefObject, useRef, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  MutableRefObject,
+  useRef,
+  ReactNode,
+} from 'react';
 
 interface ScrollContextType {
   sectionRefs: MutableRefObject<(HTMLElement | null)[]>;
@@ -18,7 +24,11 @@ export const useScrollContext = () => {
   return context;
 };
 
-export const ScrollContextProvider = ({ children }: { children: ReactNode }) => {
+export const ScrollContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
   return (

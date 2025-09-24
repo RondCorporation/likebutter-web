@@ -320,7 +320,11 @@ const DigitalGoodsClient = forwardRef<
         <div className="items-center gap-2 hidden md:flex">
           {resultImage ? (
             <StudioButton
-              text={isEditLoading ? t('studio:digitalGoods.editingInProgress') : t('studio:digitalGoods.edit')}
+              text={
+                isEditLoading
+                  ? t('studio:digitalGoods.editingInProgress')
+                  : t('studio:digitalGoods.edit')
+              }
               onClick={() => setIsEditPopupOpen(true)}
               disabled={isEditLoading}
               loading={isEditLoading}
@@ -331,7 +335,11 @@ const DigitalGoodsClient = forwardRef<
             />
           ) : (
             <StudioButton
-              text={isGenerating || isPolling ? t('studio:digitalGoods.generating') : t('studio:digitalGoods.generate')}
+              text={
+                isGenerating || isPolling
+                  ? t('studio:digitalGoods.generating')
+                  : t('studio:digitalGoods.generate')
+              }
               onClick={handleGenerate}
               disabled={isGenerating || isPolling || !isFormValid()}
               loading={isGenerating || isPolling}

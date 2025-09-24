@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Plus, Home, FolderOpen, Users, MoreHorizontal } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import ModelSelectPopup from './ModelSelectPopup';
+import { useTranslation } from 'react-i18next';
 
 interface MobileBottomNavigationProps {
   lang: string;
@@ -15,9 +16,10 @@ export default function MobileBottomNavigation({
 }: MobileBottomNavigationProps) {
   const searchParams = useSearchParams();
   const [showModelPopup, setShowModelPopup] = useState(false);
+  const { t } = useTranslation(['studio', 'common']);
 
   const handleComingSoon = () => {
-    toast('준비 중인 기능입니다.', {
+    toast(t('common:comingSoon'), {
       icon: '🚧',
       style: {
         background: '#333',
@@ -53,7 +55,7 @@ export default function MobileBottomNavigation({
           className="flex items-center justify-around px-4 py-2"
           style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
         >
-          {/* 홈 */}
+          {/* Home */}
           <button
             onClick={() => navigateToTool('dashboard')}
             className="flex flex-col items-center py-2 px-3"
@@ -75,11 +77,11 @@ export default function MobileBottomNavigation({
                   : 'text-studio-text-secondary'
               }`}
             >
-              홈
+              {t('studio:navigation.home')}
             </span>
           </button>
 
-          {/* 보관함 */}
+          {/* Archive */}
           <button
             onClick={() => navigateToTool('archive')}
             className="flex flex-col items-center py-2 px-3"
@@ -101,11 +103,11 @@ export default function MobileBottomNavigation({
                   : 'text-studio-text-secondary'
               }`}
             >
-              보관함
+              {t('studio:navigation.archive')}
             </span>
           </button>
 
-          {/* 만들기 (중앙, 더 큰 버튼) */}
+          {/* Create (center, larger button) */}
           <button
             onClick={() => setShowModelPopup(true)}
             className="flex flex-col items-center py-1 px-3"
@@ -114,11 +116,11 @@ export default function MobileBottomNavigation({
               <Plus className="w-7 h-7 text-studio-header" />
             </div>
             <span className="text-xs mt-1 font-pretendard text-studio-text-primary">
-              만들기
+              {t('studio:navigation.create')}
             </span>
           </button>
 
-          {/* 도움말 */}
+          {/* Help */}
           <button
             onClick={handleComingSoon}
             className="flex flex-col items-center py-2 px-3"
@@ -140,11 +142,11 @@ export default function MobileBottomNavigation({
                   : 'text-studio-text-secondary'
               }`}
             >
-              도움말
+              {t('studio:navigation.help')}
             </span>
           </button>
 
-          {/* 더보기 */}
+          {/* More */}
           <button
             onClick={handleComingSoon}
             className="flex flex-col items-center py-2 px-3"
@@ -153,7 +155,7 @@ export default function MobileBottomNavigation({
               <MoreHorizontal className="w-6 h-6" color="#A8A8AA" />
             </div>
             <span className="text-xs mt-1 font-pretendard text-studio-text-secondary">
-              더보기
+              {t('studio:navigation.showMore')}
             </span>
           </button>
         </div>

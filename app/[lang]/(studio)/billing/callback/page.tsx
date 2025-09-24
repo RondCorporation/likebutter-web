@@ -9,12 +9,14 @@ import {
 } from '@/app/_lib/apis/subscription.api.client';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 function CallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { initialize: revalidateUser } = useAuthStore.getState();
   const lang = searchParams.get('lang') || 'ko';
+  const { t } = useTranslation(['billing']);
 
   useEffect(() => {
     const processPayment = async () => {
@@ -31,35 +33,39 @@ function CallbackHandler() {
           const createSubResponse = await createSubscription(planKey);
 
           if (createSubResponse.data?.subscriptionId) {
-            toast.success('구독이 성공적으로 시작되었습니다!');
+            toast.success(t('payment.success.subscriptionStarted'));
             await revalidateUser();
             router.replace(
               `/${lang}/billing/success?plan=${planKey.split('_')[0].toLowerCase()}&subscription=${createSubResponse.data.subscriptionId}`
             );
           } else {
-            throw new Error('구독 생성에 실패했습니다.');
+            throw new Error(t('payment.errors.subscriptionFailed'));
           }
         } catch (e: any) {
-          toast.error(`결제 후 처리 중 오류가 발생했습니다: ${e.message}`);
+          toast.error(
+            t('payment.errors.processingError', { message: e.message })
+          );
           router.replace(`/${lang}/billing?error=processing_failed`);
         } finally {
           localStorage.removeItem('selectedPlanKey');
         }
       } else {
-        toast.error(`결제에 실패했습니다: ${errorMsg || '알 수 없는 오류'}`);
+        toast.error(
+          t('payment.errors.paymentFailedWithMessage', {
+            message: errorMsg || t('payment.errors.unknownError'),
+          })
+        );
         router.replace(`/${lang}/billing?error=payment_failed`);
       }
     };
 
     processPayment();
-  }, [router, searchParams, lang, revalidateUser]);
+  }, [router, searchParams, lang, revalidateUser, t]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 text-white">
       <Loader2 className="w-12 h-12 animate-spin text-butter-yellow" />
-      <p className="text-lg">
-        결제 결과를 처리 중입니다. 잠시만 기다려주세요...
-      </p>
+      <p className="text-lg">{t('checkout.processingPayment')}</p>
     </div>
   );
 }

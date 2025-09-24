@@ -14,7 +14,7 @@ import { Receipt, Eye } from 'lucide-react';
 
 export default function PaymentHistoryPage() {
   const params = useParams();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('billing');
 
   const [payments, setPayments] = useState<PaymentHistoryResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +89,7 @@ export default function PaymentHistoryPage() {
             icon={<Eye size={14} />}
             className="text-butter-yellow hover:text-butter-yellow/80"
           >
-            영수증
+            {t('paymentHistory.viewReceipt')}
           </StudioButton>
         </Link>
       ),

@@ -57,6 +57,18 @@
     "startButton": "Get Started",
     "planSelected": "You have selected the {planKey} {billingCycle} plan.",
     "planSelectionError": "An error occurred while selecting the plan.",
+    "title": "Choose Plan",
+    "subtitle": "Use all the AI tools you need for your creative activities. You can change your plan at any time.",
+    "monthlyBilling": "Monthly Billing",
+    "yearlyBilling": "Yearly Billing",
+    "month": "month",
+    "allPlansInclude": "Features included in all plans",
+    "freeTrial": "Free trial period",
+    "support247": "24/7 customer support",
+    "cancelAnytime": "Cancel anytime",
+    "mostPopular": "Most Popular",
+    "currentPlan": "Current Plan",
+    "downgradeNotAvailable": "Downgrade not available",
     "free": {
       "name": "Free Start",
       "desc": "Start for free",
@@ -134,7 +146,11 @@
       "serverDesc": "A temporary server error occurred. Please try again later",
       "payment": "Payment Error",
       "paymentDesc": "An issue occurred while processing your payment",
-      "genericDesc": "An unknown error occurred"
+      "genericDesc": "An unknown error occurred",
+      "subscriptionFailed": "Failed to create subscription.",
+      "processingError": "An error occurred after payment: {message}",
+      "paymentFailedWithMessage": "Payment failed: {message}",
+      "unknownError": "Unknown error"
     },
     "actions": {
       "goToPricing": "Go to Pricing",
@@ -146,9 +162,13 @@
       "needHelp": "Need help?",
       "contactSupport": "Contact Support",
       "viewDocs": "View Documentation"
+    },
+    "success": {
+      "subscriptionStarted": "Subscription started successfully!"
     }
   },
   "subscription": {
+    "subscribeToPlan": "Subscribe to {planName}",
     "manager": {
       "fetchError": "Failed to fetch subscription information.",
       "cancelConfirm": "Your subscription will remain active until the end of the current billing cycle. Are you sure you want to cancel?",
@@ -220,5 +240,8 @@
     "servicePeriodYearly": "Service provided for 12 months from payment date",
     "autoRenewing": "Auto-renewing (until cancelled)"
   },
-  "paymentAlert": "Payment system integration is currently in preparation. Please check back soon!"
+  "paymentAlert": "Payment system integration is currently in preparation. Please check back soon!",
+  "checkout": {
+    "processingPayment": "Processing payment results. Please wait..."
+  }
 }

@@ -91,7 +91,7 @@ export default function StudioCheckoutModal({
     }
 
     if (sdkStatus === 'error') {
-      toast.error(t('sdkLoadError') || 'SDK 로딩 중 오류가 발생했습니다.');
+      toast.error(t('billing:plans.sdkLoadError'));
       return;
     }
 
@@ -99,7 +99,7 @@ export default function StudioCheckoutModal({
     setPaymentStep('processing');
 
     const loadingToastId = toast.loading(
-      t('openingPaymentWindow') || '결제 창을 열고 있습니다...'
+      t('billing:plans.openingPaymentWindow')
     );
 
     try {

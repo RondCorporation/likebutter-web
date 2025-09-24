@@ -5,11 +5,9 @@ import { useTranslation } from 'react-i18next';
 import useSWR from 'swr';
 import { getStatsSummary } from '@/app/_lib/apis/admin.api';
 import {
-  BarChart,
   Users,
   DollarSign,
   CheckCircle,
-  Clock,
   AlertTriangle,
   TrendingUp,
 } from 'lucide-react';

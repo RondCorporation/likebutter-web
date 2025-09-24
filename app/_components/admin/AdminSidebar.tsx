@@ -16,6 +16,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import Logo from '@/components/Logo';
+import { useTranslation } from 'react-i18next';
 
 interface AdminSidebarProps {
   lang: string;
@@ -23,6 +24,7 @@ interface AdminSidebarProps {
 }
 
 export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
+  const { t } = useTranslation('admin');
   const pathname = usePathname();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'dashboard',
@@ -43,23 +45,23 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
   const navigation = [
     {
       key: 'dashboard',
-      name: '대시보드',
+      name: t('sidebar.dashboard'),
       href: `/${lang}/admin`,
       icon: BarChart3,
       exact: true,
     },
     {
       key: 'users',
-      name: '사용자 관리',
+      name: t('sidebar.userManagement'),
       icon: Users,
       children: [
         {
-          name: '전체 사용자',
+          name: t('sidebar.allUsers'),
           href: `/${lang}/admin/users`,
           icon: User,
         },
         {
-          name: '계정 관리',
+          name: t('sidebar.accountManagement'),
           href: `/${lang}/admin/accounts`,
           icon: Shield,
         },
@@ -67,16 +69,16 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
     },
     {
       key: 'billing',
-      name: '결제 관리',
+      name: t('sidebar.paymentManagement'),
       icon: CreditCard,
       children: [
         {
-          name: '구독 관리',
+          name: t('sidebar.subscriptionManagement'),
           href: `/${lang}/admin/subscriptions`,
           icon: CreditCard,
         },
         {
-          name: '결제 내역',
+          name: t('sidebar.paymentHistory'),
           href: `/${lang}/admin/payments`,
           icon: List,
         },
@@ -84,11 +86,11 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
     },
     {
       key: 'system',
-      name: '시스템',
+      name: t('sidebar.system'),
       icon: Settings,
       children: [
         {
-          name: '작업 관리',
+          name: t('sidebar.taskManagement'),
           href: `/${lang}/admin/tasks`,
           icon: List,
         },
@@ -123,7 +125,9 @@ export default function AdminSidebar({ lang, onClose }: AdminSidebarProps) {
         <div className="rounded-lg bg-blue-500/20 border border-blue-400/30 p-3 text-center">
           <div className="flex items-center justify-center gap-2 text-blue-400">
             <Shield size={16} />
-            <span className="text-sm font-semibold">관리자 모드</span>
+            <span className="text-sm font-semibold">
+              {t('sidebar.adminMode')}
+            </span>
           </div>
         </div>
       </div>

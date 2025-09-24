@@ -198,7 +198,9 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
               </h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-300">{t('billing:checkout.plan')}:</span>
+                  <span className="text-slate-300">
+                    {t('billing:checkout.plan')}:
+                  </span>
                   <span className="text-lg font-semibold">{plan.name}</span>
                 </div>
                 <div className="border-t border-slate-700"></div>
@@ -212,7 +214,9 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
                 </ul>
                 <div className="border-t border-slate-700"></div>
                 <div className="flex items-center justify-between pt-4">
-                  <span className="text-lg text-slate-300">{t('billing:checkout.total')}:</span>
+                  <span className="text-lg text-slate-300">
+                    {t('billing:checkout.total')}:
+                  </span>
                   <span className="text-3xl font-extrabold text-butter-yellow">
                     {plan.priceFormatted}
                   </span>

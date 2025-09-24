@@ -1,7 +1,7 @@
-'use client';
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { OAUTH_GOOGLE, OAUTH_FACEBOOK, OAUTH_X } from '@/lib/constants';
+import { useTranslation } from 'react-i18next';
 
 const IconGoogle = () => (
   <svg
@@ -77,6 +77,7 @@ function SocialButtonsContent({
 }: {
   variant?: 'login' | 'signup';
 }) {
+  const { t } = useTranslation('auth');
   const searchParams = useSearchParams();
 
   const handleSocialClick = (
@@ -128,7 +129,7 @@ function SocialButtonsContent({
 
       {variant === 'signup' && (
         <p className="pt-2 text-center text-xs text-slate-400">
-          소셜 계정으로도 간편하게 가입할 수 있습니다.
+          {t('signup.socialSignupPrompt')}
         </p>
       )}
     </div>

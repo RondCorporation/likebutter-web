@@ -3,6 +3,7 @@ import { Edit3, Image, Sliders, Sun, Contrast, Palette } from 'lucide-react';
 import InfoCard from '../ui/InfoCard';
 import ParameterBadge from '../ui/ParameterBadge';
 import DetailsModal from '../ui/DetailsModal';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   details?: PhotoEditorDetails;
@@ -10,10 +11,13 @@ interface Props {
 }
 
 export default function PhotoEditorDetailsView({ details, onClose }: Props) {
+  const { t } = useTranslation('studio');
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
-        <p className="text-studio-text-muted">상세 정보를 불러올 수 없습니다</p>
+        <p className="text-studio-text-muted">
+          {t('photoEditor.detailsNotAvailable')}
+        </p>
       </div>
     );
   }
@@ -26,23 +30,28 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Edit3 className="h-5 w-5 text-studio-header" />
           </div>
-          <h3 className="text-xl font-semibold">포토 에디터</h3>
+          <h3 className="text-xl font-semibold">{t('photoEditor.title')}</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           <ParameterBadge
-            label="편집 타입"
-            value={details.request.editType || '기본 향상'}
+            label={t('photoEditor.editType')}
+            value={
+              details.request.editType || t('photoEditor.defaultEnhancement')
+            }
             variant="accent"
           />
           {details.request.applyFilter &&
             details.request.applyFilter !== 'None' && (
               <ParameterBadge
-                label="필터"
+                label={t('photoEditor.filter')}
                 value={details.request.applyFilter}
               />
             )}
           {details.request.enhanceQuality && (
-            <ParameterBadge label="품질 향상" value="적용됨" />
+            <ParameterBadge
+              label={t('photoEditor.qualityEnhancement')}
+              value={t('photoEditor.applied')}
+            />
           )}
         </div>
       </div>
@@ -52,12 +61,12 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
         {/* Original Image */}
         <div className="bg-studio-sidebar border border-studio-border rounded-xl p-4">
           <h4 className="text-sm font-medium text-studio-text-primary mb-3">
-            원본 이미지
+            {t('photoEditor.originalImage')}
           </h4>
           <div className="bg-studio-border rounded-lg p-3">
             <div className="w-full h-48 bg-studio-border rounded flex items-center justify-center">
               <span className="text-studio-text-secondary text-sm">
-                원본 이미지 미리보기
+                {t('photoEditor.originalImagePreview')}
               </span>
             </div>
             {details.request.sourceImageKey && (
@@ -72,12 +81,12 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
         {details.result && (
           <div className="bg-studio-sidebar border border-studio-border rounded-xl p-4">
             <h4 className="text-sm font-medium text-studio-text-primary mb-3">
-              편집된 결과
+              {t('photoEditor.editedResult')}
             </h4>
             <div className="bg-studio-border rounded-lg p-3">
               <div className="w-full h-48 bg-studio-border rounded flex items-center justify-center border-2 border-studio-button-primary/30">
                 <span className="text-studio-text-secondary text-sm">
-                  편집된 결과
+                  {t('photoEditor.editedResult')}
                 </span>
               </div>
               {details.result.editedImageKey && (
@@ -90,15 +99,15 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
         )}
       </div>
 
-      {/* 편집 설정 */}
-      <InfoCard title="편집 설정">
+      {/* Edit Settings */}
+      <InfoCard title={t('photoEditor.editSettings')}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Brightness */}
           <div className="bg-studio-border rounded-lg p-3">
             <div className="flex items-center gap-2 mb-2">
               <Sun className="h-4 w-4 text-studio-text-secondary" />
               <span className="text-sm font-medium text-studio-text-primary">
-                밝기
+                {t('photoEditor.brightness')}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -122,7 +131,7 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
             <div className="flex items-center gap-2 mb-2">
               <Contrast className="h-4 w-4 text-studio-text-secondary" />
               <span className="text-sm font-medium text-studio-text-primary">
-                대비
+                {t('photoEditor.contrast')}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -146,7 +155,7 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
             <div className="flex items-center gap-2 mb-2">
               <Palette className="h-4 w-4 text-studio-text-secondary" />
               <span className="text-sm font-medium text-studio-text-primary">
-                채도
+                {t('photoEditor.saturation')}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -167,20 +176,20 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
         </div>
       </InfoCard>
 
-      {/* 처리 정보 */}
-      <InfoCard title="처리 정보">
+      {/* Processing Info */}
+      <InfoCard title={t('photoEditor.processingInfo')}>
         <div className="flex items-center gap-4 mb-4">
           <div className="p-3 bg-studio-border rounded-lg">
             <Sliders className="h-6 w-6 text-studio-text-secondary" />
           </div>
           <div className="flex-1">
             <h5 className="font-medium text-studio-text-primary mb-1">
-              {details.request.editType || '기본 향상'}
+              {details.request.editType || t('photoEditor.defaultEnhancement')}
             </h5>
             <p className="text-sm text-studio-text-secondary">
               {details.request.enhanceQuality
-                ? '품질 향상이 적용되었습니다.'
-                : '기본 편집이 적용되었습니다.'}
+                ? t('photoEditor.qualityEnhancementApplied')
+                : t('photoEditor.defaultEditApplied')}
             </p>
           </div>
         </div>
@@ -191,7 +200,9 @@ export default function PhotoEditorDetailsView({ details, onClose }: Props) {
               <div className="flex items-center gap-2">
                 <Image className="h-4 w-4 text-studio-header" />
                 <span className="text-sm font-medium text-studio-header">
-                  적용된 필터: {details.request.applyFilter}
+                  {t('photoEditor.appliedFilter', {
+                    filter: details.request.applyFilter,
+                  })}
                 </span>
               </div>
             </div>

@@ -66,7 +66,7 @@ export default function ScrollableGrid({
 
   return (
     <div className={`relative w-full overflow-hidden group ${className}`}>
-      {/* 스크롤 컨테이너 */}
+      {/* Scroll container */}
       <div
         ref={scrollContainerRef}
         className="flex gap-3 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden [-webkit-scrollbar-width:none] [scrollbar-width:none] overscroll-contain"
@@ -75,7 +75,7 @@ export default function ScrollableGrid({
         {children}
       </div>
 
-      {/* 페이드 효과 */}
+      {/* Fade effects */}
       {canScrollLeft && (
         <div className="absolute left-0 top-0 w-4 h-full bg-gradient-to-r from-studio-sidebar to-transparent pointer-events-none z-10 opacity-60" />
       )}
@@ -84,7 +84,7 @@ export default function ScrollableGrid({
         <div className="absolute right-0 top-0 w-4 h-full bg-gradient-to-l from-studio-sidebar to-transparent pointer-events-none z-10 opacity-60" />
       )}
 
-      {/* 스크롤 화살표 - 동적 위치 */}
+      {/* Scroll arrows - dynamic position */}
       {canScrollLeft && (
         <button
           onClick={scrollLeft}

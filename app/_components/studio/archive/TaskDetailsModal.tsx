@@ -5,6 +5,7 @@ import { Task } from '@/types/task';
 import { X, LoaderCircle } from 'lucide-react';
 import TaskDetailsView from './TaskDetailsView';
 import { getTaskStatus } from '@/lib/apis/task.api';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   task: Task;
@@ -15,6 +16,7 @@ export default function TaskDetailsModal({
   task: initialTask,
   onClose,
 }: Props) {
+  const { t } = useTranslation('studio');
   const [displayTask, setDisplayTask] = useState<Task | null>(initialTask);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function TaskDetailsModal({
               className="animate-spin text-studio-button-primary"
             />
             <p className="text-studio-text-primary text-sm">
-              상세 정보를 불러오는 중...
+              {t('archive.messages.loadingDetails')}
             </p>
           </div>
         </div>
@@ -76,7 +78,7 @@ export default function TaskDetailsModal({
         <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8 mx-4 max-w-md">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-studio-text-primary">
-              오류 발생
+              {t('archive.messages.errorOccurred')}
             </h3>
             <button
               onClick={onClose}
@@ -92,9 +94,6 @@ export default function TaskDetailsModal({
   }
 
   return displayTask ? (
-    <TaskDetailsView
-      task={displayTask}
-      onClose={onClose}
-    />
+    <TaskDetailsView task={displayTask} onClose={onClose} />
   ) : null;
 }

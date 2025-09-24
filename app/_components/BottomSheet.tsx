@@ -258,7 +258,7 @@ export default function BottomSheet({
         willChange: isDragging ? 'transform' : 'auto',
       }}
     >
-      {/* 드래그 핸들 */}
+      {/* Drag handle */}
       <div
         className="flex justify-center py-3 cursor-grab active:cursor-grabbing select-none"
         onTouchStart={handleTouchStart}
@@ -279,7 +279,7 @@ export default function BottomSheet({
         />
       </div>
 
-      {/* 콘텐츠 영역 */}
+      {/* Content area */}
       <div className="flex flex-col flex-1 min-h-0">
         <div
           className="flex-1 overflow-y-auto px-3 overscroll-contain"
@@ -295,7 +295,7 @@ export default function BottomSheet({
           {children}
         </div>
 
-        {/* 하단 고정 버튼 영역 */}
+        {/* Fixed bottom button area */}
         {bottomButton && (
           <div className="px-3 py-3 border-t border-studio-border bg-studio-sidebar">
             {bottomButton}

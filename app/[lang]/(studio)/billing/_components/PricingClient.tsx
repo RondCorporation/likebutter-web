@@ -164,10 +164,10 @@ const PlanCard = ({
         ) : sdkStatus === 'loading' ? (
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="h-4 w-4 animate-spin" />
-            {translations.sdkPreparing || 'SDK 준비 중...'}
+            {t('billing:plans.sdkPreparing')}
           </div>
         ) : sdkStatus === 'error' ? (
-          translations.sdkError || 'SDK 로딩 오류'
+          t('billing:plans.sdkError')
         ) : (
           plan.cta
         )}
@@ -185,7 +185,7 @@ const PlanCard = ({
     >
       {plan.isPopular && (
         <div className="absolute top-0 right-0 bg-gradient-to-r from-butter-yellow to-butter-orange text-black text-xs font-bold px-4 py-1 rounded-bl-2xl">
-          {translations.mostPopular || '인기'}
+          {t('billing:plans.mostPopular')}
         </div>
       )}
 
@@ -455,7 +455,7 @@ function PricingClientContent({
                 className="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
-                {translations.backToStudio || '스튜디오로 돌아가기'}
+                {t('billing:backToStudio')}
               </Link>
             </div>
           </div>
@@ -465,11 +465,15 @@ function PricingClientContent({
       <div className="container mx-auto px-4 sm:px-6 py-16 text-white">
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white">
-            {activeSubscription ? (translations.planManagement || '플랜 관리') : translations.title}
+            {activeSubscription
+              ? t('billing:planManagement')
+              : translations.title}
           </h1>
           <p className="mt-4 text-lg md:text-xl text-slate-300">
             {activeSubscription
-              ? (translations.currentPlanStatus || `현재 ${currentPlan?.name || activePlanKey} 플랜을 이용 중입니다`).replace('{plan}', currentPlan?.name || activePlanKey)
+              ? t('billing:currentPlanStatus', {
+                  plan: currentPlan?.name || activePlanKey,
+                })
               : translations.subtitle}
           </p>
         </div>
@@ -484,7 +488,7 @@ function PricingClientContent({
                       <Shield className="h-5 w-5 text-butter-yellow" />
                     </div>
                     <h3 className="text-2xl font-bold text-butter-yellow">
-                      {translations.currentPlan || '현재 플랜'}
+                      {t('billing:plans.currentPlan')}
                     </h3>
                   </div>
                   <h4 className="text-3xl font-extrabold text-white mb-2">
@@ -494,18 +498,20 @@ function PricingClientContent({
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-4 w-4" />
                       <span>
-                        {isYearlySubscription ? (translations.yearlyBilling || '연간 결제') : (translations.monthlyBilling || '월간 결제')}
+                        {isYearlySubscription
+                          ? t('billing:plans.yearlySubscription')
+                          : t('billing:plans.monthlySubscription')}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
                       <span>
-                        {translations.expiryDate || '만료일'}:{' '}
+                        {t('billing:plans.expiryDate')}:{' '}
                         {new Date(
                           activeSubscription.endDate
                         ).toLocaleDateString('ko-KR')}
                         <span className="ml-2 px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full">
-                          {translations.autoRenewal || '자동갱신'}
+                          {t('billing:plans.autoRenewal')}
                         </span>
                       </span>
                     </div>
@@ -521,12 +527,15 @@ function PricingClientContent({
                         ? `₩${currentPlan.priceMonthly.toLocaleString()}`
                         : currentPlan.priceMonthly}
                     <span className="text-lg text-slate-400 ml-1">
-                      /{isYearlySubscription ? (translations.year || '년') : (translations.month || '월')}
+                      /
+                      {isYearlySubscription
+                        ? t('billing:plans.year')
+                        : t('billing:plans.month')}
                     </span>
                   </div>
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 text-green-300 text-sm rounded-full">
                     <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    {translations.statusActive || '활성'}
+                    {t('billing:subscription.manager.statusActive')}
                   </div>
                 </div>
               </div>
@@ -537,10 +546,10 @@ function PricingClientContent({
         {activeSubscription && personalizedPlans.length > 1 && (
           <div className="mt-16 text-center">
             <h2 className="text-3xl font-bold text-white mb-4">
-              🚀 {translations.upgradePrompt || '더 나은 플랜으로 업그레이드하세요'}
+              🚀 {t('billing:plans.upgradePrompt')}
             </h2>
             <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-              {translations.upgradeDescription || '현재 플랜보다 더 많은 기능을 이용할 수 있는 플랜을 확인해보세요'}
+              {t('billing:plans.upgradeDescription')}
             </p>
           </div>
         )}

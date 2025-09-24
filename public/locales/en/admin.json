@@ -136,5 +136,17 @@
     "delete": "Delete",
     "edit": "Edit",
     "view": "View"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "userManagement": "User Management",
+    "allUsers": "All Users",
+    "accountManagement": "Account Management",
+    "paymentManagement": "Payment Management",
+    "subscriptionManagement": "Subscription Management",
+    "paymentHistory": "Payment History",
+    "system": "System",
+    "taskManagement": "Task Management",
+    "adminMode": "Admin Mode"
   }
 }

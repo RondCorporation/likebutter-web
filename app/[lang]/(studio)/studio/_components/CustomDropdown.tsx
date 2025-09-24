@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface DropdownOption {
   value: string;
@@ -21,12 +22,15 @@ export default function CustomDropdown({
   options,
   value,
   onChange,
-  placeholder = '선택해주세요',
+  placeholder,
   className = '',
   width = 'w-[236px]',
 }: CustomDropdownProps) {
+  const { t } = useTranslation(['common']);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const finalPlaceholder = placeholder || t('selectPlaceholder');
 
   const selectedOption = options.find((option) => option.value === value);
 
@@ -60,7 +64,7 @@ export default function CustomDropdown({
       >
         <div className="flex items-center gap-2 relative flex-[0_0_auto] self-stretch w-full">
           <span className="relative w-fit mt-[-1px] font-pretendard-medium text-studio-text-secondary text-base sm:text-sm tracking-[0] leading-[19.6px] whitespace-nowrap flex-1">
-            {selectedOption ? selectedOption.label : placeholder}
+            {selectedOption ? selectedOption.label : finalPlaceholder}
           </span>
           <ChevronDown
             className={`relative w-5 h-5 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}

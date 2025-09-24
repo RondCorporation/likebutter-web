@@ -5,6 +5,7 @@ import StudioButton from '../../_components/ui/StudioButton';
 import StudioSlider from '@/app/_components/shared/StudioSlider';
 import { Upload, Music } from 'lucide-react';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
+import { useTranslation } from 'react-i18next';
 
 interface MusicUploadProps {
   onGenerate: (data: {
@@ -23,6 +24,7 @@ export default function MusicUpload({
   const [pitch, setPitch] = useState(0);
   const [format, setFormat] = useState<'mp3' | 'wav'>('mp3');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation(['studio']);
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -34,14 +36,14 @@ export default function MusicUpload({
       if (file.type.startsWith('audio/')) {
         setSelectedFile(file);
       } else {
-        alert('오디오 파일만 업로드 가능합니다.');
+        alert(t('butterCover.musicUpload.audioOnlyError'));
       }
     }
   };
 
   const handleGenerate = () => {
     if (!selectedFile) {
-      alert('음원 파일을 선택해주세요.');
+      alert(t('butterCover.musicUpload.selectAudioFileError'));
       return;
     }
 
@@ -59,7 +61,7 @@ export default function MusicUpload({
           {/* File Upload */}
           <div>
             <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
-              음원 파일 선택
+              {t('butterCover.musicUpload.selectAudioFile')}
             </label>
             <div
               onClick={handleFileSelect}
@@ -77,9 +79,11 @@ export default function MusicUpload({
                   <Upload size={28} className="sm:w-8 sm:h-8" />
                   <div className="text-center">
                     <div className="text-sm sm:text-base font-medium text-white mb-1">
-                      파일 찾아보기
+                      {t('butterCover.musicUpload.browseFile')}
                     </div>
-                    <div className="text-xs sm:text-sm">MP3, WAV, M4A 등</div>
+                    <div className="text-xs sm:text-sm">
+                      {t('butterCover.musicUpload.audioFormats')}
+                    </div>
                   </div>
                 </div>
               )}
@@ -96,7 +100,7 @@ export default function MusicUpload({
           {/* Pitch Control */}
           <div>
             <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
-              목소리 높낮이
+              {t('butterCover.musicUpload.voicePitch')}
             </label>
             <div className="space-y-4">
               <StudioSlider
@@ -107,12 +111,12 @@ export default function MusicUpload({
                 step={1}
               />
               <div className="flex justify-between text-sm text-slate-400">
-                <span>낮게 (-12)</span>
+                <span>{t('butterCover.musicUpload.lowPitch')}</span>
                 <span className="text-butter-yellow font-medium">
                   {pitch > 0 ? '+' : ''}
                   {pitch}
                 </span>
-                <span>높게 (+12)</span>
+                <span>{t('butterCover.musicUpload.highPitch')}</span>
               </div>
             </div>
           </div>
@@ -120,7 +124,7 @@ export default function MusicUpload({
           {/* File Format */}
           <div>
             <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
-              저장 파일 형식
+              {t('butterCover.musicUpload.outputFormat')}
             </label>
             <div className="flex gap-4 sm:gap-6">
               <label className="flex items-center gap-2 sm:gap-3 cursor-pointer">
@@ -158,11 +162,11 @@ export default function MusicUpload({
                 onClick={onPrevious}
                 className="flex items-center justify-center px-5 py-3 h-12 rounded-md border-2 border-slate-600 text-slate-300 hover:border-slate-500 hover:text-white transition-colors bg-transparent sm:w-32"
               >
-                이전
+                {t('butterCover.musicUpload.previous')}
               </button>
             )}
             <StudioButton
-              text="음원생성"
+              text={t('butterCover.musicUpload.generateAudio')}
               onClick={handleGenerate}
               className="flex-1"
               creditCost={CREDIT_COSTS.BUTTER_COVER}

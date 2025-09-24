@@ -82,7 +82,9 @@ export default function DashboardClient() {
   const currentToolCards =
     selectedTab === 'image' ? imageToolCards : audioToolCards;
   const currentSectionTitle =
-    selectedTab === 'image' ? t('studio:dashboard.imageGeneration') : t('studio:dashboard.audioGeneration');
+    selectedTab === 'image'
+      ? t('studio:dashboard.imageGeneration')
+      : t('studio:dashboard.audioGeneration');
 
   return (
     <div className="w-full min-h-screen bg-[#25282c]">

@@ -57,6 +57,18 @@
     "startButton": "시작하기",
     "planSelected": "{planKey} {billingCycle} 플랜을 선택하셨습니다.",
     "planSelectionError": "플랜 선택 중 오류가 발생했습니다.",
+    "title": "요금제 선택",
+    "subtitle": "창작 활동에 필요한 AI 도구들을 마음껏 사용해보세요. 언제든지 플랜을 변경할 수 있습니다.",
+    "monthlyBilling": "월간 결제",
+    "yearlyBilling": "연간 결제",
+    "month": "월",
+    "allPlansInclude": "모든 플랜에 포함된 기능",
+    "freeTrial": "무료 체험 기간",
+    "support247": "24/7 고객 지원",
+    "cancelAnytime": "언제든 취소 가능",
+    "mostPopular": "가장 인기",
+    "currentPlan": "현재 플랜",
+    "downgradeNotAvailable": "다운그레이드 불가",
     "free": {
       "name": "무료 플랜",
       "desc": "처음이라면 가볍게 시작해보세요!",
@@ -134,7 +146,11 @@
       "serverDesc": "일시적인 서버 오류입니다. 잠시 후 다시 시도해주세요",
       "payment": "결제 오류",
       "paymentDesc": "결제 처리 중 문제가 발생했습니다",
-      "genericDesc": "알 수 없는 오류가 발생했습니다"
+      "genericDesc": "알 수 없는 오류가 발생했습니다",
+      "subscriptionFailed": "구독 생성에 실패했습니다.",
+      "processingError": "결제 후 처리 중 오류가 발생했습니다: {message}",
+      "paymentFailedWithMessage": "결제에 실패했습니다: {message}",
+      "unknownError": "알 수 없는 오류"
     },
     "actions": {
       "goToPricing": "요금제로 이동",
@@ -146,9 +162,13 @@
       "needHelp": "도움이 필요하신가요?",
       "contactSupport": "고객 지원 문의",
       "viewDocs": "문서 보기"
+    },
+    "success": {
+      "subscriptionStarted": "구독이 성공적으로 시작되었습니다!"
     }
   },
   "subscription": {
+    "subscribeToPlan": "{planName} 구독",
     "manager": {
       "fetchError": "구독 정보를 가져오는 데 실패했습니다.",
       "cancelConfirm": "현재 결제 주기가 끝날 때까지 구독이 유지됩니다. 정말로 취소하시겠습니까?",
@@ -220,5 +240,8 @@
     "servicePeriodYearly": "결제 시점부터 12개월간 서비스 제공",
     "autoRenewing": "자동 갱신 (취소 시까지)"
   },
-  "paymentAlert": "결제 시스템 연동은 현재 준비 중입니다. 곧 다시 확인해주세요!"
+  "paymentAlert": "결제 시스템 연동은 현재 준비 중입니다. 곧 다시 확인해주세요!",
+  "checkout": {
+    "processingPayment": "결제 결과를 처리 중입니다. 잠시만 기다려주세요..."
+  }
 }

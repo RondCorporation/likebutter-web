@@ -219,5 +219,9 @@
   "dropdownStudio": "스튜디오",
   "dropdownSubscription": "구독",
   "dropdownPaymentHistory": "결제 내역",
-  "dropdownSettings": "설정"
+  "dropdownSettings": "설정",
+  "insufficientCredits": "크레딧이 부족합니다. 크레딧을 충전해주세요.",
+  "comingSoon": "준비 중인 기능입니다.",
+  "selectPlaceholder": "선택해주세요",
+  "noData": "데이터가 없습니다"
 }

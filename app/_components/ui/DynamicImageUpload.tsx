@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { Upload, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ImageUploadSlot {
   id: string;
@@ -24,16 +25,17 @@ export default function DynamicImageUpload({
   onFileRemove,
   className = '',
 }: DynamicImageUploadProps) {
+  const { t } = useTranslation(['studio']);
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
 
   const handleFileUpload = (file: File, slotId: string) => {
     if (file.size > 200 * 1024 * 1024) {
-      alert('파일 크기가 200MB를 초과합니다.');
+      alert(t('digitalGoods.messages.fileSizeExceeded'));
       return;
     }
 
     if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-      alert('지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)');
+      alert(t('digitalGoods.messages.unsupportedFormat'));
       return;
     }
 
@@ -81,7 +83,7 @@ export default function DynamicImageUpload({
 
   return (
     <div className={`${className}`}>
-      {/* 3열 그리드로 이미지 슬롯 표시 */}
+      {/* 3-column grid for image slots */}
       <div className="grid grid-cols-3 gap-2 mb-3">
         {slots.map((slot) => (
           <div key={slot.id} className="flex flex-col">
@@ -133,13 +135,15 @@ export default function DynamicImageUpload({
                         : 'text-studio-text-secondary'
                     }`}
                   >
-                    {dragOverSlot === slot.id ? '놓기' : slot.label}
+                    {dragOverSlot === slot.id
+                      ? t('digitalGoods.messages.dropHere')
+                      : slot.label}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* 라벨을 이미지 하단에 표시 */}
+            {/* Display label below the image */}
             <div className="text-studio-text-primary text-[10px] font-pretendard-medium text-center mt-1">
               {slot.label}
             </div>

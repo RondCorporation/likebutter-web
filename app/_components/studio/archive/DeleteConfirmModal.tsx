@@ -1,6 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   taskCount?: number;
@@ -17,6 +18,7 @@ export default function DeleteConfirmModal({
   onConfirm,
   isDeleting = false,
 }: Props) {
+  const { t } = useTranslation('studio');
   if (!isOpen) return null;
 
   return (
@@ -43,7 +45,7 @@ export default function DeleteConfirmModal({
         {/* Title */}
         <div className="text-center mb-12">
           <h2 className="text-xl font-medium text-white">
-            이미지를 삭제하시겠습니까?
+            {t('deleteConfirm.title')}
           </h2>
         </div>
 
@@ -54,14 +56,16 @@ export default function DeleteConfirmModal({
             disabled={isDeleting}
             className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 font-medium"
           >
-            취소
+            {t('deleteConfirm.cancel')}
           </button>
           <button
             onClick={onConfirm}
             disabled={isDeleting}
             className="flex-1 px-6 py-3 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 transition-colors disabled:opacity-50 font-medium"
           >
-            {isDeleting ? '삭제 중...' : '삭제'}
+            {isDeleting
+              ? t('deleteConfirm.deleting')
+              : t('deleteConfirm.delete')}
           </button>
         </div>
       </div>

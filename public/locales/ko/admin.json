@@ -136,5 +136,17 @@
     "delete": "삭제",
     "edit": "편집",
     "view": "보기"
+  },
+  "sidebar": {
+    "dashboard": "대시보드",
+    "userManagement": "사용자 관리",
+    "allUsers": "전체 사용자",
+    "accountManagement": "계정 관리",
+    "paymentManagement": "결제 관리",
+    "subscriptionManagement": "구독 관리",
+    "paymentHistory": "결제 내역",
+    "system": "시스템",
+    "taskManagement": "작업 관리",
+    "adminMode": "관리자 모드"
   }
 }

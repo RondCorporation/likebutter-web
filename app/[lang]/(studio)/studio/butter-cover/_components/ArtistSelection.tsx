@@ -3,188 +3,190 @@
 import { useState } from 'react';
 import CustomDropdown from '../../_components/CustomDropdown';
 import StudioButton from '../../_components/ui/StudioButton';
+import { useTranslation } from 'react-i18next';
 
 interface ArtistSelectionProps {
   onNext: (data: { group: string; artist: string }) => void;
 }
 
-const artistGroups = [
-  { value: 'BTS', label: 'BTS' },
-  { value: 'Red Velvet', label: 'Red Velvet' },
-  { value: 'NewJeans', label: 'NewJeans' },
-  { value: 'Stray Kids', label: 'Stray Kids' },
-  { value: 'BLACKPINK', label: 'BLACKPINK' },
-  { value: 'ILLIT', label: 'ILLIT' },
-  { value: 'ENHYPEN', label: 'ENHYPEN' },
-  { value: 'EXO', label: 'EXO' },
-  { value: 'BabyMonster', label: 'BabyMonster' },
-  { value: 'Monsta X', label: 'Monsta X' },
-  { value: 'RIIZE', label: 'RIIZE' },
-  { value: 'Seventeen', label: 'Seventeen' },
-  { value: 'NCT', label: 'NCT' },
-  { value: 'TXT', label: 'TXT' },
-  { value: 'TWS', label: 'TWS' },
-  { value: 'AESPA', label: 'AESPA' },
-  { value: 'IVE', label: 'IVE' },
-  { value: 'Le Sserafim', label: 'Le Sserafim' },
-  { value: '솔로 가수', label: '솔로 가수' },
-];
-
-const artistMembers = {
-  BTS: [
-    { value: 'Jhope', label: 'J-Hope' },
-    { value: 'RapMonster', label: 'RM' },
-    { value: 'Suga', label: 'Suga' },
-    { value: 'Jungkook', label: '정국' },
-    { value: 'V', label: '뷔' },
-    { value: 'Jimin', label: '지민' },
-    { value: 'Jin', label: '진' },
-  ],
-  'Red Velvet': [
-    { value: 'Wendy', label: '웬디' },
-    { value: 'SEULGI', label: '슬기' },
-    { value: 'JOY', label: '조이' },
-    { value: 'IRENE', label: '아이린' },
-    { value: 'YERI', label: '예리' },
-  ],
-  NewJeans: [
-    { value: 'Hyein', label: '혜인' },
-    { value: 'Hanni', label: '하니' },
-    { value: 'Minji', label: '민지' },
-    { value: 'DANIELLE', label: '다니엘' },
-    { value: 'Haerin', label: '해린' },
-  ],
-  'Stray Kids': [
-    { value: 'BangChan', label: '방찬' },
-    { value: 'Hyunjin', label: '현진' },
-    { value: 'Seungmin', label: '승민' },
-    { value: 'HanJisung', label: '한' },
-    { value: 'LeeKnow', label: '리노' },
-    { value: 'Changbin', label: '창빈' },
-    { value: 'I.N', label: '아이엔' },
-  ],
-  BLACKPINK: [
-    { value: 'LISA', label: '리사' },
-    { value: 'JENNIE', label: '제니' },
-    { value: 'JISOO', label: '지수' },
-    { value: 'ROSE', label: '로제' },
-  ],
-  ILLIT: [
-    { value: 'Moka', label: '모카' },
-    { value: 'Minju', label: '민주' },
-    { value: 'Iroha', label: '이로하' },
-    { value: 'Yunah', label: '유나' },
-    { value: 'Wonhee', label: '원희' },
-  ],
-  ENHYPEN: [
-    { value: 'Heeseung', label: '희승' },
-    { value: 'Jay', label: '제이' },
-    { value: 'Jake', label: '제이크' },
-    { value: 'Sunghoon', label: '성훈' },
-    { value: 'Jungwon', label: '정원' },
-    { value: 'Niki', label: '니키' },
-    { value: 'Sunoo', label: '선우' },
-  ],
-  EXO: [
-    { value: 'BAEKHYUN', label: '백현' },
-    { value: 'D.O', label: '디오' },
-    { value: 'Sehun', label: '세훈' },
-  ],
-  BabyMonster: [
-    { value: 'Ahyeon', label: '아현' },
-    { value: 'RUKA', label: '루카' },
-    { value: 'PHARITA', label: '파리타' },
-    { value: 'RAMI', label: '라미' },
-    { value: 'ASA', label: '아사' },
-    { value: 'Rora', label: '로라' },
-    { value: 'Chiquita', label: '치키타' },
-  ],
-  'Monsta X': [
-    { value: 'IMChangkyun', label: '아이엠' },
-    { value: 'LeeMinhyuk', label: '민혁' },
-  ],
-  RIIZE: [
-    { value: 'Wonbin', label: '원빈' },
-    { value: 'Sungchan', label: '성찬' },
-    { value: 'Seunghan', label: '승한' },
-    { value: 'Anton', label: '안톤' },
-    { value: 'Shotaro', label: '쇼타로' },
-    { value: 'Sohee', label: '소희' },
-  ],
-  Seventeen: [
-    { value: 'Dino', label: '디노' },
-    { value: 'Joshua', label: '조슈아' },
-    { value: 'JeonWonwoo', label: '원우' },
-    { value: 'Scoups', label: '에스쿱스' },
-    { value: 'Hoshi', label: '호시' },
-    { value: 'Seungkwan', label: '승관' },
-    { value: 'KimMingyu', label: '민규' },
-    { value: 'DK', label: '도겸' },
-    { value: 'Woozi', label: '우지' },
-    { value: 'Jeonghan', label: '정한' },
-  ],
-  NCT: [
-    { value: 'Chenle', label: '천러' },
-    { value: 'Mark', label: '마크' },
-    { value: 'Jaemin', label: '재민' },
-    { value: 'Renjun', label: '런쥔' },
-    { value: 'Jisung', label: '지성' },
-    { value: 'Jungwoo', label: '정우' },
-    { value: 'Doyoung', label: '도영' },
-    { value: 'Haechan', label: '해찬' },
-    { value: 'TEN', label: '텐' },
-    { value: 'Jaehyun', label: '재현' },
-  ],
-  TXT: [
-    { value: 'HueningKai', label: '휴닝카이' },
-    { value: 'Soobin', label: '수빈' },
-    { value: 'Beomgyu', label: '범규' },
-    { value: 'Taehyun', label: '태현' },
-    { value: 'Yeonjun', label: '연준' },
-  ],
-  TWS: [
-    { value: 'Jihoon', label: '지훈' },
-    { value: 'Youngjae', label: '영재' },
-    { value: 'Kyungmin', label: '경민' },
-    { value: 'Shinyu', label: '신유' },
-    { value: 'Dohoon', label: '도훈' },
-  ],
-  AESPA: [
-    { value: 'Karina', label: '카리나' },
-    { value: 'Giselle', label: '지젤' },
-    { value: 'Ningning', label: '닝닝' },
-    { value: 'Winter', label: '윈터' },
-  ],
-  IVE: [
-    { value: 'Leeseo', label: '이서' },
-    { value: 'Liz', label: '리즈' },
-    { value: 'Yujin', label: '유진' },
-    { value: 'Gaeul', label: '가을' },
-    { value: 'Wonyoung', label: '원영' },
-    { value: 'Rei', label: '레이' },
-  ],
-  'Le Sserafim': [
-    { value: 'KimChaewon', label: '채원' },
-    { value: 'HuhYunjin', label: '윤진' },
-    { value: 'KAZUHA', label: '카즈하' },
-    { value: 'SAKURA', label: '사쿠라' },
-    { value: 'HONGEUNCHAE', label: '은채' },
-  ],
-  '솔로 가수': [
-    { value: 'IU', label: '아이유' },
-    { value: 'Backyerin', label: '백예린' },
-    { value: 'ArianaGrande', label: '아리아나 그란데' },
-    { value: 'Trump', label: '트럼프' },
-  ],
-};
-
 export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
+  const { t } = useTranslation(['studio']);
   const [selectedGroup, setSelectedGroup] = useState('');
   const [selectedArtist, setSelectedArtist] = useState('');
 
+  const artistGroups = [
+    { value: 'BTS', label: t('artistGroups.BTS') },
+    { value: 'Red Velvet', label: t('artistGroups.Red Velvet') },
+    { value: 'NewJeans', label: t('artistGroups.NewJeans') },
+    { value: 'Stray Kids', label: t('artistGroups.Stray Kids') },
+    { value: 'BLACKPINK', label: t('artistGroups.BLACKPINK') },
+    { value: 'ILLIT', label: t('artistGroups.ILLIT') },
+    { value: 'ENHYPEN', label: t('artistGroups.ENHYPEN') },
+    { value: 'EXO', label: t('artistGroups.EXO') },
+    { value: 'BabyMonster', label: t('artistGroups.BabyMonster') },
+    { value: 'Monsta X', label: t('artistGroups.Monsta X') },
+    { value: 'RIIZE', label: t('artistGroups.RIIZE') },
+    { value: 'Seventeen', label: t('artistGroups.Seventeen') },
+    { value: 'NCT', label: t('artistGroups.NCT') },
+    { value: 'TXT', label: t('artistGroups.TXT') },
+    { value: 'TWS', label: t('artistGroups.TWS') },
+    { value: 'AESPA', label: t('artistGroups.AESPA') },
+    { value: 'IVE', label: t('artistGroups.IVE') },
+    { value: 'Le Sserafim', label: t('artistGroups.Le Sserafim') },
+    { value: 'SOLO', label: t('artistGroups.SOLO') },
+  ];
+
+  const artistMembers: { [key: string]: { value: string; label: string }[] } = {
+    BTS: [
+      { value: 'Jhope', label: t('artists.Jhope') },
+      { value: 'RapMonster', label: t('artists.RapMonster') },
+      { value: 'Suga', label: t('artists.Suga') },
+      { value: 'Jungkook', label: t('artists.Jungkook') },
+      { value: 'V', label: t('artists.V') },
+      { value: 'Jimin', label: t('artists.Jimin') },
+      { value: 'Jin', label: t('artists.Jin') },
+    ],
+    'Red Velvet': [
+      { value: 'Wendy', label: t('artists.Wendy') },
+      { value: 'SEULGI', label: t('artists.SEULGI') },
+      { value: 'JOY', label: t('artists.JOY') },
+      { value: 'IRENE', label: t('artists.IRENE') },
+      { value: 'YERI', label: t('artists.YERI') },
+    ],
+    NewJeans: [
+      { value: 'Hyein', label: t('artists.Hyein') },
+      { value: 'Hanni', label: t('artists.Hanni') },
+      { value: 'Minji', label: t('artists.Minji') },
+      { value: 'DANIELLE', label: t('artists.DANIELLE') },
+      { value: 'Haerin', label: t('artists.Haerin') },
+    ],
+    'Stray Kids': [
+      { value: 'BangChan', label: t('artists.BangChan') },
+      { value: 'Hyunjin', label: t('artists.Hyunjin') },
+      { value: 'Seungmin', label: t('artists.Seungmin') },
+      { value: 'HanJisung', label: t('artists.HanJisung') },
+      { value: 'LeeKnow', label: t('artists.LeeKnow') },
+      { value: 'Changbin', label: t('artists.Changbin') },
+      { value: 'I.N', label: t('artists.I.N') },
+    ],
+    BLACKPINK: [
+      { value: 'LISA', label: t('artists.LISA') },
+      { value: 'JENNIE', label: t('artists.JENNIE') },
+      { value: 'JISOO', label: t('artists.JISOO') },
+      { value: 'ROSE', label: t('artists.ROSE') },
+    ],
+    ILLIT: [
+      { value: 'Moka', label: t('artists.Moka') },
+      { value: 'Minju', label: t('artists.Minju') },
+      { value: 'Iroha', label: t('artists.Iroha') },
+      { value: 'Yunah', label: t('artists.Yunah') },
+      { value: 'Wonhee', label: t('artists.Wonhee') },
+    ],
+    ENHYPEN: [
+      { value: 'Heeseung', label: t('artists.Heeseung') },
+      { value: 'Jay', label: t('artists.Jay') },
+      { value: 'Jake', label: t('artists.Jake') },
+      { value: 'Sunghoon', label: t('artists.Sunghoon') },
+      { value: 'Jungwon', label: t('artists.Jungwon') },
+      { value: 'Niki', label: t('artists.Niki') },
+      { value: 'Sunoo', label: t('artists.Sunoo') },
+    ],
+    EXO: [
+      { value: 'BAEKHYUN', label: t('artists.BAEKHYUN') },
+      { value: 'D.O', label: t('artists.D.O') },
+      { value: 'Sehun', label: t('artists.Sehun') },
+    ],
+    BabyMonster: [
+      { value: 'Ahyeon', label: t('artists.Ahyeon') },
+      { value: 'RUKA', label: t('artists.RUKA') },
+      { value: 'PHARITA', label: t('artists.PHARITA') },
+      { value: 'RAMI', label: t('artists.RAMI') },
+      { value: 'ASA', label: t('artists.ASA') },
+      { value: 'Rora', label: t('artists.Rora') },
+      { value: 'Chiquita', label: t('artists.Chiquita') },
+    ],
+    'Monsta X': [
+      { value: 'IMChangkyun', label: t('artists.IMChangkyun') },
+      { value: 'LeeMinhyuk', label: t('artists.LeeMinhyuk') },
+    ],
+    RIIZE: [
+      { value: 'Wonbin', label: t('artists.Wonbin') },
+      { value: 'Sungchan', label: t('artists.Sungchan') },
+      { value: 'Seunghan', label: t('artists.Seunghan') },
+      { value: 'Anton', label: t('artists.Anton') },
+      { value: 'Shotaro', label: t('artists.Shotaro') },
+      { value: 'Sohee', label: t('artists.Sohee') },
+    ],
+    Seventeen: [
+      { value: 'Dino', label: t('artists.Dino') },
+      { value: 'Joshua', label: t('artists.Joshua') },
+      { value: 'JeonWonwoo', label: t('artists.JeonWonwoo') },
+      { value: 'Scoups', label: t('artists.Scoups') },
+      { value: 'Hoshi', label: t('artists.Hoshi') },
+      { value: 'Seungkwan', label: t('artists.Seungkwan') },
+      { value: 'KimMingyu', label: t('artists.KimMingyu') },
+      { value: 'DK', label: t('artists.DK') },
+      { value: 'Woozi', label: t('artists.Woozi') },
+      { value: 'Jeonghan', label: t('artists.Jeonghan') },
+    ],
+    NCT: [
+      { value: 'Chenle', label: t('artists.Chenle') },
+      { value: 'Mark', label: t('artists.Mark') },
+      { value: 'Jaemin', label: t('artists.Jaemin') },
+      { value: 'Renjun', label: t('artists.Renjun') },
+      { value: 'Jisung', label: t('artists.Jisung') },
+      { value: 'Jungwoo', label: t('artists.Jungwoo') },
+      { value: 'Doyoung', label: t('artists.Doyoung') },
+      { value: 'Haechan', label: t('artists.Haechan') },
+      { value: 'TEN', label: t('artists.TEN') },
+      { value: 'Jaehyun', label: t('artists.Jaehyun') },
+    ],
+    TXT: [
+      { value: 'HueningKai', label: t('artists.HueningKai') },
+      { value: 'Soobin', label: t('artists.Soobin') },
+      { value: 'Beomgyu', label: t('artists.Beomgyu') },
+      { value: 'Taehyun', label: t('artists.Taehyun') },
+      { value: 'Yeonjun', label: t('artists.Yeonjun') },
+    ],
+    TWS: [
+      { value: 'Jihoon', label: t('artists.Jihoon') },
+      { value: 'Youngjae', label: t('artists.Youngjae') },
+      { value: 'Kyungmin', label: t('artists.Kyungmin') },
+      { value: 'Shinyu', label: t('artists.Shinyu') },
+      { value: 'Dohoon', label: t('artists.Dohoon') },
+    ],
+    AESPA: [
+      { value: 'Karina', label: t('artists.Karina') },
+      { value: 'Giselle', label: t('artists.Giselle') },
+      { value: 'Ningning', label: t('artists.Ningning') },
+      { value: 'Winter', label: t('artists.Winter') },
+    ],
+    IVE: [
+      { value: 'Leeseo', label: t('artists.Leeseo') },
+      { value: 'Liz', label: t('artists.Liz') },
+      { value: 'Yujin', label: t('artists.Yujin') },
+      { value: 'Gaeul', label: t('artists.Gaeul') },
+      { value: 'Wonyoung', label: t('artists.Wonyoung') },
+      { value: 'Rei', label: t('artists.Rei') },
+    ],
+    'Le Sserafim': [
+      { value: 'KimChaewon', label: t('artists.KimChaewon') },
+      { value: 'HuhYunjin', label: t('artists.HuhYunjin') },
+      { value: 'KAZUHA', label: t('artists.KAZUHA') },
+      { value: 'SAKURA', label: t('artists.SAKURA') },
+      { value: 'HONGEUNCHAE', label: t('artists.HONGEUNCHAE') },
+    ],
+    SOLO: [
+      { value: 'IU', label: t('artists.IU') },
+      { value: 'Backyerin', label: t('artists.Backyerin') },
+      { value: 'ArianaGrande', label: t('artists.ArianaGrande') },
+      { value: 'Trump', label: t('artists.Trump') },
+    ],
+  };
+
   const handleNext = () => {
     if (!selectedGroup || !selectedArtist) {
-      alert('아티스트 그룹과 아티스트를 모두 선택해주세요.');
+      alert(t('butterCover.artistSelection.selectGroupAndArtistError'));
       return;
     }
 
@@ -209,12 +211,14 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
         <div className="space-y-6">
           <div>
             <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
-              아티스트 그룹
+              {t('butterCover.artistSelection.artistGroup')}
             </label>
             <CustomDropdown
               value={selectedGroup}
               onChange={handleGroupChange}
-              placeholder="그룹을 선택하세요"
+              placeholder={t(
+                'butterCover.artistSelection.selectGroupPlaceholder'
+              )}
               options={artistGroups}
               width="w-full"
             />
@@ -222,15 +226,15 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
 
           <div>
             <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
-              아티스트 선택
+              {t('butterCover.artistSelection.artistSelection')}
             </label>
             <CustomDropdown
               value={selectedArtist}
               onChange={setSelectedArtist}
               placeholder={
                 selectedGroup
-                  ? '아티스트를 선택하세요'
-                  : '먼저 그룹을 선택하세요'
+                  ? t('butterCover.artistSelection.selectArtistPlaceholder')
+                  : t('butterCover.artistSelection.selectGroupFirstPlaceholder')
               }
               options={availableArtists}
               width="w-full"
@@ -240,7 +244,7 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
 
         <div className="pt-4">
           <StudioButton
-            text="다음단계"
+            text={t('butterCover.artistSelection.nextStep')}
             onClick={handleNext}
             className="w-full"
           />

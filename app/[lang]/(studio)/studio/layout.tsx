@@ -38,7 +38,7 @@ export default function StudioLayout({ children, params }: Props) {
   return (
     <StudioAuthGuard>
       <div className="flex flex-col min-h-screen w-full">
-        {/* 헤더 - 모바일에서는 padding 조정 */}
+        {/* Header - padding adjusted for mobile */}
         <div className="flex h-16 items-center justify-end gap-2.5 px-4 md:px-8 py-5 w-full bg-studio-header border-b border-solid border-studio-border">
           <Logo className="relative flex-1 mt-[-3.00px] mb-[-1.00px] tracking-[0]" />
 
@@ -55,7 +55,9 @@ export default function StudioLayout({ children, params }: Props) {
               <span className="text-studio-text-primary text-sm font-semibold">
                 {isCreditLoading ? '...' : currentBalance.toLocaleString()}
               </span>
-              <span className="text-studio-text-secondary text-xs">{t('studio:userDropdown.credits')}</span>
+              <span className="text-studio-text-secondary text-xs">
+                {t('studio:userDropdown.credits')}
+              </span>
             </div>
 
             {/* Upgrade Button - Only for FREE plan users */}
@@ -77,18 +79,18 @@ export default function StudioLayout({ children, params }: Props) {
           </div>
         </div>
 
-        {/* 메인 콘텐츠 영역 */}
+        {/* Main content area */}
         <div className="flex flex-1 w-full bg-studio-main overflow-hidden">
-          {/* 데스크톱에서만 사이드바 표시 */}
+          {/* Sidebar displayed only on desktop */}
           {isDesktop && <StudioSidebar lang={lang} />}
 
-          {/* 메인 콘텐츠 - 모바일에서는 하단 네비게이션을 위한 패딩 추가 */}
+          {/* Main content - padding added for bottom navigation on mobile */}
           <div className={`flex-1 ${!isDesktop ? 'pb-20' : ''}`}>
             {children}
           </div>
         </div>
 
-        {/* 모바일에서만 하단 네비게이션 표시 */}
+        {/* Bottom navigation displayed only on mobile */}
         {!isDesktop && <MobileBottomNavigation lang={lang} />}
 
         {/* Component preloader for better performance */}

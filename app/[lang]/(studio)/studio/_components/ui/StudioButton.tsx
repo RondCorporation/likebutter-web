@@ -43,9 +43,9 @@ export default function StudioButton({
       disabled={disabled}
     >
       {isPC ? (
-        /* PC 버전: 크레딧이 버튼 안에 완전히 들어가도록 간격 조절 */
+        /* PC version: Adjust spacing to fit credits completely inside the button */
         <div className="flex items-center w-full px-2 justify-between">
-          {/* 텍스트 영역 */}
+          {/* Text area */}
           <div className="flex items-center justify-center flex-1">
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {!loading && icon && <div className="mr-2">{icon}</div>}
@@ -56,7 +56,7 @@ export default function StudioButton({
             </div>
           </div>
 
-          {/* 크레딧 정보 - PC 버전 우측, 버튼 안에 완전히 포함 */}
+          {/* Credit info - PC version, right side, fully contained within the button */}
           {creditCost && !loading && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)] flex-shrink-0 ml-1">
               <Image
@@ -73,9 +73,9 @@ export default function StudioButton({
           )}
         </div>
       ) : (
-        /* 모바일/기본 버전: 기존 로직 유지 */
+        /* Mobile/default version: Maintain original logic */
         <>
-          {/* 왼쪽 여백 (크레딧이 있을 때만) */}
+          {/* Left margin (only when credits are present) */}
           {creditCost && !loading && <div className="w-[60px]" />}
 
           <div className="flex items-center justify-center flex-1">
@@ -88,7 +88,7 @@ export default function StudioButton({
             </div>
           </div>
 
-          {/* 크레딧 정보 - 모바일 버전 우측 고정 */}
+          {/* Credit info - Mobile version, fixed on the right */}
           {creditCost && !loading && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-[20px] bg-[rgba(232,250,7,0.62)] flex-shrink-0">
               <Image

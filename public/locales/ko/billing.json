@@ -233,7 +233,11 @@
   },
   "startCreating": "창작 시작",
   "subscribeToPlan": "{planName} 구독",
-  "subscription": "구독",
+  "subscription": {
+    "manager": {
+      "statusActive": "활성"
+    }
+  },
   "subscriptionIdError": "구독 ID 오류",
   "subscriptionSuccessMessage": "구독 성공 메시지",
   "tryAgain": "다시 시도",

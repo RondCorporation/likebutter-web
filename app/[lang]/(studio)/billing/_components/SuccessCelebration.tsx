@@ -37,7 +37,7 @@ export default function SuccessCelebration({
   planName = 'creator',
   subscriptionId,
 }: SuccessCelebrationProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['billing', 'common']);
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [showConfetti, setShowConfetti] = useState(true);
@@ -91,32 +91,32 @@ export default function SuccessCelebration({
   const steps = [
     {
       icon: CheckCircle2,
-      title: t('paymentConfirmed'),
-      subtitle: t('billingInformationSecured'),
+      title: t('billing:paymentConfirmed'),
+      subtitle: t('billing:billingInformationSecured'),
       color: 'text-green-400',
       bgColor: 'bg-green-400/20',
     },
     {
       icon: PlanIcon,
-      title: t('planActivated'),
-      subtitle: t('allFeaturesUnlocked'),
+      title: t('billing:planActivated'),
+      subtitle: t('billing:allFeaturesUnlocked'),
       color: 'text-butter-yellow',
       bgColor: 'bg-butter-yellow/20',
     },
     {
       icon: Rocket,
-      title: t('readyToCreate'),
-      subtitle: t('letsBuildSomethingAmazing'),
+      title: t('billing:readyToCreate'),
+      subtitle: t('billing:letsBuildSomethingAmazing'),
       color: 'text-purple-400',
       bgColor: 'bg-purple-400/20',
     },
   ];
 
   const benefits = [
-    { icon: Zap, text: t('unlimitedGenerations') },
-    { icon: Star, text: t('prioritySupport') },
-    { icon: Gift, text: t('exclusiveFeatures') },
-    { icon: Heart, text: t('communityAccess') },
+    { icon: Zap, text: t('billing:unlimitedGenerations') },
+    { icon: Star, text: t('billing:prioritySupport') },
+    { icon: Gift, text: t('billing:exclusiveFeatures') },
+    { icon: Heart, text: t('billing:communityAccess') },
   ];
 
   const handleContinue = () => {
@@ -189,10 +189,10 @@ export default function SuccessCelebration({
             className="space-y-4"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-white">
-              {t('congratulations')}! 🎉
+              {t('billing:congratulations')}! 🎉
             </h1>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-              {t('subscriptionSuccessMessage')}
+              {t('billing:subscriptionSuccessMessage')}
             </p>
           </motion.div>
 
@@ -235,7 +235,7 @@ export default function SuccessCelebration({
             className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700"
           >
             <h3 className="text-xl font-bold text-white mb-6">
-              {t('whatYouGet')}
+              {t('billing:whatYouGet')}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {benefits.map((benefit, index) => (
@@ -266,7 +266,7 @@ export default function SuccessCelebration({
               onClick={handleContinue}
               className="group bg-gradient-to-r from-butter-yellow to-butter-orange text-black px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-butter-yellow/25 transition-all duration-200 hover:scale-105 flex items-center gap-2"
             >
-              {t('startCreating')}
+              {t('billing:startCreating')}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
 
@@ -274,7 +274,7 @@ export default function SuccessCelebration({
               onClick={handleViewReceipt}
               className="text-slate-300 hover:text-white px-6 py-3 rounded-xl border border-slate-600 hover:border-slate-500 transition-colors flex items-center gap-2"
             >
-              {t('viewReceipt')}
+              {t('billing:viewReceipt')}
             </button>
           </motion.div>
         </div>

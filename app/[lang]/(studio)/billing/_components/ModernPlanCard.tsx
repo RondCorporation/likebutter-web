@@ -39,7 +39,7 @@ export default function ModernPlanCard({
   loading = false,
   disabled = false,
 }: ModernPlanCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['billing', 'common']);
 
   const formatPrice = (price: number | string) => {
     if (typeof price === 'string') return price;
@@ -65,7 +65,7 @@ export default function ModernPlanCard({
       {isPopular && (
         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
           <div className="bg-butter-yellow text-black px-3 py-1 rounded-full text-xs font-semibold">
-            {t('mostPopular')}
+            {t('billing:mostPopular')}
           </div>
         </div>
       )}
@@ -91,7 +91,7 @@ export default function ModernPlanCard({
                   {formatPrice(price)}
                 </span>
                 <span className="text-slate-400 text-lg">
-                  /{billingCycle === 'monthly' ? t('month') : t('year')}
+                  /{billingCycle === 'monthly' ? t('billing:month') : t('billing:year')}
                 </span>
               </>
             )}
@@ -140,12 +140,12 @@ export default function ModernPlanCard({
           {loading ? (
             <div className="flex items-center justify-center gap-2">
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-              {t('processing')}
+              {t('billing:plans.processing')}
             </div>
           ) : planKey === 'free' ? (
-            t('planFreeCta')
+            t('billing:plans.free.name')
           ) : (
-            t('planCreatorCta')
+            t('billing:plans.startButton')
           )}
         </button>
       </div>

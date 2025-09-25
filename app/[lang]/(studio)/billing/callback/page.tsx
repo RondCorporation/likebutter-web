@@ -33,17 +33,17 @@ function CallbackHandler() {
           const createSubResponse = await createSubscription(planKey);
 
           if (createSubResponse.data?.subscriptionId) {
-            toast.success(t('payment.success.subscriptionStarted'));
+            toast.success(t('billing:payment.success.subscriptionStarted'));
             await revalidateUser();
             router.replace(
               `/${lang}/billing/success?plan=${planKey.split('_')[0].toLowerCase()}&subscription=${createSubResponse.data.subscriptionId}`
             );
           } else {
-            throw new Error(t('payment.errors.subscriptionFailed'));
+            throw new Error(t('billing:payment.errors.subscriptionFailed'));
           }
         } catch (e: any) {
           toast.error(
-            t('payment.errors.processingError', { message: e.message })
+            t('billing:payment.errors.processingError', { message: e.message })
           );
           router.replace(`/${lang}/billing?error=processing_failed`);
         } finally {
@@ -51,8 +51,8 @@ function CallbackHandler() {
         }
       } else {
         toast.error(
-          t('payment.errors.paymentFailedWithMessage', {
-            message: errorMsg || t('payment.errors.unknownError'),
+          t('billing:payment.errors.paymentFailedWithMessage', {
+            message: errorMsg || t('billing:payment.errors.unknownError'),
           })
         );
         router.replace(`/${lang}/billing?error=payment_failed`);
@@ -65,7 +65,7 @@ function CallbackHandler() {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-4 text-white">
       <Loader2 className="w-12 h-12 animate-spin text-butter-yellow" />
-      <p className="text-lg">{t('checkout.processingPayment')}</p>
+      <p className="text-lg">{t('billing:checkout.processingPayment')}</p>
     </div>
   );
 }

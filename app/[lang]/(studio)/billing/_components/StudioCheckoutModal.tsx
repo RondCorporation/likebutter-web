@@ -40,7 +40,7 @@ export default function StudioCheckoutModal({
   plan,
   lang,
 }: StudioCheckoutModalProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['billing', 'common']);
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
 
@@ -83,7 +83,7 @@ export default function StudioCheckoutModal({
 
   const handlePayment = async () => {
     if (!isAuthenticated || !user) {
-      toast.error(t('loginRequiredForPayment'));
+      toast.error(t('billing:loginRequiredForPayment'));
       router.push(
         `/${lang}/login?returnTo=${encodeURIComponent(window.location.pathname)}`
       );
@@ -112,7 +112,7 @@ export default function StudioCheckoutModal({
 
       const { planKey } = plan;
       if (!planKey) {
-        throw new Error(t('planNotAvailableError'));
+        throw new Error(t('billing:planNotAvailableError'));
       }
 
       localStorage.setItem('selectedPlanKey', planKey);
@@ -120,7 +120,7 @@ export default function StudioCheckoutModal({
       const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
       const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
       if (!storeId || !channelKey) {
-        throw new Error(t('paymentEnvError'));
+        throw new Error(t('billing:paymentEnvError'));
       }
 
       const issueResponse = await PortOne.requestIssueBillingKey({
@@ -134,8 +134,8 @@ export default function StudioCheckoutModal({
 
       if (!issueResponse || issueResponse.code) {
         throw new Error(
-          `${t('billingKeyError')}: ${
-            issueResponse?.message || t('userCancelled')
+          `${t('billing:billingKeyError')}: ${
+            issueResponse?.message || t('billing:userCancelled')
           }`
         );
       }
@@ -160,13 +160,13 @@ export default function StudioCheckoutModal({
           }
         }, 2000);
       } else {
-        throw new Error(t('subscriptionIdError'));
+        throw new Error(t('billing:subscriptionIdError'));
       }
     } catch (error: any) {
       toast.dismiss(loadingToastId);
       setErrorMessage(error.message);
       setPaymentStep('error');
-      toast.error(`${t('genericError')}: ${error.message}`);
+      toast.error(`${t('billing:genericError')}: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -209,9 +209,9 @@ export default function StudioCheckoutModal({
                     {/* Receipt Header */}
                     <div className="text-center mb-8">
                       <h2 className="text-2xl font-bold text-white mb-2">
-                        {t('orderSummary')}
+                        {t('billing:orderSummary')}
                       </h2>
-                      <p className="text-slate-400">{t('reviewYourOrder')}</p>
+                      <p className="text-slate-400">{t('billing:reviewYourOrder')}</p>
                     </div>
 
                     {/* Receipt Style Summary */}
@@ -225,8 +225,8 @@ export default function StudioCheckoutModal({
                             </h3>
                             <p className="text-slate-400 text-sm">
                               {plan.billingCycle === 'monthly'
-                                ? t('monthlySubscription')
-                                : t('yearlySubscription')}
+                                ? t('billing:monthlySubscription')
+                                : t('billing:yearlySubscription')}
                             </p>
                           </div>
                         </div>
@@ -236,7 +236,7 @@ export default function StudioCheckoutModal({
                         {/* Subtotal (before VAT) */}
                         <div className="flex justify-between">
                           <span className="text-slate-300">
-                            {t('subtotal')}
+                            {t('billing:plans.subtotal')}
                           </span>
                           <span className="text-slate-300">
                             {plan.currency}
@@ -247,7 +247,7 @@ export default function StudioCheckoutModal({
                         {/* VAT */}
                         <div className="flex justify-between">
                           <span className="text-slate-400">
-                            {t('vat')} (10%)
+                            {t('billing:vat')} (10%)
                           </span>
                           <span className="text-slate-400">
                             {plan.currency}
@@ -260,7 +260,7 @@ export default function StudioCheckoutModal({
                         {/* Total */}
                         <div className="flex justify-between items-center">
                           <span className="text-lg font-bold text-white">
-                            {t('total')}
+                            {t('billing:checkout.total')}
                           </span>
                           <span className="text-lg font-bold text-butter-yellow">
                             {plan.currency}
@@ -269,7 +269,7 @@ export default function StudioCheckoutModal({
                         </div>
 
                         <div className="text-xs text-slate-500 mt-2">
-                          {t('vatIncluded')}
+                          {t('billing:vatIncluded')}
                         </div>
                       </div>
                     </div>
@@ -277,7 +277,7 @@ export default function StudioCheckoutModal({
                     {/* Key Features */}
                     <div className="mb-8">
                       <h4 className="text-white font-medium mb-3">
-                        {t('whatsIncluded')}
+                        {t('billing:whatsIncluded')}
                       </h4>
                       <div className="space-y-2">
                         {plan.features.slice(0, 3).map((feature, index) => (
@@ -299,7 +299,7 @@ export default function StudioCheckoutModal({
                   <div className="text-center py-12">
                     <Loader2 className="w-8 h-8 text-slate-400 animate-spin mx-auto mb-4" />
                     <p className="text-slate-300 font-medium">
-                      {t('processingPayment')}
+                      {t('billing:processingPayment')}
                     </p>
                   </div>
                 )}
@@ -310,10 +310,10 @@ export default function StudioCheckoutModal({
                       <CheckCircle2 className="w-8 h-8 text-green-400" />
                     </div>
                     <p className="text-white font-semibold text-lg mb-2">
-                      {t('paymentSuccessful')}
+                      {t('billing:paymentSuccessful')}
                     </p>
                     <p className="text-slate-400">
-                      {t('redirectingToReceipt')}
+                      {t('billing:redirectingToReceipt')}
                     </p>
                   </div>
                 )}
@@ -324,7 +324,7 @@ export default function StudioCheckoutModal({
                       <AlertTriangle className="w-8 h-8 text-red-400" />
                     </div>
                     <p className="text-white font-semibold text-lg mb-2">
-                      {t('paymentFailed')}
+                      {t('billing:paymentFailed')}
                     </p>
                     <p className="text-red-400 text-sm mb-4">{errorMessage}</p>
                     <button
@@ -334,7 +334,7 @@ export default function StudioCheckoutModal({
                       }}
                       className="text-slate-400 hover:text-white text-sm transition-colors"
                     >
-                      {t('tryAgain')}
+                      {t('billing:tryAgain')}
                     </button>
                   </div>
                 )}
@@ -350,10 +350,10 @@ export default function StudioCheckoutModal({
                       {sdkStatus === 'loading' ? (
                         <div className="flex items-center justify-center gap-2">
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          {t('preparingPayment')}
+                          {t('billing:preparingPayment')}
                         </div>
                       ) : (
-                        `${t('pay')} ${plan.currency}${formatPrice(plan.price)}`
+                        `${t('billing:pay')} ${plan.currency}${formatPrice(plan.price)}`
                       )}
                     </button>
 
@@ -361,7 +361,7 @@ export default function StudioCheckoutModal({
                       onClick={onClose}
                       className="w-full py-3 px-4 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg border border-slate-600 transition-colors"
                     >
-                      {t('cancel')}
+                      {t('common:cancel')}
                     </button>
                   </div>
                 )}

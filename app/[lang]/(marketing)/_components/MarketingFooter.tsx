@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { forwardRef, useState } from 'react';
 import { COMPANY_INFO } from '@/app/_lib/companyInfo';
 import FeedbackPopup from '@/app/_components/ui/FeedbackPopup';
+import BusinessInquiryPopup from '@/app/_components/ui/BusinessInquiryPopup';
 
 interface MarketingFooterProps {
   isSnapSection?: boolean;
@@ -19,6 +20,7 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
     const pathname = usePathname();
     const lang = pathname.split('/')[1];
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+    const [isBusinessInquiryOpen, setIsBusinessInquiryOpen] = useState(false);
 
     const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start flex flex-col justify-end' : 'pt-12'}`;
 
@@ -79,12 +81,12 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
                     >
                       {t('marketing:footer.feedback')}
                     </button>
-                    <a
-                      href={`mailto:${COMPANY_INFO.contact.business}`}
-                      className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit"
+                    <button
+                      onClick={() => setIsBusinessInquiryOpen(true)}
+                      className="text-slate-400 hover:text-accent transition-colors duration-200 w-fit text-left"
                     >
                       {t('marketing:footer.businessInquiries')}
-                    </a>
+                    </button>
                   </nav>
                 </div>
 
@@ -191,10 +193,13 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
           </div>
         </div>
 
-        {/* {t('marketing:footer.feedbackPopup')} */}
         <FeedbackPopup
           isOpen={isFeedbackOpen}
           onClose={() => setIsFeedbackOpen(false)}
+        />
+        <BusinessInquiryPopup
+          isOpen={isBusinessInquiryOpen}
+          onClose={() => setIsBusinessInquiryOpen(false)}
         />
       </footer>
     );

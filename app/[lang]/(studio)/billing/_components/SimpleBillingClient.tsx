@@ -31,8 +31,8 @@ const convertPlansFormat = (
   t: any
 ): SimplePlan[] => {
   const planTypeMap: { [key: string]: string } = {
-    BASIC: 'Basic Plan',
-    STANDARD: 'Standard Plan',
+    BASIC: t('billing:plans.creator.name'),
+    STANDARD: t('billing:plans.professional.name'),
   };
 
   const planDescMap: { [key: string]: string } = {

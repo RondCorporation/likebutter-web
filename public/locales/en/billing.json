@@ -233,7 +233,11 @@
   },
   "startCreating": "Start Creating",
   "subscribeToPlan": "Subscribe to {planName}",
-  "subscription": "Subscription",
+  "subscription": {
+    "manager": {
+      "statusActive": "Active"
+    }
+  },
   "subscriptionIdError": "Subscription ID Error",
   "subscriptionSuccessMessage": "Subscription Success Message",
   "tryAgain": "Try Again",

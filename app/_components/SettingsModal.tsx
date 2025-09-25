@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import {
   X,
   User,
-  Bell,
   Settings as SettingsIcon,
   CreditCard,
   ChevronDown,
@@ -327,7 +326,6 @@ export default function SettingsModal() {
     },
     { id: 'payment-history', label: t('settingsTabPaymentHistory'), icon: Receipt },
     { id: 'general', label: t('settingsTabGeneral'), icon: SettingsIcon },
-    { id: 'notifications', label: t('settingsTabNotifications'), icon: Bell },
   ];
 
   if (!isSettingsOpen) return null;
@@ -391,11 +389,6 @@ export default function SettingsModal() {
           {activeTab === 'subscription' && <SubscriptionSettings />}
           {activeTab === 'payment-history' && <PaymentHistorySettings />}
           {activeTab === 'general' && <GeneralSettings />}
-          {activeTab === 'notifications' && (
-            <p className="text-studio-text-secondary">
-              {t('settingsNotificationsComingSoon')}
-            </p>
-          )}
         </section>
       </div>
     </div>

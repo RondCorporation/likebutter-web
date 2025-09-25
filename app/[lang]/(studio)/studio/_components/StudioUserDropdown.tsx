@@ -14,7 +14,7 @@ import {
   Check,
   MessageCircle,
   Gift,
-  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useLogout } from '@/app/_hooks/useLogout';
@@ -169,14 +169,14 @@ export default function StudioUserDropdown() {
                   <Globe size={16} className="text-studio-text-secondary" />
                   {t('studio:userDropdown.languageSettings')}
                 </div>
-                <ChevronDown
+                <ChevronRight
                   size={14}
                   className={`text-studio-text-secondary transition-transform ${isLanguageOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {isLanguageOpen && (
-                <div className="absolute left-0 top-full mt-1 w-full rounded-md bg-studio-sidebar border border-studio-border shadow-lg py-1 z-50">
+                <div className="absolute right-full top-0 mr-1 w-32 rounded-md bg-studio-sidebar border border-studio-border shadow-lg py-1 z-50">
                   {languages.map((language) => (
                     <button
                       key={language.code}

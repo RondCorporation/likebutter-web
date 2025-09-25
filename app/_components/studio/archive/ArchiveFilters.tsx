@@ -22,7 +22,6 @@ export default function ArchiveFilters({ onFilterChange }: Props) {
     { label: 'Digital Goods', value: 'DIGITAL_GOODS' },
     { label: 'Dream Conti', value: 'DREAM_CONTI' },
     { label: 'Fanmeeting Studio', value: 'FANMEETING_STUDIO' },
-    { label: 'Photo Editor', value: 'PHOTO_EDITOR' },
   ];
 
   return (

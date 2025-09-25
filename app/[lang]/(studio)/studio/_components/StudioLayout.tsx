@@ -33,7 +33,7 @@ export default function StudioLayout({
 
   if (isDesktop) {
     return (
-      <div className="flex items-start h-full w-full bg-studio-main overflow-hidden">
+      <div className="flex items-start h-screen w-full bg-studio-main overflow-hidden">
         {!hidePCSidebar && sidebar}
         {children}
       </div>

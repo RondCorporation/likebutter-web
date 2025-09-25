@@ -187,9 +187,6 @@ function ArchiveTaskCard({
         case 'FANMEETING_STUDIO_EDIT':
           imageUrl = task.details.result.imageUrl || null;
           break;
-        case 'PHOTO_EDITOR':
-          imageUrl = task.details.result.editedImageKey || null;
-          break;
         case 'DREAM_CONTI':
           imageUrl = task.details.result.imageKey || null;
           break;
@@ -266,7 +263,6 @@ function ArchiveTaskCard({
       DIGITAL_GOODS: t('studio:tools.digitalGoods.title'),
       BUTTER_COVER: t('studio:tools.butterCoverTool.title'),
       FANMEETING_STUDIO: t('studio:tools.fanmeetingStudio.title'),
-      PHOTO_EDITOR: t('studio:archive.taskTypes.photoEditor'),
       STYLIST: t('studio:tools.stylist.title'),
       DREAM_CONTI: t('studio:archive.taskTypes.dreamConti'),
       VIRTUAL_CASTING: t('studio:tools.virtualCasting.title'),
@@ -503,10 +499,6 @@ export default function ArchiveClient() {
         case 'FANMEETING_STUDIO_EDIT':
           downloadUrl = task.details.result.imageUrl;
           fileName = `fanmeeting-studio-${task.taskId}-${Date.now()}.png`;
-          break;
-        case 'PHOTO_EDITOR':
-          downloadUrl = task.details.result.editedImageKey;
-          fileName = `photo-editor-${task.taskId}-${Date.now()}.png`;
           break;
         case 'DREAM_CONTI':
           downloadUrl = task.details.result.imageKey;

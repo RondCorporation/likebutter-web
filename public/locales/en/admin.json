@@ -1,152 +1,139 @@
 {
-  "title": "Admin",
-  "pages": {
-    "user-management": "User Management",
-    "subscription-management": "Subscription Management",
-    "task-history": "Task History",
-    "credit-management": "Credit Management",
-    "analytics": "Analytics",
-    "settings": "Settings",
-    "dashboard": "Dashboard",
-    "users": "All Users",
-    "accounts": "Account Management",
-    "subscriptions": "Subscription Management",
-    "payments": "Payment History",
-    "tasks": "Task Management"
+  "analytics": {
+    "overview": "Overview",
+    "revenueAnalytics": "Revenue Analytics",
+    "title": "Analytics",
+    "usagePatterns": "Usage Patterns",
+    "userGrowth": "User Growth"
+  },
+  "common": {
+    "actions": "Actions",
+    "cancel": "Cancel",
+    "date": "Date",
+    "delete": "Delete",
+    "edit": "Edit",
+    "error": "An error occurred.",
+    "export": "Export",
+    "filter": "Filter",
+    "loading": "Loading...",
+    "noData": "No data available.",
+    "refresh": "Refresh",
+    "save": "Save",
+    "search": "Search",
+    "view": "View"
+  },
+  "creditManagement": {
+    "averageUsage": "Average Usage",
+    "creditsUsed": "Credits Used",
+    "table": {
+      "actions": "Actions",
+      "lastUsed": "Last Used",
+      "remainingCredits": "Remaining Credits",
+      "totalCredits": "Total Credits",
+      "usedCredits": "Used Credits",
+      "user": "User"
+    },
+    "title": "Credit Management",
+    "totalCreditsIssued": "Total Credits Issued"
   },
   "dashboard": {
-    "title": "Admin Dashboard",
-    "welcome": "Welcome! Here's a summary of your platform's activity.",
-    "stats": {
-      "totalUsers": "Total Users",
-      "newUsers": "New Users (24h)",
-      "activeSubscriptions": "Active Subscriptions",
-      "totalRevenue": "Total Revenue",
-      "tasksByStatus": "Tasks by Status"
-    },
     "errors": {
       "failedToLoad": "Failed to load dashboard data",
       "unexpectedError": "An unexpected error occurred."
     },
     "noData": "No data available.",
-    "noTaskData": "No task data available."
+    "noTaskData": "No task data available.",
+    "stats": {
+      "activeSubscriptions": "Active Subscriptions",
+      "newUsers": "New Users (24h)",
+      "tasksByStatus": "Tasks by Status",
+      "totalRevenue": "Total Revenue",
+      "totalUsers": "Total Users"
+    },
+    "title": "Admin Dashboard",
+    "welcome": "Welcome! Here's a summary of your platform's activity."
+  },
+  "pages": {
+    "accounts": "Account Management",
+    "analytics": "Analytics",
+    "credit-management": "Credit Management",
+    "dashboard": "Dashboard",
+    "payments": "Payment History",
+    "settings": "Settings",
+    "subscription-management": "Subscription Management",
+    "subscriptions": "Subscription Management",
+    "task-history": "Task History",
+    "tasks": "Task Management",
+    "user-management": "User Management",
+    "users": "All Users"
   },
   "sidebar": {
+    "accountManagement": "Account Management",
+    "adminMode": "Admin Mode",
+    "allUsers": "All Users",
     "dashboard": "Dashboard",
-    "users": "Users",
-    "userManagement": "User Management",
-    "subscriptions": "Subscriptions",
+    "paymentHistory": "Payment History",
+    "paymentManagement": "Payment Management",
     "subscriptionManagement": "Subscription Management",
-    "tasks": "Tasks",
-    "taskHistory": "Task History",
-    "credits": "Credits",
-    "creditManagement": "Credit Management",
-    "analytics": "Analytics",
-    "settings": "Settings"
-  },
-  "userManagement": {
-    "title": "User Management",
-    "totalUsers": "Total Users",
-    "activeUsers": "Active Users",
-    "newUsersToday": "New Users Today",
-    "searchPlaceholder": "Search users...",
-    "table": {
-      "id": "ID",
-      "email": "Email",
-      "name": "Name",
-      "status": "Status",
-      "createdAt": "Joined",
-      "actions": "Actions"
-    },
-    "status": {
-      "active": "Active",
-      "inactive": "Inactive",
-      "banned": "Banned"
-    },
-    "actions": {
-      "view": "View",
-      "edit": "Edit",
-      "ban": "Ban",
-      "unban": "Unban"
-    }
+    "system": "System",
+    "taskManagement": "Task Management",
+    "userManagement": "User Management"
   },
   "subscriptionManagement": {
-    "title": "Subscription Management",
-    "totalSubscriptions": "Total Subscriptions",
     "activeSubscriptions": "Active Subscriptions",
     "revenue": "Monthly Revenue",
     "table": {
-      "user": "User",
-      "plan": "Plan",
-      "status": "Status",
-      "startDate": "Start Date",
-      "endDate": "End Date",
+      "actions": "Actions",
       "amount": "Amount",
-      "actions": "Actions"
-    }
+      "endDate": "End Date",
+      "plan": "Plan",
+      "startDate": "Start Date",
+      "status": "Status",
+      "user": "User"
+    },
+    "title": "Subscription Management",
+    "totalSubscriptions": "Total Subscriptions"
   },
   "taskHistory": {
-    "title": "Task History",
-    "totalTasks": "Total Tasks",
     "completedTasks": "Completed Tasks",
     "failedTasks": "Failed Tasks",
     "table": {
-      "id": "Task ID",
-      "user": "User",
-      "type": "Type",
-      "status": "Status",
-      "createdAt": "Created",
+      "actions": "Actions",
       "completedAt": "Completed",
-      "actions": "Actions"
-    }
+      "createdAt": "Created",
+      "id": "Task ID",
+      "status": "Status",
+      "type": "Type",
+      "user": "User"
+    },
+    "title": "Task History",
+    "totalTasks": "Total Tasks"
   },
-  "creditManagement": {
-    "title": "Credit Management",
-    "totalCreditsIssued": "Total Credits Issued",
-    "creditsUsed": "Credits Used",
-    "averageUsage": "Average Usage",
+  "title": "Admin",
+  "userManagement": {
+    "actions": {
+      "ban": "Ban",
+      "edit": "Edit",
+      "unban": "Unban",
+      "view": "View"
+    },
+    "activeUsers": "Active Users",
+    "newUsersToday": "New Users Today",
+    "searchPlaceholder": "Search users...",
+    "status": {
+      "active": "Active",
+      "banned": "Banned",
+      "inactive": "Inactive"
+    },
     "table": {
-      "user": "User",
-      "totalCredits": "Total Credits",
-      "usedCredits": "Used Credits",
-      "remainingCredits": "Remaining Credits",
-      "lastUsed": "Last Used",
-      "actions": "Actions"
-    }
-  },
-  "analytics": {
-    "title": "Analytics",
-    "overview": "Overview",
-    "userGrowth": "User Growth",
-    "revenueAnalytics": "Revenue Analytics",
-    "usagePatterns": "Usage Patterns"
-  },
-  "common": {
-    "loading": "Loading...",
-    "error": "An error occurred.",
-    "noData": "No data available.",
-    "refresh": "Refresh",
-    "export": "Export",
-    "filter": "Filter",
-    "search": "Search",
-    "date": "Date",
-    "actions": "Actions",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "edit": "Edit",
-    "view": "View"
-  },
-  "sidebar": {
-    "dashboard": "Dashboard",
-    "userManagement": "User Management",
-    "allUsers": "All Users",
-    "accountManagement": "Account Management",
-    "paymentManagement": "Payment Management",
-    "subscriptionManagement": "Subscription Management",
-    "paymentHistory": "Payment History",
-    "system": "System",
-    "taskManagement": "Task Management",
-    "adminMode": "Admin Mode"
+      "actions": "Actions",
+      "createdAt": "Joined",
+      "email": "Email",
+      "id": "ID",
+      "name": "Name",
+      "status": "Status"
+    },
+    "title": "User Management",
+    "totalUsers": "Total Users"
   }
 }

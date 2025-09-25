@@ -1,152 +1,139 @@
 {
-  "title": "관리자",
-  "pages": {
-    "user-management": "사용자 관리",
-    "subscription-management": "구독 관리",
-    "task-history": "작업 내역",
-    "credit-management": "크레딧 관리",
-    "analytics": "분석",
-    "settings": "설정",
-    "dashboard": "대시보드",
-    "users": "전체 사용자",
-    "accounts": "계정 관리",
-    "subscriptions": "구독 관리",
-    "payments": "결제 내역",
-    "tasks": "작업 관리"
+  "analytics": {
+    "overview": "개요",
+    "revenueAnalytics": "수익 분석",
+    "title": "분석",
+    "usagePatterns": "사용 패턴",
+    "userGrowth": "사용자 증가"
+  },
+  "common": {
+    "actions": "작업",
+    "cancel": "취소",
+    "date": "날짜",
+    "delete": "삭제",
+    "edit": "편집",
+    "error": "오류가 발생했습니다.",
+    "export": "내보내기",
+    "filter": "필터",
+    "loading": "로딩 중...",
+    "noData": "데이터가 없습니다.",
+    "refresh": "새로고침",
+    "save": "저장",
+    "search": "검색",
+    "view": "보기"
+  },
+  "creditManagement": {
+    "averageUsage": "평균 사용량",
+    "creditsUsed": "사용된 크레딧",
+    "table": {
+      "actions": "작업",
+      "lastUsed": "마지막 사용",
+      "remainingCredits": "남은 크레딧",
+      "totalCredits": "총 크레딧",
+      "usedCredits": "사용한 크레딧",
+      "user": "사용자"
+    },
+    "title": "크레딧 관리",
+    "totalCreditsIssued": "총 발급 크레딧"
   },
   "dashboard": {
-    "title": "관리자 대시보드",
-    "welcome": "환영합니다! 플랫폼 활동 요약을 확인하세요.",
-    "stats": {
-      "totalUsers": "전체 사용자",
-      "newUsers": "신규 사용자 (24시간)",
-      "activeSubscriptions": "활성 구독",
-      "totalRevenue": "총 수익",
-      "tasksByStatus": "상태별 작업"
-    },
     "errors": {
       "failedToLoad": "대시보드 데이터를 불러오지 못했습니다",
       "unexpectedError": "예상치 못한 오류가 발생했습니다."
     },
     "noData": "사용 가능한 데이터가 없습니다.",
-    "noTaskData": "작업 데이터가 없습니다."
+    "noTaskData": "작업 데이터가 없습니다.",
+    "stats": {
+      "activeSubscriptions": "활성 구독",
+      "newUsers": "신규 사용자 (24시간)",
+      "tasksByStatus": "상태별 작업",
+      "totalRevenue": "총 수익",
+      "totalUsers": "전체 사용자"
+    },
+    "title": "관리자 대시보드",
+    "welcome": "환영합니다! 플랫폼 활동 요약을 확인하세요."
+  },
+  "pages": {
+    "accounts": "계정 관리",
+    "analytics": "분석",
+    "credit-management": "크레딧 관리",
+    "dashboard": "대시보드",
+    "payments": "결제 내역",
+    "settings": "설정",
+    "subscription-management": "구독 관리",
+    "subscriptions": "구독 관리",
+    "task-history": "작업 내역",
+    "tasks": "작업 관리",
+    "user-management": "사용자 관리",
+    "users": "전체 사용자"
   },
   "sidebar": {
+    "accountManagement": "계정 관리",
+    "adminMode": "관리자 모드",
+    "allUsers": "전체 사용자",
     "dashboard": "대시보드",
-    "users": "사용자",
-    "userManagement": "사용자 관리",
-    "subscriptions": "구독",
+    "paymentHistory": "결제 내역",
+    "paymentManagement": "결제 관리",
     "subscriptionManagement": "구독 관리",
-    "tasks": "작업",
-    "taskHistory": "작업 내역",
-    "credits": "크레딧",
-    "creditManagement": "크레딧 관리",
-    "analytics": "분석",
-    "settings": "설정"
-  },
-  "userManagement": {
-    "title": "사용자 관리",
-    "totalUsers": "총 사용자 수",
-    "activeUsers": "활성 사용자",
-    "newUsersToday": "오늘 신규 가입",
-    "searchPlaceholder": "사용자 검색...",
-    "table": {
-      "id": "ID",
-      "email": "이메일",
-      "name": "이름",
-      "status": "상태",
-      "createdAt": "가입일",
-      "actions": "작업"
-    },
-    "status": {
-      "active": "활성",
-      "inactive": "비활성",
-      "banned": "차단됨"
-    },
-    "actions": {
-      "view": "보기",
-      "edit": "편집",
-      "ban": "차단",
-      "unban": "차단 해제"
-    }
+    "system": "시스템",
+    "taskManagement": "작업 관리",
+    "userManagement": "사용자 관리"
   },
   "subscriptionManagement": {
-    "title": "구독 관리",
-    "totalSubscriptions": "총 구독 수",
     "activeSubscriptions": "활성 구독",
     "revenue": "월간 수익",
     "table": {
-      "user": "사용자",
-      "plan": "요금제",
-      "status": "상태",
-      "startDate": "시작일",
-      "endDate": "종료일",
+      "actions": "작업",
       "amount": "금액",
-      "actions": "작업"
-    }
+      "endDate": "종료일",
+      "plan": "요금제",
+      "startDate": "시작일",
+      "status": "상태",
+      "user": "사용자"
+    },
+    "title": "구독 관리",
+    "totalSubscriptions": "총 구독 수"
   },
   "taskHistory": {
-    "title": "작업 내역",
-    "totalTasks": "총 작업 수",
     "completedTasks": "완료된 작업",
     "failedTasks": "실패한 작업",
     "table": {
-      "id": "작업 ID",
-      "user": "사용자",
-      "type": "유형",
-      "status": "상태",
-      "createdAt": "생성일",
+      "actions": "작업",
       "completedAt": "완료일",
-      "actions": "작업"
-    }
+      "createdAt": "생성일",
+      "id": "작업 ID",
+      "status": "상태",
+      "type": "유형",
+      "user": "사용자"
+    },
+    "title": "작업 내역",
+    "totalTasks": "총 작업 수"
   },
-  "creditManagement": {
-    "title": "크레딧 관리",
-    "totalCreditsIssued": "총 발급 크레딧",
-    "creditsUsed": "사용된 크레딧",
-    "averageUsage": "평균 사용량",
+  "title": "관리자",
+  "userManagement": {
+    "actions": {
+      "ban": "차단",
+      "edit": "편집",
+      "unban": "차단 해제",
+      "view": "보기"
+    },
+    "activeUsers": "활성 사용자",
+    "newUsersToday": "오늘 신규 가입",
+    "searchPlaceholder": "사용자 검색...",
+    "status": {
+      "active": "활성",
+      "banned": "차단됨",
+      "inactive": "비활성"
+    },
     "table": {
-      "user": "사용자",
-      "totalCredits": "총 크레딧",
-      "usedCredits": "사용한 크레딧",
-      "remainingCredits": "남은 크레딧",
-      "lastUsed": "마지막 사용",
-      "actions": "작업"
-    }
-  },
-  "analytics": {
-    "title": "분석",
-    "overview": "개요",
-    "userGrowth": "사용자 증가",
-    "revenueAnalytics": "수익 분석",
-    "usagePatterns": "사용 패턴"
-  },
-  "common": {
-    "loading": "로딩 중...",
-    "error": "오류가 발생했습니다.",
-    "noData": "데이터가 없습니다.",
-    "refresh": "새로고침",
-    "export": "내보내기",
-    "filter": "필터",
-    "search": "검색",
-    "date": "날짜",
-    "actions": "작업",
-    "cancel": "취소",
-    "save": "저장",
-    "delete": "삭제",
-    "edit": "편집",
-    "view": "보기"
-  },
-  "sidebar": {
-    "dashboard": "대시보드",
-    "userManagement": "사용자 관리",
-    "allUsers": "전체 사용자",
-    "accountManagement": "계정 관리",
-    "paymentManagement": "결제 관리",
-    "subscriptionManagement": "구독 관리",
-    "paymentHistory": "결제 내역",
-    "system": "시스템",
-    "taskManagement": "작업 관리",
-    "adminMode": "관리자 모드"
+      "actions": "작업",
+      "createdAt": "가입일",
+      "email": "이메일",
+      "id": "ID",
+      "name": "이름",
+      "status": "상태"
+    },
+    "title": "사용자 관리",
+    "totalUsers": "총 사용자 수"
   }
 }

@@ -12,7 +12,6 @@ import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
-    category: string;
     name: string;
     image: string;
     style: VirtualCastingStyle;

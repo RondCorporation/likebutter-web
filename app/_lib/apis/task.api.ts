@@ -114,31 +114,6 @@ export const createDigitalGoodsTask = (
   });
 };
 
-export interface PhotoEditorRequest {
-  editType: string;
-  enhanceQuality: boolean;
-  applyFilter: string;
-  brightness: number;
-  contrast: number;
-  saturation: number;
-}
-
-export const createPhotoEditorTask = (
-  image: File,
-  request: PhotoEditorRequest
-): Promise<ApiResponse<TaskCreationResponse>> => {
-  const formData = new FormData();
-  formData.append('image', image);
-  formData.append(
-    'request',
-    new Blob([JSON.stringify(request)], { type: 'application/json' })
-  );
-
-  return apiFetch<TaskCreationResponse>('/tasks/photo-editor', {
-    method: 'POST',
-    body: formData,
-  });
-};
 
 export interface ButterCoverRequest {
   voiceModel: string;

@@ -17,7 +17,6 @@ export type ActionType =
   | 'DIGITAL_GOODS'
   | 'DREAM_CONTI'
   | 'FANMEETING_STUDIO'
-  | 'PHOTO_EDITOR'
   | 'STYLIST'
   | 'VIRTUAL_CASTING'
   | 'DIGITAL_GOODS_EDIT'
@@ -92,25 +91,6 @@ export interface FanmeetingStudioDetails {
   error?: string;
 }
 
-interface PhotoEditorRequestDetails {
-  editType: string;
-  enhanceQuality: boolean;
-  applyFilter: string;
-  brightness: number;
-  contrast: number;
-  saturation: number;
-  sourceImageKey: string;
-}
-
-interface PhotoEditorResultDetails {
-  originalImageKey: string;
-  editedImageKey: string;
-}
-
-export interface PhotoEditorDetails {
-  request: PhotoEditorRequestDetails;
-  result?: PhotoEditorResultDetails;
-}
 
 interface ButterCoverRequestDetails {
   voiceModel: string;
@@ -196,7 +176,6 @@ type ActionMap = {
   DIGITAL_GOODS: { details?: DigitalGoodsDetails };
   DREAM_CONTI: { details?: DreamContiDetails };
   FANMEETING_STUDIO: { details?: FanmeetingStudioDetails };
-  PHOTO_EDITOR: { details?: PhotoEditorDetails };
   STYLIST: { details?: StylistDetails };
   VIRTUAL_CASTING: { details?: VirtualCastingDetails };
   DIGITAL_GOODS_EDIT: { details?: DigitalGoodsDetails };

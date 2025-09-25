@@ -28,7 +28,6 @@ import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
-    category: string;
     name: string;
     image: string;
     style: VirtualCastingStyle;

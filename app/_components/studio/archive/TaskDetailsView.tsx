@@ -2,7 +2,6 @@ import { Task } from '@/types/task';
 import ButterCoverDetailsView from './butter-cover/ButterCoverDetailsView';
 import DigitalGoodsDetailsView from './digital-goods/DigitalGoodsDetailsView';
 import FanmeetingStudioDetailsView from './fanmeeting-studio/FanmeetingStudioDetailsView';
-import PhotoEditorDetailsView from './photo-editor/PhotoEditorDetailsView';
 import StylistDetailsView from './stylist/StylistDetailsView';
 import VirtualCastingDetailsView from './virtual-casting/VirtualCastingDetailsView';
 
@@ -25,10 +24,6 @@ export default function TaskDetailsView({
     case 'FANMEETING_STUDIO':
       return (
         <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
-      );
-    case 'PHOTO_EDITOR':
-      return (
-        <PhotoEditorDetailsView details={task.details} onClose={onClose} />
       );
     case 'STYLIST':
       return <StylistDetailsView details={task.details} onClose={onClose} />;

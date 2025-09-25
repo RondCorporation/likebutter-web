@@ -103,9 +103,7 @@ export default function StudioSidebar({ lang }: StudioSidebarProps) {
         {/* Help button */}
         <div className="flex flex-col items-center gap-1">
           <button
-            onClick={() => {
-              handleComingSoon();
-            }}
+            onClick={() => navigateToTool('help')}
             className={`inline-flex items-center justify-center w-14 h-10 px-3 py-2.5 rounded-[10px] transition-colors ${selectedMenu === 'help' ? 'bg-[#323232]' : 'hover:bg-[#323232]'}`}
           >
             <Users className="w-5 h-5" color="#A8A8AA" />

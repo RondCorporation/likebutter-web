@@ -2,10 +2,10 @@
   "archive": {
     "audioGenComplete": "Audio generation complete",
     "batchDelete": "Batch Delete",
-    "dateFormat": "{year}/{month}/{day} {hour}:{minute}",
+    "dateFormat": "{{year}}/{{month}}/{{day}} {{hour}}:{{minute}}",
     "delete": "Delete",
     "download": "Download",
-    "editedFromOriginal": "Edited from original Task #{taskId}",
+    "editedFromOriginal": "Edited from original Task #{{taskId}}",
     "filters": {
       "all": "All"
     },
@@ -17,7 +17,7 @@
       "loadingDetails": "Loading details...",
       "noAudioGenerated": "No audio generated",
       "noTasksGenerated": "No tasks generated yet",
-      "resultsCount": "{start} ~ {end} / Total {total}",
+      "resultsCount": "{{start}} ~ {{end}} / Total {{total}}",
       "startFirstTask": "Start your first task in Studio!"
     },
     "pagination": {
@@ -177,7 +177,7 @@
       "alreadyChecked": "Already checked in today.",
       "error": "Error occurred during check-in.",
       "monthlyBonus": "Monthly completion bonus! +200 credits!",
-      "streakBonus": "Streak bonus! +{bonus} credits earned!",
+      "streakBonus": "Streak bonus! +{{bonus}} credits earned!",
       "success": "Check-in complete! Earned {{credit}} credits.",
       "weeklyBonus": "Weekly completion bonus! +50 credits!"
     },
@@ -277,7 +277,7 @@
   },
   "butterCuts": {
     "button": "Generate Video",
-    "fileCount": "{count} file(s) selected",
+    "fileCount": "{{count}} file(s) selected",
     "promptPlaceholder": "e.g., A nostalgic and dreamy edit with slow motion, add soft light leaks...",
     "step1": "Describe the video style",
     "step2": "Upload your images & videos",
@@ -398,7 +398,7 @@
       "creationTitle": "Digital Goods Creation",
       "generatedGoods": "Generated Digital Goods",
       "generatedResult": "Generated Result",
-      "generatedResultSubtitle": "Converted to {style} style",
+      "generatedResultSubtitle": "Converted to {{style}} style",
       "generationFailed": "Generation Failed",
       "originalImage": "Original Image",
       "originalImageSubtitle": "Uploaded original image",
@@ -459,12 +459,16 @@
   },
   "editRequest": {
     "cancel": "Cancel",
-    "charCount": "{count}/1000 characters (min. 10)",
+    "charCount": "{{count}}/1000 characters (min. 10)",
     "label": "Edit Request Details",
     "placeholder": "Please describe in detail what you would like to change. (min. 10 characters)",
     "processing": "Processing...",
     "submit": "Submit Edit",
-    "title": "Edit Request"
+    "title": "Edit Request",
+    "errors": {
+      "emptyPrompt": "Please enter what you want to edit.",
+      "requestFailed": "An error occurred while processing the edit request."
+    }
   },
   "fanmeeting": {
     "background": "Background",
@@ -527,7 +531,7 @@
     "title": "Online Fan Meeting"
   },
   "history": {
-    "error": "Error: {error}",
+    "error": "Error: {{error}}",
     "filters": {
       "statusAll": "All Statuses",
       "statusCompleted": "Completed",
@@ -710,7 +714,7 @@
       "idolImageUploaded": "Idol image uploaded",
       "mood": "Mood",
       "outfit": "Outfit",
-      "styleReferences": "{count} style reference(s)"
+      "styleReferences": "{{count}} style reference(s)"
     },
     "title": "Stylist"
   },
@@ -724,7 +728,7 @@
     "butterTest": "ButterTest",
     "history": "My Archive",
     "home": "Studio Home",
-    "vault": "Vault: {assetName}"
+    "vault": "Vault: {{assetName}}"
   },
   "tool": "Tool",
   "tools": {
@@ -765,7 +769,7 @@
     "logout": "Logout",
     "receivingCredits": "Receiving credits...",
     "settings": "Settings",
-    "upgradePlan": "Upgrade Plan"
+    "upgradePlan": "Upgrade"
   },
   "virtualCasting": {
     "aiAnalysisDescription": "AI analyzed this character's features and transformed naturally.",
@@ -862,5 +866,66 @@
     "iu": "IU",
     "jungkook": "Jungkook (BTS)",
     "newjeans": "NewJeans"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions (FAQ)",
+    "subtitle": "Find answers to commonly asked questions about using Like Butter.",
+    "imageGeneration": {
+      "title": "Image Generation",
+      "whatIsImageGeneration": {
+        "question": "What is image generation?",
+        "answer": "It's a service where AI transforms photos into various styles or creates composite photos that look like they were taken with fans and idols. We offer various features such as digital goods, style changes, online fan meeting synthesis, and virtual casting."
+      },
+      "availableStyles": {
+        "question": "What styles can I transform to?",
+        "answer": "Digital goods (sketch, cartoon, illustration, pixel art, stickers, etc.), stylist (hair, outfit, background, makeup changes), online fan meetings (selfie synthesis, fan-idol photo generation), virtual casting (movie, drama, game character style application) are all possible."
+      },
+      "uploadConditions": {
+        "question": "What are the image upload requirements?",
+        "answer": "We support PNG, JPG, JPEG formats, and you can upload up to 10MB. We recommend high-quality photos with clearly visible faces."
+      },
+      "generationTime": {
+        "question": "How long does generation take?",
+        "answer": "Image generation takes about 30 seconds to 1 minute 30 seconds. Image editing takes about 15-30 seconds and 1 edit is provided for free. From the 2nd edit onwards, credits are deducted."
+      },
+      "uploadTips": {
+        "question": "What should I be careful about when uploading images?",
+        "answer": "Using clear front-facing photos with visible faces will give you better results. The simpler the background, the cleaner the result, and photos that are too dark or overly edited may have lower quality. We recommend photos with only one person rather than multiple people."
+      }
+    },
+    "audioGeneration": {
+      "title": "Audio Generation",
+      "whatIsAudioGeneration": {
+        "question": "What is audio generation?",
+        "answer": "It's a feature that allows you to cover your favorite songs with your own voice or create songs using new AI vocals."
+      },
+      "conditionsAndTime": {
+        "question": "What are the audio generation conditions and processing time?",
+        "answer": "Song length is based on 5 minutes, and generation takes about 5 minutes. 6 credits are deducted per 5 minutes."
+      },
+      "canEditResults": {
+        "question": "Can I edit the completed audio results?",
+        "answer": "Completed results cannot be edited. If editing is needed, you must recreate with new settings."
+      },
+      "uploadTips": {
+        "question": "What precautions should I take when uploading audio files?",
+        "answer": "Audio with heavy effects like autotune or reverb may have lower separation quality. Songs with multiple people singing simultaneously or lots of chorus are difficult to use. The more similar the vocal model's range is to the song's range, the more natural results you'll get. If the ranges are different, it's better to use the pitch adjustment feature."
+      }
+    },
+    "common": {
+      "title": "General Information",
+      "howToSaveResults": {
+        "question": "How do I save the generated results?",
+        "answer": "Both images and audio can be saved to your device by clicking the download button after generation is complete."
+      },
+      "getBetterResults": {
+        "question": "How can I get better results?",
+        "answer": "For images, it's better to use clear front-facing photos with visible faces and write specific prompts. For audio, we recommend uploading clean voice without background noise and setting the song length to 5 minutes or less."
+      },
+      "unsatisfiedResults": {
+        "question": "What if I'm not satisfied with the results?",
+        "answer": "Images can be edited once for free, and additional edits will deduct credits. Audio must be regenerated with different settings and will deduct credits."
+      }
+    }
   }
 }

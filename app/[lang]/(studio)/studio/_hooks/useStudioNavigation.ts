@@ -26,6 +26,9 @@ const ArchiveClient = dynamic(
 const CreditsClient = dynamic(
   () => import('../credits/_components/CreditsClient')
 );
+const HelpClient = dynamic(
+  () => import('../help/_components/HelpClient')
+);
 const DashboardClient = dynamic(() => import('../_components/DashboardClient'));
 
 interface StudioToolConfig {
@@ -71,6 +74,10 @@ const STUDIO_TOOLS: Record<string, StudioToolConfig> = {
   },
   credits: {
     component: CreditsClient,
+    preloaded: false,
+  },
+  help: {
+    component: HelpClient,
     preloaded: false,
   },
 };

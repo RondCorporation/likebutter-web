@@ -92,10 +92,10 @@ function SubscriptionModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-6 w-full max-w-md">
+      <div className="bg-studio-main border border-studio-border rounded-lg shadow-xl p-6 w-full max-w-md">
         <div className="flex justify-between items-center mb-4">
           <h4 className="text-lg font-semibold">{title}</h4>
-          <button onClick={onClose} className="text-slate-400 hover:text-white">
+          <button onClick={onClose} className="text-studio-text-secondary hover:text-studio-text-primary transition-colors">
             &times;
           </button>
         </div>
@@ -218,12 +218,12 @@ export default function SubscriptionManager() {
 
   if (isLoading) {
     return (
-      <div className="text-center p-8">{t('subscriptionManager.loading')}</div>
+      <div className="text-center p-8 text-studio-text-secondary">{t('subscriptionManager.loading')}</div>
     );
   }
 
   if (error) {
-    return <div className="text-red-500 text-center p-8">{error}</div>;
+    return <div className="text-studio-error text-center p-8">{error}</div>;
   }
 
   return (
@@ -235,15 +235,15 @@ export default function SubscriptionManager() {
           </h3>
           <button
             onClick={goToPricing}
-            className="text-sm font-medium text-accent hover:text-yellow-300 transition"
+            className="text-sm font-medium text-studio-button-primary hover:text-studio-button-hover transition"
           >
             {t('subscriptionManager.viewPlans')}
           </button>
         </div>
 
         {subscriptions.length === 0 ? (
-          <div className="text-center py-10 px-4 bg-white/5 rounded-md">
-            <p className="text-slate-400">
+          <div className="text-center py-10 px-4 bg-studio-sidebar rounded-md border border-studio-border">
+            <p className="text-studio-text-secondary">
               {t('subscriptionManager.noSubscriptions')}
             </p>
           </div>
@@ -252,7 +252,7 @@ export default function SubscriptionManager() {
             {subscriptions.map((sub) => (
               <div
                 key={sub.subscriptionId}
-                className="p-4 bg-white/5 rounded-md text-sm"
+                className="p-4 bg-studio-sidebar rounded-md text-sm border border-studio-border"
               >
                 <div className="flex flex-wrap justify-between items-center gap-4">
                   <div>
@@ -261,7 +261,7 @@ export default function SubscriptionManager() {
                     </p>
                     <div className="flex items-center gap-2 mt-1">
                       <StatusBadge status={sub.status} />
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-studio-text-secondary">
                         {t('subscriptionManager.period')}:{' '}
                         {new Date(sub.startDate).toLocaleDateString()} -{' '}
                         {new Date(sub.endDate).toLocaleDateString()}
@@ -271,7 +271,7 @@ export default function SubscriptionManager() {
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
                       onClick={() => handleDetailsClick(sub)}
-                      className="px-3 py-1.5 bg-slate-600/50 hover:bg-slate-500/50 rounded-md transition"
+                      className="px-3 py-1.5 bg-studio-border hover:bg-studio-border-light rounded-md transition text-studio-text-primary"
                     >
                       {t('subscriptionManager.details')}
                     </button>
@@ -279,7 +279,7 @@ export default function SubscriptionManager() {
                       getAvailableUpgrades(sub.planKey).length > 0 && (
                         <button
                           onClick={() => handleUpgradeClick(sub)}
-                          className="px-3 py-1.5 bg-accent/80 hover:bg-accent rounded-md transition"
+                          className="px-3 py-1.5 bg-studio-button-primary/80 hover:bg-studio-button-primary rounded-md transition text-studio-header font-medium"
                         >
                           {t('subscriptionManager.upgrade')}
                         </button>
@@ -321,7 +321,7 @@ export default function SubscriptionManager() {
                   <button
                     key={planKey}
                     onClick={() => handleUpgrade(planKey)}
-                    className="p-3 bg-blue-600 hover:bg-blue-700 rounded-md transition text-white font-semibold"
+                    className="p-3 bg-studio-button-primary hover:bg-studio-button-hover rounded-md transition text-studio-header font-semibold"
                   >
                     {planNames[planKey]}
                   </button>
@@ -365,7 +365,7 @@ export default function SubscriptionManager() {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-slate-400">
+                    <p className="text-studio-text-secondary">
                       {t('subscriptionManager.noPaymentHistory')}
                     </p>
                   )}

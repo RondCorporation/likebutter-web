@@ -25,6 +25,9 @@ i18next
     detection: {
       order: ['path', 'htmlTag', 'cookie', 'navigator'],
     },
+    interpolation: {
+      escapeValue: false,
+    },
   });
 
 export default i18next;

@@ -11,7 +11,6 @@ import {
   LogOut,
   ChevronDown,
   LayoutGrid,
-  History,
 } from 'lucide-react';
 import { useLogout } from '@/app/_hooks/useLogout';
 import { useAuth } from '@/app/_hooks/useAuth';
@@ -77,13 +76,6 @@ export default function UserDropdown() {
             className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
           >
             <CreditCard size={16} /> {t('dropdownSubscription')}
-          </Link>
-          <Link
-            href={`/${lang}/billing/history`}
-            onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-200 hover:bg-white/10 transition"
-          >
-            <History size={16} /> {t('dropdownPaymentHistory')}
           </Link>
           <button
             onClick={() => handleAction(() => openSettings())}

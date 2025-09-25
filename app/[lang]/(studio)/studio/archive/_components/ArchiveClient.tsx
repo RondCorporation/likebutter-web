@@ -123,7 +123,13 @@ function ArchiveTaskCard({
     const hour = date.getHours();
     const minute = date.getMinutes();
 
-    return t('studio:archive.dateFormat', { year, month, day, hour, minute });
+    return t('studio:archive.dateFormat', {
+      year,
+      month: month.toString().padStart(2, '0'),
+      day: day.toString().padStart(2, '0'),
+      hour: hour.toString().padStart(2, '0'),
+      minute: minute.toString().padStart(2, '0')
+    });
   };
 
   useEffect(() => {
@@ -219,11 +225,13 @@ function ArchiveTaskCard({
             className="w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
+              const failedText = t('studio:archive.imageLoadFailed');
+              const actionLabel = getActionTypeLabel(actionType);
               e.currentTarget.parentElement!.innerHTML = `
                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                   <div class="text-center">
-                    <div className="text-sm font-medium">{t('studio:archive.imageLoadFailed')}</div>
-                    <div class="text-xs mt-1">${getActionTypeLabel(actionType)}</div>
+                    <div class="text-sm font-medium">${failedText}</div>
+                    <div class="text-xs mt-1">${actionLabel}</div>
                   </div>
                 </div>
               `;
@@ -403,7 +411,13 @@ export default function ArchiveClient() {
     const hour = date.getHours();
     const minute = date.getMinutes();
 
-    return t('studio:archive.dateFormat', { year, month, day, hour, minute });
+    return t('studio:archive.dateFormat', {
+      year,
+      month: month.toString().padStart(2, '0'),
+      day: day.toString().padStart(2, '0'),
+      hour: hour.toString().padStart(2, '0'),
+      minute: minute.toString().padStart(2, '0')
+    });
   };
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -702,7 +716,7 @@ export default function ArchiveClient() {
             {isSelectionMode && (
               <>
                 <span className="text-gray-400 text-sm">
-                  {selectedTaskIds.size}{t('studio:archive.pagination.selected')}
+                  {selectedTaskIds.size} {t('studio:archive.pagination.selected')}
                 </span>
                 <button
                   onClick={handleBatchDelete}
@@ -783,7 +797,7 @@ export default function ArchiveClient() {
                       }
                       className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
                     >
-                      <span>{pageSize}{t('studio:archive.pagination.perPage')}</span>
+                      <span>{pageSize} {t('studio:archive.pagination.perPage')}</span>
                       <ChevronDown
                         className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`}
                       />
@@ -816,7 +830,11 @@ export default function ArchiveClient() {
                   {/* Results info */}
                   <span className="text-white text-sm">
                     {totalResults > 0
-                      ? t('studio:archive.messages.resultsCount', { start: startResult, end: endResult, total: totalResults })
+                      ? t('studio:archive.messages.resultsCount', {
+                          start: startResult.toString(),
+                          end: endResult.toString(),
+                          total: totalResults.toString()
+                        })
                       : t('studio:archive.pagination.noResults')}
                   </span>
 

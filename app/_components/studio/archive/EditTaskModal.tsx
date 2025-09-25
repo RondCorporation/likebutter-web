@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { X, Send, Loader2 } from 'lucide-react';
 import { Task, ActionType } from '@/types/task';
 import { editTask } from '@/lib/apis/task.api';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   task: Task;
@@ -18,13 +19,14 @@ export default function EditTaskModal({
   onClose,
   onSuccess,
 }: Props) {
+  const { t } = useTranslation('studio');
   const [editPrompt, setEditPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!editPrompt.trim()) {
-      setError('수정할 내용을 입력해주세요.');
+      setError(t('editRequest.errors.emptyPrompt'));
       return;
     }
 
@@ -41,14 +43,14 @@ export default function EditTaskModal({
         onSuccess(response.data.taskId);
         handleClose();
       } else {
-        setError('수정 요청 중 오류가 발생했습니다.');
+        setError(t('editRequest.errors.requestFailed'));
       }
     } catch (error) {
       console.error('Edit task error:', error);
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('수정 요청 중 오류가 발생했습니다.');
+        setError(t('editRequest.errors.requestFailed'));
       }
     } finally {
       setIsSubmitting(false);
@@ -64,10 +66,10 @@ export default function EditTaskModal({
 
   const getActionTypeLabel = (actionType: ActionType) => {
     const labels: { [key: string]: string } = {
-      DIGITAL_GOODS: '디지털 굿즈',
-      FANMEETING_STUDIO: '팬미팅 스튜디오',
-      STYLIST: 'AI 스타일리스트',
-      VIRTUAL_CASTING: '가상 캐스팅',
+      DIGITAL_GOODS: t('tools.digitalGoods.title'),
+      FANMEETING_STUDIO: t('tools.fanmeetingStudio.title'),
+      STYLIST: t('tools.stylist.title'),
+      VIRTUAL_CASTING: t('tools.virtualCasting.title'),
     };
     return labels[actionType] || actionType;
   };

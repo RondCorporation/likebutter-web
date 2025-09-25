@@ -20,7 +20,6 @@ export default function ArchiveFilters({ onFilterChange }: Props) {
     { label: t('historyFilterTypeAll'), value: '' },
     { label: 'Butter Cover', value: 'BUTTER_COVER' },
     { label: 'Digital Goods', value: 'DIGITAL_GOODS' },
-    { label: 'Dream Conti', value: 'DREAM_CONTI' },
     { label: 'Fanmeeting Studio', value: 'FANMEETING_STUDIO' },
   ];
 

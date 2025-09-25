@@ -15,7 +15,6 @@ export type PipelineStatus =
 export type ActionType =
   | 'BUTTER_COVER'
   | 'DIGITAL_GOODS'
-  | 'DREAM_CONTI'
   | 'FANMEETING_STUDIO'
   | 'STYLIST'
   | 'VIRTUAL_CASTING'
@@ -47,21 +46,6 @@ export interface DigitalGoodsDetails {
   error?: string;
 }
 
-interface DreamContiRequestDetails {
-  dreamPrompt: string;
-  continuationStyle: string;
-  imageCount: number;
-  sourceImageKey: string;
-}
-
-interface DreamContiResultDetails {
-  imageKey: string;
-}
-
-export interface DreamContiDetails {
-  request: DreamContiRequestDetails;
-  result?: DreamContiResultDetails;
-}
 
 interface FanmeetingStudioRequestDetails {
   fanImageKey: string;
@@ -174,7 +158,6 @@ export interface VirtualCastingDetails {
 type ActionMap = {
   BUTTER_COVER: { details?: ButterCoverDetails };
   DIGITAL_GOODS: { details?: DigitalGoodsDetails };
-  DREAM_CONTI: { details?: DreamContiDetails };
   FANMEETING_STUDIO: { details?: FanmeetingStudioDetails };
   STYLIST: { details?: StylistDetails };
   VIRTUAL_CASTING: { details?: VirtualCastingDetails };

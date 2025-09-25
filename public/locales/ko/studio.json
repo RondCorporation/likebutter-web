@@ -503,31 +503,31 @@
     "taskCard": {
       "fanAndIdolImages": "팬 & 아이돌 이미지",
       "sceneGenerationComplete": "팬미팅 장면 생성 완료"
-    }
+    },
+    "styles": {
+      "GHIBLI": "지브리 스타일",
+      "PIXEL_ART": "픽셀 아트",
+      "ANIMATION": "애니메이션",
+      "CARTOON": "카툰",
+      "SKETCH": "스케치",
+      "GRADUATION_PHOTO": "졸업사진",
+      "LEGO": "레고",
+      "STICKER": "스티커",
+      "FIGURE": "피규어"
+    },
+    "messages": {
+      "fileSizeExceeded": "파일 크기가 200MB를 초과합니다.",
+      "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
+      "requestSent": "디지털 굿즈 생성 요청이 전송되었습니다!",
+      "generationComplete": "디지털 굿즈가 생성되었습니다!",
+      "downloadComplete": "이미지가 다운로드되었습니다!",
+      "downloadFailed": "다운로드에 실패했습니다.",
+      "workReset": "작업이 초기화되었습니다.",
+      "imageLoadFailed": "이미지 로드에 실패했습니다.",
+      "dropHere": "놓기"
+    },
+    "stylePreset": "스타일 프리셋"
   },
-  "styles": {
-    "GHIBLI": "지브리 스타일",
-    "PIXEL_ART": "픽셀 아트",
-    "ANIMATION": "애니메이션",
-    "CARTOON": "카툰",
-    "SKETCH": "스케치",
-    "GRADUATION_PHOTO": "졸업사진",
-    "LEGO": "레고",
-    "STICKER": "스티커",
-    "FIGURE": "피규어"
-  },
-  "messages": {
-    "fileSizeExceeded": "파일 크기가 200MB를 초과합니다.",
-    "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
-    "requestSent": "디지털 굿즈 생성 요청이 전송되었습니다!",
-    "generationComplete": "디지털 굿즈가 생성되었습니다!",
-    "downloadComplete": "이미지가 다운로드되었습니다!",
-    "downloadFailed": "다운로드에 실패했습니다.",
-    "workReset": "작업이 초기화되었습니다.",
-    "imageLoadFailed": "이미지 로드에 실패했습니다.",
-    "dropHere": "놓기"
-  },
-  "stylePreset": "스타일 프리셋",
   "userDropdown": {
     "languageSettings": "언어 설정",
     "settings": "설정",
@@ -583,6 +583,7 @@
     }
   },
   "stylist": {
+    "title": "스타일리스트",
     "styling": "스타일링중...",
     "startStyling": "스타일링시작",
     "edit": "수정하기",
@@ -602,6 +603,7 @@
       "mood": "분위기"
     },
     "suggestions": {
+      "title": "추천 프롬프트",
       "changeToBlonde": "금발로 변경해줘",
       "wearHanbok": "한복 입혀줘",
       "wearSuit": "정장 입혀줘",
@@ -698,6 +700,7 @@
       "SQUID_GAME": "오징어게임 스타일",
       "LOOKISM": "외모지상주의 스타일"
     },
+    "stylePreset": "스타일 프리셋",
     "messages": {
       "castingComplete": "가상 캐스팅이 완성되었습니다!",
       "castingFailed": "가상 캐스팅 생성에 실패했습니다.",

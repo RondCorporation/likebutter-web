@@ -573,6 +573,7 @@
     }
   },
   "stylist": {
+    "title": "Stylist",
     "styling": "Styling...",
     "startStyling": "Start Styling",
     "edit": "Edit",
@@ -592,6 +593,7 @@
       "mood": "Mood"
     },
     "suggestions": {
+      "title": "Recommended Prompts",
       "changeToBlonde": "Change to blonde",
       "wearHanbok": "Wear hanbok",
       "wearSuit": "Wear suit",
@@ -694,6 +696,7 @@
       "KENGAN_ASHURA": "Kengan Ashura Style",
       "VOLCANO_RETURNS": "Return of the Mount Hua Sect Style"
     },
+    "stylePreset": "Style Preset",
     "messages": {
       "castingComplete": "Virtual casting has been completed!",
       "castingFailed": "Virtual casting generation failed.",

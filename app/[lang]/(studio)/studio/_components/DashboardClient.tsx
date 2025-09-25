@@ -95,9 +95,11 @@ export default function DashboardClient() {
             {t('studio:dashboard.heroTitle')}
           </h1>
         </div>
+      </div>
 
-        {/* Tab Switcher */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 top-28 md:top-32 flex bg-[#292c31] rounded-full p-1">
+      {/* Tab Switcher */}
+      <div className="relative w-full flex justify-center -mt-6 md:-mt-6 z-10">
+        <div className="flex bg-[#292c31] rounded-full p-1">
           <button
             onClick={() => setSelectedTab('image')}
             className={`flex items-center gap-2 md:gap-2 px-6 md:px-5 py-3 md:py-2 rounded-full font-medium transition-all whitespace-nowrap ${

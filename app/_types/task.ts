@@ -85,6 +85,7 @@ interface ButterCoverRequestDetails {
 
 interface ButterCoverResultDetails {
   audioKey: string;
+  audioUrl?: string;
   vocalsKey?: string;
   instrumentalsKey?: string;
 }

@@ -497,7 +497,7 @@ export default function ArchiveClient() {
 
       switch (task.actionType) {
         case 'BUTTER_COVER':
-          downloadUrl = task.details.result.audioKey;
+          downloadUrl = task.details.result.audioUrl;
           fileName = `butter-cover-${task.taskId}-${Date.now()}.mp3`;
           break;
         case 'DIGITAL_GOODS':

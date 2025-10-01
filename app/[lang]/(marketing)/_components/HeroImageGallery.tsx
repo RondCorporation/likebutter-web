@@ -210,6 +210,7 @@ export default function HeroImageGallery({
                   borderRadius: '20px',
                 }}
                 priority
+                loading="eager"
               />
             </motion.div>
 
@@ -239,6 +240,8 @@ export default function HeroImageGallery({
                   borderRadius: '20px',
                 }}
                 priority
+                loading="eager"
+                unoptimized
               />
             </motion.div>
           </>
@@ -270,7 +273,8 @@ export default function HeroImageGallery({
                     filter: 'brightness(0.7) contrast(1.1)',
                     borderRadius: '20px',
                   }}
-                  priority={image.id <= 6}
+                  priority
+                  loading="eager"
                 />
               </motion.div>
             );
@@ -320,6 +324,7 @@ export default function HeroImageGallery({
                   borderRadius: '15px',
                 }}
                 priority
+                loading="eager"
               />
             </motion.div>
 
@@ -349,6 +354,8 @@ export default function HeroImageGallery({
                   borderRadius: '15px',
                 }}
                 priority
+                loading="eager"
+                unoptimized
               />
             </motion.div>
           </>
@@ -384,7 +391,8 @@ export default function HeroImageGallery({
                     filter: 'brightness(0.7) contrast(1.1)',
                     borderRadius: '20px',
                   }}
-                  priority={image.id <= 6}
+                  priority
+                  loading="eager"
                 />
               </motion.div>
             );

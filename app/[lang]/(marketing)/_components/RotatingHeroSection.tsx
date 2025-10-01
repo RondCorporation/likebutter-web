@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { HeroImage } from './HeroImageGallery';
 import HeroImageGalleryPlaceholder from './HeroImageGalleryPlaceholder';
+import { useImagePreloader } from './ImagePreloader';
 
 const HeroImageGallery = dynamic(() => import('./HeroImageGallery'), {
   ssr: false,
@@ -181,6 +182,14 @@ export default function RotatingHeroSection({
   ];
 
   const currentSection = heroSections[currentSectionIndex];
+
+  // Collect all image URLs from all hero sections for preloading
+  const allHeroImages = heroSections.flatMap((section) =>
+    section.images.map((img) => img.src)
+  );
+
+  // Preload all hero images
+  const { isLoading: isPreloading } = useImagePreloader(allHeroImages);
 
   useEffect(() => {
     const timer = setInterval(() => {

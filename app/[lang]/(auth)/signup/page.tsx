@@ -26,7 +26,7 @@ interface Country {
 }
 
 export default function Signup() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation('auth');
   const lang = i18n.language;
   const router = useRouter();
 

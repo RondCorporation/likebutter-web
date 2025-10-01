@@ -8,7 +8,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const { t } = await initTranslations(lang, ['common']);
+  const { t } = await initTranslations(lang, ['auth']);
   return {
     title: t('loginTitle'),
   };
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LoginPage({ params }: Props) {
   const { lang } = await params;
-  const { t } = await initTranslations(lang, ['common']);
+  const { t } = await initTranslations(lang, ['auth']);
 
   const translations = {
     loginTitle: t('loginTitle'),

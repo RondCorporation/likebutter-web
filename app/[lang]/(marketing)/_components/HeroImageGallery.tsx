@@ -16,12 +16,14 @@ interface HeroImageGalleryProps {
   images?: HeroImage[];
   isVisible?: boolean;
   onAnimationComplete?: () => void;
+  sectionId?: number;
 }
 
 export default function HeroImageGallery({
   images: customImages,
   isVisible = true,
   onAnimationComplete,
+  sectionId,
 }: HeroImageGalleryProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [isReady, setIsReady] = useState(false);
@@ -103,6 +105,9 @@ export default function HeroImageGallery({
 
   const mobileImages = images.filter((img) => img.id !== 7);
 
+  // Special handling for Idol Cover section (sectionId === 2)
+  const isIdolCoverSection = sectionId === 2;
+
   const getImagePosition = (column: number, row: number) => {
     const columnWidthWithGap = 330;
     const rowHeightWithGap = 430;
@@ -125,7 +130,10 @@ export default function HeroImageGallery({
         top = (row - 1) * rowHeightWithGap;
         break;
     }
-    return { left: baseLeft, top };
+
+    // Add offset for non-Idol Cover sections to maintain original position
+    const offsetTop = isIdolCoverSection ? top : top + 317;
+    return { left: baseLeft, top: offsetTop };
   };
 
   const getMobileImagePosition = (column: number, row: number) => {
@@ -133,7 +141,10 @@ export default function HeroImageGallery({
     const rowHeightWithGap = 360;
     const baseLeft = (column - 1) * columnWidthWithGap;
     const top = (row - 1) * rowHeightWithGap;
-    return { left: baseLeft, top };
+
+    // Add offset for non-Idol Cover sections to maintain original position
+    const offsetTop = isIdolCoverSection ? top : top + 317;
+    return { left: baseLeft, top: offsetTop };
   };
 
   const getMobileColumnRow = (imageId: number) => {
@@ -157,7 +168,7 @@ export default function HeroImageGallery({
 
   return (
     <>
-      {/* Desktop Layout (5 columns) */}
+      {/* Desktop Layout */}
       <div
         className="hidden md:block relative transition-opacity duration-300"
         style={{
@@ -170,40 +181,104 @@ export default function HeroImageGallery({
         }}
         suppressHydrationWarning
       >
-        {images.map((image) => {
-          const position = getImagePosition(image.column, image.row);
-          const delay = (image.column - 1) * 0.15;
-          return (
+        {isIdolCoverSection ? (
+          // Special layout for Idol Cover section - positioned as background behind text and button
+          <>
+            {/* Music.png - positioned at absolute coordinates from figma */}
             <motion.div
-              key={image.id}
-              className="absolute"
-              style={{ left: position.left, top: position.top }}
-              initial={{ opacity: 0, y: 30 }}
+              className="absolute z-0"
+              style={{
+                top: '410px',
+                left: '309px',
+              }}
+              initial={{ opacity: 0, y: 0 }}
               animate={
                 isReady && isVisible
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 30 }
+                  : { opacity: 0, y: 0 }
               }
-              transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
+              transition={{ duration: 0.6, delay: 0, ease: 'easeOut' }}
             >
               <Image
-                src={image.src}
-                alt={image.alt}
-                width={300}
-                height={400}
-                className="w-[300px] h-[400px] object-cover shadow-2xl min-w-[300px] flex-shrink-0"
+                src="/hero-gallery/idol_cover/music.png"
+                alt="Idol Cover Music"
+                width={630}
+                height={357}
+                className="w-[630px] h-[357px] object-cover shadow-2xl"
                 style={{
                   filter: 'brightness(0.7) contrast(1.1)',
                   borderRadius: '20px',
                 }}
-                priority={image.id <= 6}
+                priority
               />
             </motion.div>
-          );
-        })}
+
+            {/* Giphy.gif - positioned to overlap with music.png as background */}
+            <motion.div
+              className="absolute z-0"
+              style={{
+                top: '456px',
+                left: '682px',
+              }}
+              initial={{ opacity: 0, y: 0 }}
+              animate={
+                isReady && isVisible
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: 0 }
+              }
+              transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+            >
+              <Image
+                src="/hero-gallery/idol_cover/giphy.gif"
+                alt="Idol Cover Animation"
+                width={480}
+                height={480}
+                className="w-[480px] h-[480px] object-cover shadow-2xl"
+                style={{
+                  filter: 'brightness(0.7) contrast(1.1)',
+                  borderRadius: '20px',
+                }}
+                priority
+              />
+            </motion.div>
+          </>
+        ) : (
+          // Standard layout for other sections
+          images.map((image) => {
+            const position = getImagePosition(image.column, image.row);
+            const delay = (image.column - 1) * 0.15;
+            return (
+              <motion.div
+                key={image.id}
+                className="absolute"
+                style={{ left: position.left, top: position.top }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={
+                  isReady && isVisible
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0, y: 30 }
+                }
+                transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={300}
+                  height={400}
+                  className="w-[300px] h-[400px] object-cover shadow-2xl min-w-[300px] flex-shrink-0"
+                  style={{
+                    filter: 'brightness(0.7) contrast(1.1)',
+                    borderRadius: '20px',
+                  }}
+                  priority={image.id <= 6}
+                />
+              </motion.div>
+            );
+          })
+        )}
       </div>
 
-      {/* Mobile Layout (3 columns, image 7 excluded) */}
+      {/* Mobile Layout */}
       <div
         className="md:hidden relative transition-opacity duration-300"
         style={{
@@ -216,41 +291,105 @@ export default function HeroImageGallery({
         }}
         suppressHydrationWarning
       >
-        {mobileImages.map((image) => {
-          const mobileLayout = getMobileColumnRow(image.id);
-          const position = getMobileImagePosition(
-            mobileLayout.column,
-            mobileLayout.row
-          );
-          const delay = (mobileLayout.column - 1) * 0.15;
-          return (
+        {isIdolCoverSection ? (
+          // Special mobile layout for Idol Cover section - as background
+          <>
+            {/* Music.png - positioned as background for mobile */}
             <motion.div
-              key={image.id}
-              className="absolute"
-              style={{ left: position.left, top: position.top }}
-              initial={{ opacity: 0, y: 30 }}
+              className="absolute z-0"
+              style={{
+                top: '250px',
+                left: '50px',
+              }}
+              initial={{ opacity: 0, y: 0 }}
               animate={
                 isReady && isVisible
                   ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 30 }
+                  : { opacity: 0, y: 0 }
               }
-              transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
+              transition={{ duration: 0.6, delay: 0, ease: 'easeOut' }}
             >
               <Image
-                src={image.src}
-                alt={image.alt}
-                width={250}
-                height={330}
-                className="w-[250px] h-[330px] object-cover shadow-2xl min-w-[250px] flex-shrink-0"
+                src="/hero-gallery/idol_cover/music.png"
+                alt="Idol Cover Music"
+                width={400}
+                height={226}
+                className="w-[400px] h-[226px] object-cover shadow-2xl"
                 style={{
                   filter: 'brightness(0.7) contrast(1.1)',
-                  borderRadius: '20px',
+                  borderRadius: '15px',
                 }}
-                priority={image.id <= 6}
+                priority
               />
             </motion.div>
-          );
-        })}
+
+            {/* Giphy.gif - positioned to overlap for mobile as background */}
+            <motion.div
+              className="absolute z-0"
+              style={{
+                top: '300px',
+                left: '320px',
+              }}
+              initial={{ opacity: 0, y: 0 }}
+              animate={
+                isReady && isVisible
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: 0 }
+              }
+              transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+            >
+              <Image
+                src="/hero-gallery/idol_cover/giphy.gif"
+                alt="Idol Cover Animation"
+                width={300}
+                height={300}
+                className="w-[300px] h-[300px] object-cover shadow-2xl"
+                style={{
+                  filter: 'brightness(0.7) contrast(1.1)',
+                  borderRadius: '15px',
+                }}
+                priority
+              />
+            </motion.div>
+          </>
+        ) : (
+          // Standard mobile layout for other sections
+          mobileImages.map((image) => {
+            const mobileLayout = getMobileColumnRow(image.id);
+            const position = getMobileImagePosition(
+              mobileLayout.column,
+              mobileLayout.row
+            );
+            const delay = (mobileLayout.column - 1) * 0.15;
+            return (
+              <motion.div
+                key={image.id}
+                className="absolute"
+                style={{ left: position.left, top: position.top }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={
+                  isReady && isVisible
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0, y: 30 }
+                }
+                transition={{ duration: 0.6, delay: delay, ease: 'easeOut' }}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={250}
+                  height={330}
+                  className="w-[250px] h-[330px] object-cover shadow-2xl min-w-[250px] flex-shrink-0"
+                  style={{
+                    filter: 'brightness(0.7) contrast(1.1)',
+                    borderRadius: '20px',
+                  }}
+                  priority={image.id <= 6}
+                />
+              </motion.div>
+            );
+          })
+        )}
       </div>
     </>
   );

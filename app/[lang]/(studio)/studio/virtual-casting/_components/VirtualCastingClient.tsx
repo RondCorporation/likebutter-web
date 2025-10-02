@@ -89,15 +89,58 @@ const VirtualCastingClient = forwardRef<
     currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
+      console.log('✅ Virtual Casting - Task completed:', result);
+      console.log('📦 Full result object:', JSON.stringify(result, null, 2));
+      console.log('🔍 Checking result structure:');
+      console.log('  - result.details:', result.details);
+      console.log('  - result.details?.result:', result.details?.result);
+      console.log('  - result.details?.result?.imageUrl:', result.details?.result?.imageUrl);
+      console.log('  - typeof result.details:', typeof result.details);
+      console.log('  - Object.keys(result):', Object.keys(result));
+      if (result.details) {
+        console.log('  - Object.keys(result.details):', Object.keys(result.details));
+      }
+
       if (result.details?.result?.imageUrl) {
-        setResultImage(result.details.result.imageUrl);
+        const imageUrl = result.details.result.imageUrl;
+        // Add timestamp to prevent browser caching
+        const urlWithTimestamp = imageUrl.includes('?')
+          ? `${imageUrl}&t=${Date.now()}`
+          : `${imageUrl}?t=${Date.now()}`;
+
+        console.log('🔄 Setting result image with URL:', urlWithTimestamp);
+        setResultImage(urlWithTimestamp);
         setShowMobileResult(true);
         toast.success(t('virtualCasting.messages.castingComplete'));
+      } else {
+        console.warn('⚠️ No image URL in result!');
+        console.warn('Full result details:', result.details);
+        // Try alternative paths
+        const alternativeUrl =
+          result.details?.imageUrl ||
+          result.details?.resultUrl ||
+          (result as any).imageUrl ||
+          (result as any).resultUrl;
+
+        if (alternativeUrl) {
+          console.log('🔄 Found alternative URL:', alternativeUrl);
+          const urlWithTimestamp = alternativeUrl.includes('?')
+            ? `${alternativeUrl}&t=${Date.now()}`
+            : `${alternativeUrl}?t=${Date.now()}`;
+          setResultImage(urlWithTimestamp);
+          setShowMobileResult(true);
+          toast.success(t('virtualCasting.messages.castingComplete'));
+        } else {
+          console.error('❌ No valid image URL found in any expected location');
+        }
       }
+
+      console.log('🏁 Resetting processing states');
       setIsProcessing(false);
       setIsEditLoading(false);
     },
     onFailed: () => {
+      console.error('❌ Virtual Casting - Task failed');
       toast.error(t('virtualCasting.messages.castingFailed'));
       setIsProcessing(false);
       setIsEditLoading(false);
@@ -535,6 +578,11 @@ const VirtualCastingClient = forwardRef<
                   className={`w-full h-full object-contain rounded-[20px] transition-opacity duration-500 ${
                     isEditLoading || isPolling ? 'opacity-50' : 'opacity-100'
                   }`}
+                  onError={(e) => {
+                    console.error('❌ Image load error:', e);
+                    console.error('Failed to load image URL:', resultImage);
+                    toast.error(t('virtualCasting.messages.imageLoadFailed'));
+                  }}
                 />
                 {/* Edit/Polling loading overlay */}
                 {(isEditLoading || isPolling) && (

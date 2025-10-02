@@ -76,7 +76,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   const title = 'likebutter';
-  const description = 'AI-powered video creation';
+  const description =
+    'AI-powered fan content creation platform. Transform your fan love into art, music, and virtual content with Butter Studio.';
   const ogImage = `${baseUrl}/og-image.png`;
 
   return {

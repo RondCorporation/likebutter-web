@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import FanmeetingStudioClient from './FanmeetingStudioClient';
 import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
-import { Loader2, Download, Edit, RotateCcw } from 'lucide-react';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
@@ -67,12 +66,6 @@ export default function FanmeetingStudioWithSidebar() {
   const handleGenerate = () => {
     if (clientRef.current?.handleGenerate) {
       clientRef.current.handleGenerate();
-    }
-  };
-
-  const handleDownload = () => {
-    if (clientRef.current?.handleDownload) {
-      clientRef.current.handleDownload();
     }
   };
 

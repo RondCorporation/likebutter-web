@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import StylistClient from './StylistClient';
 import StylistSidebar from './StylistSidebar';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
-import { Edit, RotateCcw } from 'lucide-react';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
 
 interface StylistFormData {

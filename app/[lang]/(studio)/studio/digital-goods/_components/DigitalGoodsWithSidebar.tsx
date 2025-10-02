@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import DigitalGoodsClient from './DigitalGoodsClient';
 import DigitalGoodsStyleSidebar from './DigitalGoodsStyleSidebar';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
-import { Loader2, Edit, RotateCcw } from 'lucide-react';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';

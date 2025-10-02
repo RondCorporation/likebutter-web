@@ -501,7 +501,7 @@ const DigitalGoodsClient = forwardRef<
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
-            {(isGenerating || isPolling) && !isEditLoading ? (
+            {(isGenerating || isPolling) && !resultImage ? (
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
@@ -521,7 +521,7 @@ const DigitalGoodsClient = forwardRef<
                   src={resultImage}
                   alt="Generated digital goods"
                   className={`w-full h-full object-contain rounded-[20px] transition-opacity duration-500 ${
-                    isEditLoading ? 'opacity-50' : 'opacity-100'
+                    isEditLoading || isPolling ? 'opacity-50' : 'opacity-100'
                   }`}
                   onError={(e) => {
                     console.error('Image load error:', e);
@@ -529,8 +529,8 @@ const DigitalGoodsClient = forwardRef<
                     toast.error(t('digitalGoods.messages.imageLoadFailed'));
                   }}
                 />
-                {/* Edit loading overlay */}
-                {isEditLoading && (
+                {/* Edit/Polling loading overlay */}
+                {(isEditLoading || isPolling) && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm rounded-[20px]">
                     <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary mb-3" />
                     <div className="text-studio-text-primary text-base font-pretendard-medium">
@@ -542,7 +542,7 @@ const DigitalGoodsClient = forwardRef<
                   </div>
                 )}
                 {/* PC 다운로드 아이콘 - 우측 상단 */}
-                {!isEditLoading && (
+                {!isEditLoading && !isPolling && (
                   <button
                     onClick={handleDownload}
                     className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"

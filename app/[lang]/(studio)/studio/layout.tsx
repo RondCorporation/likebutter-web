@@ -37,9 +37,9 @@ export default function StudioLayout({ children, params }: Props) {
 
   return (
     <StudioAuthGuard>
-      <div className="flex flex-col min-h-screen w-full">
-        {/* Header - padding adjusted for mobile */}
-        <div className="flex h-16 items-center justify-end gap-2.5 px-4 md:px-8 py-5 w-full bg-studio-header border-b border-solid border-studio-border">
+      <div className="flex flex-col h-screen w-full overflow-hidden">
+        {/* Header */}
+        <div className="flex h-16 items-center justify-end gap-2.5 px-4 md:px-8 py-5 w-full bg-studio-header border-b border-solid border-studio-border md:fixed md:top-0 md:left-0 md:right-0 md:z-30">
           <Logo className="relative flex-1 mt-[-3.00px] mb-[-1.00px] tracking-[0]" />
 
           <div className="inline-flex items-center justify-end gap-4 relative flex-[0_0_auto]">
@@ -79,13 +79,19 @@ export default function StudioLayout({ children, params }: Props) {
           </div>
         </div>
 
-        {/* Main content area */}
-        <div className="flex flex-1 w-full bg-studio-main overflow-hidden">
-          {/* Sidebar displayed only on desktop */}
-          {isDesktop && <StudioSidebar lang={lang} />}
+        {/* Main content area - with top margin for desktop to account for fixed header */}
+        <div className="flex flex-1 w-full bg-studio-main overflow-hidden md:mt-16">
+          {/* Sidebar displayed only on desktop - Fixed position */}
+          {isDesktop && (
+            <div className="fixed left-0 top-16 bottom-0 z-20">
+              <StudioSidebar lang={lang} />
+            </div>
+          )}
 
-          {/* Main content - padding added for bottom navigation on mobile */}
-          <div className={`flex-1 ${!isDesktop ? 'pb-20' : ''}`}>
+          {/* Main content - padding added for sidebar on desktop and bottom navigation on mobile */}
+          <div
+            className={`flex-1 ${isDesktop ? 'ml-20' : ''} ${!isDesktop ? 'pb-20' : ''}`}
+          >
             {children}
           </div>
         </div>

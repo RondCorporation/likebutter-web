@@ -655,7 +655,7 @@ export default function ArchiveClient() {
   }
 
   return (
-    <div className="w-full bg-[#25282c] min-h-screen">
+    <div className="w-full min-h-full bg-[#25282c]">
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
         <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">

@@ -33,9 +33,11 @@ export default function StudioLayout({
 
   if (isDesktop) {
     return (
-      <div className="flex items-start h-screen w-full bg-studio-main overflow-hidden">
-        {!hidePCSidebar && sidebar}
-        {children}
+      <div className="flex items-start h-full w-full bg-studio-main">
+        {!hidePCSidebar && (
+          <div className="h-full overflow-y-auto flex-shrink-0">{sidebar}</div>
+        )}
+        <div className="flex-1 h-full overflow-y-auto">{children}</div>
       </div>
     );
   }

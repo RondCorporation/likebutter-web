@@ -106,7 +106,7 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
   }
 
   return (
-    <div className="h-full w-full bg-studio-main">
+    <div className="h-full w-full bg-studio-main overflow-y-auto">
       <Suspense fallback={<StudioToolSkeleton />}>
         {ToolComponent && <ToolComponent />}
       </Suspense>

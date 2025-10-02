@@ -33,69 +33,73 @@ export default function HelpClient() {
       title: t('studio:faq.imageGeneration.title'),
       items: [
         {
-          question: t('studio:faq.imageGeneration.whatIsImageGeneration.question'),
-          answer: t('studio:faq.imageGeneration.whatIsImageGeneration.answer')
+          question: t(
+            'studio:faq.imageGeneration.whatIsImageGeneration.question'
+          ),
+          answer: t('studio:faq.imageGeneration.whatIsImageGeneration.answer'),
         },
         {
           question: t('studio:faq.imageGeneration.availableStyles.question'),
-          answer: t('studio:faq.imageGeneration.availableStyles.answer')
+          answer: t('studio:faq.imageGeneration.availableStyles.answer'),
         },
         {
           question: t('studio:faq.imageGeneration.uploadConditions.question'),
-          answer: t('studio:faq.imageGeneration.uploadConditions.answer')
+          answer: t('studio:faq.imageGeneration.uploadConditions.answer'),
         },
         {
           question: t('studio:faq.imageGeneration.generationTime.question'),
-          answer: t('studio:faq.imageGeneration.generationTime.answer')
+          answer: t('studio:faq.imageGeneration.generationTime.answer'),
         },
         {
           question: t('studio:faq.imageGeneration.uploadTips.question'),
-          answer: t('studio:faq.imageGeneration.uploadTips.answer')
-        }
-      ]
+          answer: t('studio:faq.imageGeneration.uploadTips.answer'),
+        },
+      ],
     },
     {
       title: t('studio:faq.audioGeneration.title'),
       items: [
         {
-          question: t('studio:faq.audioGeneration.whatIsAudioGeneration.question'),
-          answer: t('studio:faq.audioGeneration.whatIsAudioGeneration.answer')
+          question: t(
+            'studio:faq.audioGeneration.whatIsAudioGeneration.question'
+          ),
+          answer: t('studio:faq.audioGeneration.whatIsAudioGeneration.answer'),
         },
         {
           question: t('studio:faq.audioGeneration.conditionsAndTime.question'),
-          answer: t('studio:faq.audioGeneration.conditionsAndTime.answer')
+          answer: t('studio:faq.audioGeneration.conditionsAndTime.answer'),
         },
         {
           question: t('studio:faq.audioGeneration.canEditResults.question'),
-          answer: t('studio:faq.audioGeneration.canEditResults.answer')
+          answer: t('studio:faq.audioGeneration.canEditResults.answer'),
         },
         {
           question: t('studio:faq.audioGeneration.uploadTips.question'),
-          answer: t('studio:faq.audioGeneration.uploadTips.answer')
-        }
-      ]
+          answer: t('studio:faq.audioGeneration.uploadTips.answer'),
+        },
+      ],
     },
     {
       title: t('studio:faq.common.title'),
       items: [
         {
           question: t('studio:faq.common.howToSaveResults.question'),
-          answer: t('studio:faq.common.howToSaveResults.answer')
+          answer: t('studio:faq.common.howToSaveResults.answer'),
         },
         {
           question: t('studio:faq.common.getBetterResults.question'),
-          answer: t('studio:faq.common.getBetterResults.answer')
+          answer: t('studio:faq.common.getBetterResults.answer'),
         },
         {
           question: t('studio:faq.common.unsatisfiedResults.question'),
-          answer: t('studio:faq.common.unsatisfiedResults.answer')
-        }
-      ]
-    }
+          answer: t('studio:faq.common.unsatisfiedResults.answer'),
+        },
+      ],
+    },
   ];
 
   return (
-    <div className="w-full bg-[#25282c] min-h-screen">
+    <div className="w-full min-h-full bg-[#25282c]">
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
         {/* Header */}
         <div className="mb-8 text-center">

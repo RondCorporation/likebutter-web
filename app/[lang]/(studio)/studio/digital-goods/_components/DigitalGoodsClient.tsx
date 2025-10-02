@@ -31,6 +31,7 @@ import BeforeAfterToggle from '@/app/_components/ui/BeforeAfterToggle';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
+import { useCreditStore } from '@/app/_stores/creditStore';
 
 interface DigitalGoodsClientProps {
   formData?: {
@@ -47,6 +48,7 @@ interface DigitalGoodsClientProps {
 export interface DigitalGoodsClientRef {
   handleGenerate: () => void;
   handleEdit: () => void;
+  handleReset: () => void;
   isGenerating: boolean;
   isPolling: boolean;
   isBackgroundProcessing: boolean;
@@ -63,6 +65,7 @@ const DigitalGoodsClient = forwardRef<
   DigitalGoodsClientProps
 >(function DigitalGoodsClient({ formData = {}, onStateChange }, ref) {
   const { t } = useTranslation(['studio', 'common']);
+  const { deductCredit } = useCreditStore();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -148,6 +151,9 @@ const DigitalGoodsClient = forwardRef<
       }
 
       if (response.status === 200 && response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.DIGITAL_GOODS);
+
         toast.success(t('studio:digitalGoods.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
@@ -239,6 +245,9 @@ const DigitalGoodsClient = forwardRef<
       }
 
       if (response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.IMAGE_EDIT);
+
         toast.success('Edit request has been sent!');
 
         startPolling(response.data.taskId);
@@ -275,6 +284,7 @@ const DigitalGoodsClient = forwardRef<
     () => ({
       handleGenerate,
       handleEdit: () => setIsEditPopupOpen(true),
+      handleReset,
       isGenerating,
       isPolling,
       isBackgroundProcessing,

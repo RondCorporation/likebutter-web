@@ -89,11 +89,7 @@ export default function StudioLayout({ children, params }: Props) {
           )}
 
           {/* Main content - padding added for sidebar on desktop and bottom navigation on mobile */}
-          <div
-            className={`flex-1 ${isDesktop ? 'ml-20' : ''} ${!isDesktop ? 'pb-20' : ''}`}
-          >
-            {children}
-          </div>
+          <div className={`flex-1 ${isDesktop ? 'ml-20' : ''}`}>{children}</div>
         </div>
 
         {/* Bottom navigation displayed only on mobile */}

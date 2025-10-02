@@ -30,6 +30,7 @@ import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
+import { useCreditStore } from '@/app/_stores/creditStore';
 
 interface FanmeetingFormData {
   backgroundPrompt: string;
@@ -50,6 +51,7 @@ export interface FanmeetingStudioClientRef {
   handleGenerate: () => void;
   handleDownload: () => void;
   handleEdit: () => void;
+  handleReset: () => void;
   isProcessing: boolean;
   isPolling: boolean;
   resultImage: string | null;
@@ -67,6 +69,7 @@ const FanmeetingStudioClient = forwardRef<
   FanmeetingStudioClientProps
 >(function FanmeetingStudioClient({ formData, onStateChange }, ref) {
   const { t } = useTranslation(['studio']);
+  const { deductCredit } = useCreditStore();
   const [idolFile, setIdolFile] = useState<File | null>(null);
   const [userFile, setUserFile] = useState<File | null>(null);
   const [idolPreviewUrl, setIdolPreviewUrl] = useState<string>('');
@@ -120,6 +123,7 @@ const FanmeetingStudioClient = forwardRef<
       handleGenerate,
       handleDownload,
       handleEdit: () => setIsEditPopupOpen(true),
+      handleReset,
       isProcessing,
       isPolling,
       resultImage,
@@ -191,6 +195,9 @@ const FanmeetingStudioClient = forwardRef<
       }
 
       if (response.status === 200 && response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.FANMEETING_STUDIO);
+
         toast.success(t('fanmeeting.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
@@ -249,6 +256,9 @@ const FanmeetingStudioClient = forwardRef<
       }
 
       if (response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.IMAGE_EDIT);
+
         toast.success(t('fanmeeting.messages.editRequestSent'));
 
         startPolling(response.data.taskId);

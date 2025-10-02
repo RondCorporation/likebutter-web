@@ -30,6 +30,7 @@ import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
+import { useCreditStore } from '@/app/_stores/creditStore';
 
 interface StylistFormData {
   mode: 'text' | 'image';
@@ -64,12 +65,15 @@ interface StylistClientProps {
 export interface StylistClientRef {
   handleGenerate: () => void;
   handleDownload: () => void;
+  handleEdit: () => void;
+  handleReset: () => void;
   isProcessing: boolean;
   isPolling: boolean;
   isBackgroundProcessing: boolean;
   resultImage: string | null;
   uploadedFile: File | null;
   showMobileResult: boolean;
+  isEditLoading: boolean;
   checkTaskStatus: (taskId: number) => Promise<void>;
   currentTaskId: number | null;
 }
@@ -77,6 +81,7 @@ export interface StylistClientRef {
 const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
   function StylistClient({ formData, onStateChange }, ref) {
     const { t } = useTranslation(['studio']);
+    const { deductCredit } = useCreditStore();
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string>('');
     const [isDragOver, setIsDragOver] = useState(false);
@@ -129,12 +134,15 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       () => ({
         handleGenerate,
         handleDownload,
+        handleEdit: () => setIsEditPopupOpen(true),
+        handleReset,
         isProcessing,
         isPolling,
         isBackgroundProcessing,
         resultImage,
         uploadedFile,
         showMobileResult,
+        isEditLoading,
         checkTaskStatus,
         currentTaskId,
       }),
@@ -145,6 +153,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         resultImage,
         uploadedFile,
         showMobileResult,
+        isEditLoading,
         checkTaskStatus,
         currentTaskId,
       ]
@@ -211,6 +220,9 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         }
 
         if (response.status === 200 && response.data) {
+          // Deduct credit immediately for instant UI update
+          deductCredit(CREDIT_COSTS.STYLIST);
+
           toast.success(t('stylist.messages.requestSent'));
           startPolling(response.data.taskId);
         } else {
@@ -269,6 +281,9 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         }
 
         if (response.data) {
+          // Deduct credit immediately for instant UI update
+          deductCredit(CREDIT_COSTS.IMAGE_EDIT);
+
           toast.success(t('stylist.messages.editRequestSent'));
 
           startPolling(response.data.taskId);

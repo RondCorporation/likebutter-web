@@ -99,7 +99,7 @@ export default function HelpClient() {
   ];
 
   return (
-    <div className="w-full min-h-full bg-[#25282c]">
+    <div className="w-full min-h-full bg-[#25282c] pb-28 md:pb-0">
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
         {/* Header */}
         <div className="mb-8 text-center">

@@ -122,7 +122,7 @@ export default function MobileBottomNavigation({
 
           {/* Help */}
           <button
-            onClick={handleComingSoon}
+            onClick={() => navigateToTool('help')}
             className="flex flex-col items-center py-2 px-3"
           >
             <div

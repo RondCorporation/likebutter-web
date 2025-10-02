@@ -12,6 +12,8 @@ import { toast } from 'react-hot-toast';
 import { useTaskPolling } from '@/app/_hooks/useTaskPolling';
 import { ButterCoverDetails } from '@/app/_types/task';
 import { Download, Play, Pause, Volume2 } from 'lucide-react';
+import { useCreditStore } from '@/app/_stores/creditStore';
+import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
 interface ButterCoverClientProps {
   dictionary?: any;
@@ -31,6 +33,7 @@ interface MusicData {
 
 export default function ButterCoverClient({}: ButterCoverClientProps) {
   const { t } = useTranslation(['studio']);
+  const { deductCredit } = useCreditStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [artistData, setArtistData] = useState<ArtistData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,6 +99,9 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       }
 
       if (response.status === 200 && response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.BUTTER_COVER);
+
         toast.success(t('butterCover.messages.requestSent'));
 
         startPolling(response.data.taskId);
@@ -281,7 +287,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-studio-content">
+    <div className="flex flex-col flex-1 h-full bg-studio-content pb-28 md:pb-0">
       <div className="container mx-auto px-4">
         <StepNavigation currentStep={currentStep} />
         <div className="flex-1">{renderCurrentStep()}</div>

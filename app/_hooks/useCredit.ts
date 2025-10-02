@@ -1,39 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getCreditBalance, CreditBalance } from '@/app/_lib/apis/credit.api';
+import { useEffect } from 'react';
+import { useCreditStore } from '@/app/_stores/creditStore';
 
 export function useCredit() {
-  const [creditBalance, setCreditBalance] = useState<CreditBalance | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchCreditBalance = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await getCreditBalance();
-
-      if (response.status === 200 && response.data) {
-        setCreditBalance(response.data);
-      } else {
-        throw new Error('Failed to fetch credit balance');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Failed to fetch credit balance');
-      console.error('Credit balance fetch error:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { creditBalance, isLoading, error, fetchCreditBalance, refetchCredit } =
+    useCreditStore();
 
   useEffect(() => {
-    fetchCreditBalance();
-
-    const handleCreditUpdate = () => {
+    // Initial fetch
+    if (!creditBalance) {
       fetchCreditBalance();
+    }
+
+    // Listen for credit-updated events (e.g., from attendance)
+    const handleCreditUpdate = () => {
+      refetchCredit();
     };
 
     window.addEventListener('credit-updated', handleCreditUpdate);
@@ -41,13 +23,13 @@ export function useCredit() {
     return () => {
       window.removeEventListener('credit-updated', handleCreditUpdate);
     };
-  }, []);
+  }, [creditBalance, fetchCreditBalance, refetchCredit]);
 
   return {
     creditBalance,
     currentBalance: creditBalance?.currentBalance || 0,
     isLoading,
     error,
-    refetch: fetchCreditBalance,
+    refetch: refetchCredit,
   };
 }

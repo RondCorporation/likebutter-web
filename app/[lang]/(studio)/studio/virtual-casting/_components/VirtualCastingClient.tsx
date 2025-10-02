@@ -31,6 +31,7 @@ import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import StudioButton from '../../_components/ui/StudioButton';
 import EditRequestPopup from '@/components/ui/EditRequestPopup';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
+import { useCreditStore } from '@/app/_stores/creditStore';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -54,6 +55,7 @@ export interface VirtualCastingClientRef {
   handleGenerate: () => void;
   handleDownload: () => void;
   handleEdit: () => void;
+  handleReset: () => void;
   isProcessing: boolean;
   isPolling: boolean;
   resultImage: string | null;
@@ -70,6 +72,7 @@ const VirtualCastingClient = forwardRef<
   VirtualCastingClientProps
 >(function VirtualCastingClient({ formData, onStateChange }, ref) {
   const { t } = useTranslation(['studio']);
+  const { deductCredit, addCredit } = useCreditStore();
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
@@ -120,6 +123,7 @@ const VirtualCastingClient = forwardRef<
       handleGenerate,
       handleDownload,
       handleEdit: () => setIsEditPopupOpen(true),
+      handleReset,
       isProcessing,
       isPolling,
       resultImage,
@@ -179,6 +183,9 @@ const VirtualCastingClient = forwardRef<
       }
 
       if (response.status === 200 && response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.VIRTUAL_CASTING);
+
         toast.success(t('virtualCasting.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
@@ -236,6 +243,9 @@ const VirtualCastingClient = forwardRef<
       }
 
       if (response.data) {
+        // Deduct credit immediately for instant UI update
+        deductCredit(CREDIT_COSTS.IMAGE_EDIT);
+
         toast.success(t('virtualCasting.messages.editRequestSent'));
         startPolling(response.data.taskId);
       } else {

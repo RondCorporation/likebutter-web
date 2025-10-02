@@ -87,7 +87,7 @@ export default function DashboardClient() {
       : t('studio:dashboard.audioGeneration');
 
   return (
-    <div className="w-full min-h-full bg-[#25282c]">
+    <div className="w-full min-h-full bg-[#25282c] pb-28 md:pb-0">
       {/* Hero Section */}
       <div className="relative w-full pt-2 md:pt-7 px-0 md:px-[90px]">
         <div className="relative w-full h-[140px] md:h-[150px] rounded-none md:rounded-2xl bg-gradient-to-r from-[#ffd83b] via-[#f2eb1e] to-[#e5ff00] flex items-center justify-center">

@@ -42,7 +42,7 @@ export default function EditRequestPopup({
       title={t('editRequest.title')}
       className="!w-full !max-w-[500px] !h-auto"
     >
-      <div className="flex flex-col gap-6 flex-1">
+      <div className="flex flex-col gap-6 flex-1 pb-safe">
         <div className="flex flex-col gap-3">
           <label className="font-semibold text-studio-text-primary text-sm">
             {t('editRequest.label')}
@@ -59,7 +59,7 @@ export default function EditRequestPopup({
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 pb-6 md:pb-0">
           <button
             onClick={handleClose}
             disabled={isLoading}

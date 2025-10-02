@@ -12,11 +12,15 @@
     "generating": "Generating...",
     "imageLoadFailed": "Cannot load image",
     "messages": {
+      "editComplete": "Edit completed successfully!",
+      "editFailed": "Edit failed",
+      "editRequestSent": "Edit request has been sent!",
       "errorOccurred": "An error occurred",
       "loading": "Loading...",
       "loadingDetails": "Loading details...",
       "noAudioGenerated": "No audio generated",
       "noTasksGenerated": "No tasks generated yet",
+      "processingEdit": "Processing edit...",
       "resultsCount": "{{start}} ~ {{end}} / Total {{total}}",
       "startFirstTask": "Start your first task in Studio!"
     },

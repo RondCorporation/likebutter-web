@@ -128,7 +128,7 @@ function ArchiveTaskCard({
       month: month.toString().padStart(2, '0'),
       day: day.toString().padStart(2, '0'),
       hour: hour.toString().padStart(2, '0'),
-      minute: minute.toString().padStart(2, '0')
+      minute: minute.toString().padStart(2, '0'),
     });
   };
 
@@ -155,7 +155,9 @@ function ArchiveTaskCard({
         <div className="w-full h-full flex items-center justify-center text-red-400">
           <div className="text-center">
             <X className="w-8 h-8 mx-auto mb-2" />
-            <div className="text-sm font-medium">{t('studio:archive.processingFailed')}</div>
+            <div className="text-sm font-medium">
+              {t('studio:archive.processingFailed')}
+            </div>
           </div>
         </div>
       );
@@ -165,7 +167,9 @@ function ArchiveTaskCard({
       return (
         <div className="w-full h-full flex items-center justify-center text-gray-400">
           <div className="text-center">
-            <div className="text-sm font-medium">{t('studio:archive.generating')}</div>
+            <div className="text-sm font-medium">
+              {t('studio:archive.generating')}
+            </div>
           </div>
         </div>
       );
@@ -175,7 +179,9 @@ function ArchiveTaskCard({
       return (
         <div className="w-full h-full flex items-center justify-center text-yellow-400">
           <div className="text-center">
-            <div className="text-sm font-medium">{t('studio:archive.generating')}</div>
+            <div className="text-sm font-medium">
+              {t('studio:archive.generating')}
+            </div>
           </div>
         </div>
       );
@@ -206,7 +212,9 @@ function ArchiveTaskCard({
             <div className="w-full h-full flex items-center justify-center text-green-400">
               <div className="text-center">
                 <Music className="w-8 h-8 mx-auto mb-2" />
-                <div className="text-sm font-medium">{t('studio:archive.audioGenComplete')}</div>
+                <div className="text-sm font-medium">
+                  {t('studio:archive.audioGenComplete')}
+                </div>
               </div>
             </div>
           );
@@ -271,7 +279,9 @@ function ArchiveTaskCard({
       STYLIST: t('studio:tools.stylist.title'),
       VIRTUAL_CASTING: t('studio:tools.virtualCasting.title'),
       DIGITAL_GOODS_EDIT: t('studio:archive.taskTypes.digitalGoodsEdit'),
-      FANMEETING_STUDIO_EDIT: t('studio:archive.taskTypes.fanmeetingStudioEdit'),
+      FANMEETING_STUDIO_EDIT: t(
+        'studio:archive.taskTypes.fanmeetingStudioEdit'
+      ),
       STYLIST_EDIT: t('studio:archive.taskTypes.stylistEdit'),
       VIRTUAL_CASTING_EDIT: t('studio:archive.taskTypes.virtualCastingEdit'),
     };
@@ -365,7 +375,9 @@ function ArchiveTaskCard({
         </p>
         {task.parentTaskId && (
           <p className="text-[#888] text-xs mt-1">
-            {t('studio:archive.editedFromOriginal', { taskId: task.parentTaskId })}
+            {t('studio:archive.editedFromOriginal', {
+              taskId: task.parentTaskId,
+            })}
           </p>
         )}
       </div>
@@ -412,7 +424,7 @@ export default function ArchiveClient() {
       month: month.toString().padStart(2, '0'),
       day: day.toString().padStart(2, '0'),
       hour: hour.toString().padStart(2, '0'),
-      minute: minute.toString().padStart(2, '0')
+      minute: minute.toString().padStart(2, '0'),
     });
   };
 
@@ -440,7 +452,10 @@ export default function ArchiveClient() {
     { label: t('studio:tools.digitalGoods.title'), value: 'DIGITAL_GOODS' },
     { label: t('studio:tools.stylist.title'), value: 'STYLIST' },
     { label: t('studio:tools.virtualCasting.title'), value: 'VIRTUAL_CASTING' },
-    { label: t('studio:tools.fanmeetingStudio.title'), value: 'FANMEETING_STUDIO' },
+    {
+      label: t('studio:tools.fanmeetingStudio.title'),
+      value: 'FANMEETING_STUDIO',
+    },
   ];
 
   const pageSizeOptions = [
@@ -630,7 +645,9 @@ export default function ArchiveClient() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-red-400 text-center">
-          <h3 className="text-lg font-semibold mb-2">{t('studio:archive.messages.errorOccurred')}</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            {t('studio:archive.messages.errorOccurred')}
+          </h3>
           <p className="text-sm">{error}</p>
         </div>
       </div>
@@ -708,7 +725,8 @@ export default function ArchiveClient() {
             {isSelectionMode && (
               <>
                 <span className="text-gray-400 text-sm">
-                  {selectedTaskIds.size} {t('studio:archive.pagination.selected')}
+                  {selectedTaskIds.size}{' '}
+                  {t('studio:archive.pagination.selected')}
                 </span>
                 <button
                   onClick={handleBatchDelete}
@@ -744,7 +762,9 @@ export default function ArchiveClient() {
 
           return isLoading && filteredTasks.length === 0 ? (
             <div className="flex items-center justify-center h-64">
-              <div className="text-gray-400">{t('studio:archive.messages.loading')}</div>
+              <div className="text-gray-400">
+                {t('studio:archive.messages.loading')}
+              </div>
             </div>
           ) : filteredTasks.length === 0 ? (
             <div className="flex items-center justify-center h-64">
@@ -781,7 +801,9 @@ export default function ArchiveClient() {
               <div className="flex items-center justify-between mt-8">
                 {/* Left side - Show and page size selector */}
                 <div className="flex items-center gap-4">
-                  <span className="text-white text-sm">{t('studio:archive.pagination.display')}</span>
+                  <span className="text-white text-sm">
+                    {t('studio:archive.pagination.display')}
+                  </span>
                   <div className="relative" ref={pageSizeDropdownRef}>
                     <button
                       onClick={() =>
@@ -789,7 +811,9 @@ export default function ArchiveClient() {
                       }
                       className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
                     >
-                      <span>{pageSize} {t('studio:archive.pagination.perPage')}</span>
+                      <span>
+                        {pageSize} {t('studio:archive.pagination.perPage')}
+                      </span>
                       <ChevronDown
                         className={`w-3 h-3 transition-transform ${pageSizeDropdownOpen ? 'rotate-180' : ''}`}
                       />
@@ -825,7 +849,7 @@ export default function ArchiveClient() {
                       ? t('studio:archive.messages.resultsCount', {
                           start: startResult.toString(),
                           end: endResult.toString(),
-                          total: totalResults.toString()
+                          total: totalResults.toString(),
                         })
                       : t('studio:archive.pagination.noResults')}
                   </span>
@@ -891,7 +915,11 @@ export default function ArchiveClient() {
 
       {/* Task Details Modal */}
       {selectedTask && (
-        <TaskDetailsModal task={selectedTask} onClose={handleCloseModal} />
+        <TaskDetailsModal
+          task={selectedTask}
+          onClose={handleCloseModal}
+          onRefetch={refetch}
+        />
       )}
 
       {/* Delete Confirm Modal */}

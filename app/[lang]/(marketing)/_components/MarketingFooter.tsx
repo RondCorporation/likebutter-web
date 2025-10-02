@@ -25,8 +25,8 @@ const MarketingFooter = forwardRef<HTMLElement, MarketingFooterProps>(
     const footerClasses = `relative ${isSnapSection ? 'h-screen snap-start flex flex-col justify-end' : 'pt-12'}`;
 
     const footerContentClasses = isSnapSection
-      ? 'rounded-t-[3rem] pt-20 pb-8'
-      : 'pt-20 pb-8';
+      ? 'rounded-t-[3rem] pt-20 pb-8 md:pb-8'
+      : 'pt-20 pb-12 md:pb-8';
 
     return (
       <footer className={footerClasses} ref={ref} {...props}>

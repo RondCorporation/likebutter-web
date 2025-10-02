@@ -123,7 +123,7 @@ const SectionHeader = ({
       <AnimatedElement direction="up" delay={0.15} duration={0.3}>
         <p
           className="text-slate-400 text-base font-normal leading-6"
-          style={{ fontFamily: 'Arial, sans-serif' }}
+          style={{ fontFamily: 'Arial, sans-serif', wordBreak: 'keep-all' }}
         >
           {subtitle.split('\n').map((line, i) => (
             <span key={i}>
@@ -785,7 +785,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           }}
           data-section-index={4}
         >
-          <PageSection className="bg-black text-white">
+          <PageSection className="bg-black text-white pb-[40rem] sm:pb-[35rem] md:pb-[30rem] lg:pb-[25rem]">
             <div className="flex justify-center px-4">
               <AnimatedElement direction="scale" delay={0.2} duration={0.5}>
                 <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full min-h-[320px] lg:h-[320px]">

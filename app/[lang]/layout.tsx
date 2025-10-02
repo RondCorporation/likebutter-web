@@ -88,13 +88,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: 'website',
       url: `/${lang}`,
-      images: [{ url: ogImage }],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+      siteName: 'likebutter',
+      locale: lang === 'ko' ? 'ko_KR' : 'en_US',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
       images: [ogImage],
+      creator: '@likebutter',
     },
     alternates: {
       canonical: `/${lang}`,
@@ -110,6 +120,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     other: {
       'msapplication-TileColor': '#000000',
+      'apple-mobile-web-app-title': 'likebutter',
+      'application-name': 'likebutter',
     },
   };
 }

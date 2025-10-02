@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
+import StudioSidebarBase from '../../_components/StudioSidebarBase';
 
 interface DigitalGoodsStyleSidebarProps {
   onFormChange?: (formData: { style?: DigitalGoodsStyle }) => void;
@@ -58,48 +59,46 @@ export default function DigitalGoodsStyleSidebar({
   }, [selectedPreset, onFormChange]);
 
   return (
-    <div className="flex flex-col w-full md:w-[260px] h-full items-start gap-6 md:gap-10 pt-3 md:pt-6 pb-3 px-3 relative bg-studio-sidebar md:border-r border-solid border-studio-border-light overflow-y-auto">
-      <div className="flex flex-col items-start gap-8 relative self-stretch w-full flex-[0_0_auto]">
-        {/* Style Preset */}
-        <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] w-full">
-          <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
-            {t('digitalGoods.stylePreset')}
-          </div>
+    <StudioSidebarBase>
+      {/* Style Preset */}
+      <div className="flex flex-col items-start gap-4 relative flex-[0_0_auto] w-full">
+        <div className="w-fit mt-[-1px] font-pretendard-medium text-studio-text-primary text-sm text-center leading-[19.6px] whitespace-nowrap relative tracking-[0]">
+          {t('digitalGoods.stylePreset')}
+        </div>
 
-          <div className="grid grid-cols-2 gap-3 w-full">
-            {stylePresets.map((preset, index) => (
+        <div className="grid grid-cols-2 gap-3 w-full">
+          {stylePresets.map((preset, index) => (
+            <div
+              key={preset.value}
+              className="flex flex-col items-center justify-center gap-1.5 cursor-pointer"
+              onClick={() => setSelectedPreset(preset.name)}
+            >
               <div
-                key={preset.value}
-                className="flex flex-col items-center justify-center gap-1.5 cursor-pointer"
-                onClick={() => setSelectedPreset(preset.name)}
+                className={`relative w-24 h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
+                  preset.name === selectedPreset
+                    ? 'border-studio-button-hover shadow-lg'
+                    : 'border-transparent'
+                }`}
               >
-                <div
-                  className={`relative w-24 h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
-                    preset.name === selectedPreset
-                      ? 'border-studio-button-hover shadow-lg'
-                      : 'border-transparent'
-                  }`}
-                >
-                  <img
-                    src={getStyleImage(preset.value)}
-                    alt={preset.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div
-                  className={`font-pretendard-medium text-xs text-center leading-tight tracking-[0] transition-colors duration-200 w-full px-1 ${
-                    preset.name === selectedPreset
-                      ? 'text-studio-button-hover font-semibold'
-                      : 'text-studio-text-primary'
-                  }`}
-                >
-                  {preset.name}
-                </div>
+                <img
+                  src={getStyleImage(preset.value)}
+                  alt={preset.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            ))}
-          </div>
+              <div
+                className={`font-pretendard-medium text-xs text-center leading-tight tracking-[0] transition-colors duration-200 w-full px-1 ${
+                  preset.name === selectedPreset
+                    ? 'text-studio-button-hover font-semibold'
+                    : 'text-studio-text-primary'
+                }`}
+              >
+                {preset.name}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </StudioSidebarBase>
   );
 }

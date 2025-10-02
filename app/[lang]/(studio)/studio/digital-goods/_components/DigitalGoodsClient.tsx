@@ -43,6 +43,7 @@ export interface DigitalGoodsClientRef {
   showMobileResult: boolean;
   checkTaskStatus: (taskId: number) => Promise<void>;
   currentTaskId: number | null;
+  uploadedFile: File | null;
 }
 
 const DigitalGoodsClient = forwardRef<
@@ -265,6 +266,7 @@ const DigitalGoodsClient = forwardRef<
       showMobileResult,
       checkTaskStatus,
       currentTaskId,
+      uploadedFile,
     }),
     [
       isGenerating,
@@ -275,12 +277,13 @@ const DigitalGoodsClient = forwardRef<
       showMobileResult,
       checkTaskStatus,
       currentTaskId,
+      uploadedFile,
     ]
   );
 
   const isFormValid = () => {
+    if (!uploadedFile) return false;
     if (!formData) return false;
-
     if (!formData.style) return false;
 
     return true;

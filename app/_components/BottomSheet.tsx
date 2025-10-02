@@ -9,7 +9,7 @@ interface BottomSheetProps {
   maxHeight?: number;
   minHeight?: number;
   className?: string;
-  bottomButton?: ReactNode;
+  hasBottomButton?: boolean;
 }
 
 export default function BottomSheet({
@@ -18,7 +18,7 @@ export default function BottomSheet({
   maxHeight = 85,
   minHeight = 20,
   className = '',
-  bottomButton,
+  hasBottomButton = false,
 }: BottomSheetProps) {
   const isMobile = useIsMobile();
   const [height, setHeight] = useState(initialHeight);
@@ -248,19 +248,24 @@ export default function BottomSheet({
     );
   }
 
+  const actualHeight = Math.min((height / 100) * window.innerHeight, 500);
+
+  const bottomOffset = hasBottomButton ? 'bottom-[140px]' : 'bottom-20';
+
   return (
     <div
       ref={sheetRef}
-      className={`fixed inset-x-0 bottom-0 z-50 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl ${isDragging ? '' : 'transition-transform duration-200 ease-out'} ${className}`}
+      className={`fixed inset-x-0 ${bottomOffset} z-40 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${isDragging ? '' : 'transition-transform duration-200 ease-out'} ${className}`}
       style={{
-        height: `${height}vh`,
+        height: `${actualHeight}px`,
+        maxHeight: '500px',
         transform: isDragging ? 'translateZ(0)' : undefined,
         willChange: isDragging ? 'transform' : 'auto',
       }}
     >
       {/* Drag handle */}
       <div
-        className="flex justify-center py-3 cursor-grab active:cursor-grabbing select-none"
+        className="flex justify-center py-3 cursor-grab active:cursor-grabbing select-none shrink-0"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleEnd}
@@ -279,28 +284,19 @@ export default function BottomSheet({
         />
       </div>
 
-      {/* Content area */}
-      <div className="flex flex-col flex-1 min-h-0">
-        <div
-          className="flex-1 overflow-y-auto px-3 overscroll-contain"
-          style={{
-            touchAction: 'pan-y',
-            WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain',
-          }}
-          onTouchStart={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          {children}
-        </div>
-
-        {/* Fixed bottom button area */}
-        {bottomButton && (
-          <div className="px-3 py-3 border-t border-studio-border bg-studio-sidebar">
-            {bottomButton}
-          </div>
-        )}
+      {/* Scrollable content area */}
+      <div
+        className="flex-1 overflow-y-auto px-3 pb-3 overscroll-contain"
+        style={{
+          touchAction: 'pan-y',
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        {children}
       </div>
     </div>
   );

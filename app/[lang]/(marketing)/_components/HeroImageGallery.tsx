@@ -140,7 +140,12 @@ export default function HeroImageGallery({
     const columnWidthWithGap = 280;
     const rowHeightWithGap = 360;
     const baseLeft = (column - 1) * columnWidthWithGap;
-    const top = (row - 1) * rowHeightWithGap;
+    let top = (row - 1) * rowHeightWithGap;
+
+    // Add extra offset for middle column (column 2) to create height difference
+    if (column === 2) {
+      top += 50;
+    }
 
     // Add offset for non-Idol Cover sections to maintain original position
     const offsetTop = isIdolCoverSection ? top : top + 317;
@@ -302,7 +307,7 @@ export default function HeroImageGallery({
             <motion.div
               className="absolute z-0"
               style={{
-                top: '250px',
+                top: '350px',
                 left: '50px',
               }}
               initial={{ opacity: 0, y: 0 }}
@@ -332,7 +337,7 @@ export default function HeroImageGallery({
             <motion.div
               className="absolute z-0"
               style={{
-                top: '300px',
+                top: '400px',
                 left: '320px',
               }}
               initial={{ opacity: 0, y: 0 }}

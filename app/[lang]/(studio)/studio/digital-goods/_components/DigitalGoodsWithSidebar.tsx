@@ -39,7 +39,8 @@ export default function DigitalGoodsWithSidebar() {
         setShowMobileResult(clientRef.current.showMobileResult);
       }
       const resultImage = clientRef.current?.resultImage;
-      const isProcessing = clientRef.current?.isGenerating || clientRef.current?.isPolling;
+      const isProcessing =
+        clientRef.current?.isGenerating || clientRef.current?.isPolling;
       setHidePCSidebar(!!resultImage || !!isProcessing);
     }, 100);
 
@@ -47,6 +48,7 @@ export default function DigitalGoodsWithSidebar() {
   }, []);
 
   const isFormValid = () => {
+    if (!clientRef.current?.uploadedFile) return false;
     if (!formData) return false;
     if (!formData.style) return false;
     return true;
@@ -80,7 +82,9 @@ export default function DigitalGoodsWithSidebar() {
           {isEditLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           {!isEditLoading && <Edit className="w-4 h-4 mr-2" />}
           <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-            {isEditLoading ? t('studio:digitalGoods.editingInProgress') : t('studio:digitalGoods.edit')}
+            {isEditLoading
+              ? t('studio:digitalGoods.editingInProgress')
+              : t('studio:digitalGoods.edit')}
           </div>
         </button>
       );
@@ -88,7 +92,11 @@ export default function DigitalGoodsWithSidebar() {
 
     return (
       <StudioButton
-        text={isGenerating || isPolling ? t('studio:digitalGoods.generating') : t('studio:digitalGoods.generate')}
+        text={
+          isGenerating || isPolling
+            ? t('studio:digitalGoods.generating')
+            : t('studio:digitalGoods.generate')
+        }
         onClick={handleGenerate}
         disabled={isGenerating || isPolling || !isFormValid()}
         loading={isGenerating || isPolling}

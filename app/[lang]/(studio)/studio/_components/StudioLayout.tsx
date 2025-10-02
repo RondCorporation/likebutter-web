@@ -54,16 +54,24 @@ export default function StudioLayout({
         {children}
       </div>
 
+      {/* Bottom sheet */}
       {!hideMobileBottomSheet && (
         <BottomSheet
           initialHeight={bottomSheetOptions.initialHeight}
           maxHeight={bottomSheetOptions.maxHeight}
           minHeight={bottomSheetOptions.minHeight}
           className="bg-studio-sidebar"
-          bottomButton={mobileBottomButton}
+          hasBottomButton={!!mobileBottomButton}
         >
           {sidebar}
         </BottomSheet>
+      )}
+
+      {/* Fixed bottom button - above navigation */}
+      {mobileBottomButton && (
+        <div className="fixed inset-x-0 bottom-0 z-40 bg-studio-sidebar pb-20">
+          <div className="px-3 pt-3 pb-6">{mobileBottomButton}</div>
+        </div>
       )}
     </div>
   );

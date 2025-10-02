@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Palette, Sparkles, FileText, Image, Shirt } from 'lucide-react';
 
 interface Props {
-  task: Task & { actionType: 'STYLIST' };
+  task: Task & { actionType: 'STYLIST' | 'STYLIST_EDIT' };
   onClick: () => void;
 }
 

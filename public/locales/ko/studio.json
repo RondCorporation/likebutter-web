@@ -476,6 +476,25 @@
     "backgroundProcessing": "백그라운드에서 처리 중",
     "checkStatus": "상태 확인",
     "completeSettings": "사이드바에서 설정을 완료하고 '팬미팅생성'을 눌러주세요",
+    "details": {
+      "detailsNotAvailable": "상세 정보를 불러올 수 없습니다",
+      "fanImage": "팬 사진",
+      "fanImageAlt": "팬 원본 사진",
+      "fanSubtitle": "업로드한 원본 사진",
+      "fullGeneratedScene": "생성된 장면 전체보기",
+      "generatedScene": "생성된 장면",
+      "generatedSceneAlt": "생성된 팬미팅 사진",
+      "generatedSceneSubtitle": "AI로 생성된 팬미팅 컷",
+      "generationFailed": "생성 실패",
+      "idolImage": "아이돌 사진",
+      "idolImageAlt": "아이돌 원본 사진",
+      "idolSubtitle": "업로드한 아이돌 사진",
+      "mode": "모드",
+      "sceneGeneration": "장면 생성",
+      "sceneGenerationScheduled": "장면 생성이 예약되었습니다.",
+      "title": "팬미팅 사진",
+      "waitingForResult": "결과 대기중"
+    },
     "download": "다운로드",
     "dropHere": "놓아주세요",
     "edit": "수정하기",
@@ -776,6 +795,7 @@
     "aiTransform": "AI 변환",
     "backgroundProcessing": "백그라운드에서 처리 중",
     "browseFile": "파일 찾아보기",
+    "detailsNotAvailable": "상세 정보를 불러올 수 없습니다",
     "categories": {
       "anime": "일본 애니메이션",
       "disney": "디즈니, 픽사 & 할리우드 애니메이션",
@@ -856,6 +876,10 @@
       "ZOOTOPIA": "주토피아 스타일"
     },
     "takingLong": "작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.",
+    "taskCard": {
+      "castingComplete": "가상 캐스팅 완료",
+      "idolImageUploaded": "아이돌 이미지 업로드됨"
+    },
     "title": "가상 캐스팅",
     "transformFailed": "변환 실패",
     "transformedImageAlt": "캐릭터로 변환된 이미지",

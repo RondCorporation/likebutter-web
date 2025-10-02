@@ -476,6 +476,25 @@
     "backgroundProcessing": "Processing in background",
     "checkStatus": "Check Status",
     "completeSettings": "Complete settings in sidebar and press 'Start Fanmeeting'",
+    "details": {
+      "detailsNotAvailable": "Details unavailable",
+      "fanImage": "Fan Photo",
+      "fanImageAlt": "Fan original photo",
+      "fanSubtitle": "Uploaded original photo",
+      "fullGeneratedScene": "View Full Generated Scene",
+      "generatedScene": "Generated Scene",
+      "generatedSceneAlt": "Generated fan meeting photo",
+      "generatedSceneSubtitle": "AI-generated fan meeting shot",
+      "generationFailed": "Generation Failed",
+      "idolImage": "Idol Photo",
+      "idolImageAlt": "Idol original photo",
+      "idolSubtitle": "Uploaded idol photo",
+      "mode": "Mode",
+      "sceneGeneration": "Scene Generation",
+      "sceneGenerationScheduled": "Scene generation scheduled.",
+      "title": "Fan Meeting Photo",
+      "waitingForResult": "Waiting for result"
+    },
     "download": "Download",
     "dropHere": "Drop here",
     "edit": "Edit",
@@ -776,6 +795,7 @@
     "aiTransform": "AI Transform",
     "backgroundProcessing": "Processing in background",
     "browseFile": "Browse File",
+    "detailsNotAvailable": "Details unavailable",
     "categories": {
       "anime": "Japanese Animation",
       "disney": "Disney, Pixar & Hollywood Animation",
@@ -856,6 +876,10 @@
       "ZOOTOPIA": "Zootopia Style"
     },
     "takingLong": "The work is taking a long time. Processing in background.",
+    "taskCard": {
+      "castingComplete": "Virtual casting complete",
+      "idolImageUploaded": "Idol image uploaded"
+    },
     "title": "Virtual Casting",
     "transformFailed": "Transform Failed",
     "transformedImageAlt": "Character transformed image",

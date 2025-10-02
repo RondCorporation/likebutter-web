@@ -139,7 +139,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                 <button
                   onClick={() =>
                     handleDownload(
-                      details.result!.audioUrl,
+                      details.result!.audioUrl!,
                       `butter-cover-${Date.now()}.mp3`
                     )
                   }

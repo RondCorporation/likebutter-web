@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Package, Image, Palette, Type } from 'lucide-react';
 
 interface Props {
-  task: Task & { actionType: 'DIGITAL_GOODS' };
+  task: Task & { actionType: 'DIGITAL_GOODS' | 'DIGITAL_GOODS_EDIT' };
   onClick: () => void;
 }
 

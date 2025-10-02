@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Heart, Users, MessageSquare, FileText, Image } from 'lucide-react';
 
 interface Props {
-  task: Task & { actionType: 'FANMEETING_STUDIO' };
+  task: Task & { actionType: 'FANMEETING_STUDIO' | 'FANMEETING_STUDIO_EDIT' };
   onClick: () => void;
 }
 

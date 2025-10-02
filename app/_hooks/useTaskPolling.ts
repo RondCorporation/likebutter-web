@@ -39,11 +39,9 @@ export function useTaskPolling(
   const [currentTaskId, setCurrentTaskId] = useState<number | null>(null);
 
   const stopPolling = useCallback(() => {
-    console.log('🛑 Stopping polling...');
     setIntervalId((prev) => {
       if (prev) {
         clearInterval(prev);
-        console.log('✅ Polling interval cleared');
       }
       return null;
     });
@@ -52,11 +50,9 @@ export function useTaskPolling(
   }, []);
 
   const stopBackgroundProcessing = useCallback(() => {
-    console.log('🛑 Stopping background processing...');
     setBackgroundIntervalId((prev) => {
       if (prev) {
         clearInterval(prev);
-        console.log('✅ Background polling interval cleared');
       }
       return null;
     });
@@ -65,7 +61,7 @@ export function useTaskPolling(
   }, []);
 
   const pollTask = useCallback(
-    async (taskId: number) => {
+    async (taskId: number, callbackExecutedRef: { current: boolean }) => {
       try {
         const response = await getTaskStatus(taskId);
 
@@ -74,27 +70,22 @@ export function useTaskPolling(
           setError(null);
 
           if (response.data.status === 'COMPLETED') {
-            console.log(
-              '🔄 Task completed, stopping polling for taskId:',
-              taskId
-            );
             stopPolling();
 
-            if (!isCallbackExecuted) {
-              setIsCallbackExecuted(true);
+            if (!callbackExecutedRef.current) {
+              callbackExecutedRef.current = true;
               onCompleted?.(response.data);
             }
             return true;
           }
 
           if (response.data.status === 'FAILED') {
-            console.log('❌ Task failed, stopping polling for taskId:', taskId);
             stopPolling();
             const errorMsg = response.data.details?.error || 'Task failed';
             setError(errorMsg);
 
-            if (!isCallbackExecuted) {
-              setIsCallbackExecuted(true);
+            if (!callbackExecutedRef.current) {
+              callbackExecutedRef.current = true;
               onFailed?.(errorMsg);
             }
             return true;
@@ -111,8 +102,8 @@ export function useTaskPolling(
         if (attempts >= 3) {
           stopPolling();
 
-          if (!isCallbackExecuted) {
-            setIsCallbackExecuted(true);
+          if (!callbackExecutedRef.current) {
+            callbackExecutedRef.current = true;
             onFailed?.(errorMsg);
           }
           return true;
@@ -120,26 +111,24 @@ export function useTaskPolling(
         return false;
       }
     },
-    [attempts, onCompleted, onFailed, stopPolling, isCallbackExecuted]
+    [attempts, onCompleted, onFailed, stopPolling]
   );
 
   const startBackgroundProcessing = useCallback(
-    (taskId: number) => {
-      console.log('🔄 Starting background processing for taskId:', taskId);
+    (taskId: number, callbackExecutedRef: { current: boolean }) => {
       setIsBackgroundProcessing(true);
       setCurrentTaskId(taskId);
       setError(null);
 
       const backgroundInterval = setInterval(() => {
-        console.log('🔄 Background polling check for taskId:', taskId);
-        pollTask(taskId)
+        pollTask(taskId, callbackExecutedRef)
           .then((shouldStop) => {
             if (shouldStop) {
               stopBackgroundProcessing();
             }
           })
           .catch((error) => {
-            console.error('🔄 Background polling error:', error);
+            console.error('Background polling error:', error);
           });
       }, 30000);
 
@@ -150,9 +139,17 @@ export function useTaskPolling(
 
   const startPolling = useCallback(
     async (taskId: number) => {
-      console.log('🚀 Starting polling for taskId:', taskId);
+      // Stop any existing polling first
+      setIntervalId((prev) => {
+        if (prev) {
+          clearInterval(prev);
+        }
+        return null;
+      });
+      setIsPolling(false);
 
-      stopPolling();
+      // Create a new ref for this polling session
+      const callbackExecutedRef = { current: false };
 
       setTaskData(null);
       setError(null);
@@ -160,75 +157,53 @@ export function useTaskPolling(
       setIsPolling(true);
       setIsCallbackExecuted(false);
 
-      const shouldStop = await pollTask(taskId);
+      const shouldStop = await pollTask(taskId, callbackExecutedRef);
       if (shouldStop) {
-        console.log('⏹️ Task completed on first check, not starting interval');
         return;
       }
 
-      console.log(
-        '⏰ Setting up polling interval, checking every',
-        interval,
-        'ms'
-      );
+      let attemptCount = 0;
       const id = setInterval(() => {
-        setAttempts((prev) => {
-          const newAttempts = prev + 1;
-          console.log(
-            '🔄 Polling attempt:',
-            newAttempts,
-            'for taskId:',
-            taskId
-          );
+        attemptCount++;
 
-          if (newAttempts >= maxAttempts) {
-            console.log(
-              '⏰ Polling timeout reached, switching to background processing'
-            );
-            stopPolling();
-            startBackgroundProcessing(taskId);
-            return prev;
-          }
+        if (attemptCount >= maxAttempts) {
+          clearInterval(id);
+          setIntervalId(null);
+          setIsPolling(false);
+          startBackgroundProcessing(taskId, callbackExecutedRef);
+          return;
+        }
 
-          (async () => {
-            try {
-              const shouldStop = await pollTask(taskId);
-              if (shouldStop) {
-                console.log('🔄 Polling should stop, calling stopPolling()');
-                stopPolling();
-              }
-            } catch (error) {
-              console.error('🔄 Polling error:', error);
+        (async () => {
+          try {
+            const shouldStop = await pollTask(taskId, callbackExecutedRef);
+            if (shouldStop) {
+              clearInterval(id);
+              setIntervalId(null);
+              setIsPolling(false);
             }
-          })();
-
-          return newAttempts;
-        });
+          } catch (error) {
+            console.error('Polling error:', error);
+          }
+        })();
       }, interval);
 
       setIntervalId(id);
     },
-    [
-      interval,
-      maxAttempts,
-      pollTask,
-      onFailed,
-      stopPolling,
-      isCallbackExecuted,
-      startBackgroundProcessing,
-    ]
+    [interval, maxAttempts, pollTask, startBackgroundProcessing]
   );
 
   const checkTaskStatus = useCallback(
     async (taskId: number) => {
-      console.log('🔍 Manual task status check for taskId:', taskId);
       try {
-        const shouldStop = await pollTask(taskId);
+        // For manual check, create a new ref that allows callback execution
+        const manualCheckRef = { current: false };
+        const shouldStop = await pollTask(taskId, manualCheckRef);
         if (shouldStop && isBackgroundProcessing) {
           stopBackgroundProcessing();
         }
       } catch (error) {
-        console.error('🔍 Manual task status check error:', error);
+        console.error('Manual task status check error:', error);
       }
     },
     [pollTask, isBackgroundProcessing, stopBackgroundProcessing]
@@ -238,14 +213,12 @@ export function useTaskPolling(
     return () => {
       setIntervalId((prev) => {
         if (prev) {
-          console.log('🧹 Cleaning up interval on unmount');
           clearInterval(prev);
         }
         return null;
       });
       setBackgroundIntervalId((prev) => {
         if (prev) {
-          console.log('🧹 Cleaning up background interval on unmount');
           clearInterval(prev);
         }
         return null;

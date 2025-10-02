@@ -142,8 +142,6 @@ const DigitalGoodsClient = forwardRef<
         uploadedFile || undefined
       );
 
-      console.log('API Response:', response);
-
       if ((response as any).isInsufficientCredit) {
         setIsGenerating(false);
         return;
@@ -153,12 +151,6 @@ const DigitalGoodsClient = forwardRef<
         toast.success(t('studio:digitalGoods.messages.requestSent'));
         startPolling(response.data.taskId);
       } else {
-        console.error(
-          'Response status:',
-          response.status,
-          'Response data:',
-          response.data
-        );
         throw new Error(`Failed to create task: ${response.status}`);
       }
     } catch (error: any) {

@@ -46,7 +46,6 @@ export interface DigitalGoodsDetails {
   error?: string;
 }
 
-
 interface FanmeetingStudioRequestDetails {
   fanImageKey: string;
   fanImageUrl?: string;
@@ -75,7 +74,6 @@ export interface FanmeetingStudioDetails {
   error?: string;
 }
 
-
 interface ButterCoverRequestDetails {
   voiceModel: string;
   pitchAdjust?: number;
@@ -90,9 +88,21 @@ interface ButterCoverResultDetails {
   instrumentalsKey?: string;
 }
 
+interface ButterCoverIntermediateResult {
+  vocalsUrl?: string;
+  instrumentalsUrl?: string;
+  vocalsKey?: string;
+  instrumentalsKey?: string;
+}
+
 export interface ButterCoverDetails {
   request: ButterCoverRequestDetails;
   result?: ButterCoverResultDetails;
+  intermediateResult?: ButterCoverIntermediateResult;
+  pipelineStatus?: string;
+  separationJobId?: string;
+  coverGenerationJobId?: string;
+  error?: string | null;
 }
 
 interface StylistRequestDetails {

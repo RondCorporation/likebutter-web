@@ -669,9 +669,9 @@
     "fileSizeLimit": "File size limit: 200mb (png, jpg, jpeg)",
     "form": {
       "additionalRequestsPlaceholder": "Please enter additional requests",
-      "imageAttachment": "Image Attachment",
+      "imageAttachment": "Image Base",
       "promptPlaceholder": "Please enter prompt",
-      "textDescription": "Text Description"
+      "textDescription": "Text Base"
     },
     "generate": "Generate",
     "idolPhoto": "Idol Photo",

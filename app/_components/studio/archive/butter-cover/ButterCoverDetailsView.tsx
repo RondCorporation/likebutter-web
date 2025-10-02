@@ -123,7 +123,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
       {details.result && (
         <InfoCard title="생성된 파일">
           <div className="space-y-3">
-            {details.result.audioKey && (
+            {details.result.audioUrl && (
               <div className="flex items-center gap-3 rounded-lg bg-studio-border p-3">
                 <div className="p-2 bg-studio-button-primary rounded-lg">
                   <Music className="h-4 w-4 text-studio-header" />
@@ -139,7 +139,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                 <button
                   onClick={() =>
                     handleDownload(
-                      details.result!.audioKey,
+                      details.result!.audioUrl,
                       `butter-cover-${Date.now()}.mp3`
                     )
                   }
@@ -152,7 +152,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
               </div>
             )}
 
-            {details.result.vocalsKey && (
+            {details.intermediateResult?.vocalsUrl && (
               <div className="flex items-center gap-3 rounded-lg bg-studio-border p-3">
                 <div className="p-2 bg-studio-border rounded-lg">
                   <Headphones className="h-4 w-4 text-studio-text-secondary" />
@@ -168,7 +168,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                 <button
                   onClick={() =>
                     handleDownload(
-                      details.result!.vocalsKey!,
+                      details.intermediateResult!.vocalsUrl!,
                       `butter-cover-vocals-${Date.now()}.mp3`
                     )
                   }
@@ -181,7 +181,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
               </div>
             )}
 
-            {details.result.instrumentalsKey && (
+            {details.intermediateResult?.instrumentalsUrl && (
               <div className="flex items-center gap-3 rounded-lg bg-studio-border p-3">
                 <div className="p-2 bg-studio-border rounded-lg">
                   <Music className="h-4 w-4 text-studio-text-secondary" />
@@ -197,7 +197,7 @@ export default function ButterCoverDetailsView({ details, onClose }: Props) {
                 <button
                   onClick={() =>
                     handleDownload(
-                      details.result!.instrumentalsKey!,
+                      details.intermediateResult!.instrumentalsUrl!,
                       `butter-cover-instrumentals-${Date.now()}.mp3`
                     )
                   }

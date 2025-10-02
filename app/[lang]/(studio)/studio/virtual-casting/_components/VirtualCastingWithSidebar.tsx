@@ -6,7 +6,7 @@ import StudioLayout from '../../_components/StudioLayout';
 import VirtualCastingClient from './VirtualCastingClient';
 import VirtualCastingSidebar from './VirtualCastingSidebar';
 import { VirtualCastingStyle } from '@/app/_lib/apis/task.api';
-import { Loader2, Download } from 'lucide-react';
+import { Loader2, Download, Edit } from 'lucide-react';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
@@ -38,6 +38,22 @@ export default function VirtualCastingWithSidebar() {
     []
   );
 
+  const handleClientStateChange = useCallback(
+    (state: {
+      showMobileResult?: boolean;
+      resultImage?: string | null;
+      isProcessing?: boolean;
+      isPolling?: boolean;
+    }) => {
+      if (state.showMobileResult !== undefined) {
+        setShowMobileResult(state.showMobileResult);
+      }
+      const isProcessingOrPolling = state.isProcessing || state.isPolling;
+      setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
+    },
+    []
+  );
+
   const isFormValid = () => {
     if (!clientRef.current?.uploadedFile) return false;
     if (!formData) return false;
@@ -57,33 +73,31 @@ export default function VirtualCastingWithSidebar() {
     }
   };
 
-  useEffect(() => {
-    if (clientRef.current?.showMobileResult !== undefined) {
-      setShowMobileResult(clientRef.current.showMobileResult);
+  const handleEdit = () => {
+    if (clientRef.current?.handleEdit) {
+      clientRef.current.handleEdit();
     }
-  }, []);
-
-  useEffect(() => {
-    const resultImage = clientRef.current?.resultImage;
-    const isProcessing =
-      clientRef.current?.isProcessing || clientRef.current?.isPolling;
-    setHidePCSidebar(!!resultImage || !!isProcessing);
-  }, []);
+  };
 
   const getMobileButton = () => {
     const isProcessing = clientRef.current?.isProcessing || false;
     const isPolling = clientRef.current?.isPolling || false;
     const resultImage = clientRef.current?.resultImage || null;
+    const isEditLoading = clientRef.current?.isEditLoading || false;
 
     if (resultImage) {
       return (
         <button
-          onClick={handleDownload}
-          className="w-full h-12 border border-studio-button-primary hover:bg-studio-button-primary/10 active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200"
+          onClick={handleEdit}
+          disabled={isEditLoading}
+          className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download className="w-4 h-4 mr-2" />
-          <div className="text-studio-button-primary text-sm font-bold font-pretendard-bold">
-            {t('virtualCasting.download')}
+          {isEditLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          {!isEditLoading && <Edit className="w-4 h-4 mr-2" />}
+          <div className="text-studio-header text-sm font-bold font-pretendard-bold">
+            {isEditLoading
+              ? t('virtualCasting.editing')
+              : t('virtualCasting.edit')}
           </div>
         </button>
       );
@@ -119,7 +133,11 @@ export default function VirtualCastingWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <VirtualCastingClient formData={formData} ref={setClientRefCallback} />
+      <VirtualCastingClient
+        formData={formData}
+        ref={setClientRefCallback}
+        onStateChange={handleClientStateChange}
+      />
     </StudioLayout>
   );
 }

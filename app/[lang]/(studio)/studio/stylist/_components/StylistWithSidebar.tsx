@@ -45,18 +45,21 @@ export default function StylistWithSidebar() {
     setFormData(newFormData);
   }, []);
 
-  useEffect(() => {
-    if (clientRef.current?.showMobileResult !== undefined) {
-      setShowMobileResult(clientRef.current.showMobileResult);
-    }
-  }, []);
-
-  useEffect(() => {
-    const resultImage = clientRef.current?.resultImage;
-    const isProcessing =
-      clientRef.current?.isProcessing || clientRef.current?.isPolling;
-    setHidePCSidebar(!!resultImage || !!isProcessing);
-  }, []);
+  const handleClientStateChange = useCallback(
+    (state: {
+      showMobileResult?: boolean;
+      resultImage?: string | null;
+      isProcessing?: boolean;
+      isPolling?: boolean;
+    }) => {
+      if (state.showMobileResult !== undefined) {
+        setShowMobileResult(state.showMobileResult);
+      }
+      const isProcessingOrPolling = state.isProcessing || state.isPolling;
+      setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
+    },
+    []
+  );
 
   const isFormValid = () => {
     if (!clientRef.current?.uploadedFile) return false;
@@ -123,7 +126,11 @@ export default function StylistWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <StylistClient formData={formData} ref={setClientRefCallback} />
+      <StylistClient
+        formData={formData}
+        ref={setClientRefCallback}
+        onStateChange={handleClientStateChange}
+      />
     </StudioLayout>
   );
 }

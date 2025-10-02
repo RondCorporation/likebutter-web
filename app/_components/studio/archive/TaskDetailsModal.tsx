@@ -29,7 +29,7 @@ export default function TaskDetailsModal({
   const { isPolling, startPolling, taskData } = useTaskPolling({
     onCompleted: (result) => {
       toast.success(t('archive.messages.editComplete'));
-      setDisplayTask(result as Task);
+      setDisplayTask(result as unknown as Task);
       onRefetch?.();
     },
     onFailed: (error) => {
@@ -69,7 +69,7 @@ export default function TaskDetailsModal({
 
   useEffect(() => {
     if (taskData) {
-      setDisplayTask(taskData as Task);
+      setDisplayTask(taskData as unknown as Task);
     }
   }, [taskData]);
 

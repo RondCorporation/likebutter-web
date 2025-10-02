@@ -33,19 +33,21 @@ export default function DigitalGoodsWithSidebar() {
     clientRef.current = ref;
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (clientRef.current?.showMobileResult !== undefined) {
-        setShowMobileResult(clientRef.current.showMobileResult);
+  const handleClientStateChange = useCallback(
+    (state: {
+      showMobileResult?: boolean;
+      resultImage?: string | null;
+      isGenerating?: boolean;
+      isPolling?: boolean;
+    }) => {
+      if (state.showMobileResult !== undefined) {
+        setShowMobileResult(state.showMobileResult);
       }
-      const resultImage = clientRef.current?.resultImage;
-      const isProcessing =
-        clientRef.current?.isGenerating || clientRef.current?.isPolling;
-      setHidePCSidebar(!!resultImage || !!isProcessing);
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, []);
+      const isProcessing = state.isGenerating || state.isPolling;
+      setHidePCSidebar(!!state.resultImage || !!isProcessing);
+    },
+    []
+  );
 
   const isFormValid = () => {
     if (!clientRef.current?.uploadedFile) return false;
@@ -120,7 +122,11 @@ export default function DigitalGoodsWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <DigitalGoodsClient formData={formData} ref={setClientRefCallback} />
+      <DigitalGoodsClient
+        formData={formData}
+        ref={setClientRefCallback}
+        onStateChange={handleClientStateChange}
+      />
     </StudioLayout>
   );
 }

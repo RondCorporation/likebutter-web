@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import {
+  useState,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
@@ -32,6 +38,12 @@ interface FanmeetingFormData {
 
 interface FanmeetingStudioClientProps {
   formData?: FanmeetingFormData;
+  onStateChange?: (state: {
+    showMobileResult?: boolean;
+    resultImage?: string | null;
+    isProcessing?: boolean;
+    isPolling?: boolean;
+  }) => void;
 }
 
 export interface FanmeetingStudioClientRef {
@@ -53,7 +65,7 @@ export interface FanmeetingStudioClientRef {
 const FanmeetingStudioClient = forwardRef<
   FanmeetingStudioClientRef,
   FanmeetingStudioClientProps
->(function FanmeetingStudioClient({ formData }, ref) {
+>(function FanmeetingStudioClient({ formData, onStateChange }, ref) {
   const { t } = useTranslation(['studio']);
   const [idolFile, setIdolFile] = useState<File | null>(null);
   const [userFile, setUserFile] = useState<File | null>(null);
@@ -83,12 +95,24 @@ const FanmeetingStudioClient = forwardRef<
         toast.success(t('fanmeeting.messages.fanmeetingComplete'));
       }
       setIsProcessing(false);
+      setIsEditLoading(false);
     },
     onFailed: () => {
       toast.error(t('fanmeeting.messages.fanmeetingFailed'));
       setIsProcessing(false);
+      setIsEditLoading(false);
     },
   });
+
+  // Notify parent of state changes
+  useEffect(() => {
+    onStateChange?.({
+      showMobileResult,
+      resultImage,
+      isProcessing,
+      isPolling,
+    });
+  }, [showMobileResult, resultImage, isProcessing, isPolling, onStateChange]);
 
   useImperativeHandle(
     ref,
@@ -210,7 +234,7 @@ const FanmeetingStudioClient = forwardRef<
 
     setIsEditLoading(true);
     setIsEditPopupOpen(false);
-    setResultImage(null);
+    // Keep the existing image while editing
 
     try {
       const response = await editTask(
@@ -220,6 +244,7 @@ const FanmeetingStudioClient = forwardRef<
       );
 
       if ((response as any).isInsufficientCredit) {
+        setIsEditLoading(false);
         return;
       }
 
@@ -229,11 +254,11 @@ const FanmeetingStudioClient = forwardRef<
         startPolling(response.data.taskId);
       } else {
         toast.error(t('fanmeeting.messages.editRequestFailed'));
+        setIsEditLoading(false);
       }
     } catch (error: any) {
       console.error('Edit request failed:', error);
       toast.error(t('fanmeeting.messages.editRequestFailed'));
-    } finally {
       setIsEditLoading(false);
     }
   };
@@ -631,7 +656,7 @@ const FanmeetingStudioClient = forwardRef<
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
-            {isProcessing ? (
+            {(isProcessing || isPolling) && !isEditLoading ? (
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
@@ -667,15 +692,31 @@ const FanmeetingStudioClient = forwardRef<
                 <img
                   src={resultImage}
                   alt="Generated fanmeeting result"
-                  className="w-full h-full object-contain rounded-[20px]"
+                  className={`w-full h-full object-contain rounded-[20px] transition-opacity duration-500 ${
+                    isEditLoading ? 'opacity-50' : 'opacity-100'
+                  }`}
                 />
+                {/* Edit loading overlay */}
+                {isEditLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm rounded-[20px]">
+                    <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary mb-3" />
+                    <div className="text-studio-text-primary text-base font-pretendard-medium">
+                      {t('fanmeeting.editing')}
+                    </div>
+                    <div className="text-studio-text-muted text-sm font-pretendard mt-1">
+                      {t('fanmeeting.pleaseWait')}
+                    </div>
+                  </div>
+                )}
                 {/* PC download icon - top right */}
-                <button
-                  onClick={handleDownload}
-                  className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-                >
-                  <Download className="w-5 h-5 text-white" />
-                </button>
+                {!isEditLoading && (
+                  <button
+                    onClick={handleDownload}
+                    className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                  >
+                    <Download className="w-5 h-5 text-white" />
+                  </button>
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center w-full h-full">

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import FanmeetingStudioClient from './FanmeetingStudioClient';
 import FanmeetingStudioSidebar from './FanmeetingStudioSidebar';
-import { Loader2, Download } from 'lucide-react';
+import { Loader2, Download, Edit } from 'lucide-react';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 
@@ -32,18 +32,21 @@ export default function FanmeetingStudioWithSidebar() {
     setFormData(newFormData);
   }, []);
 
-  useEffect(() => {
-    if (clientRef.current?.showMobileResult !== undefined) {
-      setShowMobileResult(clientRef.current.showMobileResult);
-    }
-  }, []);
-
-  useEffect(() => {
-    const resultImage = clientRef.current?.resultImage;
-    const isProcessing =
-      clientRef.current?.isProcessing || clientRef.current?.isPolling;
-    setHidePCSidebar(!!resultImage || !!isProcessing);
-  }, []);
+  const handleClientStateChange = useCallback(
+    (state: {
+      showMobileResult?: boolean;
+      resultImage?: string | null;
+      isProcessing?: boolean;
+      isPolling?: boolean;
+    }) => {
+      if (state.showMobileResult !== undefined) {
+        setShowMobileResult(state.showMobileResult);
+      }
+      const isProcessingOrPolling = state.isProcessing || state.isPolling;
+      setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
+    },
+    []
+  );
 
   const isFormValid = () => {
     if (!formData) return false;
@@ -71,20 +74,29 @@ export default function FanmeetingStudioWithSidebar() {
     }
   };
 
+  const handleEdit = () => {
+    if (clientRef.current?.handleEdit) {
+      clientRef.current.handleEdit();
+    }
+  };
+
   const getMobileButton = () => {
     const isProcessing = clientRef.current?.isProcessing || false;
     const isPolling = clientRef.current?.isPolling || false;
     const resultImage = clientRef.current?.resultImage || null;
+    const isEditLoading = clientRef.current?.isEditLoading || false;
 
     if (resultImage) {
       return (
         <button
-          onClick={handleDownload}
-          className="w-full h-12 border border-studio-button-primary hover:bg-studio-button-primary/10 active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200"
+          onClick={handleEdit}
+          disabled={isEditLoading}
+          className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Download className="w-4 h-4 mr-2" />
-          <div className="text-studio-button-primary text-sm font-bold font-pretendard-bold">
-            {t('fanmeeting.download')}
+          {isEditLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          {!isEditLoading && <Edit className="w-4 h-4 mr-2" />}
+          <div className="text-studio-header text-sm font-bold font-pretendard-bold">
+            {isEditLoading ? t('fanmeeting.editing') : t('fanmeeting.edit')}
           </div>
         </button>
       );
@@ -120,7 +132,11 @@ export default function FanmeetingStudioWithSidebar() {
       hideMobileBottomSheet={showMobileResult}
       hidePCSidebar={hidePCSidebar}
     >
-      <FanmeetingStudioClient formData={formData} ref={setClientRefCallback} />
+      <FanmeetingStudioClient
+        formData={formData}
+        ref={setClientRefCallback}
+        onStateChange={handleClientStateChange}
+      />
     </StudioLayout>
   );
 }

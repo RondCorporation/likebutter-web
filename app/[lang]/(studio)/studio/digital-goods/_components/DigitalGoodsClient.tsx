@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import {
+  useState,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
@@ -30,6 +36,12 @@ interface DigitalGoodsClientProps {
   formData?: {
     style?: DigitalGoodsStyle;
   };
+  onStateChange?: (state: {
+    showMobileResult?: boolean;
+    resultImage?: string | null;
+    isGenerating?: boolean;
+    isPolling?: boolean;
+  }) => void;
 }
 
 export interface DigitalGoodsClientRef {
@@ -49,7 +61,7 @@ export interface DigitalGoodsClientRef {
 const DigitalGoodsClient = forwardRef<
   DigitalGoodsClientRef,
   DigitalGoodsClientProps
->(function DigitalGoodsClient({ formData = {} }, ref) {
+>(function DigitalGoodsClient({ formData = {}, onStateChange }, ref) {
   const { t } = useTranslation(['studio', 'common']);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -78,12 +90,24 @@ const DigitalGoodsClient = forwardRef<
         toast.success(t('studio:digitalGoods.messages.generationComplete'));
       }
       setIsGenerating(false);
+      setIsEditLoading(false);
     },
     onFailed: () => {
       toast.error(t('studio:digitalGoods.generationFailed'));
       setIsGenerating(false);
+      setIsEditLoading(false);
     },
   });
+
+  // Notify parent of state changes
+  useEffect(() => {
+    onStateChange?.({
+      showMobileResult,
+      resultImage,
+      isGenerating,
+      isPolling,
+    });
+  }, [showMobileResult, resultImage, isGenerating, isPolling, onStateChange]);
 
   const handleFileUpload = (file: File) => {
     if (file.size > 200 * 1024 * 1024) {
@@ -208,7 +232,7 @@ const DigitalGoodsClient = forwardRef<
 
     setIsEditLoading(true);
     setIsEditPopupOpen(false);
-    setResultImage(null);
+    // Keep the existing image while editing
 
     try {
       const response = await editTask(
@@ -218,6 +242,7 @@ const DigitalGoodsClient = forwardRef<
       );
 
       if ((response as any).isInsufficientCredit) {
+        setIsEditLoading(false);
         return;
       }
 
@@ -227,11 +252,11 @@ const DigitalGoodsClient = forwardRef<
         startPolling(response.data.taskId);
       } else {
         toast.error('Edit request failed.');
+        setIsEditLoading(false);
       }
     } catch (error: any) {
       console.error('Edit request failed:', error);
       toast.error('Edit request failed.');
-    } finally {
       setIsEditLoading(false);
     }
   };
@@ -476,7 +501,7 @@ const DigitalGoodsClient = forwardRef<
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
-            {isGenerating || isPolling ? (
+            {(isGenerating || isPolling) && !isEditLoading ? (
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
@@ -495,20 +520,36 @@ const DigitalGoodsClient = forwardRef<
                 <img
                   src={resultImage}
                   alt="Generated digital goods"
-                  className="w-full h-full object-contain rounded-[20px]"
+                  className={`w-full h-full object-contain rounded-[20px] transition-opacity duration-500 ${
+                    isEditLoading ? 'opacity-50' : 'opacity-100'
+                  }`}
                   onError={(e) => {
                     console.error('Image load error:', e);
                     setResultImage(null);
                     toast.error(t('digitalGoods.messages.imageLoadFailed'));
                   }}
                 />
+                {/* Edit loading overlay */}
+                {isEditLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm rounded-[20px]">
+                    <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary mb-3" />
+                    <div className="text-studio-text-primary text-base font-pretendard-medium">
+                      {t('studio:digitalGoods.editingInProgress')}
+                    </div>
+                    <div className="text-studio-text-muted text-sm font-pretendard mt-1">
+                      {t('studio:digitalGoods.pleaseWait')}
+                    </div>
+                  </div>
+                )}
                 {/* PC 다운로드 아이콘 - 우측 상단 */}
-                <button
-                  onClick={handleDownload}
-                  className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-                >
-                  <Download className="w-5 h-5 text-white" />
-                </button>
+                {!isEditLoading && (
+                  <button
+                    onClick={handleDownload}
+                    className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                  >
+                    <Download className="w-5 h-5 text-white" />
+                  </button>
+                )}
               </div>
             ) : isBackgroundProcessing ? (
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">

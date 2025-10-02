@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, useCallback, forwardRef, useImperativeHandle } from 'react';
+import {
+  useState,
+  useCallback,
+  forwardRef,
+  useImperativeHandle,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   HelpCircle,
@@ -36,6 +42,12 @@ interface VirtualCastingFormData {
 
 interface VirtualCastingClientProps {
   formData?: VirtualCastingFormData;
+  onStateChange?: (state: {
+    showMobileResult?: boolean;
+    resultImage?: string | null;
+    isProcessing?: boolean;
+    isPolling?: boolean;
+  }) => void;
 }
 
 export interface VirtualCastingClientRef {
@@ -56,7 +68,7 @@ export interface VirtualCastingClientRef {
 const VirtualCastingClient = forwardRef<
   VirtualCastingClientRef,
   VirtualCastingClientProps
->(function VirtualCastingClient({ formData }, ref) {
+>(function VirtualCastingClient({ formData, onStateChange }, ref) {
   const { t } = useTranslation(['studio']);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
@@ -83,12 +95,24 @@ const VirtualCastingClient = forwardRef<
         toast.success(t('virtualCasting.messages.castingComplete'));
       }
       setIsProcessing(false);
+      setIsEditLoading(false);
     },
     onFailed: () => {
       toast.error(t('virtualCasting.messages.castingFailed'));
       setIsProcessing(false);
+      setIsEditLoading(false);
     },
   });
+
+  // Notify parent of state changes
+  useEffect(() => {
+    onStateChange?.({
+      showMobileResult,
+      resultImage,
+      isProcessing,
+      isPolling,
+    });
+  }, [showMobileResult, resultImage, isProcessing, isPolling, onStateChange]);
 
   useImperativeHandle(
     ref,
@@ -198,7 +222,7 @@ const VirtualCastingClient = forwardRef<
 
     setIsEditLoading(true);
     setIsEditPopupOpen(false);
-    setResultImage(null);
+    // Keep the existing image while editing
 
     try {
       const response = await editTask(
@@ -208,6 +232,7 @@ const VirtualCastingClient = forwardRef<
       );
 
       if ((response as any).isInsufficientCredit) {
+        setIsEditLoading(false);
         return;
       }
 
@@ -217,11 +242,11 @@ const VirtualCastingClient = forwardRef<
         startPolling(response.data.taskId);
       } else {
         toast.error(t('virtualCasting.messages.editRequestFailed'));
+        setIsEditLoading(false);
       }
     } catch (error: any) {
       console.error('Edit request failed:', error);
       toast.error(t('virtualCasting.messages.editRequestFailed'));
-    } finally {
       setIsEditLoading(false);
     }
   };
@@ -471,7 +496,7 @@ const VirtualCastingClient = forwardRef<
           }}
         >
           <div className="flex flex-col items-center justify-center gap-2.5 p-2.5 absolute top-[15px] left-[15px] right-[15px] bottom-[15px] bg-studio-header rounded-[20px] border border-dashed border-studio-header">
-            {isProcessing ? (
+            {(isProcessing || isPolling) && !isEditLoading ? (
               <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                 <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary" />
                 <div className="flex flex-col items-center gap-2 text-center">
@@ -507,15 +532,31 @@ const VirtualCastingClient = forwardRef<
                 <img
                   src={resultImage}
                   alt="Generated virtual casting result"
-                  className="w-full h-full object-contain rounded-[20px]"
+                  className={`w-full h-full object-contain rounded-[20px] transition-opacity duration-500 ${
+                    isEditLoading ? 'opacity-50' : 'opacity-100'
+                  }`}
                 />
+                {/* Edit loading overlay */}
+                {isEditLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/30 backdrop-blur-sm rounded-[20px]">
+                    <Loader2 className="w-12 h-12 animate-spin text-studio-button-primary mb-3" />
+                    <div className="text-studio-text-primary text-base font-pretendard-medium">
+                      {t('virtualCasting.editing')}
+                    </div>
+                    <div className="text-studio-text-muted text-sm font-pretendard mt-1">
+                      {t('virtualCasting.pleaseWait')}
+                    </div>
+                  </div>
+                )}
                 {/* PC download icon - top right */}
-                <button
-                  onClick={handleDownload}
-                  className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
-                >
-                  <Download className="w-5 h-5 text-white" />
-                </button>
+                {!isEditLoading && (
+                  <button
+                    onClick={handleDownload}
+                    className="absolute top-4 right-4 w-10 h-10 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-sm"
+                  >
+                    <Download className="w-5 h-5 text-white" />
+                  </button>
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center w-full h-full">

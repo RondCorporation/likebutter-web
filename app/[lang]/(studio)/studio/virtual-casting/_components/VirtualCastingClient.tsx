@@ -322,15 +322,42 @@ const VirtualCastingClient = forwardRef<
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   if (showMobileResult && resultImage && isMobile) {
     return (
-      <BeforeAfterToggle
-        beforeImage={previewUrl || '/placeholder-image.png'}
-        afterImage={resultImage}
-        onDownload={handleDownload}
-        onEdit={() => setIsEditPopupOpen(true)}
-        showEditButton={true}
-        editButtonText={t('virtualCasting.edit')}
-        isEditLoading={isEditLoading}
-      />
+      <>
+        <BeforeAfterToggle
+          beforeImage={previewUrl || '/placeholder-image.png'}
+          afterImage={resultImage}
+          onDownload={handleDownload}
+          onEdit={() => setIsEditPopupOpen(true)}
+          onReset={() => setIsResetPopupOpen(true)}
+          showEditButton={true}
+          editButtonText={t('virtualCasting.edit')}
+          isEditLoading={isEditLoading}
+        />
+        <MobileLoadingOverlay
+          isVisible={isProcessing || isPolling || isEditLoading}
+          title={
+            isEditLoading
+              ? t('virtualCasting.editing')
+              : t('virtualCasting.generatingTitle')
+          }
+          description={
+            isEditLoading
+              ? t('virtualCasting.pleaseWait')
+              : t('virtualCasting.generatingDescription')
+          }
+        />
+        <EditRequestPopup
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          onEditRequest={handleEditRequest}
+          isLoading={isEditLoading}
+        />
+        <ConfirmResetPopup
+          isOpen={isResetPopupOpen}
+          onClose={() => setIsResetPopupOpen(false)}
+          onConfirm={handleReset}
+        />
+      </>
     );
   }
 
@@ -586,9 +613,17 @@ const VirtualCastingClient = forwardRef<
       </div>
 
       <MobileLoadingOverlay
-        isVisible={isProcessing || isPolling}
-        title={t('virtualCasting.generatingTitle')}
-        description={t('virtualCasting.generatingDescription')}
+        isVisible={isProcessing || isPolling || isEditLoading}
+        title={
+          isEditLoading
+            ? t('virtualCasting.editing')
+            : t('virtualCasting.generatingTitle')
+        }
+        description={
+          isEditLoading
+            ? t('virtualCasting.pleaseWait')
+            : t('virtualCasting.generatingDescription')
+        }
       />
 
       <EditRequestPopup

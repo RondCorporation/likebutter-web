@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Edit, RotateCcw } from 'lucide-react';
 
 interface BeforeAfterToggleProps {
   beforeImage: string;
   afterImage: string;
   onDownload?: () => void;
   onEdit?: () => void;
+  onReset?: () => void;
   showEditButton?: boolean;
   editButtonText?: string;
   isEditLoading?: boolean;
@@ -18,6 +20,7 @@ export default function BeforeAfterToggle({
   afterImage,
   onDownload,
   onEdit,
+  onReset,
   showEditButton = false,
   editButtonText,
   isEditLoading = false,
@@ -77,15 +80,26 @@ export default function BeforeAfterToggle({
         }}
       >
         {showEditButton && (
-          <button
-            onClick={onEdit}
-            disabled={isEditLoading}
-            className="w-full h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <div className="text-studio-header text-sm font-bold font-pretendard-bold">
-              {isEditLoading ? t('beforeAfter.editing') : finalEditButtonText}
-            </div>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={onEdit}
+              disabled={isEditLoading}
+              className="flex-1 h-12 bg-studio-button-primary hover:bg-studio-button-hover active:scale-[0.98] rounded-xl flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Edit className="w-4 h-4 text-studio-header" />
+              <div className="text-studio-header text-sm font-bold font-pretendard-bold">
+                {isEditLoading ? t('beforeAfter.editing') : finalEditButtonText}
+              </div>
+            </button>
+            {onReset && (
+              <button
+                onClick={onReset}
+                className="h-12 w-12 border border-studio-button-primary hover:bg-studio-button-primary/10 active:scale-[0.98] rounded-xl flex items-center justify-center transition-all duration-200"
+              >
+                <RotateCcw className="w-5 h-5 text-studio-button-primary" />
+              </button>
+            )}
+          </div>
         )}
 
         <button

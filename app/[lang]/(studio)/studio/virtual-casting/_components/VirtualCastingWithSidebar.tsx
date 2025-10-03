@@ -9,6 +9,7 @@ import { VirtualCastingStyle } from '@/app/_lib/apis/task.api';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
+import { Edit, RotateCcw } from 'lucide-react';
 
 interface VirtualCastingFormData {
   selectedCharacter: {
@@ -95,30 +96,27 @@ export default function VirtualCastingWithSidebar() {
       return (
         <div className="flex gap-2 w-full">
           {/* 수정하기 버튼 */}
-          <div className="flex-1">
-            <StudioButton
-              text={
-                isEditLoading
-                  ? t('virtualCasting.editing')
-                  : t('virtualCasting.edit')
-              }
-              onClick={handleEdit}
-              disabled={isEditLoading}
-              loading={isEditLoading}
-              creditCost={CREDIT_COSTS.IMAGE_EDIT}
-              className="w-full h-12"
-              textClassName="font-bold text-sm"
-            />
-          </div>
+          <StudioButton
+            text={
+              isEditLoading
+                ? t('virtualCasting.editing')
+                : t('virtualCasting.edit')
+            }
+            onClick={handleEdit}
+            disabled={isEditLoading}
+            loading={isEditLoading}
+            creditCost={CREDIT_COSTS.IMAGE_EDIT}
+            icon={<Edit className="w-4 h-4 text-black" />}
+            className="flex-1 h-12"
+            textClassName="font-bold text-sm"
+          />
 
-          {/* 다시 만들기 버튼 */}
+          {/* 다시 시작하기 버튼 - 아이콘만, 정사각형 */}
           <button
             onClick={handleReset}
-            className="flex-1 h-12 border-2 border-studio-button-primary rounded-xl flex items-center justify-center hover:bg-studio-button-primary/10 active:scale-[0.98] transition-all duration-200"
+            className="h-12 w-12 border-2 border-studio-button-primary rounded-xl flex items-center justify-center hover:bg-studio-button-primary/10 active:scale-[0.98] transition-all duration-200"
           >
-            <span className="text-sm font-bold text-studio-button-primary font-pretendard-bold">
-              {t('virtualCasting.resetWork')}
-            </span>
+            <RotateCcw className="w-5 h-5 text-studio-button-primary" />
           </button>
         </div>
       );

@@ -367,15 +367,42 @@ const FanmeetingStudioClient = forwardRef<
       userPreviewUrl || idolPreviewUrl || '/placeholder-image.png';
 
     return (
-      <BeforeAfterToggle
-        beforeImage={beforeImage}
-        afterImage={resultImage}
-        onDownload={handleDownload}
-        onEdit={() => setIsEditPopupOpen(true)}
-        showEditButton={true}
-        editButtonText={t('fanmeeting.edit')}
-        isEditLoading={isEditLoading}
-      />
+      <>
+        <BeforeAfterToggle
+          beforeImage={beforeImage}
+          afterImage={resultImage}
+          onDownload={handleDownload}
+          onEdit={() => setIsEditPopupOpen(true)}
+          onReset={() => setIsResetPopupOpen(true)}
+          showEditButton={true}
+          editButtonText={t('fanmeeting.edit')}
+          isEditLoading={isEditLoading}
+        />
+        <MobileLoadingOverlay
+          isVisible={isProcessing || isPolling || isEditLoading}
+          title={
+            isEditLoading
+              ? t('fanmeeting.editing')
+              : t('fanmeeting.generatingTitle')
+          }
+          description={
+            isEditLoading
+              ? t('fanmeeting.pleaseWait')
+              : t('fanmeeting.generatingDescription')
+          }
+        />
+        <EditRequestPopup
+          isOpen={isEditPopupOpen}
+          onClose={() => setIsEditPopupOpen(false)}
+          onEditRequest={handleEditRequest}
+          isLoading={isEditLoading}
+        />
+        <ConfirmResetPopup
+          isOpen={isResetPopupOpen}
+          onClose={() => setIsResetPopupOpen(false)}
+          onConfirm={handleReset}
+        />
+      </>
     );
   }
 
@@ -748,9 +775,17 @@ const FanmeetingStudioClient = forwardRef<
       </div>
 
       <MobileLoadingOverlay
-        isVisible={isProcessing || isPolling}
-        title={t('fanmeeting.generatingTitle')}
-        description={t('fanmeeting.generatingDescription')}
+        isVisible={isProcessing || isPolling || isEditLoading}
+        title={
+          isEditLoading
+            ? t('fanmeeting.editing')
+            : t('fanmeeting.generatingTitle')
+        }
+        description={
+          isEditLoading
+            ? t('fanmeeting.pleaseWait')
+            : t('fanmeeting.generatingDescription')
+        }
       />
 
       <EditRequestPopup

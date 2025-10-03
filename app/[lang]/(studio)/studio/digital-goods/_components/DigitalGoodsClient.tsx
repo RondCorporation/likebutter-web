@@ -325,15 +325,30 @@ const DigitalGoodsClient = forwardRef<
           afterImage={resultImage}
           onDownload={handleDownload}
           onEdit={() => setIsEditPopupOpen(true)}
+          onReset={() => setIsResetPopupOpen(true)}
           showEditButton={true}
           editButtonText={t('studio:digitalGoods.edit')}
           isEditLoading={isEditLoading}
+        />
+        <MobileLoadingOverlay
+          isVisible={isGenerating || isPolling || isEditLoading}
+          title={
+            isEditLoading
+              ? t('studio:digitalGoods.editingInProgress')
+              : t('studio:digitalGoods.generationInProgress')
+          }
+          description={t('studio:digitalGoods.pleaseWait')}
         />
         <EditRequestPopup
           isOpen={isEditPopupOpen}
           onClose={() => setIsEditPopupOpen(false)}
           onEditRequest={handleEditRequest}
           isLoading={isEditLoading}
+        />
+        <ConfirmResetPopup
+          isOpen={isResetPopupOpen}
+          onClose={() => setIsResetPopupOpen(false)}
+          onConfirm={handleReset}
         />
       </>
     );
@@ -614,8 +629,12 @@ const DigitalGoodsClient = forwardRef<
       />
 
       <MobileLoadingOverlay
-        isVisible={isGenerating || isPolling}
-        title={t('studio:digitalGoods.generationInProgress')}
+        isVisible={isGenerating || isPolling || isEditLoading}
+        title={
+          isEditLoading
+            ? t('studio:digitalGoods.editingInProgress')
+            : t('studio:digitalGoods.generationInProgress')
+        }
         description={t('studio:digitalGoods.pleaseWait')}
       />
     </div>

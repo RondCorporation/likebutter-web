@@ -448,15 +448,42 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
     if (showMobileResult && resultImage && isMobile) {
       return (
-        <BeforeAfterToggle
-          beforeImage={previewUrl || '/placeholder-image.png'}
-          afterImage={resultImage}
-          onDownload={handleDownload}
-          onEdit={() => setIsEditPopupOpen(true)}
-          showEditButton={true}
-          editButtonText={t('stylist.edit')}
-          isEditLoading={isEditLoading}
-        />
+        <>
+          <BeforeAfterToggle
+            beforeImage={previewUrl || '/placeholder-image.png'}
+            afterImage={resultImage}
+            onDownload={handleDownload}
+            onEdit={() => setIsEditPopupOpen(true)}
+            onReset={() => setIsResetPopupOpen(true)}
+            showEditButton={true}
+            editButtonText={t('stylist.edit')}
+            isEditLoading={isEditLoading}
+          />
+          <MobileLoadingOverlay
+            isVisible={isProcessing || isPolling || isEditLoading}
+            title={
+              isEditLoading
+                ? t('stylist.editing')
+                : t('stylist.stylingInProgress')
+            }
+            description={
+              isEditLoading
+                ? t('stylist.pleaseWait')
+                : t('stylist.pleaseWaitForResults')
+            }
+          />
+          <EditRequestPopup
+            isOpen={isEditPopupOpen}
+            onClose={() => setIsEditPopupOpen(false)}
+            onEditRequest={handleEditRequest}
+            isLoading={isEditLoading}
+          />
+          <ConfirmResetPopup
+            isOpen={isResetPopupOpen}
+            onClose={() => setIsResetPopupOpen(false)}
+            onConfirm={handleReset}
+          />
+        </>
       );
     }
 
@@ -751,9 +778,17 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
           </div>
         </div>
         <MobileLoadingOverlay
-          isVisible={isProcessing || isPolling}
-          title={t('stylist.stylingInProgress')}
-          description={t('stylist.pleaseWaitForResults')}
+          isVisible={isProcessing || isPolling || isEditLoading}
+          title={
+            isEditLoading
+              ? t('stylist.editing')
+              : t('stylist.stylingInProgress')
+          }
+          description={
+            isEditLoading
+              ? t('stylist.pleaseWait')
+              : t('stylist.pleaseWaitForResults')
+          }
         />
 
         <EditRequestPopup

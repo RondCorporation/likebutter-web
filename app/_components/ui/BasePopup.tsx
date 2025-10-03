@@ -25,19 +25,15 @@ export default function BasePopup({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex ${
-        isMobile ? 'items-end' : 'items-center justify-center'
-      } bg-black/70 backdrop-blur-sm`}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
         className={`${
-          isMobile ? 'w-full h-[85vh] rounded-t-xl' : 'w-[678px] rounded-xl'
-        } bg-studio-sidebar border border-solid border-studio-border ${
-          isMobile ? 'p-4' : 'p-8'
-        } flex flex-col gap-6 md:gap-8 ${
-          isMobile ? 'animate-slide-up' : ''
-        } ${className}`}
+          isMobile ? 'w-full max-w-[500px]' : 'w-[678px]'
+        } bg-studio-sidebar border border-solid border-studio-border rounded-xl ${
+          isMobile ? 'p-6' : 'p-8'
+        } flex flex-col gap-6 md:gap-8 ${className}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between w-full">

@@ -13,9 +13,7 @@ export default function DigitalGoodsStyleSidebar({
   onFormChange,
 }: DigitalGoodsStyleSidebarProps = {}) {
   const { t } = useTranslation(['studio']);
-  const [selectedPreset, setSelectedPreset] = useState(
-    t('digitalGoods.styles.GHIBLI')
-  );
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
 
   const getStyleImage = (style: string) => {
     const styleImageMap: Record<string, string> = {
@@ -48,14 +46,21 @@ export default function DigitalGoodsStyleSidebar({
   ];
 
   useEffect(() => {
+    if (!selectedPreset) {
+      onFormChange?.({});
+      return;
+    }
+
     const selectedPresetData = stylePresets.find(
       (preset) => preset.name === selectedPreset
     );
-    const formData = {
-      style: (selectedPresetData?.value || 'GHIBLI') as DigitalGoodsStyle,
-    };
 
-    onFormChange?.(formData);
+    if (selectedPresetData) {
+      const formData = {
+        style: selectedPresetData.value as DigitalGoodsStyle,
+      };
+      onFormChange?.(formData);
+    }
   }, [selectedPreset, onFormChange]);
 
   return (

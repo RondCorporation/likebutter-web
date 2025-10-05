@@ -22,6 +22,7 @@ import { useAuth } from '@/app/_hooks/useAuth';
 import { useOpenSettings } from '@/app/_hooks/useUIStore';
 import { useAttendanceStore } from '@/app/_stores/attendanceStore';
 import { useCredit } from '@/app/_hooks/useCredit';
+import { useSubscription } from '@/app/_hooks/useSubscription';
 import FeedbackPopup from '@/app/_components/ui/FeedbackPopup';
 import { toast } from 'react-hot-toast';
 
@@ -38,6 +39,7 @@ export default function StudioUserDropdown() {
     isInitialized,
   } = useAttendanceStore();
   const { currentBalance, isLoading: isCreditLoading } = useCredit();
+  const { planDisplayName } = useSubscription();
   const [isOpen, setIsOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isLanguageOpen, setIsLanguageOpen] = useState(false);
@@ -45,8 +47,6 @@ export default function StudioUserDropdown() {
   const router = useRouter();
   const pathname = usePathname();
   const lang = pathname.split('/')[1];
-
-  const planName = 'Basic Plan';
 
   const languages = [
     { code: 'ko', name: '한국어' },
@@ -130,7 +130,7 @@ export default function StudioUserDropdown() {
                     {displayName}
                   </div>
                   <div className="text-studio-text-secondary text-xs truncate">
-                    {planName}
+                    {planDisplayName}
                   </div>
                 </div>
               </div>

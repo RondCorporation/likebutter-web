@@ -3,22 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import {
-  X,
-  User,
-  Settings as SettingsIcon,
-  CreditCard,
-  ChevronDown,
-  Receipt,
-  Download,
-} from 'lucide-react';
+import { X, User, Settings as SettingsIcon } from 'lucide-react';
 import { useUIStore } from '@/stores/uiStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useLogout';
 import { useCredit } from '@/hooks/useCredit';
 import { useAttendanceStore } from '@/stores/attendanceStore';
-import { getPaymentHistory } from '@/lib/apis/payment.api.client';
-import { PaymentHistoryResponse } from '@/types/payment';
 import SubscriptionManager from './subscription/SubscriptionManager';
 
 function AccountSettings() {
@@ -26,73 +16,104 @@ function AccountSettings() {
   const logout = useLogout();
   const { t } = useTranslation();
   const { currentBalance, isLoading: isCreditLoading } = useCredit();
-  const { hasAttendedToday, isLoading: isAttendanceLoading } = useAttendanceStore();
+  const { hasAttendedToday, isLoading: isAttendanceLoading } =
+    useAttendanceStore();
 
   if (!user) {
     return <p className="text-studio-text-secondary">{t('settingsLoading')}</p>;
   }
 
   return (
-    <div>
-      <h3 className="mb-4 text-lg font-semibold md:mb-6 md:text-xl">
-        {t('settingsAccountInfo')}
-      </h3>
-      <div className="space-y-3 text-sm">
-        <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-          <span className="text-studio-text-secondary">{t('settingsAccountEmail')}</span>
-          <span className="font-medium text-studio-text-primary">{user.email}</span>
-        </div>
-        <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-          <span className="text-studio-text-secondary">{t('settingsAccountName')}</span>
-          <span className="font-medium text-studio-text-primary">{user.name}</span>
-        </div>
-        <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-          <span className="text-studio-text-secondary">{t('settingsAccountPhone')}</span>
-          <span className="font-medium text-studio-text-primary">
-            {user.phoneNumber || t('settingsNotProvided')}
-          </span>
+    <div className="space-y-8">
+      {/* Account Information Section */}
+      <div>
+        <h3 className="text-xs font-medium tracking-wider text-studio-text-secondary/60 uppercase mb-4">
+          {t('settingsAccountInfo')}
+        </h3>
+        <div className="bg-white/[0.02] backdrop-blur-sm space-y-px">
+          <div className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+            <div className="text-xs text-studio-text-secondary/80 mb-1.5 tracking-wide">
+              {t('settingsAccountName')}
+            </div>
+            <div className="text-base text-white font-medium">{user.name}</div>
+          </div>
+          <div className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+            <div className="text-xs text-studio-text-secondary/80 mb-1.5 tracking-wide">
+              {t('settingsAccountEmail')}
+            </div>
+            <div className="text-base text-white/90">{user.email}</div>
+          </div>
+          <div className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+            <div className="text-xs text-studio-text-secondary/80 mb-1.5 tracking-wide">
+              {t('settingsAccountPhone')}
+            </div>
+            <div className="text-base text-white/90">
+              {user.phoneNumber || t('settingsNotProvided')}
+            </div>
+          </div>
+          <div className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+            <div className="text-xs text-studio-text-secondary/80 mb-1.5 tracking-wide">
+              {t('settingsAccountJoinDate')}
+            </div>
+            <div className="text-base text-white/90">
+              {(user as any).createdAt
+                ? new Date((user as any).createdAt).toLocaleDateString()
+                : t('settingsNotProvided')}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Account Statistics */}
-      <div className="mt-8">
-        <h4 className="mb-4 text-base font-semibold md:text-lg">
+      {/* Credit Information Section */}
+      <div>
+        <h3 className="text-xs font-medium tracking-wider text-studio-text-secondary/60 uppercase mb-4">
           {t('settingsAccountStats')}
-        </h4>
-        <div className="space-y-3 text-sm">
-          <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-            <span className="text-studio-text-secondary">{t('settingsAccountPlan')}</span>
-            <span className="font-medium text-studio-text-primary">
-              Basic Plan
-            </span>
-          </div>
-          <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-            <span className="text-studio-text-secondary">{t('settingsAccountCredits')}</span>
-            <span className="font-medium text-studio-text-primary">
+        </h3>
+        <div className="bg-white/[0.02] backdrop-blur-sm space-y-px">
+          <div className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+            <div className="text-xs text-studio-text-secondary/80 mb-1.5 tracking-wide">
+              {t('settingsAccountCredits')}
+            </div>
+            <div className="text-lg font-semibold text-butter-yellow">
               {isCreditLoading ? '...' : currentBalance.toLocaleString()}
-            </span>
+            </div>
           </div>
-          <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-            <span className="text-studio-text-secondary">{t('settingsAccountAttendance')}</span>
-            <span className={`font-medium ${hasAttendedToday ? 'text-studio-success' : 'text-studio-text-secondary'}`}>
-              {isAttendanceLoading ? '...' : hasAttendedToday ? t('settingsAttendanceCompleted') : t('settingsAttendanceNotCompleted')}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1 rounded-md bg-studio-sidebar py-3 px-4 border border-studio-border md:flex-row md:items-center md:justify-between md:py-4 md:px-6">
-            <span className="text-studio-text-secondary">{t('settingsAccountJoinDate')}</span>
-            <span className="font-medium text-studio-text-primary">
-              {(user as any).createdAt ? new Date((user as any).createdAt).toLocaleDateString() : t('settingsNotProvided')}
-            </span>
+          <div className="px-5 py-4 hover:bg-white/[0.02] transition-colors">
+            <div className="text-xs text-studio-text-secondary/80 mb-1.5 tracking-wide">
+              {t('settingsAccountAttendance')}
+            </div>
+            <div
+              className={`text-base font-medium ${hasAttendedToday ? 'text-green-400' : 'text-white/40'}`}
+            >
+              {isAttendanceLoading
+                ? '...'
+                : hasAttendedToday
+                  ? t('settingsAttendanceCompleted')
+                  : t('settingsAttendanceNotCompleted')}
+            </div>
           </div>
         </div>
       </div>
 
-      <button
-        onClick={logout}
-        className="mt-8 w-full rounded-md bg-red-600/80 py-2.5 text-sm font-medium text-white transition hover:bg-red-600 md:mt-10"
-      >
-        {t('dropdownLogout')}
-      </button>
+      {/* Subscription Section */}
+      <div>
+        <h3 className="text-xs font-medium tracking-wider text-studio-text-secondary/60 uppercase mb-4">
+          {t('settingsSubscriptionTitle')}
+        </h3>
+        <div className="bg-white/[0.02] backdrop-blur-sm p-5">
+          <SubscriptionManager />
+        </div>
+      </div>
+
+      {/* Logout */}
+      <div className="pt-2">
+        <button
+          onClick={logout}
+          className="w-full bg-white/[0.03] hover:bg-red-500/10 border border-red-500/20 hover:border-red-500/40 py-3.5 text-sm font-medium text-red-400 hover:text-red-300 transition-all"
+        >
+          {t('dropdownLogout')}
+        </button>
+      </div>
     </div>
   );
 }
@@ -101,11 +122,11 @@ function GeneralSettings() {
   const { i18n, t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  const [autoSave, setAutoSave] = useState(true);
+  const [notifications, setNotifications] = useState(true);
 
   const handleLanguageChange = (newLang: string) => {
     const currentLang = i18n.language;
-    setIsOpen(false);
     if (newLang !== currentLang) {
       const newPath = pathname.replace(`/${currentLang}`, `/${newLang}`);
       document.cookie = `i18next=${newLang};path=/;max-age=31536000`;
@@ -118,277 +139,170 @@ function GeneralSettings() {
     { code: 'en', name: 'English' },
   ];
 
-  const currentLanguageName =
-    languages.find((l) => l.code === i18n.language)?.name || i18n.language;
-
   return (
-    <div>
-      <h3 className="mb-4 text-lg font-semibold md:mb-6 md:text-xl">
-        {t('settingsTabGeneral')}
-      </h3>
-      <div className="space-y-2">
-        <label
-          id="language-dropdown-label"
-          className="mb-2 block text-sm text-studio-text-secondary"
-        >
+    <div className="space-y-8">
+      {/* Language Setting */}
+      <div>
+        <h3 className="text-xs font-medium tracking-wider text-studio-text-secondary/60 uppercase mb-4">
           {t('settingsLanguage')}
-        </label>
-        <div className="relative w-full max-w-xs">
-          <button
-            type="button"
-            aria-haspopup="listbox"
-            aria-labelledby="language-dropdown-label"
-            onClick={() => setIsOpen(!isOpen)}
-            className="flex w-full items-center justify-between rounded-md border border-studio-border bg-studio-sidebar px-3 py-2 text-studio-text-primary transition hover:bg-studio-button-primary/10 focus:border-studio-button-primary focus:outline-none focus:ring-1 focus:ring-studio-button-primary"
-          >
-            <span>{currentLanguageName}</span>
-            <ChevronDown
-              size={16}
-              className={`transition-transform ${isOpen ? 'rotate-180' : ''}`}
-            />
-          </button>
-          {isOpen && (
-            <ul
-              className="absolute z-10 mt-1 w-full rounded-md border border-studio-border bg-studio-sidebar py-1 shadow-lg"
-              role="listbox"
+        </h3>
+        <div className="bg-white/[0.02] backdrop-blur-sm">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => handleLanguageChange(lang.code)}
+              className={`w-full px-5 py-4 text-left transition-colors ${
+                i18n.language === lang.code
+                  ? 'bg-white/[0.04] text-white border-l-2 border-butter-yellow'
+                  : 'text-white/70 hover:bg-white/[0.02] hover:text-white'
+              }`}
             >
-              {languages.map((lang) => (
-                <li
-                  key={lang.code}
-                  onClick={() => handleLanguageChange(lang.code)}
-                  className="flex cursor-pointer items-center px-3 py-2 text-sm text-studio-text-primary hover:bg-studio-button-primary hover:text-studio-header transition-colors"
-                  role="option"
-                  aria-selected={i18n.language === lang.code}
-                >
-                  {lang.name}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SubscriptionSettings() {
-  return <SubscriptionManager />;
-}
-
-function PaymentHistorySettings() {
-  const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true);
-  const [paymentHistory, setPaymentHistory] = useState<PaymentHistoryResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchPaymentHistory = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const response = await getPaymentHistory();
-
-        if (response.status === 200 && response.data) {
-          setPaymentHistory(response.data);
-        } else {
-          throw new Error('Failed to fetch payment history');
-        }
-      } catch (err: any) {
-        setError(err.message || 'Failed to fetch payment history');
-        console.error('Payment history fetch error:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPaymentHistory();
-  }, []);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PAID':
-        return 'text-studio-success';
-      case 'FAILED':
-        return 'text-studio-error';
-      case 'PENDING':
-        return 'text-studio-warning';
-      case 'CANCELLED':
-        return 'text-studio-text-secondary';
-      default:
-        return 'text-studio-text-secondary';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'PAID':
-        return t('paymentHistory.paymentSuccessful');
-      case 'FAILED':
-        return t('paymentHistory.paymentFailed');
-      case 'PENDING':
-        return t('paymentHistory.paymentPending');
-      case 'CANCELLED':
-        return t('cancelled');
-      default:
-        return status;
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="text-center p-8 text-studio-text-secondary">
-        {t('paymentHistory.loadingHistory')}
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center p-8 text-studio-error">
-        {error}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h3 className="mb-4 text-lg font-semibold md:mb-6 md:text-xl">
-        {t('paymentHistory.title')}
-      </h3>
-
-      {paymentHistory.length === 0 ? (
-        <div className="text-center py-10 px-4 bg-studio-sidebar rounded-md border border-studio-border">
-          <Receipt className="w-12 h-12 mx-auto mb-4 text-studio-text-secondary" />
-          <p className="text-studio-text-secondary">
-            {t('paymentHistory.noHistory')}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {paymentHistory.map((payment: PaymentHistoryResponse) => (
-            <div
-              key={payment.paymentId}
-              className="p-4 bg-studio-sidebar rounded-md border border-studio-border"
-            >
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <Receipt className="w-5 h-5 text-studio-text-secondary" />
-                    <h4 className="font-semibold text-studio-text-primary">
-                      {payment.orderName || payment.planName}
-                    </h4>
-                  </div>
-                  <div className="space-y-1 text-sm text-studio-text-secondary">
-                    <p>{t('paymentHistory.date')}: {new Date(payment.paidAt).toLocaleDateString()}</p>
-                    <p>ID: {payment.pgTxId}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <div className="text-xl font-bold text-studio-text-primary">
-                      {payment.currency === 'KRW' ? '₩' : '$'}{payment.amount.toLocaleString()}
-                    </div>
-                    <div className={`text-sm font-medium ${getStatusColor(payment.status)}`}>
-                      {getStatusText(payment.status)}
-                    </div>
-                  </div>
-                  <button className="flex items-center gap-2 px-3 py-2 bg-studio-border hover:bg-studio-border-light rounded-md transition text-studio-text-primary text-sm">
-                    <Download className="w-4 h-4" />
-                    {t('paymentHistory.downloadReceipt')}
-                  </button>
-                </div>
-              </div>
-            </div>
+              <span className="text-sm font-medium">{lang.name}</span>
+            </button>
           ))}
         </div>
-      )}
+      </div>
+
+      {/* Preferences */}
+      <div>
+        <h3 className="text-xs font-medium tracking-wider text-studio-text-secondary/60 uppercase mb-4">
+          {t('settingsPreferences')}
+        </h3>
+        <div className="bg-white/[0.02] backdrop-blur-sm space-y-px">
+          <div className="px-5 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+            <div>
+              <div className="text-sm font-medium text-white mb-0.5">
+                {t('settingsAutoSave')}
+              </div>
+              <div className="text-xs text-white/50">
+                {t('settingsAutoSaveDesc')}
+              </div>
+            </div>
+            <button
+              onClick={() => setAutoSave(!autoSave)}
+              className={`relative w-11 h-6 transition-colors ${
+                autoSave ? 'bg-butter-yellow' : 'bg-white/10'
+              }`}
+            >
+              <span
+                className={`absolute top-1 left-1 w-4 h-4 bg-white transition-transform ${
+                  autoSave ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+          <div className="px-5 py-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors">
+            <div>
+              <div className="text-sm font-medium text-white mb-0.5">
+                {t('settingsNotifications')}
+              </div>
+              <div className="text-xs text-white/50">
+                {t('settingsNotificationsDesc')}
+              </div>
+            </div>
+            <button
+              onClick={() => setNotifications(!notifications)}
+              className={`relative w-11 h-6 transition-colors ${
+                notifications ? 'bg-butter-yellow' : 'bg-white/10'
+              }`}
+            >
+              <span
+                className={`absolute top-1 left-1 w-4 h-4 bg-white transition-transform ${
+                  notifications ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 export default function SettingsModal() {
   const { isSettingsOpen, closeSettings, initialSettingsTab } = useUIStore();
-  const [activeTab, setActiveTab] = useState(initialSettingsTab);
   const { t } = useTranslation();
+  const [activeTab, setActiveTab] = useState(() => {
+    if (initialSettingsTab === 'subscription') return 'account';
+    return initialSettingsTab || 'general';
+  });
 
   useEffect(() => {
-    if (isSettingsOpen) {
-      setActiveTab(initialSettingsTab);
+    if (isSettingsOpen && initialSettingsTab) {
+      const tab =
+        initialSettingsTab === 'subscription' ? 'account' : initialSettingsTab;
+      setActiveTab(tab);
+    } else if (isSettingsOpen) {
+      setActiveTab('general');
     }
   }, [isSettingsOpen, initialSettingsTab]);
 
   const TABS = [
-    { id: 'account', label: t('settingsTabAccount'), icon: User },
-    {
-      id: 'subscription',
-      label: t('settingsTabSubscription'),
-      icon: CreditCard,
-    },
-    { id: 'payment-history', label: t('settingsTabPaymentHistory'), icon: Receipt },
     { id: 'general', label: t('settingsTabGeneral'), icon: SettingsIcon },
+    { id: 'account', label: t('settingsTabAccount'), icon: User },
   ];
 
   if (!isSettingsOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 backdrop-blur-sm md:p-4">
-      <div className="relative flex h-full w-full flex-col overflow-hidden rounded-none border border-studio-border bg-studio-main text-studio-text-primary shadow-2xl md:h-[70vh] md:max-w-4xl md:flex-row md:rounded-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-0 backdrop-blur-md md:p-4">
+      <div className="relative flex h-full w-full flex-col overflow-hidden bg-[#0f1114] text-studio-text-primary shadow-2xl md:h-[75vh] md:max-w-5xl md:flex-row border border-white/[0.08]">
         <button
           onClick={closeSettings}
-          className="absolute top-4 right-4 z-50 text-studio-text-secondary hover:text-studio-text-primary transition-colors"
+          className="absolute top-5 right-5 z-50 text-studio-text-secondary/60 hover:text-white transition-colors"
         >
-          <X size={20} />
+          <X size={22} strokeWidth={1.5} />
         </button>
 
         {/* Desktop Sidebar */}
-        <aside className="hidden w-56 flex-shrink-0 space-y-1 border-r border-studio-border bg-studio-sidebar p-6 pt-8 md:flex md:flex-col">
-          <h2 className="mb-6 px-3 text-lg font-semibold">
+        <aside className="hidden w-64 flex-shrink-0 border-r border-white/[0.06] bg-[#0a0c0e] p-8 pt-10 md:flex md:flex-col">
+          <h2 className="mb-8 text-sm font-medium tracking-wider text-white/40 uppercase">
             {t('settingsTitle')}
           </h2>
-          {TABS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id)}
-              className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition hover:bg-studio-button-primary/10 ${
-                activeTab === id
-                  ? 'bg-studio-button-primary/20 font-medium text-studio-button-primary'
-                  : 'text-studio-text-secondary'
-              }`}
-            >
-              <Icon size={16} />
-              {label}
-            </button>
-          ))}
-        </aside>
-
-        {/* Mobile Tabs */}
-        <div className="border-b border-studio-border p-4 pt-6 md:hidden">
-          <h2 className="mb-4 text-center text-lg font-semibold">
-            {t('settingsTitle')}
-          </h2>
-          <div className="flex justify-around">
-            {TABS.map(({ id, icon: Icon }) => (
+          <div className="space-y-1">
+            {TABS.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={`flex flex-col items-center gap-1 p-2 text-xs transition-colors ${
-                  activeTab === id ? 'text-studio-button-primary' : 'text-studio-text-secondary'
+                className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-all ${
+                  activeTab === id
+                    ? 'bg-white/[0.06] text-white border-l-2 border-butter-yellow'
+                    : 'text-white/50 hover:text-white/80 hover:bg-white/[0.02]'
                 }`}
               >
-                <Icon size={20} />
-                <span>
-                  {t(`settingsTab${id.charAt(0).toUpperCase() + id.slice(1)}`)}
-                </span>
+                <Icon size={18} strokeWidth={1.5} />
+                {label}
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        {/* Mobile Tabs */}
+        <div className="border-b border-white/[0.06] bg-[#0a0c0e] p-5 pt-7 md:hidden">
+          <h2 className="mb-5 text-center text-sm font-medium tracking-wider text-white/60 uppercase">
+            {t('settingsTitle')}
+          </h2>
+          <div className="flex gap-2">
+            {TABS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={`flex-1 flex flex-col items-center gap-2 py-3 text-xs font-medium transition-all ${
+                  activeTab === id
+                    ? 'text-white bg-white/[0.06] border-b-2 border-butter-yellow'
+                    : 'text-white/50'
+                }`}
+              >
+                <Icon size={20} strokeWidth={1.5} />
+                <span>{label}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <section className="flex-1 overflow-y-auto p-6 md:p-8">
-          {activeTab === 'account' && <AccountSettings />}
-          {activeTab === 'subscription' && <SubscriptionSettings />}
-          {activeTab === 'payment-history' && <PaymentHistorySettings />}
+        <section className="flex-1 overflow-y-auto p-8 md:p-10 custom-scrollbar">
           {activeTab === 'general' && <GeneralSettings />}
+          {activeTab === 'account' && <AccountSettings />}
         </section>
       </div>
     </div>

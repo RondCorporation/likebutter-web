@@ -1,6 +1,6 @@
 import initTranslations from '@/app/_lib/i18n-server';
 import LandingPage from './_components/LandingPage';
-import { getPlansOnServer } from '@/app/_lib/apis/subscription.api.server';
+import { getPlansOnServer } from '@/lib/apis/plan.api.server';
 
 export const revalidate = 3600;
 

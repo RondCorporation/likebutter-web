@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
-import MarketingHeader from './MarketingHeader';
+import Header from '@/app/_components/Header';
 import MarketingFooter from './MarketingFooter';
 import { ScrollContext } from '../_context/ScrollContext';
 
@@ -21,7 +21,7 @@ export default function MarketingLayoutContent({
   if (isLandingPage) {
     return (
       <ScrollContext.Provider value={{ sectionRefs }}>
-        <MarketingHeader />
+        <Header variant="marketing" />
         <div className="bg-black text-white">
           {children}
           <MarketingFooter
@@ -38,7 +38,7 @@ export default function MarketingLayoutContent({
 
   return (
     <div className="bg-black text-white">
-      <MarketingHeader />
+      <Header variant="marketing" />
       <main>{children}</main>
       <MarketingFooter />
     </div>

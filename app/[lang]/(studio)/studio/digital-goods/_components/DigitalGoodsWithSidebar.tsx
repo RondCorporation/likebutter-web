@@ -26,6 +26,8 @@ export default function DigitalGoodsWithSidebar() {
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
   const clientRef = useRef<any>(null);
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const handleFormChange = useCallback((newFormData: typeof formData) => {
     setFormData(newFormData);
@@ -41,12 +43,25 @@ export default function DigitalGoodsWithSidebar() {
       resultImage?: string | null;
       isGenerating?: boolean;
       isPolling?: boolean;
+      uploadedFile?: File | null;
+      isBottomSheetOpen?: boolean;
     }) => {
       if (state.showMobileResult !== undefined) {
         setShowMobileResult(state.showMobileResult);
       }
       const isProcessing = state.isGenerating || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessing);
+
+      // Show BottomSheet only when image is uploaded and not in result mode
+      const isProcessingOrPolling = state.isGenerating || state.isPolling;
+      setShowBottomSheet(
+        !!state.uploadedFile && !state.resultImage && !isProcessingOrPolling
+      );
+
+      // Sync BottomSheet open state
+      if (state.isBottomSheetOpen !== undefined) {
+        setIsBottomSheetOpen(state.isBottomSheetOpen);
+      }
     },
     []
   );
@@ -80,6 +95,13 @@ export default function DigitalGoodsWithSidebar() {
     }
     setIsResetPopupOpen(false);
   };
+
+  const handleBottomSheetToggle = useCallback((isOpen: boolean) => {
+    setIsBottomSheetOpen(isOpen);
+    if (clientRef.current?.setIsBottomSheetOpen) {
+      clientRef.current.setIsBottomSheetOpen(isOpen);
+    }
+  }, []);
 
   const getMobileButton = () => {
     const isGenerating = clientRef.current?.isGenerating || false;
@@ -140,12 +162,14 @@ export default function DigitalGoodsWithSidebar() {
       <StudioLayout
         sidebar={<DigitalGoodsStyleSidebar onFormChange={handleFormChange} />}
         bottomSheetOptions={{
-          initialHeight: 40,
-          maxHeight: 85,
-          minHeight: 20,
+          initialHeight: 60,
+          maxHeight: 90,
+          minHeight: 8,
         }}
         mobileBottomButton={getMobileButton()}
-        hideMobileBottomSheet={showMobileResult}
+        hideMobileBottomSheet={!showBottomSheet}
+        isBottomSheetOpen={isBottomSheetOpen}
+        onBottomSheetToggle={handleBottomSheetToggle}
         hidePCSidebar={hidePCSidebar}
       >
         <DigitalGoodsClient

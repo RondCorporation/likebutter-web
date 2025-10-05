@@ -397,6 +397,7 @@
     "backgroundProcessing": "백그라운드에서 처리 중",
     "checkStatus": "상태 확인",
     "completeSettings": "사이드바에서 설정을 완료하고 '굿즈생성'을 눌러주세요",
+    "uploadImageTitle": "이미지 업로드하기",
     "details": {
       "cannotLoadDetails": "상세 정보를 불러올 수 없습니다",
       "creationTitle": "디지털 굿즈 생성",
@@ -503,6 +504,7 @@
     "dropHere": "놓아주세요",
     "edit": "수정하기",
     "editing": "수정중...",
+    "fileSizeLimit": "파일당 200mb 제한 (png, jpg, jpeg)",
     "findIdolPhoto": "아이돌 사진 찾기",
     "findMyPhoto": "내 사진 찾기",
     "generate": "생성하기",
@@ -511,6 +513,7 @@
     "generatingInProgress": "팬미팅 사진 생성 중...",
     "generatingTitle": "팬미팅 사진 생성중",
     "idolPhoto": "아이돌 사진",
+    "uploadImageTitle": "이미지 업로드하기",
     "messages": {
       "downloadComplete": "이미지가 다운로드되었습니다!",
       "downloadFailed": "다운로드에 실패했습니다.",
@@ -698,6 +701,7 @@
     },
     "generate": "생성하기",
     "idolPhoto": "아이돌 사진",
+    "uploadImageTitle": "이미지 업로드하기",
     "messages": {
       "downloadComplete": "이미지가 다운로드되었습니다!",
       "downloadFailed": "다운로드에 실패했습니다.",
@@ -821,6 +825,8 @@
     "generatingDescription": "잠시 기다리시면 결과가 나옵니다",
     "generatingInProgress": "가상 캐스팅 생성 중...",
     "generatingTitle": "가상 캐스팅 생성중",
+    "myPhoto": "내 사진",
+    "uploadImageTitle": "이미지 업로드하기",
     "messages": {
       "castingComplete": "가상 캐스팅이 완성되었습니다!",
       "castingFailed": "가상 캐스팅 생성에 실패했습니다.",

@@ -4,16 +4,10 @@ import { useState, useEffect, Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import {
-  getSubscriptions,
-  cancelSubscription,
-  upgradeSubscription,
-  getSubscriptionDetails,
-} from '@/app/_lib/apis/subscription.api.client';
-import {
-  Subscription,
-  SubscriptionDetails,
-  PlanKey,
-} from '@/app/_types/subscription';
+  getMySubscription,
+  cancelMySubscription,
+} from '@/lib/apis/subscription.api';
+import { SubscriptionDetails, PlanKey } from '@/app/_types/subscription';
 import { useAuthStore } from '@/app/_stores/authStore';
 import { useUIStore } from '@/app/_stores/uiStore';
 import { useRouter } from 'next/navigation';
@@ -29,29 +23,7 @@ const planNames: Record<PlanKey, string> = {
   ENTERPRISE: 'Enterprise',
 };
 
-const allPaidPlans: PlanKey[] = [
-  'CREATOR_MONTHLY',
-  'CREATOR_YEARLY',
-  'PROFESSIONAL_MONTHLY',
-  'PROFESSIONAL_YEARLY',
-];
-
-const getAvailableUpgrades = (currentPlan: PlanKey): PlanKey[] => {
-  switch (currentPlan) {
-    case 'FREE':
-      return allPaidPlans;
-    case 'CREATOR_MONTHLY':
-      return ['CREATOR_YEARLY', 'PROFESSIONAL_MONTHLY', 'PROFESSIONAL_YEARLY'];
-    case 'CREATOR_YEARLY':
-      return ['PROFESSIONAL_YEARLY'];
-    case 'PROFESSIONAL_MONTHLY':
-      return ['PROFESSIONAL_YEARLY'];
-    default:
-      return [];
-  }
-};
-
-function StatusBadge({ status }: { status: Subscription['status'] }) {
+function StatusBadge({ status }: { status: SubscriptionDetails['status'] }) {
   const { t } = useTranslation();
   const statusMap = {
     ACTIVE: {
@@ -81,41 +53,14 @@ function StatusBadge({ status }: { status: Subscription['status'] }) {
   );
 }
 
-function SubscriptionModal({
-  title,
-  children,
-  onClose,
-}: {
-  title: string;
-  children: React.ReactNode;
-  onClose: () => void;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="bg-studio-main border border-studio-border rounded-lg shadow-xl p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-semibold">{title}</h4>
-          <button onClick={onClose} className="text-studio-text-secondary hover:text-studio-text-primary transition-colors">
-            &times;
-          </button>
-        </div>
-        <div>{children}</div>
-      </div>
-    </div>
-  );
-}
-
 export default function SubscriptionManager() {
   const { t } = useTranslation();
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [subscription, setSubscription] = useState<SubscriptionDetails | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<
-    'upgrade' | 'details' | 'cancel' | null
-  >(null);
-  const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
-  const [details, setDetails] = useState<SubscriptionDetails | null>(null);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
 
   const { initialize: revalidateUser } = useAuthStore();
@@ -124,45 +69,43 @@ export default function SubscriptionManager() {
   const pathname = usePathname();
   const lang = pathname.split('/')[1];
 
-  const fetchSubscriptions = async () => {
+  const fetchSubscription = async () => {
     try {
       setIsLoading(true);
-      const res = await getSubscriptions();
+      const res = await getMySubscription();
       if (res.data) {
-        setSubscriptions(
-          res.data.sort(
-            (a, b) =>
-              new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-          )
-        );
+        setSubscription(res.data);
       }
       setError(null);
     } catch (err: any) {
-      setError(err.message || t('subscriptionManager.fetchError'));
+      if (err.status === 404) {
+        setSubscription(null);
+        setError(null);
+      } else {
+        setError(err.message || t('subscriptionManager.fetchError'));
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSubscriptions();
+    fetchSubscription();
   }, []);
 
-  const handleCancelClick = (sub: Subscription) => {
-    setSelectedSub(sub);
-    setModalContent('cancel');
-    setIsModalOpen(true);
+  const handleCancelClick = () => {
+    setIsCancelModalOpen(true);
   };
 
   const handleConfirmCancel = async () => {
-    if (!selectedSub) return;
+    if (!subscription) return;
     setIsConfirming(true);
     try {
-      await cancelSubscription(selectedSub.subscriptionId);
+      await cancelMySubscription();
       toast.success(t('subscriptionManager.cancelSuccess'));
       await revalidateUser();
-      await fetchSubscriptions();
-      closeModal();
+      await fetchSubscription();
+      setIsCancelModalOpen(false);
     } catch (err: any) {
       toast.error(`${t('subscriptionManager.cancelError')}: ${err.message}`);
     } finally {
@@ -170,45 +113,9 @@ export default function SubscriptionManager() {
     }
   };
 
-  const handleUpgradeClick = (sub: Subscription) => {
-    setSelectedSub(sub);
-    setModalContent('upgrade');
-    setIsModalOpen(true);
-  };
-
-  const handleDetailsClick = async (sub: Subscription) => {
-    setSelectedSub(sub);
-    setModalContent('details');
-    setIsModalOpen(true);
-    setDetails(null);
-    try {
-      const res = await getSubscriptionDetails(sub.subscriptionId);
-      if (res.data) {
-        setDetails(res.data);
-      }
-    } catch (err: any) {
-      toast.error(err.message || t('subscriptionManager.fetchDetailsError'));
-    }
-  };
-
-  const handleUpgrade = async (newPlanKey: PlanKey) => {
-    if (!selectedSub) return;
-    try {
-      await upgradeSubscription(selectedSub.subscriptionId, newPlanKey);
-      toast.success(t('subscriptionManager.upgradeSuccess'));
-      setIsModalOpen(false);
-      await revalidateUser();
-      await fetchSubscriptions();
-    } catch (err: any) {
-      toast.error(`${t('subscriptionManager.upgradeError')}: ${err.message}`);
-    }
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent(null);
-    setSelectedSub(null);
-    setDetails(null);
+  const handleUpgradeClick = () => {
+    closeSettings();
+    router.push(`/${lang}/billing`);
   };
 
   const goToPricing = () => {
@@ -218,7 +125,9 @@ export default function SubscriptionManager() {
 
   if (isLoading) {
     return (
-      <div className="text-center p-8 text-studio-text-secondary">{t('subscriptionManager.loading')}</div>
+      <div className="text-center p-8 text-studio-text-secondary">
+        {t('subscriptionManager.loading')}
+      </div>
     );
   }
 
@@ -226,163 +135,98 @@ export default function SubscriptionManager() {
     return <div className="text-studio-error text-center p-8">{error}</div>;
   }
 
+  const goToPaymentHistory = () => {
+    closeSettings();
+    router.push(`/${lang}/billing/history`);
+  };
+
   return (
     <Fragment>
       <div>
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold">
-            {t('settingsSubscriptionTitle')}
-          </h3>
-          <button
-            onClick={goToPricing}
-            className="text-sm font-medium text-studio-button-primary hover:text-studio-button-hover transition"
-          >
-            {t('subscriptionManager.viewPlans')}
-          </button>
-        </div>
-
-        {subscriptions.length === 0 ? (
-          <div className="text-center py-10 px-4 bg-studio-sidebar rounded-md border border-studio-border">
-            <p className="text-studio-text-secondary">
+        {!subscription ? (
+          <div className="text-center py-8 px-4">
+            <p className="text-studio-text-secondary mb-4">
               {t('subscriptionManager.noSubscriptions')}
             </p>
+            <button
+              onClick={goToPricing}
+              className="px-4 py-2 bg-butter-yellow hover:bg-butter-yellow/90 text-black font-medium transition text-sm"
+            >
+              {t('subscriptionManager.viewPlans')}
+            </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            {subscriptions.map((sub) => (
-              <div
-                key={sub.subscriptionId}
-                className="p-4 bg-studio-sidebar rounded-md text-sm border border-studio-border"
-              >
-                <div className="flex flex-wrap justify-between items-center gap-4">
-                  <div>
-                    <p className="font-semibold text-base">
-                      {planNames[sub.planKey] || sub.planKey}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <StatusBadge status={sub.status} />
-                      <p className="text-xs text-studio-text-secondary">
-                        {t('subscriptionManager.period')}:{' '}
-                        {new Date(sub.startDate).toLocaleDateString()} -{' '}
-                        {new Date(sub.endDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <button
-                      onClick={() => handleDetailsClick(sub)}
-                      className="px-3 py-1.5 bg-studio-border hover:bg-studio-border-light rounded-md transition text-studio-text-primary"
-                    >
-                      {t('subscriptionManager.details')}
-                    </button>
-                    {sub.status === 'ACTIVE' &&
-                      getAvailableUpgrades(sub.planKey).length > 0 && (
-                        <button
-                          onClick={() => handleUpgradeClick(sub)}
-                          className="px-3 py-1.5 bg-studio-button-primary/80 hover:bg-studio-button-primary rounded-md transition text-studio-header font-medium"
-                        >
-                          {t('subscriptionManager.upgrade')}
-                        </button>
-                      )}
-                    {sub.status === 'ACTIVE' && (
-                      <button
-                        onClick={() => handleCancelClick(sub)}
-                        className="px-3 py-1.5 bg-amber-600/80 hover:bg-amber-600 rounded-md transition"
-                      >
-                        {t('subscriptionManager.cancelAction')}
-                      </button>
-                    )}
-                  </div>
-                </div>
+          <div className="space-y-3">
+            <div className="py-2">
+              <div className="text-sm text-studio-text-secondary mb-1">
+                {t('subscriptionManager.plan')}
               </div>
-            ))}
+              <div className="text-sm text-studio-text-primary pl-4">
+                {planNames[subscription.planInfo.planKey] ||
+                  subscription.planInfo.planKey}
+              </div>
+            </div>
+            <div className="py-2">
+              <div className="text-sm text-studio-text-secondary mb-1">
+                {t('subscriptionManager.status')}
+              </div>
+              <div className="pl-4">
+                <StatusBadge status={subscription.status} />
+              </div>
+            </div>
+            <div className="py-2">
+              <div className="text-sm text-studio-text-secondary mb-1">
+                {t('subscriptionManager.period')}
+              </div>
+              <div className="text-sm text-studio-text-primary pl-4">
+                {new Date(subscription.startDate).toLocaleDateString()} -{' '}
+                {new Date(subscription.endDate).toLocaleDateString()}
+              </div>
+            </div>
+            {subscription.status === 'ACTIVE' && (
+              <div className="pt-4 flex items-center justify-between gap-2">
+                <div className="flex gap-2">
+                  {subscription.planInfo.planKey !== 'PROFESSIONAL_YEARLY' && (
+                    <button
+                      onClick={() => handleUpgradeClick()}
+                      className="px-3 py-1.5 bg-transparent border border-butter-yellow hover:bg-butter-yellow/10 rounded-full transition text-butter-yellow text-xs font-medium"
+                    >
+                      {t('subscriptionManager.upgrade')}
+                    </button>
+                  )}
+                  <button
+                    onClick={goToPaymentHistory}
+                    className="px-3 py-1.5 bg-transparent border border-white/[0.15] hover:bg-white/[0.05] rounded-full transition text-white text-xs font-medium"
+                  >
+                    {t('paymentHistory.title')}
+                  </button>
+                </div>
+                <button
+                  onClick={() => handleCancelClick()}
+                  className="px-3 py-1.5 bg-transparent border border-red-500/40 hover:bg-red-500/10 rounded-full transition text-red-400 text-xs font-medium"
+                >
+                  {t('subscriptionManager.cancelSubscription')}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
 
-      {isModalOpen && modalContent !== 'cancel' && selectedSub && (
-        <SubscriptionModal
-          title={
-            modalContent === 'upgrade'
-              ? t('subscriptionManager.upgradeTitle')
-              : t('subscriptionManager.detailsTitle')
-          }
-          onClose={closeModal}
-        >
-          {modalContent === 'upgrade' && (
-            <div>
-              <p className="mb-4">
-                {t('subscriptionManager.currentPlan')}:{' '}
-                <strong>{planNames[selectedSub.planKey]}</strong>
-              </p>
-              <p className="mb-4">{t('subscriptionManager.selectUpgrade')}</p>
-              <div className="flex flex-col space-y-2">
-                {getAvailableUpgrades(selectedSub.planKey).map((planKey) => (
-                  <button
-                    key={planKey}
-                    onClick={() => handleUpgrade(planKey)}
-                    className="p-3 bg-studio-button-primary hover:bg-studio-button-hover rounded-md transition text-studio-header font-semibold"
-                  >
-                    {planNames[planKey]}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-          {modalContent === 'details' && (
-            <div>
-              {!details ? (
-                <p>{t('subscriptionManager.loadingDetails')}</p>
-              ) : (
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <strong>{t('subscriptionManager.plan')}:</strong>{' '}
-                    {details.planInfo.description}
-                  </p>
-                  <p>
-                    <strong>{t('subscriptionManager.status')}:</strong>{' '}
-                    {details.status}
-                  </p>
-                  <p>
-                    <strong>{t('subscriptionManager.term')}:</strong>{' '}
-                    {new Date(details.startDate).toLocaleString()} -{' '}
-                    {new Date(details.endDate).toLocaleString()}
-                  </p>
-                  <p>
-                    <strong>{t('subscriptionManager.nextPayment')}:</strong>{' '}
-                    {new Date(details.nextPaymentDate).toLocaleDateString()}
-                  </p>
-                  <h5 className="font-semibold pt-4 mb-2">
-                    {t('subscriptionManager.paymentHistory')}
-                  </h5>
-                  {details.paymentHistory.length > 0 ? (
-                    <ul className="list-disc list-inside space-y-1">
-                      {details.paymentHistory.map((p) => (
-                        <li key={p.paymentId}>
-                          {new Date(p.paidAt).toLocaleString()}: $
-                          {p.amount.toFixed(2)} ({p.status})
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-studio-text-secondary">
-                      {t('subscriptionManager.noPaymentHistory')}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
-        </SubscriptionModal>
-      )}
-
       <ConfirmationModal
-        isOpen={isModalOpen && modalContent === 'cancel'}
+        isOpen={isCancelModalOpen}
         title={t('subscriptionManager.cancelTitle')}
-        message={t('subscriptionManager.cancelConfirm')}
+        message={
+          subscription
+            ? t('subscriptionManager.cancelConfirm', {
+                endDate: new Date(subscription.endDate).toLocaleDateString(),
+              })
+            : ''
+        }
         onConfirm={handleConfirmCancel}
-        onCancel={closeModal}
-        confirmText={t('subscriptionManager.cancelAction')}
+        onCancel={() => setIsCancelModalOpen(false)}
+        confirmText={t('subscriptionManager.confirmCancelText')}
+        cancelText={t('subscriptionManager.cancelText')}
         isConfirming={isConfirming}
       />
     </Fragment>

@@ -15,6 +15,8 @@ interface StudioLayoutProps {
   mobileBottomButton?: ReactNode;
   hideMobileBottomSheet?: boolean;
   hidePCSidebar?: boolean;
+  isBottomSheetOpen?: boolean;
+  onBottomSheetToggle?: (isOpen: boolean) => void;
 }
 
 export default function StudioLayout({
@@ -28,6 +30,8 @@ export default function StudioLayout({
   mobileBottomButton,
   hideMobileBottomSheet = false,
   hidePCSidebar = false,
+  isBottomSheetOpen = false,
+  onBottomSheetToggle,
 }: StudioLayoutProps) {
   const isDesktop = useIsDesktop();
 
@@ -64,6 +68,8 @@ export default function StudioLayout({
           minHeight={bottomSheetOptions.minHeight}
           className="bg-studio-sidebar"
           hasBottomButton={!!mobileBottomButton}
+          isOpen={isBottomSheetOpen}
+          onToggle={onBottomSheetToggle}
         >
           {sidebar}
         </BottomSheet>

@@ -287,7 +287,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-studio-content pb-28 md:pb-0">
+    <div className="flex flex-col flex-1 h-full bg-studio-content overflow-y-auto pb-28 md:pb-0">
       <div className="container mx-auto px-4">
         <StepNavigation currentStep={currentStep} />
         <div className="flex-1">{renderCurrentStep()}</div>

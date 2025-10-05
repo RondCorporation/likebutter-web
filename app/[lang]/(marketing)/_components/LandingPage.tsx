@@ -645,7 +645,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
-                            Basic Plan
+                            {t('marketing:pricing.planCreator.name')}
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
@@ -657,8 +657,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                               {currency}
                               {formatPrice(
                                 billingCycle === 'yearly'
-                                  ? getYearlyMonthlyPrice('BASIC')
-                                  : getPrice('BASIC', 'monthly')
+                                  ? getYearlyMonthlyPrice('CREATOR')
+                                  : getPrice('CREATOR', 'monthly')
                               )}
                               <span className="text-gray-400 text-lg">
                                 {t('marketing:pricing.perMonth')}
@@ -696,7 +696,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       </div>
                       <div className="p-6 pt-0">
                         <Link
-                          href={`/${lang}/billing?plan=basic&billing=${billingCycle}`}
+                          href={`/${lang}/billing?plan=creator&billing=${billingCycle}`}
                           className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
                         >
                           {t('marketing:pricing.startButton')}
@@ -711,7 +711,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       <div className="p-6 flex-1">
                         <div className="text-center">
                           <h3 className="text-white text-xl font-bold mb-4 h-[28px] flex items-center justify-center">
-                            Standard Plan
+                            {t('marketing:pricing.planProfessional.name')}
                           </h3>
                           <div className="h-[80px] flex items-center justify-center">
                             <p className="text-gray-300 text-sm whitespace-pre-line leading-relaxed">
@@ -725,8 +725,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                               {currency}
                               {formatPrice(
                                 billingCycle === 'yearly'
-                                  ? getYearlyMonthlyPrice('STANDARD')
-                                  : getPrice('STANDARD', 'monthly')
+                                  ? getYearlyMonthlyPrice('PROFESSIONAL')
+                                  : getPrice('PROFESSIONAL', 'monthly')
                               )}
                               <span className="text-gray-400 text-lg">
                                 {t('marketing:pricing.perMonth')}
@@ -764,7 +764,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       </div>
                       <div className="p-6 pt-0">
                         <Link
-                          href={`/${lang}/billing?plan=standard&billing=${billingCycle}`}
+                          href={`/${lang}/billing?plan=professional&billing=${billingCycle}`}
                           className="w-full block text-center rounded-[8px] bg-[#FFD93B] hover:bg-[#FFD93B]/90 text-black px-6 py-3 font-medium transition-colors duration-300"
                         >
                           {t('marketing:pricing.upgradeButton')}

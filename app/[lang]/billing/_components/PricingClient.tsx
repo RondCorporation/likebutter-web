@@ -9,12 +9,11 @@ import { usePortonePreload } from '@/components/portone/PreloadPortoneProvider';
 import {
   createSubscription,
   registerBillingKey,
-  getSubscriptions,
-  getSubscriptionDetails,
-} from '@/app/_lib/apis/subscription.api.client';
+  getMySubscription,
+} from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 import { Plan as ApiPlan } from '@/app/_types/plan';
-import { Subscription } from '@/app/_types/subscription';
+import { SubscriptionDetails } from '@/app/_types/subscription';
 import { useUIStore } from '@/app/_stores/uiStore';
 import {
   CheckCircle2,
@@ -261,7 +260,7 @@ function PricingClientContent({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [activeSubscription, setActiveSubscription] =
-    useState<Subscription | null>(null);
+    useState<SubscriptionDetails | null>(null);
   const [sdkStatus, setSdkStatus] = useState<'loading' | 'ready' | 'error'>(
     'loading'
   );
@@ -301,20 +300,22 @@ function PricingClientContent({
     const fetchUserSubscription = async () => {
       if (isAuthenticated) {
         try {
-          const { data: subscriptions } = await getSubscriptions();
-          if (subscriptions) {
-            const activeSub =
-              subscriptions.find((sub) => sub.status === 'ACTIVE') || null;
-            setActiveSubscription(activeSub);
+          const { data: subscription } = await getMySubscription();
+          if (subscription && subscription.status === 'ACTIVE') {
+            setActiveSubscription(subscription);
+          } else {
+            setActiveSubscription(null);
           }
-        } catch (error) {}
+        } catch (error) {
+          setActiveSubscription(null);
+        }
       }
     };
 
     fetchUserSubscription();
   }, [isAuthenticated]);
 
-  const activePlanKey = activeSubscription?.planKey ?? 'FREE';
+  const activePlanKey = activeSubscription?.planInfo.planKey ?? 'FREE';
   const activePlanRank = planRanks[activePlanKey] ?? 0;
 
   const getPersonalizedPlans = () => {
@@ -406,21 +407,12 @@ function PricingClientContent({
       await registerBillingKey(issueResponse.billingKey);
       const createSubResponse = await createSubscription(planKey);
 
-      if (createSubResponse.data?.subscriptionId) {
-        const detailsResponse = await getSubscriptionDetails(
-          createSubResponse.data.subscriptionId
+      if (createSubResponse.data?.paymentId) {
+        router.push(
+          `/${lang}/billing/receipt/${createSubResponse.data.paymentId}`
         );
-        const latestPayment = detailsResponse.data?.paymentHistory?.[0];
-
-        if (latestPayment) {
-          router.push(`/${lang}/payments/${latestPayment.paymentId}`);
-        } else {
-          router.push(`/${lang}/billing/success`);
-        }
       } else {
-        throw new Error(
-          'Subscription creation failed to return a subscription ID.'
-        );
+        throw new Error('Subscription creation failed to return a payment ID.');
       }
     } catch (error: any) {
       toast.dismiss(loadingToastId);
@@ -480,7 +472,10 @@ function PricingClientContent({
 
         {activeSubscription && currentPlan && (
           <div className="mt-12 max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-butter-yellow/20 rounded-3xl p-8 shadow-2xl shadow-butter-yellow/5">
+            <div
+              className="border border-butter-yellow/20 rounded-3xl p-8 shadow-2xl shadow-butter-yellow/5"
+              style={{ backgroundColor: '#25282c' }}
+            >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">

@@ -397,6 +397,7 @@
     "backgroundProcessing": "Processing in background",
     "checkStatus": "Check Status",
     "completeSettings": "Complete settings in sidebar and click 'Generate Goods'",
+    "uploadImageTitle": "Upload Image",
     "details": {
       "cannotLoadDetails": "Cannot load detailed information",
       "creationTitle": "Digital Goods Creation",
@@ -503,6 +504,7 @@
     "dropHere": "Drop here",
     "edit": "Edit",
     "editing": "Editing...",
+    "fileSizeLimit": "200mb limit per file (png, jpg, jpeg)",
     "findIdolPhoto": "Find Idol Photo",
     "findMyPhoto": "Find My Photo",
     "generate": "Generate",
@@ -511,6 +513,7 @@
     "generatingInProgress": "Fan meeting photo generation in progress...",
     "generatingTitle": "Generating fan meeting photo",
     "idolPhoto": "Idol Photo",
+    "uploadImageTitle": "Upload Image",
     "messages": {
       "downloadComplete": "Image downloaded!",
       "downloadFailed": "Download failed.",
@@ -698,6 +701,7 @@
     },
     "generate": "Generate",
     "idolPhoto": "Idol Photo",
+    "uploadImageTitle": "Upload Image",
     "messages": {
       "downloadComplete": "Image downloaded!",
       "downloadFailed": "Download failed.",
@@ -821,6 +825,7 @@
     "generatingDescription": "Please wait a moment for the results",
     "generatingInProgress": "Virtual casting generation in progress...",
     "generatingTitle": "Generating virtual casting",
+    "uploadImageTitle": "Upload Image",
     "messages": {
       "castingComplete": "Virtual casting has been completed!",
       "castingFailed": "Virtual casting generation failed.",

@@ -22,6 +22,7 @@ interface ModernPlanCardProps {
   onSelect: (planKey: string, billingCycle: 'monthly' | 'yearly') => void;
   loading?: boolean;
   disabled?: boolean;
+  isCurrentPlan?: boolean;
 }
 
 export default function ModernPlanCard({
@@ -38,6 +39,7 @@ export default function ModernPlanCard({
   onSelect,
   loading = false,
   disabled = false,
+  isCurrentPlan = false,
 }: ModernPlanCardProps) {
   const { t } = useTranslation(['billing', 'common']);
 
@@ -54,7 +56,8 @@ export default function ModernPlanCard({
 
   return (
     <div
-      className={`relative rounded-lg border-2 transition-all duration-200 hover:shadow-lg bg-slate-800/50 ${
+      style={{ backgroundColor: '#25282c' }}
+      className={`relative rounded-lg border-2 transition-all duration-200 hover:shadow-lg ${
         isPopular
           ? 'border-butter-yellow shadow-butter-yellow/20 shadow-lg'
           : 'border-slate-700 hover:border-slate-600'
@@ -100,10 +103,7 @@ export default function ModernPlanCard({
                   {formatPrice(price)}
                 </span>
                 <span className="text-slate-400 text-base sm:text-lg">
-                  /
-                  {billingCycle === 'monthly'
-                    ? t('billing:month')
-                    : t('billing:year')}
+                  /{t('billing:month')}
                 </span>
               </>
             )}
@@ -142,13 +142,15 @@ export default function ModernPlanCard({
         {/* Studio CTA Button */}
         <button
           className={`w-full py-2.5 sm:py-3 px-4 rounded-lg text-sm sm:text-base font-semibold transition-all duration-200 ${
-            planKey === 'free'
+            isCurrentPlan
+              ? 'bg-green-500/20 border border-green-500/40 text-green-400 cursor-default'
+              : planKey === 'free'
               ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
               : isPopular
                 ? 'bg-butter-yellow hover:bg-butter-yellow/90 text-black'
                 : 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
           } ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
-          disabled={disabled || loading}
+          disabled={disabled || loading || isCurrentPlan}
           onClick={(e) => {
             e.stopPropagation();
             handleSelect();
@@ -161,6 +163,8 @@ export default function ModernPlanCard({
                 {t('billing:plans.processing')}
               </span>
             </div>
+          ) : isCurrentPlan ? (
+            t('billing:currentPlan')
           ) : planKey === 'free' ? (
             t('billing:plans.free.name')
           ) : (

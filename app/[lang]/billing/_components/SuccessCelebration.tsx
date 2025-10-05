@@ -125,7 +125,7 @@ export default function SuccessCelebration({
 
   const handleViewReceipt = () => {
     if (subscriptionId) {
-      router.push(`/${lang}/payments/${subscriptionId}`);
+      router.push(`/${lang}/billing/receipt/${subscriptionId}`);
     } else {
       router.push(`/${lang}/billing/history`);
     }

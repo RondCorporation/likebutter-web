@@ -1,8 +1,8 @@
 import BillingDashboard from './_components/BillingDashboard';
-import nextI18NextConfig from '../../../../next-i18next.config.mjs';
-import { getPlansOnServer } from '@/app/_lib/apis/subscription.api.server';
+import nextI18NextConfig from '../../../next-i18next.config.mjs';
+import { getPlansOnServer } from '@/lib/apis/plan.api.server';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ lang: string }>;

@@ -8,8 +8,7 @@ import { usePortonePreload } from '@/components/portone/PreloadPortoneProvider';
 import {
   createSubscription,
   registerBillingKey,
-  getSubscriptionDetails,
-} from '@/app/_lib/apis/subscription.api.client';
+} from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 import {
   CheckCircle2,
@@ -135,17 +134,10 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
 
       const createSubResponse = await createSubscription(planKey);
 
-      if (createSubResponse.data?.subscriptionId) {
-        const detailsResponse = await getSubscriptionDetails(
-          createSubResponse.data.subscriptionId
+      if (createSubResponse.data?.paymentId) {
+        router.push(
+          `/${lang}/billing/receipt/${createSubResponse.data.paymentId}`
         );
-        const latestPayment = detailsResponse.data?.paymentHistory?.[0];
-
-        if (latestPayment) {
-          router.push(`/${lang}/payments/${latestPayment.paymentId}`);
-        } else {
-          router.push(`/${lang}/billing/success`);
-        }
       } else {
         throw new Error(t('billing:payment.errors.subscriptionId'));
       }

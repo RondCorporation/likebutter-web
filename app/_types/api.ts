@@ -37,17 +37,17 @@ export interface PaginatedResponse<T> {
 
 export enum PlanType {
   FREE = 0,
-  BASIC = 1,
-  STANDARD = 2,
+  CREATOR = 1,
+  PROFESSIONAL = 2,
   ENTERPRISE = 3,
 }
 
 export type PlanKey =
   | 'FREE'
-  | 'BASIC_MONTHLY'
-  | 'BASIC_YEARLY'
-  | 'STANDARD_MONTHLY'
-  | 'STANDARD_YEARLY'
+  | 'CREATOR_MONTHLY'
+  | 'CREATOR_YEARLY'
+  | 'PROFESSIONAL_MONTHLY'
+  | 'PROFESSIONAL_YEARLY'
   | 'ENTERPRISE';
 
 export interface Subscription {

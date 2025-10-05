@@ -10,6 +10,8 @@ interface BottomSheetProps {
   minHeight?: number;
   className?: string;
   hasBottomButton?: boolean;
+  isOpen?: boolean;
+  onToggle?: (isOpen: boolean) => void;
 }
 
 export default function BottomSheet({
@@ -19,218 +21,17 @@ export default function BottomSheet({
   minHeight = 20,
   className = '',
   hasBottomButton = false,
+  isOpen = false,
+  onToggle,
 }: BottomSheetProps) {
   const isMobile = useIsMobile();
-  const [height, setHeight] = useState(initialHeight);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [startHeight, setStartHeight] = useState(initialHeight);
-  const [velocity, setVelocity] = useState(0);
-  const [lastMoveTime, setLastMoveTime] = useState(0);
-  const [lastClientY, setLastClientY] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
 
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
-      if (e.nativeEvent.cancelable) {
-        e.preventDefault();
-      }
-      e.stopPropagation();
-      setIsDragging(true);
-      setIsAnimating(false);
-      const clientY = e.touches[0].clientY;
-      setStartY(clientY);
-      setLastClientY(clientY);
-      setStartHeight(height);
-      setVelocity(0);
-      setLastMoveTime(Date.now());
-
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    },
-    [height]
-  );
-
-  const handleMouseStart = useCallback(
-    (e: React.MouseEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(true);
-      setIsAnimating(false);
-      setStartY(e.clientY);
-      setLastClientY(e.clientY);
-      setStartHeight(height);
-      setVelocity(0);
-      setLastMoveTime(Date.now());
-
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    },
-    [height]
-  );
-
-  const handleMove = useCallback(
-    (clientY: number) => {
-      if (!isDragging || isAnimating) return;
-
-      const now = Date.now();
-      const timeDelta = now - lastMoveTime;
-
-      if (timeDelta > 0) {
-        const clientYDelta = clientY - lastClientY;
-
-        const newVelocity =
-          timeDelta > 16 ? clientYDelta / timeDelta : velocity;
-        setVelocity(newVelocity * 0.8 + velocity * 0.2);
-        setLastClientY(clientY);
-        setLastMoveTime(now);
-      }
-
-      const deltaY = startY - clientY;
-      const viewportHeight = window.innerHeight;
-      const deltaPercent = (deltaY / viewportHeight) * 100;
-      let newHeight = startHeight + deltaPercent;
-
-      if (newHeight > maxHeight) {
-        const overshoot = newHeight - maxHeight;
-        newHeight = maxHeight + overshoot * 0.3;
-      } else if (newHeight < minHeight) {
-        const undershoot = minHeight - newHeight;
-        newHeight = minHeight - undershoot * 0.3;
-      }
-
-      setHeight(newHeight);
-    },
-    [
-      isDragging,
-      isAnimating,
-      startY,
-      startHeight,
-      lastMoveTime,
-      lastClientY,
-      velocity,
-      minHeight,
-      maxHeight,
-    ]
-  );
-
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      if (e.nativeEvent.cancelable) {
-        e.preventDefault();
-      }
-      handleMove(e.touches[0].clientY);
-    },
-    [handleMove]
-  );
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      e.preventDefault();
-      handleMove(e.clientY);
-    },
-    [handleMove]
-  );
-
-  const handleEnd = useCallback(() => {
-    setIsDragging(false);
-
-    let currentHeight = height;
-    if (currentHeight > maxHeight) {
-      currentHeight = maxHeight;
-    } else if (currentHeight < minHeight) {
-      currentHeight = minHeight;
-    }
-
-    const momentum = velocity * -300;
-    let finalHeight = currentHeight + momentum;
-
-    const snapPoints = [minHeight, initialHeight, maxHeight];
-    let targetHeight = finalHeight;
-
-    const velocityThreshold = 0.3;
-    if (Math.abs(velocity) > velocityThreshold) {
-      if (velocity > 0) {
-        const higherPoints = snapPoints.filter(
-          (point) => point > currentHeight
-        );
-        if (higherPoints.length > 0) {
-          targetHeight = Math.min(...higherPoints);
-        } else {
-          targetHeight = maxHeight;
-        }
-      } else {
-        const lowerPoints = snapPoints.filter((point) => point < currentHeight);
-        if (lowerPoints.length > 0) {
-          targetHeight = Math.max(...lowerPoints);
-        } else {
-          targetHeight = minHeight;
-        }
-      }
-    } else {
-      let minDistance = Infinity;
-      snapPoints.forEach((point) => {
-        const distance = Math.abs(currentHeight - point);
-        if (distance < minDistance) {
-          minDistance = distance;
-          targetHeight = point;
-        }
-      });
-    }
-
-    targetHeight = Math.max(minHeight, Math.min(maxHeight, targetHeight));
-
-    animateToHeight(targetHeight);
-  }, [height, velocity, minHeight, maxHeight, initialHeight]);
-
-  const animateToHeight = useCallback(
-    (targetHeight: number) => {
-      const startHeight = height;
-      const startTime = Date.now();
-      const distance = Math.abs(targetHeight - startHeight);
-
-      const duration = Math.max(200, Math.min(400, distance * 8));
-
-      setIsAnimating(true);
-
-      const animate = () => {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        const easeProgress = 1 - Math.pow(1 - progress, 4);
-        const currentHeight =
-          startHeight + (targetHeight - startHeight) * easeProgress;
-
-        setHeight(currentHeight);
-
-        if (progress < 1) {
-          animationRef.current = requestAnimationFrame(animate);
-        } else {
-          setIsAnimating(false);
-          setVelocity(0);
-        }
-      };
-
-      animationRef.current = requestAnimationFrame(animate);
-    },
-    [height]
-  );
-
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleEnd);
-
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleEnd);
-      };
-    }
-  }, [isDragging, handleMouseMove, handleEnd]);
+  const handleToolbarClick = useCallback(() => {
+    onToggle?.(!isOpen);
+  }, [isOpen, onToggle]);
 
   useEffect(() => {
     return () => {
@@ -248,30 +49,25 @@ export default function BottomSheet({
     );
   }
 
-  const actualHeight = Math.min((height / 100) * window.innerHeight, 500);
+  const targetHeight = isOpen ? initialHeight : minHeight;
+  const actualHeight = Math.min((targetHeight / 100) * window.innerHeight, 500);
 
   const bottomOffset = hasBottomButton ? 'bottom-[140px]' : 'bottom-20';
 
   return (
     <div
       ref={sheetRef}
-      className={`fixed inset-x-0 ${bottomOffset} z-40 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${isDragging ? '' : 'transition-transform duration-200 ease-out'} ${className}`}
+      className={`fixed inset-x-0 ${bottomOffset} z-40 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col transition-all duration-300 ease-out ${className}`}
       style={{
         height: `${actualHeight}px`,
         maxHeight: '500px',
-        transform: isDragging ? 'translateZ(0)' : undefined,
-        willChange: isDragging ? 'transform' : 'auto',
       }}
     >
-      {/* Drag handle */}
+      {/* Toolbar - Click to toggle */}
       <div
-        className="flex justify-center py-3 cursor-grab active:cursor-grabbing select-none shrink-0"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleEnd}
-        onMouseDown={handleMouseStart}
+        className="flex justify-center py-3 cursor-pointer select-none shrink-0"
+        onClick={handleToolbarClick}
         style={{
-          touchAction: 'none',
           userSelect: 'none',
           WebkitUserSelect: 'none',
           WebkitTouchCallout: 'none',
@@ -279,7 +75,7 @@ export default function BottomSheet({
       >
         <div
           className={`w-12 h-1 bg-studio-text-muted rounded-full transition-all duration-200 ${
-            isDragging ? 'bg-studio-button-primary scale-110' : ''
+            isOpen ? 'bg-studio-button-primary scale-110' : ''
           }`}
         />
       </div>
@@ -291,9 +87,6 @@ export default function BottomSheet({
           touchAction: 'pan-y',
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
-        }}
-        onTouchStart={(e) => {
-          e.stopPropagation();
         }}
       >
         {children}

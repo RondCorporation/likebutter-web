@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+
 interface Props {
   isOpen: boolean;
   title: string;
@@ -21,25 +24,33 @@ export default function ConfirmationModal({
   cancelText = 'Cancel',
   isConfirming = false,
 }: Props) {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md rounded-lg bg-slate-900 border border-slate-700 p-6 shadow-xl">
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+      <div className="w-full max-w-md bg-[#1a1d21] border border-white/[0.08] p-6 shadow-2xl">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
-        <p className="mt-2 text-sm text-slate-400">{message}</p>
+        <p className="mt-4 text-sm text-white/70 whitespace-pre-line leading-relaxed">
+          {message}
+        </p>
         <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onCancel}
             disabled={isConfirming}
-            className="rounded-md bg-slate-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-600 disabled:opacity-50"
+            className="bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] px-4 py-2.5 text-sm font-medium text-white/90 transition disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
             disabled={isConfirming}
-            className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-500 disabled:opacity-50"
+            className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/40 px-4 py-2.5 text-sm font-medium text-red-400 hover:text-red-300 transition disabled:opacity-50"
           >
             {isConfirming ? 'Processing...' : confirmText}
           </button>
@@ -47,4 +58,6 @@ export default function ConfirmationModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

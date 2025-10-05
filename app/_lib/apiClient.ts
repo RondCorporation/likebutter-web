@@ -96,7 +96,8 @@ export async function apiFetch<T>(
       const initialToken = getCookie('accessToken');
       let response = await performRequest(initialToken);
 
-      if (response.status === 401 && withAuth) {
+      // Only attempt token refresh if there was an initial token (user was logged in)
+      if (response.status === 401 && withAuth && initialToken) {
         const refreshSuccessful = await refreshToken();
 
         if (refreshSuccessful) {

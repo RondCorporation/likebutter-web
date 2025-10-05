@@ -39,7 +39,6 @@ export interface PlanInfo {
 }
 
 export interface SubscriptionDetails {
-  subscriptionId: number;
   status: SubscriptionStatus;
   startDate: string;
   endDate: string;
@@ -49,8 +48,32 @@ export interface SubscriptionDetails {
 }
 
 export interface CreateSubscriptionResponse {
-  subscriptionId: number;
-  planDescription: string;
-  status: SubscriptionStatus;
-  endDate: string;
+  paymentId: number;
+}
+
+export interface SubscriptionPaymentDetails {
+  subscription: {
+    status: 'ACTIVE' | 'CANCELLED' | 'EXPIRED' | 'PAST_DUE';
+    startDate: string;
+    endDate: string;
+    nextPaymentDate?: string;
+    plan: {
+      planKey: string;
+      name: string;
+      description: string;
+      billingCycle: 'MONTHLY' | 'YEARLY';
+      monthlyCredits: number;
+      price: number;
+      currency: string;
+    };
+  };
+  payment: {
+    paymentId: number;
+    paymentKey: string;
+    amount: number;
+    currency: string;
+    status: PaymentStatus;
+    paidAt: string;
+    pgTxId: string;
+  };
 }

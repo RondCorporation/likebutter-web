@@ -1,8 +1,6 @@
 import { apiClient } from '@/app/_lib/apiClient';
-import { Pageable, PaginatedResponse } from '@/app/_types/api';
+import { PaginatedResponse } from '@/app/_types/api';
 import { Payment } from '@/app/_types/payment';
-import { Subscription } from '@/app/_types/subscription';
-import { Task } from '@/app/_types/task';
 
 export interface AdminStats {
   totalUsers: number;

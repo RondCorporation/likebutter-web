@@ -6,7 +6,7 @@ import { useAuthStore } from '@/stores/authStore';
 import {
   registerBillingKey,
   createSubscription,
-} from '@/app/_lib/apis/subscription.api.client';
+} from '@/lib/apis/subscription.api';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -32,11 +32,11 @@ function CallbackHandler() {
 
           const createSubResponse = await createSubscription(planKey);
 
-          if (createSubResponse.data?.subscriptionId) {
+          if (createSubResponse.data?.paymentId) {
             toast.success(t('billing:payment.success.subscriptionStarted'));
             await revalidateUser();
             router.replace(
-              `/${lang}/billing/success?plan=${planKey.split('_')[0].toLowerCase()}&subscription=${createSubResponse.data.subscriptionId}`
+              `/${lang}/billing/receipt/${createSubResponse.data.paymentId}`
             );
           } else {
             throw new Error(t('billing:payment.errors.subscriptionFailed'));

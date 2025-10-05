@@ -31,21 +31,21 @@ const convertPlansFormat = (
   t: any
 ): SimplePlan[] => {
   const planTypeMap: { [key: string]: string } = {
-    BASIC: t('billing:plans.creator.name'),
-    STANDARD: t('billing:plans.professional.name'),
+    CREATOR: t('billing:plans.creator.name'),
+    PROFESSIONAL: t('billing:plans.professional.name'),
   };
 
   const planDescMap: { [key: string]: string } = {
-    BASIC: t('billing:plans.creator.basicDesc'),
-    STANDARD: t('billing:plans.professional.advancedDesc'),
+    CREATOR: t('billing:plans.creator.basicDesc'),
+    PROFESSIONAL: t('billing:plans.professional.advancedDesc'),
   };
 
   const featuresMap: { [key: string]: string[] } = {
-    BASIC: [
+    CREATOR: [
       t('billing:plans.creator.attendanceCredit'),
       t('billing:plans.creator.extraCredits'),
     ],
-    STANDARD: [
+    PROFESSIONAL: [
       t('billing:plans.professional.attendanceCredit'),
       t('billing:plans.professional.extraCredits'),
     ],
@@ -101,9 +101,9 @@ const convertPlansFormat = (
         priceMonthly: monthlyPrice as number | string,
         priceYearly: yearlyMonthlyPrice as number | string,
         features: featuresMap[planType] || [],
-        isPopular: planType === 'BASIC',
+        isPopular: planType === 'CREATOR',
         cta:
-          planType === 'BASIC'
+          planType === 'CREATOR'
             ? t('billing:plans.startButton')
             : t('billing:plans.upgradePlan'),
       });

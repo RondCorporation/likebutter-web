@@ -39,6 +39,8 @@ export default function StylistWithSidebar() {
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const setClientRefCallback = useCallback((ref: any) => {
     clientRef.current = ref;
@@ -54,12 +56,24 @@ export default function StylistWithSidebar() {
       resultImage?: string | null;
       isProcessing?: boolean;
       isPolling?: boolean;
+      uploadedFile?: File | null;
+      isBottomSheetOpen?: boolean;
     }) => {
       if (state.showMobileResult !== undefined) {
         setShowMobileResult(state.showMobileResult);
       }
       const isProcessingOrPolling = state.isProcessing || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
+
+      // Show BottomSheet only when image is uploaded and not in result mode
+      setShowBottomSheet(
+        !!state.uploadedFile && !state.resultImage && !isProcessingOrPolling
+      );
+
+      // Sync BottomSheet open state
+      if (state.isBottomSheetOpen !== undefined) {
+        setIsBottomSheetOpen(state.isBottomSheetOpen);
+      }
     },
     []
   );
@@ -106,6 +120,13 @@ export default function StylistWithSidebar() {
     }
     setIsResetPopupOpen(false);
   };
+
+  const handleBottomSheetToggle = useCallback((isOpen: boolean) => {
+    setIsBottomSheetOpen(isOpen);
+    if (clientRef.current?.setIsBottomSheetOpen) {
+      clientRef.current.setIsBottomSheetOpen(isOpen);
+    }
+  }, []);
 
   const getMobileButton = () => {
     const isProcessing = clientRef.current?.isProcessing || false;
@@ -162,12 +183,14 @@ export default function StylistWithSidebar() {
       <StudioLayout
         sidebar={<StylistSidebar onFormChange={handleFormChange} />}
         bottomSheetOptions={{
-          initialHeight: 50,
+          initialHeight: 60,
           maxHeight: 90,
-          minHeight: 30,
+          minHeight: 8,
         }}
         mobileBottomButton={getMobileButton()}
-        hideMobileBottomSheet={showMobileResult}
+        hideMobileBottomSheet={!showBottomSheet}
+        isBottomSheetOpen={isBottomSheetOpen}
+        onBottomSheetToggle={handleBottomSheetToggle}
         hidePCSidebar={hidePCSidebar}
       >
         <StylistClient

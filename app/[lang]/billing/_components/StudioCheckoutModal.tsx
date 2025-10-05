@@ -12,8 +12,7 @@ import { usePortonePreload } from '@/components/portone/PreloadPortoneProvider';
 import {
   createSubscription,
   registerBillingKey,
-  getSubscriptionDetails,
-} from '@/app/_lib/apis/subscription.api.client';
+} from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
 
 interface PlanDetails {
@@ -144,20 +143,13 @@ export default function StudioCheckoutModal({
 
       const createSubResponse = await createSubscription(planKey);
 
-      if (createSubResponse.data?.subscriptionId) {
-        const detailsResponse = await getSubscriptionDetails(
-          createSubResponse.data.subscriptionId
-        );
-        const latestPayment = detailsResponse.data?.paymentHistory?.[0];
-
+      if (createSubResponse.data?.paymentId) {
         setPaymentStep('success');
 
         setTimeout(() => {
-          if (latestPayment) {
-            router.push(`/${lang}/payments/${latestPayment.paymentId}`);
-          } else {
-            router.push(`/${lang}/billing/success`);
-          }
+          router.push(
+            `/${lang}/billing/receipt/${createSubResponse.data?.paymentId}`
+          );
         }, 2000);
       } else {
         throw new Error(t('billing:subscriptionIdError'));
@@ -211,7 +203,9 @@ export default function StudioCheckoutModal({
                       <h2 className="text-2xl font-bold text-white mb-2">
                         {t('billing:orderSummary')}
                       </h2>
-                      <p className="text-slate-400">{t('billing:reviewYourOrder')}</p>
+                      <p className="text-slate-400">
+                        {t('billing:reviewYourOrder')}
+                      </p>
                     </div>
 
                     {/* Receipt Style Summary */}

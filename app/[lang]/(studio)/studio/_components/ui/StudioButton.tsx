@@ -65,6 +65,7 @@ export default function StudioButton({
                 width={12}
                 height={12}
                 className="flex-shrink-0"
+                style={{ width: 'auto', height: 'auto' }}
               />
               <span className="text-xs font-medium text-black">
                 -{creditCost}
@@ -97,6 +98,7 @@ export default function StudioButton({
                 width={12}
                 height={12}
                 className="flex-shrink-0"
+                style={{ width: 'auto', height: 'auto' }}
               />
               <span className="text-xs font-medium text-black">
                 -{creditCost}

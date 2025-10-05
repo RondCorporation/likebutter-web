@@ -25,6 +25,8 @@ export default function FanmeetingStudioWithSidebar() {
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
+  const [showBottomSheet, setShowBottomSheet] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const setClientRefCallback = useCallback((ref: any) => {
     clientRef.current = ref;
@@ -40,12 +42,27 @@ export default function FanmeetingStudioWithSidebar() {
       resultImage?: string | null;
       isProcessing?: boolean;
       isPolling?: boolean;
+      uploadedFile?: File | null;
+      isBottomSheetOpen?: boolean;
+      idolFile?: File | null;
+      userFile?: File | null;
     }) => {
       if (state.showMobileResult !== undefined) {
         setShowMobileResult(state.showMobileResult);
       }
       const isProcessingOrPolling = state.isProcessing || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
+
+      // Show BottomSheet only when BOTH images are uploaded and not in result mode
+      const bothFilesUploaded = !!state.idolFile && !!state.userFile;
+      setShowBottomSheet(
+        bothFilesUploaded && !state.resultImage && !isProcessingOrPolling
+      );
+
+      // Sync BottomSheet open state
+      if (state.isBottomSheetOpen !== undefined) {
+        setIsBottomSheetOpen(state.isBottomSheetOpen);
+      }
     },
     []
   );
@@ -86,6 +103,13 @@ export default function FanmeetingStudioWithSidebar() {
     }
     setIsResetPopupOpen(false);
   };
+
+  const handleBottomSheetToggle = useCallback((isOpen: boolean) => {
+    setIsBottomSheetOpen(isOpen);
+    if (clientRef.current?.setIsBottomSheetOpen) {
+      clientRef.current.setIsBottomSheetOpen(isOpen);
+    }
+  }, []);
 
   const getMobileButton = () => {
     const isProcessing = clientRef.current?.isProcessing || false;
@@ -144,12 +168,14 @@ export default function FanmeetingStudioWithSidebar() {
       <StudioLayout
         sidebar={<FanmeetingStudioSidebar onFormChange={handleFormChange} />}
         bottomSheetOptions={{
-          initialHeight: 50,
+          initialHeight: 60,
           maxHeight: 90,
-          minHeight: 30,
+          minHeight: 8,
         }}
         mobileBottomButton={getMobileButton()}
-        hideMobileBottomSheet={showMobileResult}
+        hideMobileBottomSheet={!showBottomSheet}
+        isBottomSheetOpen={isBottomSheetOpen}
+        onBottomSheetToggle={handleBottomSheetToggle}
         hidePCSidebar={hidePCSidebar}
       >
         <FanmeetingStudioClient

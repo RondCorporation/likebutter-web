@@ -2,8 +2,8 @@ import { apiFetch } from '../apiClient';
 import { ApiResponse } from '@/app/_types/api';
 import {
   CreateSubscriptionResponse,
-  Subscription,
   SubscriptionDetails,
+  SubscriptionPaymentDetails,
 } from '@/app/_types/subscription';
 
 export const registerBillingKey = (
@@ -28,21 +28,16 @@ export const createSubscription = (
   });
 };
 
-export const getSubscriptions = (): Promise<ApiResponse<Subscription[]>> => {
-  return apiFetch<Subscription[]>('/subscriptions');
+export const getMySubscription = (): Promise<
+  ApiResponse<SubscriptionDetails>
+> => {
+  return apiFetch<SubscriptionDetails>('/subscriptions/me');
 };
 
-export const getSubscriptionDetails = (
-  id: number
-): Promise<ApiResponse<SubscriptionDetails>> => {
-  return apiFetch<SubscriptionDetails>(`/subscriptions/${id}`);
-};
-
-export const upgradeSubscription = (
-  id: number,
+export const upgradeMySubscription = (
   newPlanKey: string
 ): Promise<ApiResponse<SubscriptionDetails>> => {
-  return apiFetch<SubscriptionDetails>(`/subscriptions/${id}/upgrade`, {
+  return apiFetch<SubscriptionDetails>(`/subscriptions/me/upgrade`, {
     method: 'POST',
     body: {
       newPlanKey,
@@ -50,10 +45,16 @@ export const upgradeSubscription = (
   });
 };
 
-export const cancelSubscription = (
-  subscriptionId: number
-): Promise<ApiResponse<null>> => {
-  return apiFetch<null>(`/subscriptions/${subscriptionId}`, {
+export const cancelMySubscription = (): Promise<ApiResponse<null>> => {
+  return apiFetch<null>(`/subscriptions/me`, {
     method: 'DELETE',
   });
+};
+
+export const getSubscriptionPaymentDetails = (
+  paymentId: number
+): Promise<ApiResponse<SubscriptionPaymentDetails>> => {
+  return apiFetch<SubscriptionPaymentDetails>(
+    `/subscriptions/payments/${paymentId}`
+  );
 };

@@ -54,7 +54,9 @@ export default function StudioLayout({
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
-          paddingBottom: 'env(safe-area-inset-bottom)',
+          paddingBottom: mobileBottomButton
+            ? 'calc(184px + env(safe-area-inset-bottom))'
+            : 'env(safe-area-inset-bottom)',
         }}
       >
         {children}
@@ -75,9 +77,20 @@ export default function StudioLayout({
         </BottomSheet>
       )}
 
-      {/* Fixed bottom button - above navigation */}
+      {/* Fixed bottom button - above navigation (z-40)
+          paddingBottom calculation:
+          - MobileBottomNavigation height: ~88px (content) + safe-area-inset-bottom
+          - Margin for visual separation: 12px
+          - Total: 100px + safe-area-inset-bottom
+          This ensures the button doesn't overlap with MobileBottomNavigation (z-50)
+      */}
       {mobileBottomButton && (
-        <div className="fixed inset-x-0 bottom-0 z-40 bg-studio-sidebar pb-20">
+        <div
+          className="fixed inset-x-0 bottom-0 z-40 bg-studio-sidebar"
+          style={{
+            paddingBottom: 'calc(100px + env(safe-area-inset-bottom))',
+          }}
+        >
           <div className="px-3 pt-3 pb-6">{mobileBottomButton}</div>
         </div>
       )}

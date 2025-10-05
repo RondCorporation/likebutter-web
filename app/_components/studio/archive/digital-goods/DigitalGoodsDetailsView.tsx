@@ -1,8 +1,6 @@
 import { DigitalGoodsDetails } from '@/types/task';
-import { Palette, Sparkles } from 'lucide-react';
+import { Palette } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import InfoCard from '../ui/InfoCard';
-import ParameterBadge from '../ui/ParameterBadge';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
 
@@ -17,7 +15,9 @@ export default function DigitalGoodsDetailsView({ details, onClose }: Props) {
   if (!details) {
     return (
       <div className="flex items-center justify-center h-40">
-        <p className="text-studio-text-muted">{t('digitalGoods.details.cannotLoadDetails')}</p>
+        <p className="text-studio-text-muted">
+          {t('digitalGoods.details.cannotLoadDetails')}
+        </p>
       </div>
     );
   }
@@ -30,20 +30,13 @@ export default function DigitalGoodsDetailsView({ details, onClose }: Props) {
     <div className="text-studio-text-primary">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3">
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Palette className="h-5 w-5 text-studio-header" />
           </div>
-          <h3 className="text-xl font-semibold">{t('digitalGoods.details.creationTitle')}</h3>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {details.request.style && (
-            <ParameterBadge
-              label={t('digitalGoods.details.styleLabel')}
-              value={getStyleName(details.request.style)}
-              variant="accent"
-            />
-          )}
+          <h3 className="text-xl font-semibold">
+            {t('digitalGoods.details.creationTitle')}
+          </h3>
         </div>
       </div>
 
@@ -63,7 +56,9 @@ export default function DigitalGoodsDetailsView({ details, onClose }: Props) {
         {details.result?.imageUrl && (
           <ImageDisplayCard
             title={t('digitalGoods.details.generatedResult')}
-            subtitle={t('digitalGoods.details.generatedResultSubtitle', { style: getStyleName(details.request.style) })}
+            subtitle={t('digitalGoods.details.generatedResultSubtitle', {
+              style: getStyleName(details.request.style),
+            })}
             imageUrl={details.result.imageUrl}
             alt={t('digitalGoods.details.generatedGoods')}
             downloadFilename={`digital-goods-${Date.now()}.png`}
@@ -75,7 +70,9 @@ export default function DigitalGoodsDetailsView({ details, onClose }: Props) {
       {details.error && (
         <div className="mt-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-            <h4 className="text-red-400 font-medium mb-2">{t('digitalGoods.details.generationFailed')}</h4>
+            <h4 className="text-red-400 font-medium mb-2">
+              {t('digitalGoods.details.generationFailed')}
+            </h4>
             <p className="text-red-300 text-sm">{details.error}</p>
           </div>
         </div>

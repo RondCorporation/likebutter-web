@@ -6,7 +6,6 @@ import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import SquareToggleButton from '../../_components/ui/SquareToggleButton';
 import ToggleSwitch from '../../_components/ui/ToggleSwitch';
-import { useIsDesktop } from '@/hooks/useMediaQuery';
 
 interface StylistSidebarProps {
   onFormChange?: (formData: {
@@ -37,7 +36,6 @@ export default function StylistSidebar({
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [textPrompt, setTextPrompt] = useState('');
   const [imagePrompt, setImagePrompt] = useState('');
-  const isDesktop = useIsDesktop();
   const [imageSettings, setImageSettings] = useState({
     hairstyle: false,
     costume: false,
@@ -45,13 +43,6 @@ export default function StylistSidebar({
     accessory: false,
     atmosphere: false,
   });
-  const [uploadedFiles, setUploadedFiles] = useState<{
-    hairStyleImage?: File;
-    outfitImage?: File;
-    backgroundImage?: File;
-    accessoryImage?: File;
-    moodImage?: File;
-  }>({});
 
   const recommendedPrompts = [
     t('stylist.suggestions.changeToBlonde'),
@@ -96,7 +87,7 @@ export default function StylistSidebar({
       textPrompt: mode === 'text' ? textPrompt : undefined,
       imagePrompt: mode === 'image' ? imagePrompt : undefined,
       imageSettings: mode === 'image' ? imageSettings : undefined,
-      uploadedFiles: mode === 'image' ? uploadedFiles : undefined,
+      uploadedFiles: undefined,
     });
   };
 
@@ -123,32 +114,9 @@ export default function StylistSidebar({
     setImageSettings(newSettings);
   };
 
-  const handleFileUpload = (category: string, file: File) => {
-    if (file.size > 10 * 1024 * 1024) {
-      return;
-    }
-
-    if (!['image/png', 'image/jpg', 'image/jpeg'].includes(file.type)) {
-      return;
-    }
-
-    const fileMapping: { [key: string]: keyof typeof uploadedFiles } = {
-      hairstyle: 'hairStyleImage',
-      costume: 'outfitImage',
-      background: 'backgroundImage',
-      accessory: 'accessoryImage',
-      atmosphere: 'moodImage',
-    };
-
-    const fileKey = fileMapping[category];
-    if (fileKey) {
-      setUploadedFiles((prev) => ({ ...prev, [fileKey]: file }));
-    }
-  };
-
   React.useEffect(() => {
     updateFormData();
-  }, [mode, textPrompt, imagePrompt, imageSettings, uploadedFiles]);
+  }, [mode, textPrompt, imagePrompt, imageSettings]);
 
   return (
     <StudioSidebarBase>
@@ -248,51 +216,6 @@ export default function StylistSidebar({
                       size="sm"
                     />
                   </div>
-
-                  {/* Upload area (visible on toggle) - mobile only */}
-                  {imageSettings[category.key as keyof typeof imageSettings] &&
-                    !isDesktop && (
-                      <div className="w-full">
-                        <input
-                          id={`file-${category.key}`}
-                          type="file"
-                          accept="image/png,image/jpg,image/jpeg"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              handleFileUpload(category.key, file);
-                            }
-                          }}
-                          className="hidden"
-                        />
-                        <button
-                          onClick={() =>
-                            document
-                              .getElementById(`file-${category.key}`)
-                              ?.click()
-                          }
-                          className="flex items-center gap-2 w-full h-[36px] px-3 py-2 bg-studio-border rounded-md text-studio-text-primary text-sm font-pretendard-medium hover:bg-studio-border-light transition-colors duration-200"
-                        >
-                          <Image
-                            src="/studio/stylist/sidebar-upload.svg"
-                            alt="Upload"
-                            width={16}
-                            height={16}
-                          />
-                          {uploadedFiles[
-                            {
-                              hairstyle: 'hairStyleImage',
-                              costume: 'outfitImage',
-                              background: 'backgroundImage',
-                              accessory: 'accessoryImage',
-                              atmosphere: 'moodImage',
-                            }[category.key] as keyof typeof uploadedFiles
-                          ]
-                            ? `${category.label} ${t('stylist.change')}`
-                            : `${category.label} ${t('stylist.attach')}`}
-                        </button>
-                      </div>
-                    )}
                 </div>
               ))}
             </div>

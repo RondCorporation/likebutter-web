@@ -100,13 +100,13 @@ export default function ModelSelectPopup({
             : '85vh',
         }}
       >
-        <div className="flex items-center justify-between w-full">
-          <div className="flex-1 text-center font-bold text-studio-text-primary text-lg">
+        <div className="relative flex items-center justify-center w-full">
+          <div className="font-bold text-studio-text-primary text-lg">
             {t('studio:modelSelect.title')}
           </div>
           <button
             onClick={onClose}
-            className="text-studio-text-primary hover:text-studio-text-secondary"
+            className="absolute right-0 text-studio-text-primary hover:text-studio-text-secondary"
           >
             <X size={isMobile ? 24 : 20} />
           </button>

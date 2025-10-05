@@ -1,7 +1,6 @@
 import { FanmeetingStudioDetails } from '@/types/task';
-import { Users, Camera, MapPin, Heart } from 'lucide-react';
+import { Users, Camera } from 'lucide-react';
 import InfoCard from '../ui/InfoCard';
-import ParameterBadge from '../ui/ParameterBadge';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
 import { useTranslation } from 'react-i18next';
@@ -30,20 +29,13 @@ export default function FanmeetingStudioDetailsView({
     <div className="bg-studio-sidebar border border-studio-border rounded-xl p-6 text-studio-text-primary">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3">
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Users className="h-5 w-5 text-studio-header" />
           </div>
           <h3 className="text-xl font-semibold">
             {t('fanmeeting.details.title')}
           </h3>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <ParameterBadge
-            label={t('fanmeeting.details.mode')}
-            value={t('fanmeeting.details.sceneGeneration')}
-            variant="accent"
-          />
         </div>
       </div>
 

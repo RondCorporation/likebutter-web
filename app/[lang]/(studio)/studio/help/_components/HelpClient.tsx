@@ -99,23 +99,26 @@ export default function HelpClient() {
   ];
 
   return (
-    <div className="w-full min-h-full bg-[#25282c] pb-28 md:pb-0">
+    <div
+      className="w-full min-h-full bg-[#25282c] pb-28 md:pb-0"
+      style={{ wordBreak: 'keep-all' }}
+    >
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
         {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+        <div className="mb-12 md:mb-16 text-center">
+          <h1 className="text-2xl md:text-4xl font-bold text-white mb-3 md:mb-4">
             {t('studio:faq.title')}
           </h1>
-          <p className="text-[#a8a8aa] text-lg max-w-2xl mx-auto">
+          <p className="text-[#a8a8aa] text-sm md:text-lg max-w-2xl mx-auto">
             {t('studio:faq.subtitle')}
           </p>
         </div>
 
         {/* FAQ Content */}
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
           {faqSections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="space-y-4">
-              <h2 className="text-2xl font-semibold text-white mb-6 text-center">
+            <div key={sectionIndex} className="space-y-3 md:space-y-4">
+              <h2 className="text-xl md:text-2xl font-semibold text-white mb-4 md:mb-6 text-center">
                 {section.title}
               </h2>
 
@@ -131,21 +134,21 @@ export default function HelpClient() {
                     >
                       <button
                         onClick={() => toggleItem(itemId)}
-                        className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-[#323232] transition-colors"
+                        className="w-full px-4 md:px-6 py-3 md:py-4 text-left flex items-center justify-between hover:bg-[#323232] transition-colors"
                       >
-                        <h3 className="font-semibold text-white pr-4">
+                        <h3 className="font-semibold text-white pr-3 md:pr-4 text-sm md:text-base">
                           {item.question}
                         </h3>
                         {isOpen ? (
-                          <ChevronUp className="w-5 h-5 text-[#a8a8aa] flex-shrink-0" />
+                          <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-[#a8a8aa] flex-shrink-0" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-[#a8a8aa] flex-shrink-0" />
+                          <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-[#a8a8aa] flex-shrink-0" />
                         )}
                       </button>
 
                       {isOpen && (
-                        <div className="px-6 pb-4 border-t border-[#4a4a4b]">
-                          <p className="text-[#c3c3c5] leading-relaxed mt-3">
+                        <div className="px-4 md:px-6 pb-3 md:pb-4 border-t border-[#4a4a4b]">
+                          <p className="text-[#c3c3c5] leading-relaxed mt-2 md:mt-3 text-sm md:text-base">
                             {item.answer}
                           </p>
                         </div>

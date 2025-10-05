@@ -2,7 +2,6 @@ import { StylistDetails } from '@/types/task';
 import { Scissors, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InfoCard from '../ui/InfoCard';
-import ParameterBadge from '../ui/ParameterBadge';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
 
@@ -76,20 +75,13 @@ export default function StylistDetailsView({ details, onClose }: Props) {
     <div className="text-studio-text-primary">
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3">
           <div className="p-2 bg-studio-button-primary rounded-lg">
             <Scissors className="h-5 w-5 text-studio-header" />
           </div>
           <h3 className="text-xl font-semibold">
             {t('stylist.details.creationTitle')}
           </h3>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <ParameterBadge
-            label={t('stylist.details.referenceImages')}
-            value={`${referenceImages.length}`}
-            variant="accent"
-          />
         </div>
       </div>
 

@@ -46,6 +46,8 @@ export default function ConfirmResetPopup({
           {t('confirmReset.messageLine1')}
           <br />
           {t('confirmReset.messageLine2')}
+          <br />
+          {t('confirmReset.messageLine3')}
         </div>
 
         <div className="flex gap-3">

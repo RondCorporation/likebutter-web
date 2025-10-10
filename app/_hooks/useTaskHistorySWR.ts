@@ -29,7 +29,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
 
   const taskHistoryKey = useMemo(
     () =>
-      `/tasks/me?page=${page}&status=${filters.status}&actionType=${filters.actionType}`,
+      `task-history-${page}-${filters.status}-${filters.actionType}`,
     [page, filters.status, filters.actionType]
   );
 
@@ -84,7 +84,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
 
   const { data: batchStatusData, mutate: mutateBatchStatus } = useSWR(
     shouldPoll
-      ? `/tasks/batch?taskIds=${inProgressTaskIds.join(',')}&summary=false`
+      ? `task-batch-status-${inProgressTaskIds.join(',')}`
       : null,
     () => getBatchTaskStatus(inProgressTaskIds).then((res) => res.data),
     {

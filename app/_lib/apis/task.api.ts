@@ -44,13 +44,13 @@ export const getTaskHistory = (
   }
   if (filters.category) params.append('category', filters.category);
 
-  return apiFetch<Page<Task>>(`/tasks/me?${params.toString()}`);
+  return apiFetch<Page<Task>>(`/api/v1/tasks?${params.toString()}`);
 };
 
 export const getTaskStatus = (
   taskId: number
 ): Promise<ApiResponse<TaskStatusResponse>> => {
-  return apiFetch<TaskStatusResponse>(`/tasks/me/${taskId}`);
+  return apiFetch<TaskStatusResponse>(`/api/v1/tasks/${taskId}`);
 };
 
 export interface BatchTaskResponse {
@@ -70,7 +70,7 @@ export const getBatchTaskStatus = (
     taskIds: taskIds.join(','),
     summary: 'false',
   });
-  return apiFetch<BatchTaskResponse[]>(`/tasks/batch?${params.toString()}`);
+  return apiFetch<BatchTaskResponse[]>(`/api/v1/tasks/batch?${params.toString()}`);
 };
 
 export const DIGITAL_GOODS_STYLES = {
@@ -108,7 +108,7 @@ export const createDigitalGoodsTask = (
     }
   });
 
-  return apiFetch<TaskCreationResponse>('/tasks/digital-goods', {
+  return apiFetch<TaskCreationResponse>('/api/v1/tasks/digital-goods', {
     method: 'POST',
     body: formData,
   });
@@ -132,7 +132,7 @@ export const createButterCoverTask = (
     new Blob([JSON.stringify(request)], { type: 'application/json' })
   );
 
-  return apiFetch<TaskCreationResponse>('/tasks/butter-cover', {
+  return apiFetch<TaskCreationResponse>('/api/v1/tasks/butter-cover', {
     method: 'POST',
     body: formData,
   });
@@ -178,7 +178,7 @@ export const createStylistTask = (
     formData.append('customPrompt', request.customPrompt);
   }
 
-  return apiFetch<TaskCreationResponse>('/tasks/stylist', {
+  return apiFetch<TaskCreationResponse>('/api/v1/tasks/stylist', {
     method: 'POST',
     body: formData,
   });
@@ -239,7 +239,7 @@ export const createVirtualCastingTask = (
   formData.append('idolImage', idolImage);
   formData.append('style', request.style);
 
-  return apiFetch<TaskCreationResponse>('/tasks/virtual-casting', {
+  return apiFetch<TaskCreationResponse>('/api/v1/tasks/virtual-casting', {
     method: 'POST',
     body: formData,
   });
@@ -268,14 +268,14 @@ export const createFanmeetingStudioTask = (
     formData.append('customPrompt', request.customPrompt);
   }
 
-  return apiFetch<TaskCreationResponse>('/tasks/fanmeeting-studio', {
+  return apiFetch<TaskCreationResponse>('/api/v1/tasks/fanmeeting-studio', {
     method: 'POST',
     body: formData,
   });
 };
 
 export const deleteTask = (taskId: number): Promise<void> => {
-  return apiFetch<void>(`/tasks/${taskId}`, {
+  return apiFetch<void>(`/api/v1/tasks/${taskId}`, {
     method: 'DELETE',
   }).then(() => {});
 };
@@ -290,7 +290,7 @@ export interface BatchDeleteResponse {
 export const deleteBatchTasks = (
   taskIds: number[]
 ): Promise<ApiResponse<BatchDeleteResponse>> => {
-  return apiFetch<BatchDeleteResponse>('/tasks', {
+  return apiFetch<BatchDeleteResponse>('/api/v1/tasks/batch', {
     method: 'DELETE',
     body: { taskIds },
   });
@@ -300,8 +300,7 @@ export const canEditTask = (
   taskId: number,
   actionType: ActionType
 ): Promise<ApiResponse<boolean>> => {
-  const endpoint = getActionTypeEndpoint(actionType);
-  return apiFetch<boolean>(`/tasks/${endpoint}/${taskId}/can-edit`);
+  return apiFetch<boolean>(`/api/v1/tasks/${taskId}/can-edit`);
 };
 
 export const editTask = (
@@ -315,7 +314,7 @@ export const editTask = (
     editPrompt: editPrompt,
   };
 
-  return apiFetch<EditTaskResponse>(`/tasks/${endpoint}/${taskId}/edit`, {
+  return apiFetch<EditTaskResponse>(`/api/v1/tasks/${endpoint}/${taskId}/edit`, {
     method: 'POST',
     body: request,
   });
@@ -325,9 +324,8 @@ export const getTaskEditHistory = (
   taskId: number,
   actionType: ActionType
 ): Promise<ApiResponse<TaskHistoryResponse[]>> => {
-  const endpoint = getActionTypeEndpoint(actionType);
   return apiFetch<TaskHistoryResponse[]>(
-    `/tasks/${endpoint}/${taskId}/history`
+    `/api/v1/tasks/${taskId}/history`
   );
 };
 

@@ -4,7 +4,7 @@ import { Plan } from '@/app/_types/plan';
 
 export const getPlansOnServer = async (): Promise<ApiResponse<Plan[]>> => {
   return apiServer.get<Plan[]>(
-    '/plans',
+    '/api/v1/plans',
     {
       cache: 'default',
       next: {

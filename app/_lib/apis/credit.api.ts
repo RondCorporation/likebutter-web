@@ -61,7 +61,7 @@ export const CREDIT_COSTS = {
 export type ActionType = keyof typeof CREDIT_COSTS;
 
 export const getCreditBalance = (): Promise<ApiResponse<CreditBalance>> => {
-  return apiFetch<CreditBalance>('/credits/balance');
+  return apiFetch<CreditBalance>('/api/v1/credits/balance');
 };
 
 export const getCreditHistory = (
@@ -75,7 +75,7 @@ export const getCreditHistory = (
     sort,
   });
 
-  return apiFetch<CreditHistoryPage>(`/credits/history?${params.toString()}`);
+  return apiFetch<CreditHistoryPage>(`/api/v1/credits/history?${params.toString()}`);
 };
 
 export const getCreditCost = (actionType: ActionType): number => {

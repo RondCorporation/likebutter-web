@@ -9,5 +9,5 @@ interface Country {
 }
 
 export const getCountries = (): Promise<ApiResponse<Country[]>> => {
-  return apiFetch<Country[]>('/countries', {}, false);
+  return apiFetch<Country[]>('/api/v1/countries', {}, false);
 };

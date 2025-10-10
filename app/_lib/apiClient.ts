@@ -5,7 +5,7 @@ import i18n from '@/app/_lib/i18n-client';
 
 const API_URL =
   process.env.NODE_ENV === 'development'
-    ? '/api'
+    ? ''
     : process.env.NEXT_PUBLIC_API_URL;
 
 const getCookie = (name: string) => {
@@ -33,7 +33,7 @@ async function refreshToken(): Promise<boolean> {
 
   refreshPromise = (async (): Promise<boolean> => {
     try {
-      const res = await fetch(`${API_URL}/auth/reissue`, {
+      const res = await fetch(`${API_URL}/api/v1/auth/reissue`, {
         method: 'POST',
         credentials: 'include',
       });

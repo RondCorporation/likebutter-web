@@ -12,7 +12,7 @@ const CACHE_DURATION = 5000;
 
 export const attendanceApi = {
   checkAttendance: async (): Promise<ApiResponse<AttendanceCheckResponse>> => {
-    return apiClient.post('/attendance/check');
+    return apiClient.post('/api/v1/attendance/check');
   },
 
   getTodayStatus: async (): Promise<ApiResponse<TodayAttendanceStatus>> => {
@@ -24,7 +24,7 @@ export const attendanceApi = {
     }
 
     lastTodayStatusTime = now;
-    lastTodayStatusCall = apiClient.get('/attendance/status/today');
+    lastTodayStatusCall = apiClient.get('/api/v1/attendance/status/today');
 
     try {
       const result = await lastTodayStatusCall;

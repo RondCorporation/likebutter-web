@@ -69,8 +69,13 @@ export function useImagePreloader(images: string[]) {
   const [isLoading, setIsLoading] = useState(true);
   const [loadedCount, setLoadedCount] = useState(0);
 
+  // Stabilize images array by converting to JSON string for comparison
+  const imagesKey = JSON.stringify(images);
+
   useEffect(() => {
-    if (images.length === 0) {
+    const imagesList = JSON.parse(imagesKey);
+
+    if (imagesList.length === 0) {
       setIsLoading(false);
       return;
     }
@@ -78,14 +83,14 @@ export function useImagePreloader(images: string[]) {
     let completed = 0;
     const imageElements: HTMLImageElement[] = [];
 
-    images.forEach((src) => {
+    imagesList.forEach((src: string) => {
       const img = new Image();
 
       img.onload = () => {
         completed++;
         setLoadedCount(completed);
 
-        if (completed === images.length) {
+        if (completed === imagesList.length) {
           setIsLoading(false);
         }
       };
@@ -95,7 +100,7 @@ export function useImagePreloader(images: string[]) {
         completed++;
         setLoadedCount(completed);
 
-        if (completed === images.length) {
+        if (completed === imagesList.length) {
           setIsLoading(false);
         }
       };
@@ -110,7 +115,7 @@ export function useImagePreloader(images: string[]) {
         img.onerror = null;
       });
     };
-  }, [images]);
+  }, [imagesKey]);
 
   return { isLoading, loadedCount, total: images.length };
 }

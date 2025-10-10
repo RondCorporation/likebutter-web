@@ -9,5 +9,5 @@ export const getMe = (): Promise<ApiResponse<User>> => {
     );
   }
 
-  return apiFetch<User>('/users/me', { method: 'GET' }, true);
+  return apiFetch<User>('/api/v1/users/me', { method: 'GET' }, true);
 };

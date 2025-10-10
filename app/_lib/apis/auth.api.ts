@@ -7,7 +7,7 @@ export const login = (
   password: string
 ): Promise<ApiResponse<LoginResponse>> => {
   return apiFetch<LoginResponse>(
-    '/auth/login',
+    '/api/v1/auth/login',
     {
       method: 'POST',
       body: { email, password },
@@ -18,7 +18,7 @@ export const login = (
 
 export const signup = (signupData: any): Promise<ApiResponse<any>> => {
   return apiFetch(
-    '/auth/sign-up',
+    '/api/v1/auth/sign-up',
     {
       method: 'POST',
       body: signupData,
@@ -28,9 +28,9 @@ export const signup = (signupData: any): Promise<ApiResponse<any>> => {
 };
 
 export const logout = (): Promise<ApiResponse<any>> => {
-  return apiFetch('/auth/logout', { method: 'DELETE' }, true);
+  return apiFetch('/api/v1/auth/logout', { method: 'POST' }, true);
 };
 
 export const clearSession = (): Promise<ApiResponse<any>> => {
-  return apiFetch('/auth/clear-session', { method: 'DELETE' }, false);
+  return apiFetch('/api/v1/auth/clear-session', { method: 'POST' }, false);
 };

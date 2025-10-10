@@ -5,5 +5,5 @@ import { PaymentHistoryResponse } from '@/app/_types/payment';
 export const getPaymentHistory = (): Promise<
   ApiResponse<PaymentHistoryResponse[]>
 > => {
-  return apiFetch<PaymentHistoryResponse[]>('/payments/me');
+  return apiFetch<PaymentHistoryResponse[]>('/api/v1/payments/me');
 };

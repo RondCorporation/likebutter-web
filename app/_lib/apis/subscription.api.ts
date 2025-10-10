@@ -9,7 +9,7 @@ import {
 export const registerBillingKey = (
   billingKey: string
 ): Promise<ApiResponse<{ msg: string }>> => {
-  return apiFetch('/subscriptions/register-billing-key', {
+  return apiFetch('/api/v1/subscriptions/billing-key', {
     method: 'POST',
     body: {
       billingKey,
@@ -20,7 +20,7 @@ export const registerBillingKey = (
 export const createSubscription = (
   planKey: string
 ): Promise<ApiResponse<CreateSubscriptionResponse>> => {
-  return apiFetch('/subscriptions/create', {
+  return apiFetch('/api/v1/subscriptions', {
     method: 'POST',
     body: {
       planKey,
@@ -31,14 +31,14 @@ export const createSubscription = (
 export const getMySubscription = (): Promise<
   ApiResponse<SubscriptionDetails>
 > => {
-  return apiFetch<SubscriptionDetails>('/subscriptions/me');
+  return apiFetch<SubscriptionDetails>('/api/v1/subscriptions/me');
 };
 
 export const upgradeMySubscription = (
   newPlanKey: string
 ): Promise<ApiResponse<SubscriptionDetails>> => {
-  return apiFetch<SubscriptionDetails>(`/subscriptions/me/upgrade`, {
-    method: 'POST',
+  return apiFetch<SubscriptionDetails>(`/api/v1/subscriptions/upgrade`, {
+    method: 'PUT',
     body: {
       newPlanKey,
     },
@@ -46,7 +46,7 @@ export const upgradeMySubscription = (
 };
 
 export const cancelMySubscription = (): Promise<ApiResponse<null>> => {
-  return apiFetch<null>(`/subscriptions/me`, {
+  return apiFetch<null>(`/api/v1/subscriptions`, {
     method: 'DELETE',
   });
 };
@@ -55,6 +55,6 @@ export const getSubscriptionPaymentDetails = (
   paymentId: number
 ): Promise<ApiResponse<SubscriptionPaymentDetails>> => {
   return apiFetch<SubscriptionPaymentDetails>(
-    `/subscriptions/payments/${paymentId}`
+    `/api/v1/subscriptions/payments/${paymentId}`
   );
 };

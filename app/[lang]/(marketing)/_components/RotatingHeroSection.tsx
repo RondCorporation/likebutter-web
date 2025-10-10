@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -184,8 +184,11 @@ export default function RotatingHeroSection({
   const currentSection = heroSections[currentSectionIndex];
 
   // Collect all image URLs from all hero sections for preloading
-  const allHeroImages = heroSections.flatMap((section) =>
-    section.images.map((img) => img.src)
+  // Use useMemo to prevent recreating the array on every render
+  const allHeroImages = useMemo(
+    () =>
+      heroSections.flatMap((section) => section.images.map((img) => img.src)),
+    [] // Empty dependency array since heroSections is static
   );
 
   // Preload all hero images

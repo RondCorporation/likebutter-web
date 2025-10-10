@@ -3,7 +3,7 @@ import { ApiResponse, User } from '@/app/_types/api';
 
 const API_URL =
   process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000/api'
+    ? 'http://localhost:8080'
     : process.env.NEXT_PUBLIC_API_URL;
 
 async function apiFetch<T>(
@@ -88,7 +88,7 @@ export const apiServer = {
  */
 export const getMeOnServer = async (): Promise<User | null> => {
   try {
-    const { data: user } = await apiServer.get<User>('/users/me');
+    const { data: user } = await apiServer.get<User>('/api/v1/users/me');
     return user || null;
   } catch (error) {
     return null;

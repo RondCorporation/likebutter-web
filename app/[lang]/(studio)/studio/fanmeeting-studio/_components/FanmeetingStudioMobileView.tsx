@@ -89,7 +89,6 @@ export default function FanmeetingStudioMobileView({
     );
   }
 
-  // 입력 화면: 상단에 두 개의 이미지 업로드 영역을 나란히 배치
   const handleIdolInputChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -109,8 +108,7 @@ export default function FanmeetingStudioMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-studio-content">
-      {/* 이미지 업로드 영역 - 상단에 나란히 배치 */}
+    <div className="flex flex-col flex-1 bg-studio-content pb-[200px]">
       <div className="px-4 pt-6">
         <div className="text-studio-text-primary text-base font-pretendard-semibold mb-4">
           {t('fanmeeting.uploadImageTitle')}

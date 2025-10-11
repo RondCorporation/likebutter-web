@@ -3,7 +3,6 @@ import { ApiResponse } from '@/app/_types/api';
 import {
   Page,
   Task,
-  TaskStatusResponse,
   EditTaskRequest,
   EditTaskResponse,
   TaskHistoryResponse,
@@ -139,10 +138,15 @@ export const createButterCoverTask = async (
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
   formData.append('audio', audio);
-  formData.append(
-    'request',
-    new Blob([JSON.stringify(request)], { type: 'application/json' })
-  );
+  formData.append('voiceModel', request.voiceModel);
+
+  if (request.pitchAdjust !== undefined) {
+    formData.append('pitchAdjust', request.pitchAdjust.toString());
+  }
+
+  if (request.outputFormat) {
+    formData.append('outputFormat', request.outputFormat);
+  }
 
   return await apiFetch<TaskCreationResponse>('/api/v1/tasks/butter-cover', {
     method: 'POST',
@@ -161,29 +165,29 @@ export interface StylistRequest {
 }
 
 export const createStylistTask = async (
-  idolImage: File,
+  image: File,
   request: StylistRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  formData.append('idolImage', idolImage);
+  formData.append('image', image);
 
   formData.append('prompt', request.prompt);
 
   if (request.hairStyleImage) {
-    formData.append('hairStyleImage', request.hairStyleImage);
+    formData.append('hairStyleReference', request.hairStyleImage);
   }
   if (request.outfitImage) {
-    formData.append('outfitImage', request.outfitImage);
+    formData.append('outfitReference', request.outfitImage);
   }
   if (request.backgroundImage) {
-    formData.append('backgroundImage', request.backgroundImage);
+    formData.append('backgroundReference', request.backgroundImage);
   }
   if (request.accessoryImage) {
-    formData.append('accessoryImage', request.accessoryImage);
+    formData.append('accessoryReference', request.accessoryImage);
   }
   if (request.moodImage) {
-    formData.append('moodImage', request.moodImage);
+    formData.append('moodReference', request.moodImage);
   }
 
   if (request.customPrompt) {
@@ -243,12 +247,12 @@ export interface VirtualCastingRequest {
 }
 
 export const createVirtualCastingTask = async (
-  idolImage: File,
+  image: File,
   request: VirtualCastingRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  formData.append('idolImage', idolImage);
+  formData.append('image', image);
   formData.append('style', request.style);
 
   return await apiFetch<TaskCreationResponse>('/api/v1/tasks/virtual-casting', {

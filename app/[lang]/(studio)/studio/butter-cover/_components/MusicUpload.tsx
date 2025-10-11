@@ -60,7 +60,7 @@ export default function MusicUpload({
         <div className="space-y-6">
           {/* File Upload */}
           <div>
-            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
+            <label className="block text-white text-base sm:text-lg font-medium mb-3 sm:mb-4">
               {t('butterCover.musicUpload.selectAudioFile')}
             </label>
             <div
@@ -99,7 +99,7 @@ export default function MusicUpload({
 
           {/* Pitch Control */}
           <div>
-            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
+            <label className="block text-white text-base sm:text-lg font-medium mb-3 sm:mb-4">
               {t('butterCover.musicUpload.voicePitch')}
             </label>
             <div className="space-y-4">
@@ -123,7 +123,7 @@ export default function MusicUpload({
 
           {/* File Format */}
           <div>
-            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
+            <label className="block text-white text-base sm:text-lg font-medium mb-3 sm:mb-4">
               {t('butterCover.musicUpload.outputFormat')}
             </label>
             <div className="flex gap-4 sm:gap-6">

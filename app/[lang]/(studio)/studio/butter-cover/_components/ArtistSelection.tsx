@@ -210,7 +210,7 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
       <div className="w-full max-w-lg space-y-6 sm:space-y-8">
         <div className="space-y-6">
           <div>
-            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
+            <label className="block text-white text-base sm:text-lg font-medium mb-3 sm:mb-4">
               {t('butterCover.artistSelection.artistGroup')}
             </label>
             <CustomDropdown
@@ -225,7 +225,7 @@ export default function ArtistSelection({ onNext }: ArtistSelectionProps) {
           </div>
 
           <div>
-            <label className="block text-white text-xl sm:text-lg font-medium mb-3 sm:mb-4">
+            <label className="block text-white text-base sm:text-lg font-medium mb-3 sm:mb-4">
               {t('butterCover.artistSelection.artistSelection')}
             </label>
             <CustomDropdown

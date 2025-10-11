@@ -243,7 +243,7 @@ export default function RotatingHeroSection({
       />
 
       {/* Content */}
-      <section className="relative z-20 h-full flex items-start justify-center pt-[18vh]">
+      <section className="relative z-20 h-full flex items-start justify-center pt-[18vh] px-4">
         <div className="container mx-auto max-w-[80rem]">
           <div className="text-center max-w-4xl mx-auto">
             {/* Title */}
@@ -256,7 +256,7 @@ export default function RotatingHeroSection({
                   : { y: -30, opacity: 0 }
               }
               transition={{ duration: 0.6, ease: 'easeOut' }}
-              className="font-pretendard font-extrabold text-[72px] leading-[150%] text-white mb-4"
+              className="font-pretendard font-extrabold text-[32px] sm:text-[48px] md:text-[56px] lg:text-[72px] leading-[150%] text-white mb-3 sm:mb-4"
             >
               {currentSection.title}
             </motion.h1>
@@ -271,7 +271,7 @@ export default function RotatingHeroSection({
                   : { y: -20, opacity: 0 }
               }
               transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-              className="font-pretendard font-normal text-[20px] leading-[150%] text-[#CCCCCC] mb-8"
+              className="font-pretendard font-normal text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] leading-[150%] text-[#CCCCCC] mb-6 sm:mb-8"
             >
               {currentSection.subtitle.split('\n').map((line, i) => (
                 <span key={i}>
@@ -294,7 +294,7 @@ export default function RotatingHeroSection({
             >
               <Link
                 href={currentSection.buttonHref}
-                className="inline-flex items-center gap-3 rounded-[8px] bg-[#FFD93B] px-8 py-3 text-base font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
+                className="inline-flex items-center gap-2 sm:gap-3 rounded-[8px] bg-[#FFD93B] px-6 py-2.5 sm:px-8 sm:py-3 text-sm sm:text-base font-bold text-black transition-all duration-300 hover:bg-[#FFD93B]/90 hover:scale-105"
               >
                 {currentSection.buttonText}
               </Link>

@@ -86,7 +86,6 @@ export default function StylistMobileView({
     );
   }
 
-  // 입력 화면: 상단에 이미지 업로드 표시
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -95,8 +94,7 @@ export default function StylistMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-studio-content">
-      {/* 추가 이미지 업로드 슬롯 (image 모드일 때) */}
+    <div className="flex flex-col flex-1 bg-studio-content pb-[200px]">
       {formData?.mode === 'image' &&
         formData.imageSettings &&
         getImageUploadSlots(formData).length > 0 && (

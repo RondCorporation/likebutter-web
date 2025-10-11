@@ -26,9 +26,20 @@ import { useSubscription } from '@/app/_hooks/useSubscription';
 import FeedbackPopup from '@/app/_components/ui/FeedbackPopup';
 import { toast } from 'react-hot-toast';
 
-export default function StudioUserDropdown() {
+interface StudioUserDropdownProps {
+  variant?: 'default' | 'mobile-marketing';
+}
+
+export default function StudioUserDropdown({
+  variant = 'default',
+}: StudioUserDropdownProps) {
   const { t } = useTranslation(['studio', 'common']);
-  const { displayName, userEmail } = useAuth();
+  const {
+    displayName,
+    userEmail,
+    isAuthenticated,
+    isInitialized: isAuthInitialized,
+  } = useAuth();
   const logout = useLogout();
   const openSettings = useOpenSettings();
   const {
@@ -74,6 +85,91 @@ export default function StudioUserDropdown() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [dropdownRef]);
+
+  // Mobile Marketing variant - always show profile icon
+  if (variant === 'mobile-marketing') {
+    return (
+      <div className="relative" ref={dropdownRef}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-1.5 hover:opacity-70 transition-opacity"
+        >
+          <User className="w-5 h-5 text-white/80" />
+        </button>
+
+        {isOpen && (
+          <>
+            {isAuthInitialized && isAuthenticated ? (
+              // Logged in user - show studio and settings
+              <div className="absolute right-0 mt-2 w-56 rounded-lg bg-studio-sidebar border border-studio-border shadow-lg py-2 z-50 animate-fadeIn">
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    router.push(`/${lang}/studio`);
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 transition"
+                >
+                  <Settings size={16} className="text-studio-text-secondary" />
+                  {t('common:goToStudio')}
+                </button>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    openSettings();
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-studio-text-primary hover:bg-studio-button-primary/10 transition"
+                >
+                  <Settings size={16} className="text-studio-text-secondary" />
+                  {t('studio:userDropdown.settings')}
+                </button>
+                <hr className="border-studio-border my-2" />
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    logout();
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-400 hover:bg-studio-button-primary/10 transition"
+                >
+                  <LogOut size={16} />
+                  {t('studio:userDropdown.logout')}
+                </button>
+              </div>
+            ) : (
+              // Not logged in - show login prompt
+              <div className="absolute right-0 mt-2 w-64 rounded-lg bg-studio-sidebar border border-studio-border shadow-lg p-4 z-50 animate-fadeIn">
+                <p className="text-white/60 text-xs text-center mb-3 leading-relaxed">
+                  {t(
+                    'common:loginPromptShort',
+                    '로그인하고 AI 더빙을 시작해보세요'
+                  )}
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      router.push(`/${lang}/signup`);
+                    }}
+                    className="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/20 text-white/80 hover:text-white hover:border-white/40 font-medium text-xs transition-all"
+                  >
+                    {t('common:signUp')}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsOpen(false);
+                      router.push(`/${lang}/login`);
+                    }}
+                    className="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-lg bg-[#FFD93B] text-black font-semibold text-xs transition-all duration-200 hover:bg-[#FFC93B]"
+                  >
+                    {t('common:login')}
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
 
   if (!displayName) return null;
 

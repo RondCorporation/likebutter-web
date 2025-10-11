@@ -113,98 +113,6 @@ export default function VirtualCastingSidebar({
     //   image: '게임오브쓰론.jpg',
     //   style: 'GAME_OF_THRONES' as VirtualCastingStyle,
     // },
-
-    // 이전에 있다가 없어진거
-    // {
-    //   name: t('virtualCasting.styles.MINIONS'),
-    //   image: '미니언즈.png',
-    //   style: VIRTUAL_CASTING_STYLES.MINIONS,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.SPONGEBOB'),
-    //   image: '스폰지밥.png',
-    //   style: VIRTUAL_CASTING_STYLES.SPONGEBOB,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.OVERWATCH'),
-    //   image: '오버워치.png',
-    //   style: VIRTUAL_CASTING_STYLES.OVERWATCH,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.TRUE_BEAUTY'),
-    //   image: '여신강림.png',
-    //   style: VIRTUAL_CASTING_STYLES.TRUE_BEAUTY,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.LOOKISM'),
-    //   image: '외모지상주의.png',
-    //   style: VIRTUAL_CASTING_STYLES.LOOKISM,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.KENGAN_ASHURA'),
-    //   image: '케데헌.png',
-    //   style: VIRTUAL_CASTING_STYLES.KENGAN_ASHURA,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.VOLCANO_RETURNS'),
-    //   image: '화산귀환.png',
-    //   style: VIRTUAL_CASTING_STYLES.VOLCANO_RETURNS,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.KIMI_NI_TODOKE'),
-    //   image: '너에게 닿기를.png',
-    //   style: VIRTUAL_CASTING_STYLES.KIMI_NI_TODOKE,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.FRIEREN'),
-    //   image: '장송의 프리렌.png',
-    //   style: VIRTUAL_CASTING_STYLES.FRIEREN,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.CRAYON_SHIN_CHAN'),
-    //   image: '짱구는 못말려.png',
-    //   style: VIRTUAL_CASTING_STYLES.CRAYON_SHIN_CHAN,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.MY_LOVE_MIX_UP'),
-    //   image: '최애의 아이.png',
-    //   style: VIRTUAL_CASTING_STYLES.MY_LOVE_MIX_UP,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.NANA'),
-    //   image: '나나.png',
-    //   style: VIRTUAL_CASTING_STYLES.NANA
-    // },
-    // {
-    //   name: t('virtualCasting.styles.NARUTO'),
-    //   image: '나루토.png',
-    //   style: VIRTUAL_CASTING_STYLES.NARUTO,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.YOUR_NAME'),
-    //   image: '너의이름은.png',
-    //   style: VIRTUAL_CASTING_STYLES.YOUR_NAME,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.DORAEMON'),
-    //   image: '도라에몽.png',
-    //   style: VIRTUAL_CASTING_STYLES.DORAEMON,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.SPY_FAMILY'),
-    //   image: '스파이패밀리.png',
-    //   style: VIRTUAL_CASTING_STYLES.SPY_FAMILY,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.OURAN_HIGH_SCHOOL'),
-    //   image: '오란고교.png',
-    //   style: VIRTUAL_CASTING_STYLES.OURAN_HIGH_SCHOOL,
-    // },
-    // {
-    //   name: t('virtualCasting.styles.JUJUTSU_KAISEN'),
-    //   image: '주술회전.png',
-    //   style: VIRTUAL_CASTING_STYLES.JUJUTSU_KAISEN,
-    // },
   ];
 
   const handleCharacterSelect = (character: Character) => {
@@ -240,7 +148,7 @@ export default function VirtualCastingSidebar({
                 onClick={() => handleCharacterSelect(character)}
               >
                 <div
-                  className={`relative w-24 h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
+                  className={`relative w-full aspect-square max-w-[120px] md:w-24 md:h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
                     isSelected
                       ? 'border-butter-yellow shadow-lg'
                       : 'border-transparent hover:border-studio-button-primary/50'

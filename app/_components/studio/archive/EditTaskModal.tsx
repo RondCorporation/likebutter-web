@@ -102,7 +102,7 @@ export default function EditTaskModal({
   const imageUrl = getResultImageUrl(task);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div className="bg-[#25282c] border border-[#4a4a4b] rounded-xl p-6 mx-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">

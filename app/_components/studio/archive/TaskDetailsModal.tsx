@@ -89,7 +89,7 @@ export default function TaskDetailsModal({
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
         <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8">
           <div className="flex flex-col items-center gap-4">
             <LoaderCircle
@@ -108,7 +108,7 @@ export default function TaskDetailsModal({
   if (error) {
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       >
         <div className="bg-studio-sidebar border border-studio-border rounded-xl p-8 mx-4 max-w-md">

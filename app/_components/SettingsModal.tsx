@@ -163,14 +163,14 @@ function GeneralSettings() {
           {t('settingsLanguage')}
         </h3>
         <div className="bg-white/[0.02] backdrop-blur-sm px-4 py-3">
-          <div className="relative inline-block" ref={dropdownRef}>
+          <div className="relative w-full max-w-xs" ref={dropdownRef}>
             <button
               onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-              className="bg-white/[0.04] text-white border border-white/10 rounded px-3 py-2 text-sm hover:bg-white/[0.06] focus:outline-none focus:border-butter-yellow transition-colors min-w-[120px] text-left flex items-center justify-between gap-2"
+              className="w-full bg-white/[0.04] text-white border border-white/10 rounded px-3 py-2.5 text-sm hover:bg-white/[0.06] focus:outline-none focus:border-butter-yellow transition-colors flex items-center justify-between gap-2"
             >
               <span>{currentLanguage?.name}</span>
               <svg
-                className={`w-4 h-4 transition-transform ${isLanguageOpen ? 'rotate-180' : ''}`}
+                className={`w-4 h-4 transition-transform flex-shrink-0 ${isLanguageOpen ? 'rotate-180' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -185,7 +185,7 @@ function GeneralSettings() {
             </button>
 
             {isLanguageOpen && (
-              <div className="absolute top-full left-0 mt-1 w-full rounded-md bg-studio-sidebar border border-studio-border shadow-lg py-1 z-50">
+              <div className="absolute bottom-full left-0 mb-1 w-full rounded-md bg-studio-sidebar border border-studio-border shadow-lg py-1 z-[110]">
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
@@ -259,8 +259,8 @@ export default function SettingsModal() {
   if (!isSettingsOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-      <div className="relative flex w-full flex-col overflow-hidden bg-[#0f1114] text-studio-text-primary shadow-2xl md:w-[700px] md:h-[500px] md:flex-row border border-white/[0.08] rounded-lg h-[calc(100vh-2rem)] max-h-[600px]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
+      <div className="relative flex w-full flex-col overflow-hidden bg-[#0f1114] text-studio-text-primary shadow-2xl md:w-[700px] md:max-h-[600px] md:flex-row border border-white/[0.08] rounded-lg h-[calc(100vh-2rem)] max-h-[calc(100vh-2rem)]">
         <button
           onClick={closeSettings}
           className="absolute top-3 right-3 md:top-4 md:right-4 z-50 text-studio-text-secondary/60 hover:text-white transition-colors"
@@ -314,7 +314,7 @@ export default function SettingsModal() {
           </div>
         </div>
 
-        <section className="flex-1 overflow-y-auto p-5 md:p-6 custom-scrollbar">
+        <section className="flex-1 overflow-y-auto p-4 md:p-6 pb-20 md:pb-6 custom-scrollbar">
           {activeTab === 'general' && <GeneralSettings />}
           {activeTab === 'account' && <AccountSettings />}
         </section>

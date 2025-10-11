@@ -76,7 +76,6 @@ export default function DigitalGoodsMobileView({
     );
   }
 
-  // 입력 화면: 상단에 이미지 업로드 표시
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -85,8 +84,7 @@ export default function DigitalGoodsMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 h-full bg-studio-content">
-      {/* 이미지 업로드 영역 - 상단에 배치 */}
+    <div className="flex flex-col flex-1 bg-studio-content pb-[200px]">
       <div className="px-4 pt-6">
         <div className="text-studio-text-primary text-base font-pretendard-semibold mb-4">
           {t('digitalGoods.uploadImageTitle')}

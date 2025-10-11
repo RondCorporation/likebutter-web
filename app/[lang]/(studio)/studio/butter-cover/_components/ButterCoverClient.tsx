@@ -10,7 +10,6 @@ import { createButterCoverTask } from '@/app/_lib/apis/task.api';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useTaskPolling } from '@/app/_hooks/useTaskPolling';
-import { ButterCoverDetails } from '@/app/_types/task';
 import { Download, Play, Pause, Volume2 } from 'lucide-react';
 import { useCreditStore } from '@/app/_stores/creditStore';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
@@ -187,13 +186,13 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                 <div className="space-y-8">
                   <div className="w-24 h-24 border-4 border-butter-yellow border-t-transparent rounded-full animate-spin mx-auto" />
                   <div className="space-y-4">
-                    <h2 className="text-2xl font-medium text-white">
+                    <h2 className="text-lg md:text-2xl font-medium text-white">
                       {t('butterCover.generatingCover')}
                     </h2>
-                    <p className="text-slate-400 text-lg leading-relaxed">
+                    <p className="text-slate-400 text-sm md:text-lg leading-relaxed">
                       {t('butterCover.generatingCoverWait')}
                     </p>
-                    <p className="text-slate-300 text-sm leading-relaxed">
+                    <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
                       {t('butterCover.generatingCoverListen')}
                     </p>
                   </div>
@@ -201,10 +200,10 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
               ) : isBackgroundProcessing ? (
                 <div className="space-y-8">
                   <div className="space-y-4 text-center">
-                    <h2 className="text-2xl font-medium text-blue-400">
+                    <h2 className="text-lg md:text-2xl font-medium text-blue-400">
                       {t('butterCover.backgroundProcessing')}
                     </h2>
-                    <p className="text-slate-400 text-lg leading-relaxed max-w-[300px] mx-auto">
+                    <p className="text-slate-400 text-sm md:text-lg leading-relaxed max-w-[300px] mx-auto">
                       {t('butterCover.backgroundProcessingDescription')}
                     </p>
                     <button
@@ -220,10 +219,10 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
               ) : resultAudioUrl ? (
                 <div className="space-y-8">
                   <div className="space-y-4">
-                    <h2 className="text-2xl font-medium text-white">
+                    <h2 className="text-lg md:text-2xl font-medium text-white">
                       {t('butterCover.coverCompleteTitle')}
                     </h2>
-                    <p className="text-slate-400 text-lg leading-relaxed">
+                    <p className="text-slate-400 text-sm md:text-lg leading-relaxed">
                       {t('butterCover.listenToCover')}
                     </p>
                   </div>
@@ -254,10 +253,10 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
               ) : pollingError ? (
                 <div className="space-y-8">
                   <div className="space-y-4">
-                    <h2 className="text-2xl font-medium text-red-400">
+                    <h2 className="text-lg md:text-2xl font-medium text-red-400">
                       {t('butterCover.generationFailedTitle')}
                     </h2>
-                    <p className="text-slate-400 text-lg leading-relaxed">
+                    <p className="text-slate-400 text-sm md:text-lg leading-relaxed">
                       {pollingError}
                     </p>
                   </div>

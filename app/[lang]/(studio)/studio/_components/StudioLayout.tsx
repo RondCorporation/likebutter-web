@@ -54,9 +54,6 @@ export default function StudioLayout({
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
-          paddingBottom: mobileBottomButton
-            ? 'calc(184px + env(safe-area-inset-bottom))'
-            : 'env(safe-area-inset-bottom)',
         }}
       >
         {children}
@@ -91,7 +88,7 @@ export default function StudioLayout({
             paddingBottom: 'calc(100px + env(safe-area-inset-bottom))',
           }}
         >
-          <div className="px-3 pt-3 pb-6">{mobileBottomButton}</div>
+          <div className="px-3 pt-3 pb-3">{mobileBottomButton}</div>
         </div>
       )}
     </div>

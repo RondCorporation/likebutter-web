@@ -83,7 +83,7 @@ function LoginClientContent({
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <header className="absolute top-0 left-0 p-8">
+      <header className="absolute top-0 left-0 p-4 sm:p-6 md:p-8">
         <Link href={`/${lang}`}>
           <Logo />
         </Link>
@@ -91,12 +91,15 @@ function LoginClientContent({
       <main className="flex min-h-screen flex-col items-center justify-center px-4">
         <div className="w-full max-w-md">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
               {translations.loginTitle}
             </h1>
           </div>
-          <form onSubmit={submit} className="mt-10 space-y-6">
-            <div className="space-y-4">
+          <form
+            onSubmit={submit}
+            className="mt-8 sm:mt-10 space-y-5 sm:space-y-6"
+          >
+            <div className="space-y-3 sm:space-y-4">
               <input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -104,7 +107,7 @@ function LoginClientContent({
                 type="email"
                 name="email"
                 autoComplete="email"
-                className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-4 text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0"
+                className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-3 sm:p-4 text-base sm:text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0"
                 required
                 disabled={isLoading}
               />
@@ -115,7 +118,7 @@ function LoginClientContent({
                 value={pw}
                 onChange={(e) => setPw(e.target.value)}
                 placeholder={translations.loginPasswordPlaceholder}
-                className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-4 text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0"
+                className="w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-3 sm:p-4 text-base sm:text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0"
                 required
                 disabled={isLoading}
               />
@@ -126,13 +129,13 @@ function LoginClientContent({
             <button
               type="submit"
               disabled={isLoading}
-              className="inline-flex w-full items-center justify-center gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-8 py-4 text-lg font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-transform duration-300 will-change-transform hover:-translate-y-1 hover:shadow-butter-yellow/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-butter-yellow disabled:cursor-not-allowed disabled:opacity-70"
+              className="inline-flex w-full items-center justify-center gap-2 sm:gap-3 rounded-full bg-gradient-to-r from-butter-yellow to-butter-orange px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-black shadow-lg shadow-butter-yellow/20 transition-transform duration-300 will-change-transform hover:-translate-y-1 hover:shadow-butter-yellow/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-butter-yellow disabled:cursor-not-allowed disabled:opacity-70"
             >
               {isLoading ? (
                 translations.loginButtonLoggingIn
               ) : (
                 <>
-                  <Sparkles size={20} />
+                  <Sparkles size={18} className="sm:w-5 sm:h-5" />
                   {translations.loginButton}
                 </>
               )}

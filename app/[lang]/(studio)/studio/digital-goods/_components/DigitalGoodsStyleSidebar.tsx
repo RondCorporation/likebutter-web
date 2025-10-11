@@ -79,7 +79,7 @@ export default function DigitalGoodsStyleSidebar({
               onClick={() => setSelectedPreset(preset.name)}
             >
               <div
-                className={`relative w-24 h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
+                className={`relative w-full aspect-square max-w-[120px] md:w-24 md:h-24 bg-studio-border rounded-md overflow-hidden border-2 transition-all duration-200 hover:scale-105 ${
                   preset.name === selectedPreset
                     ? 'border-studio-button-hover shadow-lg'
                     : 'border-transparent'

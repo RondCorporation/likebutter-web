@@ -79,8 +79,8 @@ const PageSection = ({
   style?: React.CSSProperties;
 }) => {
   const containerClasses = fitViewport
-    ? 'min-h-[calc(var(--vh,1vh)*100)] flex flex-col justify-center py-[7.5rem]'
-    : 'py-[7.5rem]';
+    ? 'min-h-[calc(var(--vh,1vh)*100)] flex flex-col justify-center py-12 sm:py-16 md:py-20 lg:py-[7.5rem]'
+    : 'py-12 sm:py-16 md:py-20 lg:py-[7.5rem]';
 
   return (
     <section
@@ -102,15 +102,15 @@ const SectionHeader = ({
   title: string;
   subtitle?: string;
 }) => (
-  <div className="space-y-6 text-left">
+  <div className="space-y-4 sm:space-y-5 md:space-y-6 text-left">
     <AnimatedElement direction="up" delay={0.05} duration={0.3}>
-      {/* Yellow Text - Figma: 24px, Bold, #FFD93B */}
-      <p className="text-[#FFD93B] text-2xl font-bold font-pretendard leading-[1.5] whitespace-nowrap">
+      {/* Yellow Text - Responsive sizing */}
+      <p className="text-[#FFD93B] text-base sm:text-lg md:text-xl lg:text-2xl font-bold font-pretendard leading-[1.5] whitespace-nowrap">
         {yellowText}
       </p>
     </AnimatedElement>
     <AnimatedElement direction="up" delay={0.1} duration={0.3}>
-      <h2 className="text-white text-3xl md:text-4xl lg:text-5xl font-bold font-pretendard leading-[1.5] md:leading-[1.5] lg:leading-[1.5]">
+      <h2 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-pretendard leading-[1.5]">
         {title.split('\n').map((line, i) => (
           <span key={i}>
             {line}
@@ -122,7 +122,7 @@ const SectionHeader = ({
     {subtitle && (
       <AnimatedElement direction="up" delay={0.15} duration={0.3}>
         <p
-          className="text-slate-400 text-base font-normal leading-6"
+          className="text-slate-400 text-sm sm:text-base font-normal leading-6"
           style={{ fontFamily: 'Arial, sans-serif', wordBreak: 'keep-all' }}
         >
           {subtitle.split('\n').map((line, i) => (
@@ -338,7 +338,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                               alt={cards[currentCard].alt}
                               width={302}
                               height={418}
-                              className="w-[260px] h-[347px] rounded-2xl shadow-2xl object-cover"
+                              className="w-[220px] h-[294px] sm:w-[240px] sm:h-[320px] md:w-[260px] md:h-[347px] rounded-2xl shadow-2xl object-cover"
                               priority
                             />
                           </motion.div>
@@ -486,13 +486,13 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               />
 
               {/* Mobile Mockup Placeholder */}
-              <div className="mt-20 flex-1 flex flex-col lg:flex-row items-center justify-center">
+              <div className="mt-12 sm:mt-16 md:mt-20 flex-1 flex flex-col lg:flex-row items-center justify-center">
                 <div className="w-full lg:grid lg:grid-cols-2 lg:gap-8 lg:items-center">
                   {/* Mobile: Mockup below text */}
-                  <div className="lg:hidden flex justify-center mt-8">
+                  <div className="lg:hidden flex justify-center mt-6 sm:mt-8">
                     <AnimatedElement direction="up" delay={0.2} duration={0.4}>
                       <motion.div
-                        className="w-[280px] h-[420px] flex items-center justify-center shadow-2xl rounded-[28px]"
+                        className="w-[240px] h-[360px] sm:w-[260px] sm:h-[390px] md:w-[280px] md:h-[420px] flex items-center justify-center shadow-2xl rounded-[24px] sm:rounded-[28px]"
                         style={{ backgroundColor: '#2a2a2a' }}
                         whileHover={{ scale: 1.02 }}
                         transition={{
@@ -502,7 +502,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                         }}
                       >
                         <div className="text-center text-gray-500">
-                          <h3 className="text-lg font-bold mb-2 text-gray-400">
+                          <h3 className="text-base sm:text-lg font-bold mb-2 text-gray-400">
                             COMING SOON
                           </h3>
                         </div>
@@ -563,14 +563,12 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
               />
 
               {/* Billing Toggle and Cards */}
-              <div className="mt-20 flex-1 flex flex-col justify-center pb-20">
-                {' '}
-                {/* mt-20 = 80px gap */}
-                <div className="flex justify-center mb-8">
+              <div className="mt-12 sm:mt-16 md:mt-20 flex-1 flex flex-col justify-center pb-12 sm:pb-16 md:pb-20">
+                <div className="flex justify-center mb-6 sm:mb-8">
                   <div className="bg-gray-800 rounded-full p-1 flex">
                     <button
                       onClick={() => setBillingCycle('monthly')}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                         billingCycle === 'monthly'
                           ? 'bg-[#FFD93B] text-black'
                           : 'text-white hover:text-[#FFD93B]'
@@ -580,7 +578,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                     </button>
                     <button
                       onClick={() => setBillingCycle('yearly')}
-                      className={`px-6 py-3 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-full text-xs sm:text-sm font-medium transition-colors ${
                         billingCycle === 'yearly'
                           ? 'bg-[#FFD93B] text-black'
                           : 'text-white hover:text-[#FFD93B]'
@@ -785,26 +783,26 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           }}
           data-section-index={4}
         >
-          <PageSection className="bg-black text-white pb-[40rem] sm:pb-[35rem] md:pb-[30rem] lg:pb-[25rem]">
+          <PageSection className="bg-black text-white pb-[30rem] sm:pb-[28rem] md:pb-[26rem] lg:pb-[25rem]">
             <div className="flex justify-center px-4">
               <AnimatedElement direction="scale" delay={0.2} duration={0.5}>
-                <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-3xl max-w-6xl w-full min-h-[320px] lg:h-[320px]">
-                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-4 lg:gap-4 h-full">
+                <div className="bg-gradient-to-r from-[#FFD93B] to-[#F2DC8D] text-black rounded-2xl sm:rounded-3xl max-w-6xl w-full min-h-[280px] sm:min-h-[300px] lg:h-[320px]">
+                  <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.7fr] gap-3 sm:gap-4 h-full">
                     {/* Left side - Title */}
-                    <div className="pt-[38px] px-8 lg:pl-[83px] lg:pr-8">
-                      <h2 className="text-[20px] lg:text-[23px] font-bold mb-4">
+                    <div className="pt-6 sm:pt-8 md:pt-[38px] px-6 sm:px-8 lg:pl-[83px] lg:pr-8">
+                      <h2 className="text-base sm:text-lg md:text-[20px] lg:text-[23px] font-bold mb-3 sm:mb-4">
                         CONTACT US.
                       </h2>
-                      <p className="text-[28px] lg:text-[36px] font-bold whitespace-pre-line">
+                      <p className="text-xl sm:text-2xl md:text-[28px] lg:text-[36px] font-bold whitespace-pre-line leading-snug">
                         {t('sectionContactTitle')}
                       </p>
                     </div>
 
                     {/* Right side - Form */}
-                    <div className="pt-4 lg:pt-[38px] px-8 lg:pl-8 lg:pr-[83px] pb-8 lg:pb-12">
+                    <div className="pt-3 sm:pt-4 lg:pt-[38px] px-6 sm:px-8 lg:pl-8 lg:pr-[83px] pb-6 sm:pb-8 lg:pb-12">
                       <form
                         onSubmit={handleContactSubmit}
-                        className="space-y-4 h-full flex flex-col min-h-[240px] lg:min-h-0"
+                        className="space-y-3 sm:space-y-4 h-full flex flex-col min-h-[200px] sm:min-h-[220px] lg:min-h-0"
                       >
                         <div>
                           <input
@@ -812,8 +810,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder={t('contactFormEmail')}
-                            className="w-full px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 placeholder-[#B1B1B1]"
-                            style={{ fontSize: '14px' }}
+                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-[8px] text-xs sm:text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 placeholder-[#B1B1B1]"
                             required
                           />
                         </div>
@@ -822,14 +819,13 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder={t('contactFormMessage')}
-                            className="w-full h-full min-h-[120px] lg:min-h-0 px-4 py-3 rounded-[8px] text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
-                            style={{ fontSize: '14px' }}
+                            className="w-full h-full min-h-[100px] sm:min-h-[120px] lg:min-h-0 px-3 sm:px-4 py-2.5 sm:py-3 rounded-[8px] text-xs sm:text-sm bg-white border-0 focus:outline-none focus:ring-2 focus:ring-black/20 resize-none placeholder-[#B1B1B1]"
                             required
                           />
                         </div>
                         <button
                           type="submit"
-                          className="w-full bg-black text-[#FFD93B] px-8 py-4 rounded-[8px] text-base lg:text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
+                          className="w-full bg-black text-[#FFD93B] px-6 sm:px-8 py-3 sm:py-4 rounded-[8px] text-sm sm:text-base lg:text-lg font-bold hover:bg-gray-800 transition-colors duration-300"
                         >
                           {t('contactFormSubmit')}
                         </button>

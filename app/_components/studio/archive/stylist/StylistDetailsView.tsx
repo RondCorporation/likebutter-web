@@ -1,19 +1,23 @@
-import { StylistDetails } from '@/types/task';
-import { Scissors, Image as ImageIcon } from 'lucide-react';
+import { Task, StylistResponse } from '@/types/task';
+import { Scissors } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import InfoCard from '../ui/InfoCard';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
 
 interface Props {
-  details?: StylistDetails;
+  task?: Task & { actionType: 'STYLIST' | 'STYLIST_EDIT' };
+  details?: StylistResponse; // For backward compatibility
   onClose?: () => void;
 }
 
-export default function StylistDetailsView({ details, onClose }: Props) {
+export default function StylistDetailsView({ task, details, onClose }: Props) {
   const { t } = useTranslation(['studio']);
 
-  if (!details) {
+  // Use the new task structure or fall back to old details prop
+  const result = task?.stylist || details;
+  const error = task?.error;
+
+  if (!result && task?.status !== 'PENDING' && task?.status !== 'PROCESSING') {
     return (
       <div className="flex items-center justify-center h-40">
         <p className="text-studio-text-muted">
@@ -22,54 +26,6 @@ export default function StylistDetailsView({ details, onClose }: Props) {
       </div>
     );
   }
-
-  const getReferenceImages = () => {
-    const references = [];
-
-    if (details.request.hairStyleImageUrl) {
-      references.push({
-        url: details.request.hairStyleImageUrl,
-        label: t('stylist.details.hairstyle'),
-        key: 'hair',
-      });
-    }
-
-    if (details.request.outfitImageUrl) {
-      references.push({
-        url: details.request.outfitImageUrl,
-        label: t('stylist.details.outfit'),
-        key: 'outfit',
-      });
-    }
-
-    if (details.request.backgroundImageUrl) {
-      references.push({
-        url: details.request.backgroundImageUrl,
-        label: t('stylist.details.background'),
-        key: 'background',
-      });
-    }
-
-    if (details.request.accessoryImageUrl) {
-      references.push({
-        url: details.request.accessoryImageUrl,
-        label: t('stylist.details.accessory'),
-        key: 'accessory',
-      });
-    }
-
-    if (details.request.moodImageUrl) {
-      references.push({
-        url: details.request.moodImageUrl,
-        label: t('stylist.details.mood'),
-        key: 'mood',
-      });
-    }
-
-    return references;
-  };
-
-  const referenceImages = getReferenceImages();
 
   const content = (
     <div className="text-studio-text-primary">
@@ -85,63 +41,142 @@ export default function StylistDetailsView({ details, onClose }: Props) {
         </div>
       </div>
 
-      {/* Main Content - Grid Layout */}
-      <div className="space-y-6">
-        {/* Original and Result Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Original Image */}
-          {details.request.idolImageUrl && (
-            <ImageDisplayCard
-              title={t('stylist.details.originalImage')}
-              subtitle={t('stylist.details.originalImageSubtitle')}
-              imageUrl={details.request.idolImageUrl}
-              alt={t('stylist.details.originalImageSubtitle')}
-            />
-          )}
+      {/* Main Content */}
+      {result && (
+        <div className="grid grid-cols-1 gap-6">
+          {/* Before/After Comparison */}
+          {result.requestImageUrl ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Request Image */}
+              <ImageDisplayCard
+                title={t('stylist.details.originalImage')}
+                subtitle={t('stylist.details.uploadedIdolImage')}
+                imageUrl={result.requestImageUrl}
+                alt={t('stylist.details.originalImageAlt')}
+                downloadFilename={`original-${result.filename || `stylist-${Date.now()}.png`}`}
+              />
 
-          {/* Result Image */}
-          {details.result?.imageUrl && (
+              {/* Result Image */}
+              <ImageDisplayCard
+                title={t('stylist.details.generatedResult')}
+                subtitle={t('stylist.details.styledResult')}
+                imageUrl={result.imageUrl}
+                alt={t('stylist.details.styledResult')}
+                downloadFilename={result.filename || `stylist-${Date.now()}.png`}
+              />
+            </div>
+          ) : (
+            /* Result Only (for backward compatibility) */
             <ImageDisplayCard
               title={t('stylist.details.generatedResult')}
               subtitle={t('stylist.details.styledResult')}
-              imageUrl={details.result.imageUrl}
+              imageUrl={result.imageUrl}
               alt={t('stylist.details.styledResult')}
+              downloadFilename={result.filename || `stylist-${Date.now()}.png`}
             />
           )}
-        </div>
 
-        {/* Reference Images Grid */}
-        {referenceImages.length > 0 && (
-          <InfoCard title={t('stylist.details.referenceImagesUsed')}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-              {referenceImages.map((ref) => (
-                <div key={ref.key} className="bg-studio-border rounded-lg p-2">
-                  <div className="mb-2">
-                    <span className="text-xs font-medium text-studio-text-secondary flex items-center gap-1">
-                      <ImageIcon className="h-3 w-3" />
-                      {ref.label}
-                    </span>
+          {/* Reference Images Grid */}
+          {(result.hairStyleImageUrl || result.outfitImageUrl || result.backgroundImageUrl ||
+            result.accessoryImageUrl || result.moodImageUrl) && (
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold text-studio-text-primary">
+                {t('stylist.details.referenceImages')}
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                {result.hairStyleImageUrl && (
+                  <div className="bg-studio-bg-secondary rounded-lg border border-studio-border overflow-hidden">
+                    <img
+                      src={result.hairStyleImageUrl}
+                      alt={t('stylist.details.hairStyle')}
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="p-2 text-xs text-studio-text-secondary text-center">
+                      {t('stylist.details.hairStyle')}
+                    </div>
                   </div>
-                  <img
-                    src={ref.url}
-                    alt={ref.label}
-                    className="w-full h-20 object-cover rounded-md"
-                  />
-                </div>
-              ))}
+                )}
+                {result.outfitImageUrl && (
+                  <div className="bg-studio-bg-secondary rounded-lg border border-studio-border overflow-hidden">
+                    <img
+                      src={result.outfitImageUrl}
+                      alt={t('stylist.details.outfit')}
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="p-2 text-xs text-studio-text-secondary text-center">
+                      {t('stylist.details.outfit')}
+                    </div>
+                  </div>
+                )}
+                {result.backgroundImageUrl && (
+                  <div className="bg-studio-bg-secondary rounded-lg border border-studio-border overflow-hidden">
+                    <img
+                      src={result.backgroundImageUrl}
+                      alt={t('stylist.details.background')}
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="p-2 text-xs text-studio-text-secondary text-center">
+                      {t('stylist.details.background')}
+                    </div>
+                  </div>
+                )}
+                {result.accessoryImageUrl && (
+                  <div className="bg-studio-bg-secondary rounded-lg border border-studio-border overflow-hidden">
+                    <img
+                      src={result.accessoryImageUrl}
+                      alt={t('stylist.details.accessory')}
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="p-2 text-xs text-studio-text-secondary text-center">
+                      {t('stylist.details.accessory')}
+                    </div>
+                  </div>
+                )}
+                {result.moodImageUrl && (
+                  <div className="bg-studio-bg-secondary rounded-lg border border-studio-border overflow-hidden">
+                    <img
+                      src={result.moodImageUrl}
+                      alt={t('stylist.details.mood')}
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="p-2 text-xs text-studio-text-secondary text-center">
+                      {t('stylist.details.mood')}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          </InfoCard>
-        )}
-      </div>
+          )}
+
+          {/* File Info */}
+          {result.fileSize && (
+            <div className="text-sm text-studio-text-secondary space-y-1">
+              <p>{t('common.fileSize', { size: (result.fileSize / 1024 / 1024).toFixed(2) })}</p>
+              {result.executionTime && (
+                <p>{t('common.executionTime', { time: result.executionTime.toFixed(1) })}</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Processing State */}
+      {!result && (task?.status === 'PENDING' || task?.status === 'PROCESSING') && (
+        <div className="flex items-center justify-center h-40">
+          <p className="text-studio-text-muted">
+            {t('stylist.details.processing')}
+          </p>
+        </div>
+      )}
 
       {/* Error State */}
-      {details.error && (
+      {error && (
         <div className="mt-6">
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
             <h4 className="text-red-400 font-medium mb-2">
               {t('stylist.details.generationFailed')}
             </h4>
-            <p className="text-red-300 text-sm">{details.error}</p>
+            <p className="text-red-300 text-sm">{error}</p>
           </div>
         </div>
       )}

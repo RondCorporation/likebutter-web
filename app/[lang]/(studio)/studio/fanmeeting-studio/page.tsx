@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: 'Fanmeeting Studio - Like Butter Studio',
+  title: 'Fanmeeting Studio - LikeButter Studio',
   description:
     'Create magical fanmeeting moments with AI-powered studio experiences',
 };

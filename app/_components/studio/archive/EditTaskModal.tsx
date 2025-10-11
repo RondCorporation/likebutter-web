@@ -75,18 +75,24 @@ export default function EditTaskModal({
   };
 
   const getResultImageUrl = (task: Task): string | null => {
-    if (!task.details?.result) return null;
-
     switch (task.actionType) {
       case 'DIGITAL_GOODS':
-        return task.details.result.imageUrl || null;
+      case 'DIGITAL_GOODS_EDIT':
+        return task.digitalGoods?.imageUrl || null;
       case 'FANMEETING_STUDIO':
-        return task.details.result.imageUrl || null;
+      case 'FANMEETING_STUDIO_EDIT':
+        return task.fanmeetingStudio?.imageUrl || null;
       case 'STYLIST':
-        return task.details.result.imageUrl || null;
+      case 'STYLIST_EDIT':
+        return task.stylist?.imageUrl || null;
       case 'VIRTUAL_CASTING':
-        return task.details.result.imageUrl || null;
+      case 'VIRTUAL_CASTING_EDIT':
+        return task.virtualCasting?.imageUrl || null;
+      case 'BUTTER_COVER':
+        // ButterCover has audio, not image
+        return null;
       default:
+        const exhaustiveCheck: never = task;
         return null;
     }
   };
@@ -119,16 +125,39 @@ export default function EditTaskModal({
             <span className="text-gray-400 text-sm">Task #{task.taskId}</span>
           </div>
 
+          {/* Edit History Chain */}
+          {task.parentTaskId &&
+            task.editSequence !== undefined &&
+            task.editSequence !== null && (
+              <div className="mb-4 p-3 bg-[#1a1d21] border border-[#4a4a4b] rounded-lg">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-gray-400">편집 체인:</span>
+                  <div className="flex items-center gap-1 text-white">
+                    <span className="text-gray-500">#{task.parentTaskId}</span>
+                    {Array.from({ length: task.editSequence }, (_, i) => (
+                      <span key={i} className="text-gray-500">
+                        →{' '}
+                      </span>
+                    ))}
+                    <span className="text-[#e8fa07] font-medium">
+                      #{task.taskId}
+                    </span>
+                    <span className="text-gray-500">→ 새 편집</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
           {/* Original Image Preview */}
           {imageUrl && (
             <div className="mb-4">
               <h3 className="text-white text-sm font-medium mb-2">
-                원본 이미지
+                현재 결과 이미지
               </h3>
               <div className="w-full h-[200px] bg-[#4a4a4b] rounded-lg overflow-hidden">
                 <img
                   src={imageUrl}
-                  alt="원본 이미지"
+                  alt="현재 결과 이미지"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
@@ -154,13 +183,24 @@ export default function EditTaskModal({
           <textarea
             value={editPrompt}
             onChange={(e) => setEditPrompt(e.target.value)}
-            placeholder="예: 배경을 더 밝게 하고 꽃을 추가해주세요"
+            placeholder="예: 배경을 해변으로 변경, 의상을 정장으로 변경"
             className="w-full h-32 px-4 py-3 bg-[#1a1d21] border border-[#4a4a4b] rounded-lg text-white placeholder-gray-400 resize-none focus:outline-none focus:border-[#e8fa07] transition-colors"
             disabled={isSubmitting}
             maxLength={500}
           />
           <div className="text-right text-xs text-gray-400 mt-1">
             {editPrompt.length}/500
+          </div>
+
+          {/* Guidance Notice */}
+          <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <div className="flex items-start gap-2 text-blue-300 text-xs">
+              <span className="text-lg">ℹ️</span>
+              <div className="space-y-1">
+                <p>• 얼굴과 인물은 유지되며 스타일만 변경됩니다</p>
+                <p>• 자연어로 변경할 내용을 설명해주세요</p>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -37,11 +37,59 @@ const TaskCard = memo(
     }
   },
   (prevProps, nextProps) => {
-    return (
-      prevProps.task.taskId === nextProps.task.taskId &&
-      prevProps.task.status === nextProps.task.status &&
-      prevProps.task.details === nextProps.task.details
-    );
+    // Compare task data based on actionType-specific fields
+    if (prevProps.task.taskId !== nextProps.task.taskId) return false;
+    if (prevProps.task.status !== nextProps.task.status) return false;
+    if (prevProps.task.actionType !== nextProps.task.actionType) return false;
+
+    // Compare action-type-specific result data
+    switch (prevProps.task.actionType) {
+      case 'DIGITAL_GOODS':
+      case 'DIGITAL_GOODS_EDIT':
+        return (
+          ('digitalGoods' in prevProps.task
+            ? prevProps.task.digitalGoods
+            : null) ===
+          ('digitalGoods' in nextProps.task
+            ? nextProps.task.digitalGoods
+            : null)
+        );
+      case 'VIRTUAL_CASTING':
+      case 'VIRTUAL_CASTING_EDIT':
+        return (
+          ('virtualCasting' in prevProps.task
+            ? prevProps.task.virtualCasting
+            : null) ===
+          ('virtualCasting' in nextProps.task
+            ? nextProps.task.virtualCasting
+            : null)
+        );
+      case 'STYLIST':
+      case 'STYLIST_EDIT':
+        return (
+          ('stylist' in prevProps.task ? prevProps.task.stylist : null) ===
+          ('stylist' in nextProps.task ? nextProps.task.stylist : null)
+        );
+      case 'FANMEETING_STUDIO':
+      case 'FANMEETING_STUDIO_EDIT':
+        return (
+          ('fanmeetingStudio' in prevProps.task
+            ? prevProps.task.fanmeetingStudio
+            : null) ===
+          ('fanmeetingStudio' in nextProps.task
+            ? nextProps.task.fanmeetingStudio
+            : null)
+        );
+      case 'BUTTER_COVER':
+        return (
+          ('butterCover' in prevProps.task
+            ? prevProps.task.butterCover
+            : null) ===
+          ('butterCover' in nextProps.task ? nextProps.task.butterCover : null)
+        );
+      default:
+        return true;
+    }
   }
 );
 

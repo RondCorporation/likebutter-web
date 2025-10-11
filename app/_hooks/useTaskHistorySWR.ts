@@ -3,11 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { Task } from '@/types/task';
-import {
-  getTaskHistory,
-  getBatchTaskStatus,
-  BatchTaskResponse,
-} from '@/lib/apis/task.api';
+import { getTaskHistory, getBatchTaskStatus } from '@/lib/apis/task.api';
 
 interface TaskHistoryFilters {
   status: string;
@@ -28,8 +24,7 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   } = options;
 
   const taskHistoryKey = useMemo(
-    () =>
-      `task-history-${page}-${filters.status}-${filters.actionType}`,
+    () => `task-history-${page}-${filters.status}-${filters.actionType}`,
     [page, filters.status, filters.actionType]
   );
 
@@ -83,17 +78,15 @@ export function useTaskHistorySWR(options: UseTaskHistoryOptions = {}) {
   const shouldPoll = enablePolling && inProgressTaskIds.length > 0;
 
   const { data: batchStatusData, mutate: mutateBatchStatus } = useSWR(
-    shouldPoll
-      ? `task-batch-status-${inProgressTaskIds.join(',')}`
-      : null,
+    shouldPoll ? `task-batch-status-${inProgressTaskIds.join(',')}` : null,
     () => getBatchTaskStatus(inProgressTaskIds).then((res) => res.data),
     {
       refreshInterval: shouldPoll ? 10000 : 0,
       revalidateOnFocus: false,
       onSuccess: (data) => {
         if (data && Array.isArray(data)) {
-          const hasStatusChange = data.some((apiTask: BatchTaskResponse) => {
-            const existingTask = tasks.find((t) => t.taskId === apiTask.id);
+          const hasStatusChange = data.some((apiTask: Task) => {
+            const existingTask = tasks.find((t) => t.taskId === apiTask.taskId);
             return existingTask && existingTask.status !== apiTask.status;
           });
 

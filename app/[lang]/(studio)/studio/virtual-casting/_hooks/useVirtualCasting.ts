@@ -95,8 +95,16 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
     currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
-      if (result.details?.result?.imageUrl) {
-        setResultImage(result.details.result.imageUrl);
+      // Check for both VIRTUAL_CASTING and VIRTUAL_CASTING_EDIT
+      const imageUrl =
+        (result.actionType === 'VIRTUAL_CASTING' ||
+          result.actionType === 'VIRTUAL_CASTING_EDIT') &&
+        result.virtualCasting?.imageUrl
+          ? result.virtualCasting.imageUrl
+          : null;
+
+      if (imageUrl) {
+        setResultImage(imageUrl);
         toast.success(t('virtualCasting.messages.castingComplete'));
       }
       setIsProcessing(false);

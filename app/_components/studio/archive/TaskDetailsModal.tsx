@@ -24,7 +24,41 @@ export default function TaskDetailsModal({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!initialTask.details && !isLoading) {
+    // Check if task has result data based on actionType
+    const hasResultData = () => {
+      switch (initialTask.actionType) {
+        case 'DIGITAL_GOODS':
+        case 'DIGITAL_GOODS_EDIT':
+          return (
+            'digitalGoods' in initialTask &&
+            initialTask.digitalGoods !== undefined
+          );
+        case 'FANMEETING_STUDIO':
+        case 'FANMEETING_STUDIO_EDIT':
+          return (
+            'fanmeetingStudio' in initialTask &&
+            initialTask.fanmeetingStudio !== undefined
+          );
+        case 'STYLIST':
+        case 'STYLIST_EDIT':
+          return 'stylist' in initialTask && initialTask.stylist !== undefined;
+        case 'VIRTUAL_CASTING':
+        case 'VIRTUAL_CASTING_EDIT':
+          return (
+            'virtualCasting' in initialTask &&
+            initialTask.virtualCasting !== undefined
+          );
+        case 'BUTTER_COVER':
+          return (
+            'butterCover' in initialTask &&
+            initialTask.butterCover !== undefined
+          );
+        default:
+          return false;
+      }
+    };
+
+    if (!hasResultData() && !isLoading) {
       const fetchDetails = async () => {
         setIsLoading(true);
         setError(null);

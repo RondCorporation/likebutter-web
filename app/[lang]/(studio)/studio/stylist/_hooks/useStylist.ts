@@ -128,8 +128,16 @@ export function useStylist(): UseStylistReturn {
     currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
-      if (result.details?.result?.imageUrl) {
-        setResultImage(result.details.result.imageUrl);
+      // Check for both STYLIST and STYLIST_EDIT
+      const imageUrl =
+        (result.actionType === 'STYLIST' ||
+          result.actionType === 'STYLIST_EDIT') &&
+        result.stylist?.imageUrl
+          ? result.stylist.imageUrl
+          : null;
+
+      if (imageUrl) {
+        setResultImage(imageUrl);
         toast.success(t('stylist.messages.stylingComplete'));
       }
       setIsProcessing(false);

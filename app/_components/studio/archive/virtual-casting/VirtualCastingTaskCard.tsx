@@ -1,7 +1,7 @@
-import { Task, VirtualCastingDetails } from '@/types/task';
+import { Task } from '@/types/task';
 import StatusBadge from '../StatusBadge';
 import { useTranslation } from 'react-i18next';
-import { Wand2, Image, Film, Star } from 'lucide-react';
+import { Wand2, Image, Star } from 'lucide-react';
 
 interface Props {
   task: Task & { actionType: 'VIRTUAL_CASTING' | 'VIRTUAL_CASTING_EDIT' };
@@ -10,15 +10,7 @@ interface Props {
 
 export default function VirtualCastingTaskCard({ task, onClick }: Props) {
   const { t } = useTranslation('studio');
-  const details = task.details as VirtualCastingDetails | undefined;
-
-  const getCharacterName = (style: string) => {
-    try {
-      return t(`virtualCasting.styles.${style}`);
-    } catch {
-      return style;
-    }
-  };
+  const result = task.virtualCasting;
 
   return (
     <div
@@ -35,32 +27,16 @@ export default function VirtualCastingTaskCard({ task, onClick }: Props) {
         <StatusBadge status={task.status} />
       </div>
 
-      {/* Character/Style */}
-      {details?.request?.style && (
-        <div className="mb-2 flex items-center gap-2 text-sm text-slate-300">
-          <Film className="h-4 w-4" />
-          <span>{getCharacterName(details.request.style)}</span>
-        </div>
-      )}
-
-      {/* Source Image Info */}
-      {details?.request?.idolImageKey && (
-        <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-          <Image className="h-4 w-4" />
-          <span>{t('virtualCasting.taskCard.idolImageUploaded')}</span>
-        </div>
-      )}
-
       {/* Result Info */}
-      {details?.result && (
-        <div className="mt-3 border-t border-white/10 pt-3">
+      {result && (
+        <div className="mt-3">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <Star className="h-4 w-4" />
             <span>{t('virtualCasting.taskCard.castingComplete')}</span>
           </div>
-          {details.result.filename && (
-            <div className="mt-1 text-xs text-slate-500 font-mono">
-              {details.result.filename}
+          {result.filename && (
+            <div className="mt-2 text-xs text-slate-400 truncate">
+              {result.filename}
             </div>
           )}
         </div>

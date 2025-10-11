@@ -6,7 +6,6 @@ import {
   getTaskHistory,
   getTaskStatus,
   getBatchTaskStatus,
-  BatchTaskResponse,
   TaskFilters,
   TaskCategory,
 } from '@/lib/apis/task.api';
@@ -99,11 +98,7 @@ function archiveReducer(
     case 'UPDATE_TASK_STATUS':
       const updatedTasks = state.tasks.map((t) => {
         if (t.taskId === action.payload.taskId) {
-          return {
-            ...t,
-            status: action.payload.status,
-            details: action.payload.details as any,
-          };
+          return action.payload;
         }
         return t;
       });
@@ -205,21 +200,15 @@ export function useTaskArchive() {
         if (response.data && Array.isArray(response.data)) {
           let hasChanges = false;
 
-          response.data.forEach((apiTask: BatchTaskResponse) => {
+          response.data.forEach((apiTask: Task) => {
             const existingTask = state.tasks.find(
-              (t) => t.taskId === apiTask.id
+              (t) => t.taskId === apiTask.taskId
             );
             if (existingTask && existingTask.status !== apiTask.status) {
               hasChanges = true;
               dispatch({
                 type: 'UPDATE_TASK_STATUS',
-                payload: {
-                  taskId: apiTask.id,
-                  status: apiTask.status as any,
-                  createdAt: apiTask.createdAt,
-                  actionType: apiTask.actionType as any,
-                  details: apiTask.details,
-                } as Task,
+                payload: apiTask,
               });
             }
           });

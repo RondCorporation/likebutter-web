@@ -188,7 +188,7 @@
     "modal": {
       "alreadyChecked": "오늘 이미 출석했습니다",
       "checkIn": "10 크레딧 받기",
-      "description": "매일 Like Butter에 접속하면 10크레딧을 보너스로 받을 수 있습니다.",
+      "description": "매일 LikeButter에 접속하면 10크레딧을 보너스로 받을 수 있습니다.",
       "receiving": "크레딧 받는 중...",
       "subDescription": "크레딧을 사용하여 AI 기능을 최대한 활용하세요.",
       "title": "크레딧 얻기"
@@ -336,7 +336,9 @@
     "title": "ButterTest로 테스트하기"
   },
   "common": {
-    "detailsNotAvailable": "상세 정보를 불러올 수 없습니다"
+    "detailsNotAvailable": "상세 정보를 불러올 수 없습니다",
+    "executionTime": "실행 시간: {{time}}초",
+    "fileSize": "파일 크기: {{size}} MB"
   },
   "completeSettings": "사이드바에서 설정을 완료하고 '팬미팅생성'을 눌러주세요",
   "confirmReset": {
@@ -407,8 +409,11 @@
       "generatedResultSubtitle": "{{style}} 스타일로 변환",
       "generationFailed": "생성 실패",
       "originalImage": "원본 이미지",
+      "originalImageAlt": "원본 이미지",
       "originalImageSubtitle": "업로드한 원본 이미지",
-      "styleLabel": "스타일"
+      "processing": "처리 중...",
+      "styleLabel": "스타일",
+      "uploadedImage": "업로드한 원본 이미지"
     },
     "dragAndDrop": "파일을 여기다 끌어다 놓으세요",
     "edit": "수정하기",
@@ -422,9 +427,12 @@
       "downloadComplete": "이미지가 다운로드되었습니다!",
       "downloadFailed": "다운로드에 실패했습니다.",
       "dropHere": "놓기",
+      "editRequestFailed": "수정 요청에 실패했습니다.",
+      "editRequestSent": "수정 요청이 전송되었습니다!",
       "fileSizeExceeded": "파일 크기가 200MB를 초과합니다.",
       "generationComplete": "디지털 굿즈가 생성되었습니다!",
       "imageLoadFailed": "이미지 로드에 실패했습니다.",
+      "originalNotFound": "원본 작업을 찾을 수 없습니다.",
       "requestSent": "디지털 굿즈 생성 요청이 전송되었습니다!",
       "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
       "workReset": "작업이 초기화되었습니다."

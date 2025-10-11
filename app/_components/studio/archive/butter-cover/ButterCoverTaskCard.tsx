@@ -1,4 +1,4 @@
-import { Task, ButterCoverDetails, PipelineStatus } from '@/types/task';
+import { Task, PipelineStatus } from '@/types/task';
 import { memo } from 'react';
 import StatusBadge from '../StatusBadge';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +42,7 @@ function getPipelineStatusIcon(pipelineStatus?: PipelineStatus) {
 
 const ButterCoverTaskCard = memo(({ task, onClick }: Props) => {
   const { t } = useTranslation();
-  const details = task.details as ButterCoverDetails | undefined;
+  const result = task.butterCover;
 
   return (
     <div
@@ -54,42 +54,28 @@ const ButterCoverTaskCard = memo(({ task, onClick }: Props) => {
           <Music className="h-5 w-5 text-accent" />
           <h4 className="text-sm font-semibold text-white">AI Voice Cover</h4>
         </div>
-        <StatusBadge
-          status={task.status}
-          pipelineStatus={(task as any).pipelineStatus}
-        />
+        <StatusBadge status={task.status} />
       </div>
 
-      {/* Pipeline Status */}
-      {details && (
-        <div className="mb-3 flex items-center gap-2 text-sm text-slate-300">
-          {getPipelineStatusIcon((task as any).pipelineStatus)}
-          <span>{getPipelineStatusText((task as any).pipelineStatus)}</span>
-        </div>
-      )}
-
-      {/* Voice Model */}
-      {details?.request?.voiceModel && (
-        <div className="mb-2 flex items-center gap-2 text-sm text-slate-300">
-          <Volume2 className="h-4 w-4" />
-          <span>Voice: {details.request.voiceModel}</span>
-        </div>
-      )}
-
-      {/* Advanced Settings Indicator */}
-      {details?.request && Object.keys(details.request).length > 2 && (
-        <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-          <Settings className="h-4 w-4" />
-          <span>Advanced settings applied</span>
-        </div>
-      )}
-
       {/* Result Info */}
-      {details?.result && (
-        <div className="mt-3 border-t border-white/10 pt-3">
+      {result && (
+        <div className="mt-3">
           <div className="flex items-center gap-2 text-sm text-green-400">
+            <Music className="h-4 w-4" />
             <span>AI voice cover completed successfully</span>
           </div>
+          {result.filename && (
+            <div className="mt-2 text-xs text-slate-400 truncate">
+              {result.filename}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Coming Soon Notice */}
+      {task.status === 'PENDING' && (
+        <div className="mt-3 rounded bg-butter-yellow/20 p-2 text-sm text-butter-yellow">
+          Feature coming soon
         </div>
       )}
 

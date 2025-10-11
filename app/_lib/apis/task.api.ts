@@ -13,6 +13,8 @@ import {
 interface TaskCreationResponse {
   taskId: number;
   status: string;
+  actionType: ActionType;
+  createdAt: string;
 }
 
 export type TaskCategory = 'IMAGE' | 'AUDIO';
@@ -26,7 +28,7 @@ export interface TaskFilters {
   summary?: boolean;
 }
 
-export const getTaskHistory = (
+export const getTaskHistory = async (
   page: number,
   filters: TaskFilters
 ): Promise<ApiResponse<Page<Task>>> => {
@@ -34,7 +36,10 @@ export const getTaskHistory = (
     page: page.toString(),
     size: (filters.size || 10).toString(),
     sort: 'createdAt,desc',
-    summary: (filters.summary || false).toString(),
+    summary: (filters.summary !== undefined
+      ? filters.summary
+      : false
+    ).toString(),
   });
 
   if (filters.status) params.append('status', filters.status);
@@ -44,33 +49,41 @@ export const getTaskHistory = (
   }
   if (filters.category) params.append('category', filters.category);
 
-  return apiFetch<Page<Task>>(`/api/v1/tasks?${params.toString()}`);
+  return await apiFetch<Page<Task>>(`/api/v1/tasks?${params.toString()}`);
 };
 
-export const getTaskStatus = (
+export const getTaskStatus = async (
   taskId: number
-): Promise<ApiResponse<TaskStatusResponse>> => {
-  return apiFetch<TaskStatusResponse>(`/api/v1/tasks/${taskId}`);
+): Promise<ApiResponse<Task>> => {
+  return await apiFetch<Task>(`/api/v1/tasks/${taskId}`);
 };
 
 export interface BatchTaskResponse {
-  id: number;
-  accountId: number;
-  actionType: string;
+  taskId: number;
+  actionType: ActionType;
   status: string;
   createdAt: string;
-  updatedAt: string;
-  details: any;
+  parentTaskId?: number | null;
+  editSequence?: number | null;
+  isOriginal?: boolean;
+  isEditTask?: boolean;
+  // ActionType별 응답 필드
+  digitalGoods?: any;
+  virtualCasting?: any;
+  stylist?: any;
+  fanmeetingStudio?: any;
+  butterCover?: any;
+  error?: string | null;
 }
 
-export const getBatchTaskStatus = (
+export const getBatchTaskStatus = async (
   taskIds: number[]
-): Promise<ApiResponse<BatchTaskResponse[]>> => {
+): Promise<ApiResponse<Task[]>> => {
   const params = new URLSearchParams({
     taskIds: taskIds.join(','),
-    summary: 'false',
   });
-  return apiFetch<BatchTaskResponse[]>(`/api/v1/tasks/batch?${params.toString()}`);
+
+  return await apiFetch<Task[]>(`/api/v1/tasks/batch?${params.toString()}`);
 };
 
 export const DIGITAL_GOODS_STYLES = {
@@ -92,7 +105,7 @@ export interface DigitalGoodsRequest {
   style: DigitalGoodsStyle;
 }
 
-export const createDigitalGoodsTask = (
+export const createDigitalGoodsTask = async (
   request: DigitalGoodsRequest,
   image?: File
 ): Promise<ApiResponse<TaskCreationResponse>> => {
@@ -108,12 +121,11 @@ export const createDigitalGoodsTask = (
     }
   });
 
-  return apiFetch<TaskCreationResponse>('/api/v1/tasks/digital-goods', {
+  return await apiFetch<TaskCreationResponse>('/api/v1/tasks/digital-goods', {
     method: 'POST',
     body: formData,
   });
 };
-
 
 export interface ButterCoverRequest {
   voiceModel: string;
@@ -121,7 +133,7 @@ export interface ButterCoverRequest {
   outputFormat?: string;
 }
 
-export const createButterCoverTask = (
+export const createButterCoverTask = async (
   audio: File,
   request: ButterCoverRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
@@ -132,7 +144,7 @@ export const createButterCoverTask = (
     new Blob([JSON.stringify(request)], { type: 'application/json' })
   );
 
-  return apiFetch<TaskCreationResponse>('/api/v1/tasks/butter-cover', {
+  return await apiFetch<TaskCreationResponse>('/api/v1/tasks/butter-cover', {
     method: 'POST',
     body: formData,
   });
@@ -148,7 +160,7 @@ export interface StylistRequest {
   customPrompt?: string;
 }
 
-export const createStylistTask = (
+export const createStylistTask = async (
   idolImage: File,
   request: StylistRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
@@ -178,7 +190,7 @@ export const createStylistTask = (
     formData.append('customPrompt', request.customPrompt);
   }
 
-  return apiFetch<TaskCreationResponse>('/api/v1/tasks/stylist', {
+  return await apiFetch<TaskCreationResponse>('/api/v1/tasks/stylist', {
     method: 'POST',
     body: formData,
   });
@@ -230,7 +242,7 @@ export interface VirtualCastingRequest {
   style: VirtualCastingStyle;
 }
 
-export const createVirtualCastingTask = (
+export const createVirtualCastingTask = async (
   idolImage: File,
   request: VirtualCastingRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
@@ -239,7 +251,7 @@ export const createVirtualCastingTask = (
   formData.append('idolImage', idolImage);
   formData.append('style', request.style);
 
-  return apiFetch<TaskCreationResponse>('/api/v1/tasks/virtual-casting', {
+  return await apiFetch<TaskCreationResponse>('/api/v1/tasks/virtual-casting', {
     method: 'POST',
     body: formData,
   });
@@ -251,15 +263,15 @@ export interface FanmeetingStudioRequest {
   customPrompt?: string;
 }
 
-export const createFanmeetingStudioTask = (
+export const createFanmeetingStudioTask = async (
   fanImage: File,
   idolImage: File,
   request: FanmeetingStudioRequest
 ): Promise<ApiResponse<TaskCreationResponse>> => {
   const formData = new FormData();
 
-  formData.append('fanImage', fanImage);
-  formData.append('idolImage', idolImage);
+  formData.append('image1', fanImage);
+  formData.append('image2', idolImage);
 
   formData.append('situationPrompt', request.situationPrompt);
   formData.append('backgroundPrompt', request.backgroundPrompt);
@@ -268,42 +280,43 @@ export const createFanmeetingStudioTask = (
     formData.append('customPrompt', request.customPrompt);
   }
 
-  return apiFetch<TaskCreationResponse>('/api/v1/tasks/fanmeeting-studio', {
-    method: 'POST',
-    body: formData,
+  return await apiFetch<TaskCreationResponse>(
+    '/api/v1/tasks/fanmeeting-studio',
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+};
+
+export const deleteTask = async (taskId: number): Promise<void> => {
+  await apiFetch<null>(`/api/v1/tasks/${taskId}`, {
+    method: 'DELETE',
   });
 };
 
-export const deleteTask = (taskId: number): Promise<void> => {
-  return apiFetch<void>(`/api/v1/tasks/${taskId}`, {
-    method: 'DELETE',
-  }).then(() => {});
-};
-
 export interface BatchDeleteResponse {
-  totalRequested: number;
-  successfullyDeleted: number;
-  failed: number;
-  failedTaskIds: number[];
+  message: string;
+  deletedCount: string;
 }
 
-export const deleteBatchTasks = (
+export const deleteBatchTasks = async (
   taskIds: number[]
 ): Promise<ApiResponse<BatchDeleteResponse>> => {
-  return apiFetch<BatchDeleteResponse>('/api/v1/tasks/batch', {
+  return await apiFetch<BatchDeleteResponse>('/api/v1/tasks/batch', {
     method: 'DELETE',
     body: { taskIds },
   });
 };
 
-export const canEditTask = (
+export const canEditTask = async (
   taskId: number,
   actionType: ActionType
 ): Promise<ApiResponse<boolean>> => {
-  return apiFetch<boolean>(`/api/v1/tasks/${taskId}/can-edit`);
+  return await apiFetch<boolean>(`/api/v1/tasks/${taskId}/can-edit`);
 };
 
-export const editTask = (
+export const editTask = async (
   taskId: number,
   actionType: ActionType,
   editPrompt: string
@@ -314,17 +327,20 @@ export const editTask = (
     editPrompt: editPrompt,
   };
 
-  return apiFetch<EditTaskResponse>(`/api/v1/tasks/${endpoint}/${taskId}/edit`, {
-    method: 'POST',
-    body: request,
-  });
+  return await apiFetch<EditTaskResponse>(
+    `/api/v1/tasks/${endpoint}/${taskId}/edit`,
+    {
+      method: 'POST',
+      body: request,
+    }
+  );
 };
 
-export const getTaskEditHistory = (
+export const getTaskEditHistory = async (
   taskId: number,
   actionType: ActionType
 ): Promise<ApiResponse<TaskHistoryResponse[]>> => {
-  return apiFetch<TaskHistoryResponse[]>(
+  return await apiFetch<TaskHistoryResponse[]>(
     `/api/v1/tasks/${taskId}/history`
   );
 };
@@ -376,4 +392,26 @@ export const getOriginalActionType = (
     VIRTUAL_CASTING_EDIT: 'VIRTUAL_CASTING',
   };
   return mapping[editActionType] || editActionType;
+};
+
+// Helper function to extract result URL from Task based on ActionType
+export const getTaskResultUrl = (task: Task): string | null => {
+  switch (task.actionType) {
+    case 'DIGITAL_GOODS':
+    case 'DIGITAL_GOODS_EDIT':
+      return task.digitalGoods?.imageUrl || null;
+    case 'VIRTUAL_CASTING':
+    case 'VIRTUAL_CASTING_EDIT':
+      return task.virtualCasting?.imageUrl || null;
+    case 'STYLIST':
+    case 'STYLIST_EDIT':
+      return task.stylist?.imageUrl || null;
+    case 'FANMEETING_STUDIO':
+    case 'FANMEETING_STUDIO_EDIT':
+      return task.fanmeetingStudio?.imageUrl || null;
+    case 'BUTTER_COVER':
+      return task.butterCover?.audioUrl || null;
+    default:
+      return null;
+  }
 };

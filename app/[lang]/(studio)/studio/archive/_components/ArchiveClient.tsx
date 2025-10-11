@@ -187,25 +187,33 @@ function ArchiveTaskCard({
       );
     }
 
-    if (status === 'COMPLETED' && task.details?.result) {
+    if (status === 'COMPLETED') {
       let imageUrl: string | null = null;
 
       switch (actionType) {
         case 'DIGITAL_GOODS':
         case 'DIGITAL_GOODS_EDIT':
-          imageUrl = task.details.result.imageUrl || null;
+          imageUrl =
+            ('digitalGoods' in task ? task.digitalGoods?.imageUrl : null) ||
+            null;
           break;
         case 'FANMEETING_STUDIO':
         case 'FANMEETING_STUDIO_EDIT':
-          imageUrl = task.details.result.imageUrl || null;
+          imageUrl =
+            ('fanmeetingStudio' in task
+              ? task.fanmeetingStudio?.imageUrl
+              : null) || null;
           break;
         case 'STYLIST':
         case 'STYLIST_EDIT':
-          imageUrl = task.details.result.imageUrl || null;
+          imageUrl =
+            ('stylist' in task ? task.stylist?.imageUrl : null) || null;
           break;
         case 'VIRTUAL_CASTING':
         case 'VIRTUAL_CASTING_EDIT':
-          imageUrl = task.details.result.imageUrl || null;
+          imageUrl =
+            ('virtualCasting' in task ? task.virtualCasting?.imageUrl : null) ||
+            null;
           break;
         case 'BUTTER_COVER':
           return (
@@ -503,7 +511,7 @@ export default function ArchiveClient() {
   };
 
   const handleDownload = async (task: Task) => {
-    if (!task.details?.result || isDownloading) return;
+    if (isDownloading) return;
 
     setIsDownloading(true);
     try {
@@ -512,27 +520,35 @@ export default function ArchiveClient() {
 
       switch (task.actionType) {
         case 'BUTTER_COVER':
-          downloadUrl = task.details.result.audioUrl;
+          downloadUrl =
+            'butterCover' in task ? task.butterCover?.audioUrl : undefined;
           fileName = `butter-cover-${task.taskId}-${Date.now()}.mp3`;
           break;
         case 'DIGITAL_GOODS':
         case 'DIGITAL_GOODS_EDIT':
-          downloadUrl = task.details.result.imageUrl;
+          downloadUrl =
+            'digitalGoods' in task ? task.digitalGoods?.imageUrl : undefined;
           fileName = `digital-goods-${task.taskId}-${Date.now()}.png`;
           break;
         case 'FANMEETING_STUDIO':
         case 'FANMEETING_STUDIO_EDIT':
-          downloadUrl = task.details.result.imageUrl;
+          downloadUrl =
+            'fanmeetingStudio' in task
+              ? task.fanmeetingStudio?.imageUrl
+              : undefined;
           fileName = `fanmeeting-studio-${task.taskId}-${Date.now()}.png`;
           break;
         case 'STYLIST':
         case 'STYLIST_EDIT':
-          downloadUrl = task.details.result.imageUrl;
+          downloadUrl = 'stylist' in task ? task.stylist?.imageUrl : undefined;
           fileName = `stylist-${task.taskId}-${Date.now()}.png`;
           break;
         case 'VIRTUAL_CASTING':
         case 'VIRTUAL_CASTING_EDIT':
-          downloadUrl = task.details.result.imageUrl;
+          downloadUrl =
+            'virtualCasting' in task
+              ? task.virtualCasting?.imageUrl
+              : undefined;
           fileName = `virtual-casting-${task.taskId}-${Date.now()}.png`;
           break;
         default:

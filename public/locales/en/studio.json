@@ -188,7 +188,7 @@
     "modal": {
       "alreadyChecked": "Already checked in today",
       "checkIn": "Get 10 Credits",
-      "description": "Visit Like Butter daily and earn 10 credits as a bonus.",
+      "description": "Visit LikeButter daily and earn 10 credits as a bonus.",
       "receiving": "Receiving credits...",
       "subDescription": "Use credits to make the most of AI features.",
       "title": "Get Credits"
@@ -336,7 +336,9 @@
     "title": "Test with ButterTest"
   },
   "common": {
-    "detailsNotAvailable": "Unable to load details"
+    "detailsNotAvailable": "Unable to load details",
+    "executionTime": "Execution time: {{time}}s",
+    "fileSize": "File size: {{size}} MB"
   },
   "completeSettings": "Complete settings in sidebar and press 'Start Casting'",
   "confirmReset": {
@@ -407,8 +409,11 @@
       "generatedResultSubtitle": "Converted to {{style}} style",
       "generationFailed": "Generation Failed",
       "originalImage": "Original Image",
+      "originalImageAlt": "Original image",
       "originalImageSubtitle": "Uploaded original image",
-      "styleLabel": "Style"
+      "processing": "Processing...",
+      "styleLabel": "Style",
+      "uploadedImage": "Uploaded original image"
     },
     "dragAndDrop": "Drag files here or click to browse",
     "edit": "Edit",
@@ -422,9 +427,12 @@
       "downloadComplete": "Image downloaded!",
       "downloadFailed": "Download failed.",
       "dropHere": "Drop here",
+      "editRequestFailed": "Edit request failed.",
+      "editRequestSent": "Edit request sent!",
       "fileSizeExceeded": "File size exceeds 200MB.",
       "generationComplete": "Digital goods has been generated!",
       "imageLoadFailed": "Failed to load image.",
+      "originalNotFound": "Cannot find original work.",
       "requestSent": "Digital goods generation request sent!",
       "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
       "workReset": "Work has been reset."

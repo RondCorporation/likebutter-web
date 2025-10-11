@@ -2,17 +2,17 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getTaskStatus } from '@/lib/apis/task.api';
-import { TaskStatusResponse } from '@/types/task';
+import { Task } from '@/types/task';
 
 interface UseTaskPollingOptions {
   interval?: number;
   maxAttempts?: number;
-  onCompleted?: (result: TaskStatusResponse) => void;
+  onCompleted?: (result: Task) => void;
   onFailed?: (error: string) => void;
 }
 
 interface UseTaskPollingReturn {
-  taskData: TaskStatusResponse | null;
+  taskData: Task | null;
   isPolling: boolean;
   isBackgroundProcessing: boolean;
   error: string | null;
@@ -27,7 +27,7 @@ export function useTaskPolling(
 ): UseTaskPollingReturn {
   const { interval = 2000, maxAttempts = 900, onCompleted, onFailed } = options;
 
-  const [taskData, setTaskData] = useState<TaskStatusResponse | null>(null);
+  const [taskData, setTaskData] = useState<Task | null>(null);
   const [isPolling, setIsPolling] = useState(false);
   const [isBackgroundProcessing, setIsBackgroundProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,7 +81,7 @@ export function useTaskPolling(
 
           if (response.data.status === 'FAILED') {
             stopPolling();
-            const errorMsg = response.data.details?.error || 'Task failed';
+            const errorMsg = response.data.error || 'Task failed';
             setError(errorMsg);
 
             if (!callbackExecutedRef.current) {

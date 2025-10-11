@@ -14,37 +14,21 @@ export default function TaskDetailsView({
 }) {
   switch (task.actionType) {
     case 'BUTTER_COVER':
-      return (
-        <ButterCoverDetailsView details={task.details} onClose={onClose} />
-      );
+      return <ButterCoverDetailsView task={task} onClose={onClose} />;
     case 'DIGITAL_GOODS':
-      return (
-        <DigitalGoodsDetailsView details={task.details} onClose={onClose} />
-      );
-    case 'FANMEETING_STUDIO':
-      return (
-        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
-      );
-    case 'STYLIST':
-      return <StylistDetailsView details={task.details} onClose={onClose} />;
-    case 'VIRTUAL_CASTING':
-      return (
-        <VirtualCastingDetailsView details={task.details} onClose={onClose} />
-      );
     case 'DIGITAL_GOODS_EDIT':
-      return (
-        <DigitalGoodsDetailsView details={task.details} onClose={onClose} />
-      );
+      return <DigitalGoodsDetailsView task={task as any} onClose={onClose} />;
+    case 'FANMEETING_STUDIO':
     case 'FANMEETING_STUDIO_EDIT':
       return (
-        <FanmeetingStudioDetailsView details={task.details} onClose={onClose} />
+        <FanmeetingStudioDetailsView task={task as any} onClose={onClose} />
       );
+    case 'STYLIST':
     case 'STYLIST_EDIT':
-      return <StylistDetailsView details={task.details} onClose={onClose} />;
+      return <StylistDetailsView task={task as any} onClose={onClose} />;
+    case 'VIRTUAL_CASTING':
     case 'VIRTUAL_CASTING_EDIT':
-      return (
-        <VirtualCastingDetailsView details={task.details} onClose={onClose} />
-      );
+      return <VirtualCastingDetailsView task={task as any} onClose={onClose} />;
     default:
       const exhaustiveCheck: never = task;
       return <p>Details for this task type are not available.</p>;

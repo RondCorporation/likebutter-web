@@ -1,7 +1,7 @@
-import { Task, FanmeetingStudioDetails } from '@/types/task';
+import { Task } from '@/types/task';
 import StatusBadge from '../StatusBadge';
 import { useTranslation } from 'react-i18next';
-import { Heart, Users, MessageSquare, FileText, Image } from 'lucide-react';
+import { Heart, Image } from 'lucide-react';
 
 interface Props {
   task: Task & { actionType: 'FANMEETING_STUDIO' | 'FANMEETING_STUDIO_EDIT' };
@@ -10,7 +10,7 @@ interface Props {
 
 export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
   const { t } = useTranslation('studio');
-  const details = task.details as FanmeetingStudioDetails | undefined;
+  const result = task.fanmeetingStudio;
 
   return (
     <div
@@ -27,50 +27,16 @@ export default function FanmeetingStudioTaskCard({ task, onClick }: Props) {
         <StatusBadge status={task.status} />
       </div>
 
-      {/* Situation Prompt */}
-      {details?.request?.situationPrompt && (
-        <div className="mb-2 flex items-start gap-2 text-sm text-slate-300">
-          <MessageSquare className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <span className="line-clamp-2">
-            {details.request.situationPrompt}
-          </span>
-        </div>
-      )}
-
-      {/* Background Prompt */}
-      {details?.request?.backgroundPrompt && (
-        <div className="mb-2 flex items-start gap-2 text-sm text-slate-400">
-          <MessageSquare className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <span className="line-clamp-1">
-            {details.request.backgroundPrompt}
-          </span>
-        </div>
-      )}
-
-      {/* Custom Prompt */}
-      {details?.request?.customPrompt && (
-        <div className="mb-2 flex items-start gap-2 text-sm text-slate-400">
-          <FileText className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <span className="line-clamp-1">{details.request.customPrompt}</span>
-        </div>
-      )}
-
-      {/* Images Info */}
-      <div className="mb-2 flex items-center gap-2 text-sm text-slate-400">
-        <Users className="h-4 w-4" />
-        <span>{t('fanmeeting.taskCard.fanAndIdolImages')}</span>
-      </div>
-
       {/* Result Info */}
-      {details?.result && (
-        <div className="mt-3 border-t border-white/10 pt-3">
+      {result && (
+        <div className="mt-3">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <Image className="h-4 w-4" />
             <span>{t('fanmeeting.taskCard.sceneGenerationComplete')}</span>
           </div>
-          {details.result.filename && (
-            <div className="mt-1 text-xs text-slate-500 font-mono">
-              {details.result.filename}
+          {result.filename && (
+            <div className="mt-2 text-xs text-slate-400 truncate">
+              {result.filename}
             </div>
           )}
         </div>

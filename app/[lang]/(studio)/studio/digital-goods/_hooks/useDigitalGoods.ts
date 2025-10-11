@@ -91,9 +91,16 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
     currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
-      const details = result.details as any;
-      if (details?.result?.imageUrl) {
-        setResultImage(details.result.imageUrl);
+      // Check for both DIGITAL_GOODS and DIGITAL_GOODS_EDIT
+      const imageUrl =
+        (result.actionType === 'DIGITAL_GOODS' ||
+          result.actionType === 'DIGITAL_GOODS_EDIT') &&
+        result.digitalGoods?.imageUrl
+          ? result.digitalGoods.imageUrl
+          : null;
+
+      if (imageUrl) {
+        setResultImage(imageUrl);
         toast.success(t('studio:digitalGoods.messages.generationComplete'));
       }
       setIsGenerating(false);
@@ -219,7 +226,7 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
   const handleEditRequest = useCallback(
     async (editRequest: string) => {
       if (!taskData || !taskData.taskId) {
-        toast.error('Cannot find original task.');
+        toast.error(t('studio:digitalGoods.messages.originalNotFound'));
         return;
       }
 
@@ -240,19 +247,19 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
 
         if (response.data) {
           deductCredit(CREDIT_COSTS.IMAGE_EDIT);
-          toast.success('Edit request has been sent!');
+          toast.success(t('studio:digitalGoods.messages.editRequestSent'));
           startPolling(response.data.taskId);
         } else {
-          toast.error('Edit request failed.');
+          toast.error(t('studio:digitalGoods.messages.editRequestFailed'));
           setIsEditLoading(false);
         }
       } catch (error: any) {
         console.error('Edit request failed:', error);
-        toast.error('Edit request failed.');
+        toast.error(t('studio:digitalGoods.messages.editRequestFailed'));
         setIsEditLoading(false);
       }
     },
-    [taskData, deductCredit, startPolling]
+    [taskData, deductCredit, startPolling, t]
   );
 
   const handleReset = useCallback(() => {

@@ -54,11 +54,12 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
     currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
-      const details = result.details as ButterCoverDetails;
-      if (details?.result?.audioKey) {
-        const audioUrl = `/api/audio/${details.result.audioKey}`;
-        setResultAudioUrl(audioUrl);
-        toast.success(t('butterCover.messages.coverComplete'));
+      if (result.actionType === 'BUTTER_COVER' && 'butterCover' in result) {
+        const audioUrl = result.butterCover?.audioUrl;
+        if (audioUrl) {
+          setResultAudioUrl(audioUrl);
+          toast.success(t('butterCover.messages.coverComplete'));
+        }
       }
       setIsLoading(false);
     },

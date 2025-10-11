@@ -101,8 +101,16 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
     currentTaskId,
   } = useTaskPolling({
     onCompleted: (result) => {
-      if (result.details?.result?.imageUrl) {
-        setResultImage(result.details.result.imageUrl);
+      // Check for both FANMEETING_STUDIO and FANMEETING_STUDIO_EDIT
+      const imageUrl =
+        (result.actionType === 'FANMEETING_STUDIO' ||
+          result.actionType === 'FANMEETING_STUDIO_EDIT') &&
+        result.fanmeetingStudio?.imageUrl
+          ? result.fanmeetingStudio.imageUrl
+          : null;
+
+      if (imageUrl) {
+        setResultImage(imageUrl);
         toast.success(t('fanmeeting.messages.fanmeetingComplete'));
       }
       setIsProcessing(false);

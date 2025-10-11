@@ -263,7 +263,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           <RotatingHeroSection lang={lang} />
         </div>
 
-        {/* Section 2: About Like Butter */}
+        {/* Section 2: About LikeButter */}
         <div
           ref={(el) => {
             sectionRefs.current[1] = el;
@@ -273,7 +273,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
           <PageSection id="about" fitViewport className="bg-black text-white">
             <div className="h-full flex flex-col px-4 md:px-0">
               <SectionHeader
-                yellowText="ABOUT LIKE BUTTER."
+                yellowText="ABOUT LIKEBUTTER."
                 title={t('sectionAboutTitle')}
                 subtitle={t('sectionAboutDesc')}
               />

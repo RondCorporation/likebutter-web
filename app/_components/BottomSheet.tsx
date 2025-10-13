@@ -91,7 +91,9 @@ export default function BottomSheet({
           touchAction: 'pan-y',
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
-          paddingBottom: hasBottomButton ? 'calc(0.75rem + 20px)' : 'calc(0.75rem + 20px)',
+          paddingBottom: hasBottomButton
+            ? 'calc(0.75rem + 20px)'
+            : 'calc(0.75rem + 20px)',
         }}
       >
         {children}

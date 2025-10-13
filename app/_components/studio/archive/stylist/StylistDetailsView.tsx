@@ -62,7 +62,9 @@ export default function StylistDetailsView({ task, details, onClose }: Props) {
                 subtitle={t('stylist.details.styledResult')}
                 imageUrl={result.imageUrl}
                 alt={t('stylist.details.styledResult')}
-                downloadFilename={result.filename || `stylist-${Date.now()}.png`}
+                downloadFilename={
+                  result.filename || `stylist-${Date.now()}.png`
+                }
               />
             </div>
           ) : (
@@ -77,8 +79,11 @@ export default function StylistDetailsView({ task, details, onClose }: Props) {
           )}
 
           {/* Reference Images Grid */}
-          {(result.hairStyleImageUrl || result.outfitImageUrl || result.backgroundImageUrl ||
-            result.accessoryImageUrl || result.moodImageUrl) && (
+          {(result.hairStyleImageUrl ||
+            result.outfitImageUrl ||
+            result.backgroundImageUrl ||
+            result.accessoryImageUrl ||
+            result.moodImageUrl) && (
             <div className="space-y-3">
               <h4 className="text-sm font-semibold text-studio-text-primary">
                 {t('stylist.details.referenceImages')}
@@ -151,9 +156,17 @@ export default function StylistDetailsView({ task, details, onClose }: Props) {
           {/* File Info */}
           {result.fileSize && (
             <div className="text-sm text-studio-text-secondary space-y-1">
-              <p>{t('common.fileSize', { size: (result.fileSize / 1024 / 1024).toFixed(2) })}</p>
+              <p>
+                {t('common.fileSize', {
+                  size: (result.fileSize / 1024 / 1024).toFixed(2),
+                })}
+              </p>
               {result.executionTime && (
-                <p>{t('common.executionTime', { time: result.executionTime.toFixed(1) })}</p>
+                <p>
+                  {t('common.executionTime', {
+                    time: result.executionTime.toFixed(1),
+                  })}
+                </p>
               )}
             </div>
           )}
@@ -161,13 +174,14 @@ export default function StylistDetailsView({ task, details, onClose }: Props) {
       )}
 
       {/* Processing State */}
-      {!result && (task?.status === 'PENDING' || task?.status === 'PROCESSING') && (
-        <div className="flex items-center justify-center h-40">
-          <p className="text-studio-text-muted">
-            {t('stylist.details.processing')}
-          </p>
-        </div>
-      )}
+      {!result &&
+        (task?.status === 'PENDING' || task?.status === 'PROCESSING') && (
+          <div className="flex items-center justify-center h-40">
+            <p className="text-studio-text-muted">
+              {t('stylist.details.processing')}
+            </p>
+          </div>
+        )}
 
       {/* Error State */}
       {error && (

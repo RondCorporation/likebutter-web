@@ -49,7 +49,9 @@ export default function DetailsModal({ children, onClose }: DetailsModalProps) {
         <div
           className="flex-1 overflow-y-auto p-6"
           style={{
-            paddingBottom: isMobile ? 'calc(1.5rem + env(safe-area-inset-bottom, 0px) + 100px)' : '1.5rem',
+            paddingBottom: isMobile
+              ? 'calc(1.5rem + env(safe-area-inset-bottom, 0px) + 100px)'
+              : '1.5rem',
           }}
         >
           {children}

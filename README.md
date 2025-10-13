@@ -36,18 +36,21 @@ Like-Butter는 콘텐츠 제작자를 위한 AI 기반 도구를 제공하여, �
 ### 설치 및 실행
 
 1.  **저장소 복제:**
+
     ```bash
     git clone https://github.com/RondCorporation/likebutter-web.git
     cd likebutter-web
     ```
 
 2.  **의존성 설치:**
+
     ```bash
     npm install
     ```
 
 3.  **환경 변수 설정:**
     프로젝트 루트에 `.env.local` 파일을 생성하고 아래 내용을 복사하여 채워주세요.
+
     ```env
     # Next.js 서버 기본 URL
     NEXT_PUBLIC_BASE_URL=http://localhost:3000

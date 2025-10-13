@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: [
       'lucide-react',
-      'framer-motion', 
+      'framer-motion',
       'react-hot-toast',
       'react-markdown',
       'react-i18next',
@@ -118,17 +118,17 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'X-DNS-Prefetch-Control',
-            value: 'on'
+            value: 'on',
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY'
+            value: 'DENY',
           },
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff'
+            value: 'nosniff',
           },
-        ]
+        ],
       },
     ];
   },

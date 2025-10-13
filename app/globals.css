@@ -155,18 +155,38 @@
   }
 
   /* Studio2 Font System */
-  .font-pretendard { font-family: 'Pretendard', 'Helvetica', sans-serif; }
-  .font-pretendard-medium { font-family: 'Pretendard-Medium', 'Helvetica', sans-serif; }
-  .font-pretendard-bold { font-family: 'Pretendard-Bold', 'Helvetica', sans-serif; }
-  .font-archivo-black { font-family: 'Archivo Black', 'Helvetica', sans-serif; }
+  .font-pretendard {
+    font-family: 'Pretendard', 'Helvetica', sans-serif;
+  }
+  .font-pretendard-medium {
+    font-family: 'Pretendard-Medium', 'Helvetica', sans-serif;
+  }
+  .font-pretendard-bold {
+    font-family: 'Pretendard-Bold', 'Helvetica', sans-serif;
+  }
+  .font-archivo-black {
+    font-family: 'Archivo Black', 'Helvetica', sans-serif;
+  }
 
   /* Studio2 Common Layout Utilities */
-  .flex-center { @apply flex items-center justify-center; }
-  .flex-between { @apply flex items-center justify-between; }
-  .flex-col-center { @apply flex flex-col items-center; }
-  .flex-end { @apply flex items-center justify-end; }
-  .inline-flex-center { @apply inline-flex items-center justify-center; }
-  .inline-flex-end { @apply inline-flex items-center justify-end; }
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+  .flex-col-center {
+    @apply flex flex-col items-center;
+  }
+  .flex-end {
+    @apply flex items-center justify-end;
+  }
+  .inline-flex-center {
+    @apply inline-flex items-center justify-center;
+  }
+  .inline-flex-end {
+    @apply inline-flex items-center justify-end;
+  }
 
   /* Studio2 Custom Dropdown Styles */
   .studio-dropdown {

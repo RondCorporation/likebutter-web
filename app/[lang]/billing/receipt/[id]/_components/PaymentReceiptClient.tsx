@@ -42,8 +42,8 @@ export default function PaymentReceiptClient({
   const billingCycle = paymentData.plan.planKey.includes('MONTHLY')
     ? 'MONTHLY'
     : paymentData.plan.planKey.includes('YEARLY')
-    ? 'YEARLY'
-    : 'MONTHLY';
+      ? 'YEARLY'
+      : 'MONTHLY';
 
   const statusColors = {
     PAID: 'bg-butter-yellow/20 text-butter-yellow border-butter-yellow/40',
@@ -206,7 +206,10 @@ export default function PaymentReceiptClient({
                         {t('billing:checkout.total')}
                       </span>
                       <span className="text-2xl font-bold text-butter-yellow">
-                        {formatCurrency(paymentData.amount, paymentData.currency)}
+                        {formatCurrency(
+                          paymentData.amount,
+                          paymentData.currency
+                        )}
                       </span>
                     </div>
                   </div>

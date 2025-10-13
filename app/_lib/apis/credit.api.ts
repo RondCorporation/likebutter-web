@@ -75,7 +75,9 @@ export const getCreditHistory = (
     sort,
   });
 
-  return apiFetch<CreditHistoryPage>(`/api/v1/credits/history?${params.toString()}`);
+  return apiFetch<CreditHistoryPage>(
+    `/api/v1/credits/history?${params.toString()}`
+  );
 };
 
 export const getCreditCost = (actionType: ActionType): number => {

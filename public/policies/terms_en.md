@@ -22,11 +22,11 @@ These Terms of Service (the "Terms") set forth the rights, obligations, and resp
 ## **Article 4 (Provision of Service)**
 
 1. The Company provides the following services:
-    - **Digital Goods Service:** Transform personal photos into realistic, illustration, or cartoon styles
-    - **Stylist Service:** Change hair, outfit, and makeup styles in portrait photos
-    - **Online Fan Meeting:** Generate composite images as if fans and idols were photographed together
-    - **Virtual Casting:** Transform users into movie/game/animation characters
-    - **Butter Cover:** Create cover songs of favorite tracks in the user's voice
+   - **Digital Goods Service:** Transform personal photos into realistic, illustration, or cartoon styles
+   - **Stylist Service:** Change hair, outfit, and makeup styles in portrait photos
+   - **Online Fan Meeting:** Generate composite images as if fans and idols were photographed together
+   - **Virtual Casting:** Transform users into movie/game/animation characters
+   - **Butter Cover:** Create cover songs of favorite tracks in the user's voice
 2. The Service shall be provided 24 hours a day, 365 days a year in principle. However, the Company may temporarily suspend all or part of the Service when necessary for regular inspection, expansion, and replacement of service facilities, or when necessary for other operational reasons.
 
 ## **Article 5 (Paid Service)**
@@ -34,9 +34,9 @@ These Terms of Service (the "Terms") set forth the rights, obligations, and resp
 ### **5.1 Pricing Plans and Payment**
 
 1. The Company provides the following pricing plans:
-    - **Free Plan**: 10 credits provided upon daily check-in
-    - **Creator Plan**: Monthly subscription (100 credits per month, 10 credits provided upon daily check-in)
-    - **Professional Plan**: Monthly subscription (300 credits per month, 10 credits provided upon daily check-in)
+   - **Free Plan**: 10 credits provided upon daily check-in
+   - **Creator Plan**: Monthly subscription (100 credits per month, 10 credits provided upon daily check-in)
+   - **Professional Plan**: Monthly subscription (300 credits per month, 10 credits provided upon daily check-in)
 2. The fees for Paid Services are separately determined for each service, and such fees are displayed on the Service screen.
 3. Payment can be made through credit cards, debit cards, or other payment methods designated by the Company.
 
@@ -46,17 +46,17 @@ These Terms of Service (the "Terms") set forth the rights, obligations, and resp
 
 1. **Refund Period**: Within 14 days from service subscription
 2. **Refund Conditions**:
-    - If the Service has not been substantially used (less than 10% credit usage)
-    - If the Service is unavailable due to service errors
-    - If service provision is impossible due to reasons attributable to the Company
+   - If the Service has not been substantially used (less than 10% credit usage)
+   - If the Service is unavailable due to service errors
+   - If service provision is impossible due to reasons attributable to the Company
 3. **Non-Refundable Cases**:
-    - Cancellation due to simple change of mind (if 10% or more credits have been used)
-    - Service usage restrictions due to reasons attributable to the Member
-    - For subscriptions that include a free trial period, after the free period ends
+   - Cancellation due to simple change of mind (if 10% or more credits have been used)
+   - Service usage restrictions due to reasons attributable to the Member
+   - For subscriptions that include a free trial period, after the free period ends
 4. **Refund Processing**:
-    - Processed within 3 business days from receipt of refund request
-    - Refund to original payment method (card authorization cancellation)
-    - For partial refunds, pro-rata calculation for unused period
+   - Processed within 3 business days from receipt of refund request
+   - Refund to original payment method (card authorization cancellation)
+   - For partial refunds, pro-rata calculation for unused period
 
 ### **5.3 Auto-Renewal and Cancellation**
 
@@ -67,13 +67,13 @@ These Terms of Service (the "Terms") set forth the rights, obligations, and resp
 ## **Article 6 (Obligations of Members)**
 
 1. Members shall not engage in the following acts:
-    - Misappropriation of others' information
-    - Alteration of Service information
-    - Transmission or posting of information other than that designated by the Company (such as computer programs)
-    - Infringement of intellectual property rights, including copyrights, of the Company or third parties
-    - Acts that damage the reputation of the Company or third parties or interfere with their business
-    - Publishing or posting obscene or violent messages, images, voices, or other information contrary to public order and morals on the Service
-    - Using the Service for illegal purposes
+   - Misappropriation of others' information
+   - Alteration of Service information
+   - Transmission or posting of information other than that designated by the Company (such as computer programs)
+   - Infringement of intellectual property rights, including copyrights, of the Company or third parties
+   - Acts that damage the reputation of the Company or third parties or interfere with their business
+   - Publishing or posting obscene or violent messages, images, voices, or other information contrary to public order and morals on the Service
+   - Using the Service for illegal purposes
 
 ## **Article 7 (Restriction of Service Use)**
 

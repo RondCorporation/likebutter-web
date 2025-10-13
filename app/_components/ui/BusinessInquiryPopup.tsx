@@ -12,7 +12,10 @@ interface BusinessInquiryPopupProps {
   onClose: () => void;
 }
 
-export default function BusinessInquiryPopup({ isOpen, onClose }: BusinessInquiryPopupProps) {
+export default function BusinessInquiryPopup({
+  isOpen,
+  onClose,
+}: BusinessInquiryPopupProps) {
   const { t } = useTranslation(['common', 'marketing']);
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
@@ -75,11 +78,7 @@ export default function BusinessInquiryPopup({ isOpen, onClose }: BusinessInquir
   };
 
   return (
-    <BasePopup
-      isOpen={isOpen}
-      onClose={onClose}
-      title="비즈니스 문의"
-    >
+    <BasePopup isOpen={isOpen} onClose={onClose} title="비즈니스 문의">
       <div className="flex flex-col gap-6">
         {/* Company Name Input */}
         <div className="flex flex-col gap-2">
@@ -184,11 +183,7 @@ export default function BusinessInquiryPopup({ isOpen, onClose }: BusinessInquir
             {t('common:cancel')}
           </button>
           <StudioButton
-            text={
-              isSubmitting
-                ? t('common:feedback.submitting')
-                : '문의하기'
-            }
+            text={isSubmitting ? t('common:feedback.submitting') : '문의하기'}
             onClick={handleSubmit}
             disabled={isSubmitting}
             loading={isSubmitting}

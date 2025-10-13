@@ -145,10 +145,10 @@ export default function ModernPlanCard({
             isCurrentPlan
               ? 'bg-green-500/20 border border-green-500/40 text-green-400 cursor-default'
               : planKey === 'free'
-              ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
-              : isPopular
-                ? 'bg-butter-yellow hover:bg-butter-yellow/90 text-black'
-                : 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
+                ? 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
+                : isPopular
+                  ? 'bg-butter-yellow hover:bg-butter-yellow/90 text-black'
+                  : 'bg-slate-700 hover:bg-slate-600 text-white border border-slate-600'
           } ${disabled ? 'cursor-not-allowed opacity-60' : ''}`}
           disabled={disabled || loading || isCurrentPlan}
           onClick={(e) => {

@@ -8,6 +8,7 @@ import SelectCard from './ui/SelectCard';
 import StudioButton from './ui/StudioButton';
 import { useRouter } from 'next/navigation';
 import { useIsMobile } from '@/hooks/useMediaQuery';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface ModelSelectPopupProps {
   onClose: () => void;
@@ -22,6 +23,8 @@ export default function ModelSelectPopup({
   const router = useRouter();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
+
+  useScrollLock(true);
 
   useEffect(() => {
     router.prefetch(`/${lang}/studio/digital-goods`);

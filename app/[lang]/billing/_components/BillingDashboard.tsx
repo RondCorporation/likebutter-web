@@ -11,6 +11,7 @@ import { Plan } from '@/app/_types/plan';
 import { useAuthStore } from '@/stores/authStore';
 import { getMySubscription } from '@/lib/apis/subscription.api';
 import { SubscriptionDetails } from '@/app/_types/subscription';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 
 interface BillingDashboardProps {
   lang: string;
@@ -134,6 +135,7 @@ export default function BillingDashboard({
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuthStore();
+  const isMobile = useIsMobile();
 
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>(
     'yearly'
@@ -474,6 +476,11 @@ export default function BillingDashboard({
               // Default rendering for other cases
               return plans
                 .filter((plan) => {
+                  // Hide FREE plan on mobile
+                  if (isMobile && plan.key === 'FREE') {
+                    return false;
+                  }
+
                   if (!currentSubscription) return true;
 
                   const currentPlanKey = currentSubscription.planInfo.planKey;

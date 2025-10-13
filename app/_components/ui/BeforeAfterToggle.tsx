@@ -33,7 +33,7 @@ export default function BeforeAfterToggle({
   const finalEditButtonText = editButtonText || t('beforeAfter.edit');
 
   return (
-    <div className="flex flex-col min-h-full bg-studio-content">
+    <div className="flex flex-col h-full bg-studio-content overflow-y-auto">
       {/* Header */}
       <div className="flex items-center justify-between px-4 md:px-12 pb-0 pt-6 sticky top-0 bg-studio-content z-10 border-b border-studio-border/50 backdrop-blur-sm">
         <div className="flex-1 text-xl font-bold leading-7 font-pretendard bg-gradient-to-r from-[#FFCC00] to-[#E8FA07] bg-clip-text text-transparent">
@@ -66,7 +66,14 @@ export default function BeforeAfterToggle({
       </div>
 
       {/* Image Display */}
-      <div className="flex items-center justify-center p-4">
+      <div
+        className="flex items-center justify-center p-4"
+        style={{
+          paddingBottom: isDesktop
+            ? '16px'
+            : 'calc(100px + env(safe-area-inset-bottom, 0px) + 80px)',
+        }}
+      >
         <img
           src={currentView === 'before' ? beforeImage : afterImage}
           alt={currentView === 'before' ? 'Before image' : 'After image'}

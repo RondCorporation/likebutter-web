@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useMediaQuery';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface BasePopupProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export default function BasePopup({
   className = '',
 }: BasePopupProps) {
   const isMobile = useIsMobile();
+  useScrollLock(isOpen);
 
   if (!isOpen) return null;
 

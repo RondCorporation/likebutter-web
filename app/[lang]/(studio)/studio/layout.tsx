@@ -46,11 +46,19 @@ export default function StudioLayout({ children, params }: Props) {
         <StudioPreloader lang={lang} />
 
         <Toaster
-          position="top-right"
-          containerStyle={{
-            top: 80,
-            right: 20,
-          }}
+          position={isDesktop ? 'top-right' : 'top-center'}
+          containerStyle={
+            isDesktop
+              ? {
+                  top: 80,
+                  right: 20,
+                }
+              : {
+                  top: 70,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                }
+          }
           toastOptions={{
             duration: 3000,
             className: 'studio-toast',
@@ -59,14 +67,14 @@ export default function StudioLayout({ children, params }: Props) {
               color: '#ffffff',
               border: '1px solid #313131',
               borderRadius: '12px',
-              padding: '16px 20px',
+              padding: isDesktop ? '16px 20px' : '12px 16px',
               fontSize: '14px',
               fontWeight: '500',
               boxShadow:
                 '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
               backdropFilter: 'blur(10px)',
-              maxWidth: '420px',
-              minHeight: '60px',
+              maxWidth: isDesktop ? '420px' : 'calc(100vw - 32px)',
+              minHeight: isDesktop ? '60px' : '48px',
               display: 'flex',
               alignItems: 'center',
               gap: '12px',

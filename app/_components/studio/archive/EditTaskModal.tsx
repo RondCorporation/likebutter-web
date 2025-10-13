@@ -5,6 +5,7 @@ import { X, Send, Loader2 } from 'lucide-react';
 import { Task, ActionType } from '@/types/task';
 import { editTask } from '@/lib/apis/task.api';
 import { useTranslation } from 'react-i18next';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface Props {
   task: Task;
@@ -23,6 +24,8 @@ export default function EditTaskModal({
   const [editPrompt, setEditPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useScrollLock(isOpen);
 
   const handleSubmit = async () => {
     if (!editPrompt.trim()) {
@@ -103,7 +106,7 @@ export default function EditTaskModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#25282c] border border-[#4a4a4b] rounded-xl p-6 mx-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#25282c] border border-[#4a4a4b] rounded-xl p-6 mx-4 max-w-2xl w-full max-h-[90vh] overflow-y-auto pb-32 md:pb-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white">이미지 수정하기</h2>

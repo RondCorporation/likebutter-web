@@ -1,109 +1,103 @@
-# LikeButter Terms of Service
+# **LikeButter Terms of Service**
 
-**Effective Date: {{EFFECTIVE_DATE}}**
+**Effective Date: July 1, 2025**
 
-## Article 1 (Purpose)
+## **Article 1 (Purpose)**
 
-These Terms of Service (the "Terms") govern the use of the {{SERVICE_NAME}} service (the "Service") provided by {{COMPANY_NAME}} ("Company", "we", "us") and establish the rights, obligations, and responsibilities between the Company and members.
+These Terms of Service (the "Terms") set forth the rights, obligations, and responsibilities between Rond Corporation (the "Company") and members, as well as other necessary matters, in relation to the use of the LikeButter service (the "Service") provided by the Company.
 
-## Article 2 (Definitions)
+## **Article 2 (Definitions)**
 
-1. **"Service"** means the AI-powered creative tools platform provided by the Company.
-2. **"Member"** means a person who accesses the Company's service and enters into a service agreement with the Company in accordance with these Terms.
-3. **"Paid Service"** means various online digital content and related services provided by the Company for a fee.
-4. **"Credits"** means virtual currency units used within the Service for AI tool usage.
+1. "Service" refers to the AI-powered creative tool platform provided by the Company.
+2. "Member" refers to a person who accesses the Company's Service, enters into a service agreement with the Company in accordance with these Terms, and uses the Service provided by the Company.
+3. "Paid Service" refers to various online digital content and related services provided by the Company for a fee.
+4. "Credit" refers to a virtual currency unit used within the Service for utilizing AI tools.
 
-## Article 3 (Publication and Amendment of Terms)
+## **Article 3 (Posting and Amendment of Terms)**
 
-1. The Company shall post the contents of these Terms on the initial screen of the Service so that members can easily understand them.
-2. The Company may amend these Terms within the scope that does not violate relevant laws.
-3. When amending the Terms, the Company shall announce the effective date and reasons for amendment on the initial screen of the Service from 7 days before the effective date.
+1. The Company shall post the contents of these Terms on the initial screen of the Service so that Members can easily recognize them.
+2. The Company may amend these Terms to the extent that it does not violate relevant laws, including the Act on the Regulation of Terms and Conditions and the Act on Promotion of Information and Communications Network Utilization and Information Protection, etc. (the "Information and Communications Network Act").
+3. If the Company amends these Terms, it shall specify the effective date and the reason for the amendment and post them on the initial screen of the Service together with the current Terms from seven days before the effective date until the day before the effective date.
 
-## Article 4 (Service Provision)
+## **Article 4 (Provision of Service)**
 
 1. The Company provides the following services:
-   - **ButterGen**: AI-based image generation service
-   - **ButterCover**: AI voice synthesis and cover song creation service
-   - **ButterTalks**: AI conversational service
-   - **ButterBrush**: AI image editing service
-   - **ButterCuts**: AI video editing service
-   - **ButterTest**: Experimental AI model testing service
+    - **Digital Goods Service:** Transform personal photos into realistic, illustration, or cartoon styles
+    - **Stylist Service:** Change hair, outfit, and makeup styles in portrait photos
+    - **Online Fan Meeting:** Generate composite images as if fans and idols were photographed together
+    - **Virtual Casting:** Transform users into movie/game/animation characters
+    - **Butter Cover:** Create cover songs of favorite tracks in the user's voice
+2. The Service shall be provided 24 hours a day, 365 days a year in principle. However, the Company may temporarily suspend all or part of the Service when necessary for regular inspection, expansion, and replacement of service facilities, or when necessary for other operational reasons.
 
-2. The Service is provided 24 hours a day, 365 days a year in principle. However, the Company may temporarily suspend all or part of the Service for regular maintenance, expansion, and replacement of service facilities or other operational needs.
+## **Article 5 (Paid Service)**
 
-## Article 5 (Paid Services)
+### **5.1 Pricing Plans and Payment**
 
-### 5.1 Pricing Plans and Payment
+1. The Company provides the following pricing plans:
+    - **Free Plan**: 10 credits provided upon daily check-in
+    - **Creator Plan**: Monthly subscription (100 credits per month, 10 credits provided upon daily check-in)
+    - **Professional Plan**: Monthly subscription (300 credits per month, 10 credits provided upon daily check-in)
+2. The fees for Paid Services are separately determined for each service, and such fees are displayed on the Service screen.
+3. Payment can be made through credit cards, debit cards, or other payment methods designated by the Company.
 
-1. The Company offers the following pricing plans:
-   - **Free Plan**: 300 monthly credits
-   - **Creator Plan**: Monthly subscription (4,000 monthly credits)
-   - **Professional Plan**: Monthly subscription (12,000 monthly credits)
-   - **Enterprise Plan**: Custom plan
+### **5.2 Withdrawal and Refund Policy**
 
-2. Usage fees for paid services are separately determined for each service, and such fees are displayed on the service screen.
+### **Refund Policy for Intangible Services**
 
-3. Payment is possible through credit cards, debit cards, and other payment methods determined by the Company.
-
-### 5.2 Cancellation and Refund Policy
-
-#### Refund Policy for Digital Services
-
-1. **Refund Period**: Within {{REFUND_PERIOD}} days of service subscription
+1. **Refund Period**: Within 14 days from service subscription
 2. **Refund Conditions**:
-   - When the service has not been substantially used (less than 10% credit usage)
-   - When the service is unavailable due to service errors
-   - When service provision is impossible due to the Company's fault
-
-3. **Non-refundable Cases**:
-   - Cancellation due to simple change of mind (after using 10% or more credits)
-   - Service usage restrictions due to member's fault
-   - For subscriptions that include a free trial period, after the free period ends
-
+    - If the Service has not been substantially used (less than 10% credit usage)
+    - If the Service is unavailable due to service errors
+    - If service provision is impossible due to reasons attributable to the Company
+3. **Non-Refundable Cases**:
+    - Cancellation due to simple change of mind (if 10% or more credits have been used)
+    - Service usage restrictions due to reasons attributable to the Member
+    - For subscriptions that include a free trial period, after the free period ends
 4. **Refund Processing**:
-   - Processed within 3 business days of refund request
-   - Refunded to original payment method (card authorization cancellation)
-   - For partial refunds, prorated calculation for unused period
+    - Processed within 3 business days from receipt of refund request
+    - Refund to original payment method (card authorization cancellation)
+    - For partial refunds, pro-rata calculation for unused period
 
-### 5.3 Automatic Renewal and Cancellation
+### **5.3 Auto-Renewal and Cancellation**
 
-1. Subscription services automatically renew upon expiration of the subscription period.
-2. If you do not wish to auto-renew, you must apply for cancellation {{CANCELLATION_PERIOD}} days before the subscription expiration date.
-3. Upon subscription cancellation, service usage is available until the end of the current subscription period.
+1. Subscription services will automatically renew upon expiration of the subscription period.
+2. If you do not wish to auto-renew, you must request cancellation at least 7 days before the subscription expiration date.
+3. Upon subscription cancellation, the Service will remain available until the end of the current subscription period.
 
-## Article 6 (Member Obligations)
+## **Article 6 (Obligations of Members)**
 
-1. Members shall not engage in the following activities:
-   - Misappropriating others' information
-   - Altering service information
-   - Transmitting or posting information other than that designated by the Company
-   - Infringing on intellectual property rights such as copyrights of the Company and third parties
-   - Damaging the reputation of the Company or third parties or interfering with business
-   - Publishing or posting obscene or violent messages, images, sounds, or other information contrary to public morals
-   - Using the service for illegal purposes
+1. Members shall not engage in the following acts:
+    - Misappropriation of others' information
+    - Alteration of Service information
+    - Transmission or posting of information other than that designated by the Company (such as computer programs)
+    - Infringement of intellectual property rights, including copyrights, of the Company or third parties
+    - Acts that damage the reputation of the Company or third parties or interfere with their business
+    - Publishing or posting obscene or violent messages, images, voices, or other information contrary to public order and morals on the Service
+    - Using the Service for illegal purposes
 
-## Article 7 (Service Usage Restrictions)
+## **Article 7 (Restriction of Service Use)**
 
-1. The Company may restrict service usage in stages through warnings, temporary suspension, or permanent suspension when members violate these Terms or interfere with normal service operation.
+1. If a Member violates the obligations under these Terms or interferes with the normal operation of the Service, the Company may restrict service use in stages, such as warnings, temporary suspension, or permanent suspension.
 
-## Article 8 (Damages)
+## **Article 8 (Damages)**
 
-1. The Company shall not be liable for any damages to members related to free services, except when such damages are caused by the Company's willful misconduct or gross negligence.
+1. The Company shall not be liable for any damages incurred by Members in connection with the free Service, except in cases where such damages are caused by the Company's willful misconduct or gross negligence.
 
-## Article 9 (Disclaimer)
+## **Article 9 (Disclaimer)**
 
-1. The Company is exempt from liability for service provision when unable to provide services due to natural disasters or equivalent force majeure events.
+1. The Company shall be exempt from liability for providing the Service if it is unable to provide the Service due to force majeure such as natural disasters or equivalent circumstances.
 
-## Article 10 (Dispute Resolution)
+## **Article 10 (Dispute Resolution)**
 
-1. For disputes arising from service usage, the court with jurisdiction over the Company's headquarters location shall have jurisdiction.
+1. In the event that a lawsuit is filed regarding a dispute arising from the use of the Service, the court having jurisdiction over the location of the Company's head office shall be the competent court.
 
 ---
 
 **Contact Information**
-- Company: {{COMPANY_NAME}}
-- Address: {{COMPANY_ADDRESS}}
-- Email: {{COMPANY_CONTACT_EMAIL}}
-- Phone: {{COMPANY_CONTACT_PHONE}}
 
-These Terms are effective from {{EFFECTIVE_DATE}}.
+- Company Name: Rond Corporation
+- Address: H Tower, 12 Teheran-ro 70-gil, Gangnam-gu, Seoul, Republic of Korea
+- Email: info@rondcorp.com
+- Phone: +82 10-5231-1263
+
+These Terms shall become effective from July 1, 2025.

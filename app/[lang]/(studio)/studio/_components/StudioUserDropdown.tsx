@@ -267,26 +267,46 @@ export default function StudioUserDropdown({
                 </div>
                 <ChevronRight
                   size={14}
-                  className={`text-studio-text-secondary transition-transform ${isLanguageOpen ? 'rotate-180' : ''}`}
+                  className={`text-studio-text-secondary transition-transform ${isLanguageOpen ? 'rotate-90' : ''}`}
                 />
               </button>
 
               {isLanguageOpen && (
-                <div className="absolute right-full top-0 mr-1 w-32 rounded-md bg-studio-sidebar border border-studio-border shadow-lg py-1 z-50">
-                  {languages.map((language) => (
-                    <button
-                      key={language.code}
-                      onClick={() => handleLanguageChange(language.code)}
-                      className={`w-full px-3 py-2 text-left text-sm hover:bg-studio-button-primary/10 transition ${
-                        lang === language.code
-                          ? 'text-studio-button-primary font-medium'
-                          : 'text-studio-text-primary'
-                      }`}
-                    >
-                      {language.name}
-                    </button>
-                  ))}
-                </div>
+                <>
+                  {/* Mobile: Inline dropdown */}
+                  <div className="md:hidden mt-1 ml-7 space-y-1">
+                    {languages.map((language) => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`w-full px-3 py-2 text-left text-sm hover:bg-studio-button-primary/10 rounded-md transition ${
+                          lang === language.code
+                            ? 'text-studio-button-primary font-medium'
+                            : 'text-studio-text-primary'
+                        }`}
+                      >
+                        {language.name}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Desktop: Side popup */}
+                  <div className="hidden md:block absolute right-full top-0 mr-1 w-32 rounded-md bg-studio-sidebar border border-studio-border shadow-lg py-1 z-50">
+                    {languages.map((language) => (
+                      <button
+                        key={language.code}
+                        onClick={() => handleLanguageChange(language.code)}
+                        className={`w-full px-3 py-2 text-left text-sm hover:bg-studio-button-primary/10 transition ${
+                          lang === language.code
+                            ? 'text-studio-button-primary font-medium'
+                            : 'text-studio-text-primary'
+                        }`}
+                      >
+                        {language.name}
+                      </button>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
             <button

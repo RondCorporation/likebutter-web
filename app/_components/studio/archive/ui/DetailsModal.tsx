@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useMediaQuery';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface DetailsModalProps {
   children: ReactNode;
@@ -9,6 +10,7 @@ interface DetailsModalProps {
 
 export default function DetailsModal({ children, onClose }: DetailsModalProps) {
   const isMobile = useIsMobile();
+  useScrollLock(true);
 
   return (
     <div
@@ -44,7 +46,14 @@ export default function DetailsModal({ children, onClose }: DetailsModalProps) {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">{children}</div>
+        <div
+          className="flex-1 overflow-y-auto p-6"
+          style={{
+            paddingBottom: isMobile ? 'calc(1.5rem + env(safe-area-inset-bottom, 0px) + 100px)' : '1.5rem',
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

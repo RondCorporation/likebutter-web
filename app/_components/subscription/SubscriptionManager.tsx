@@ -140,10 +140,12 @@ export default function SubscriptionManager() {
     router.push(`/${lang}/billing/history`);
   };
 
+  const isFreePlan = subscription?.planInfo.planKey === 'FREE';
+
   return (
     <Fragment>
       <div>
-        {!subscription ? (
+        {!subscription || isFreePlan ? (
           <div className="text-center py-8 px-4">
             <p className="text-studio-text-secondary mb-4">
               {t('subscriptionManager.noSubscriptions')}
@@ -161,7 +163,7 @@ export default function SubscriptionManager() {
               <div className="text-sm text-studio-text-secondary mb-1">
                 {t('subscriptionManager.plan')}
               </div>
-              <div className="text-sm text-studio-text-primary pl-4">
+              <div className="text-sm text-studio-text-primary">
                 {planNames[subscription.planInfo.planKey] ||
                   subscription.planInfo.planKey}
               </div>
@@ -170,7 +172,7 @@ export default function SubscriptionManager() {
               <div className="text-sm text-studio-text-secondary mb-1">
                 {t('subscriptionManager.status')}
               </div>
-              <div className="pl-4">
+              <div>
                 <StatusBadge status={subscription.status} />
               </div>
             </div>
@@ -178,7 +180,7 @@ export default function SubscriptionManager() {
               <div className="text-sm text-studio-text-secondary mb-1">
                 {t('subscriptionManager.period')}
               </div>
-              <div className="text-sm text-studio-text-primary pl-4">
+              <div className="text-sm text-studio-text-primary">
                 {new Date(subscription.startDate).toLocaleDateString()} -{' '}
                 {new Date(subscription.endDate).toLocaleDateString()}
               </div>

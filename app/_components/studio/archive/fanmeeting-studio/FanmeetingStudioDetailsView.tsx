@@ -15,7 +15,7 @@ export default function FanmeetingStudioDetailsView({
   details,
   onClose,
 }: Props) {
-  const { t } = useTranslation('studio');
+  const { t } = useTranslation(['studio']);
 
   // Use the new task structure or fall back to old details prop
   const result = task?.fanmeetingStudio || details;

@@ -14,6 +14,7 @@ import {
   registerBillingKey,
 } from '@/lib/apis/subscription.api';
 import { useAuthStore } from '@/stores/authStore';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface PlanDetails {
   planKey: string;
@@ -59,6 +60,8 @@ export default function StudioCheckoutModal({
     isLoading: sdkIsLoading,
     error: sdkError,
   } = usePortonePreload();
+
+  useScrollLock(isOpen);
 
   useEffect(() => {
     if (!isLoaded && !sdkIsLoading) {
@@ -265,25 +268,6 @@ export default function StudioCheckoutModal({
                         <div className="text-xs text-slate-500 mt-2">
                           {t('billing:vatIncluded')}
                         </div>
-                      </div>
-                    </div>
-
-                    {/* Key Features */}
-                    <div className="mb-8">
-                      <h4 className="text-white font-medium mb-3">
-                        {t('billing:whatsIncluded')}
-                      </h4>
-                      <div className="space-y-2">
-                        {plan.features.slice(0, 3).map((feature, index) => (
-                          <div key={index} className="flex items-center gap-3">
-                            <div className="flex-shrink-0 w-4 h-4 rounded-full bg-butter-yellow/20 border border-butter-yellow/40 flex items-center justify-center">
-                              <Check className="w-3 h-3 text-butter-yellow" />
-                            </div>
-                            <span className="text-slate-300 text-sm">
-                              {feature}
-                            </span>
-                          </div>
-                        ))}
                       </div>
                     </div>
                   </>

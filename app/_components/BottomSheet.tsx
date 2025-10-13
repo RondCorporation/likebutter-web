@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, ReactNode, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/useMediaQuery';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface BottomSheetProps {
   children: ReactNode;
@@ -28,6 +29,9 @@ export default function BottomSheet({
   const [isAnimating, setIsAnimating] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
+
+  // Only apply scroll lock on mobile when the bottom sheet is open
+  useScrollLock(isMobile && isOpen);
 
   const handleToolbarClick = useCallback(() => {
     onToggle?.(!isOpen);
@@ -82,11 +86,12 @@ export default function BottomSheet({
 
       {/* Scrollable content area */}
       <div
-        className="flex-1 overflow-y-auto px-3 pb-3 overscroll-contain"
+        className="flex-1 overflow-y-auto px-3 overscroll-contain"
         style={{
           touchAction: 'pan-y',
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
+          paddingBottom: hasBottomButton ? 'calc(0.75rem + 20px)' : 'calc(0.75rem + 20px)',
         }}
       >
         {children}

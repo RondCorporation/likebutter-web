@@ -491,10 +491,12 @@
     "checkStatus": "상태 확인",
     "completeSettings": "사이드바에서 설정을 완료하고 '팬미팅생성'을 눌러주세요",
     "details": {
+      "composedResult": "합성된 결과",
       "detailsNotAvailable": "상세 정보를 불러올 수 없습니다",
       "fanImage": "팬 사진",
       "fanImageAlt": "팬 원본 사진",
       "fanSubtitle": "업로드한 원본 사진",
+      "firstPerson": "첫 번째 사람",
       "fullGeneratedScene": "생성된 장면 전체보기",
       "generatedScene": "생성된 장면",
       "generatedSceneAlt": "생성된 팬미팅 사진",
@@ -503,9 +505,16 @@
       "idolImage": "아이돌 사진",
       "idolImageAlt": "아이돌 원본 사진",
       "idolSubtitle": "업로드한 아이돌 사진",
+      "inputImages": "입력 이미지",
       "mode": "모드",
+      "person1": "사람 1",
+      "person1Alt": "첫 번째 사람 이미지",
+      "person2": "사람 2",
+      "person2Alt": "두 번째 사람 이미지",
+      "processing": "처리 중...",
       "sceneGeneration": "장면 생성",
       "sceneGenerationScheduled": "장면 생성이 예약되었습니다.",
+      "secondPerson": "두 번째 사람",
       "title": "팬미팅 사진",
       "waitingForResult": "결과 대기중"
     },
@@ -695,7 +704,11 @@
       "referenceImages": "참고 이미지",
       "referenceImagesUsed": "사용된 참고 이미지",
       "styledResult": "AI로 스타일링 완료",
-      "textMode": "텍스트 모드"
+      "textMode": "텍스트 모드",
+      "uploadedIdolImage": "업로드한 아이돌 이미지",
+      "originalImageAlt": "원본 이미지",
+      "hairStyle": "헤어스타일 참고",
+      "processing": "처리 중..."
     },
     "dragFileHere": "파일을 여기다 끌어다 놓으세요",
     "dropFile": "파일을 놓아주세요",
@@ -850,7 +863,6 @@
       "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
       "workReset": "작업이 초기화되었습니다."
     },
-    "myPhoto": "내 사진",
     "originalImage": "원본 이미지",
     "originalImageAlt": "업로드한 원본 이미지",
     "originalImageSubtitle": "캐릭터로 변환할 기본 이미지",
@@ -903,7 +915,8 @@
     "transformFailed": "변환 실패",
     "transformedImageAlt": "캐릭터로 변환된 이미지",
     "transformedResult": "변환된 결과",
-    "transformedSubtitle": "{{character}} 캐릭터로 변환"
+    "transformedSubtitle": "{{character}} 캐릭터로 변환",
+    "uploadedImage": "업로드한 이미지"
   },
   "voiceModel": {
     "iu": "아이유",

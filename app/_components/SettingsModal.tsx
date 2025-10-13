@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useLogout } from '@/hooks/useLogout';
 import { useCredit } from '@/hooks/useCredit';
 import { useAttendanceStore } from '@/stores/attendanceStore';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import SubscriptionManager from './subscription/SubscriptionManager';
 
 function AccountSettings() {
@@ -240,6 +241,8 @@ export default function SettingsModal() {
     if (initialSettingsTab === 'subscription') return 'account';
     return initialSettingsTab || 'general';
   });
+
+  useScrollLock(isSettingsOpen);
 
   useEffect(() => {
     if (isSettingsOpen && initialSettingsTab) {

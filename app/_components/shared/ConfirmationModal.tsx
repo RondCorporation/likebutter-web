@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useScrollLock } from '@/hooks/useScrollLock';
 
 interface Props {
   isOpen: boolean;
@@ -25,6 +26,8 @@ export default function ConfirmationModal({
   isConfirming = false,
 }: Props) {
   const [mounted, setMounted] = useState(false);
+
+  useScrollLock(isOpen);
 
   useEffect(() => {
     setMounted(true);

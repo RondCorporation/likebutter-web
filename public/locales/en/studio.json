@@ -491,10 +491,12 @@
     "checkStatus": "Check Status",
     "completeSettings": "Complete settings in sidebar and press 'Start Fanmeeting'",
     "details": {
+      "composedResult": "Composed Result",
       "detailsNotAvailable": "Details unavailable",
       "fanImage": "Fan Photo",
       "fanImageAlt": "Fan original photo",
       "fanSubtitle": "Uploaded original photo",
+      "firstPerson": "First Person",
       "fullGeneratedScene": "View Full Generated Scene",
       "generatedScene": "Generated Scene",
       "generatedSceneAlt": "Generated fan meeting photo",
@@ -503,9 +505,16 @@
       "idolImage": "Idol Photo",
       "idolImageAlt": "Idol original photo",
       "idolSubtitle": "Uploaded idol photo",
+      "inputImages": "Input Images",
       "mode": "Mode",
+      "person1": "Person 1",
+      "person1Alt": "First person image",
+      "person2": "Person 2",
+      "person2Alt": "Second person image",
+      "processing": "Processing...",
       "sceneGeneration": "Scene Generation",
       "sceneGenerationScheduled": "Scene generation scheduled.",
+      "secondPerson": "Second Person",
       "title": "Fan Meeting Photo",
       "waitingForResult": "Waiting for result"
     },
@@ -695,7 +704,11 @@
       "referenceImages": "Reference Images",
       "referenceImagesUsed": "Reference Images Used",
       "styledResult": "AI Styled Result",
-      "textMode": "Text Mode"
+      "textMode": "Text Mode",
+      "uploadedIdolImage": "Uploaded idol image",
+      "originalImageAlt": "Original image",
+      "hairStyle": "Hairstyle Reference",
+      "processing": "Processing..."
     },
     "dragFileHere": "Drag file here",
     "dropFile": "Drop file here",
@@ -902,7 +915,8 @@
     "transformFailed": "Transform Failed",
     "transformedImageAlt": "Character transformed image",
     "transformedResult": "Transformed Result",
-    "transformedSubtitle": "Transformed into {{character}} character"
+    "transformedSubtitle": "Transformed into {{character}} character",
+    "uploadedImage": "Uploaded Image"
   },
   "voiceModel": {
     "iu": "IU",

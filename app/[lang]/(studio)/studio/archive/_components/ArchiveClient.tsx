@@ -355,9 +355,6 @@ function ArchiveTaskCard({
             }`}
           >
             {getActionTypeLabel(task.actionType)}
-            {task.editSequence && task.editSequence > 1 && (
-              <span className="ml-1">#{task.editSequence}</span>
-            )}
           </div>
         </div>
 

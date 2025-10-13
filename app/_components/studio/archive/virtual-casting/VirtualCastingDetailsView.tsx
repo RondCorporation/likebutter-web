@@ -61,7 +61,9 @@ export default function VirtualCastingDetailsView({
               {/* Result Image */}
               <ImageDisplayCard
                 title={t('virtualCasting.transformedResult')}
-                subtitle={t('virtualCasting.transformedSubtitle')}
+                subtitle={t('virtualCasting.transformedSubtitle', {
+                  character: 'Virtual Casting',
+                })}
                 imageUrl={result.imageUrl}
                 alt={t('virtualCasting.transformedImageAlt')}
                 downloadFilename={
@@ -73,7 +75,9 @@ export default function VirtualCastingDetailsView({
             /* Result Only (for backward compatibility) */
             <ImageDisplayCard
               title={t('virtualCasting.transformedResult')}
-              subtitle={t('virtualCasting.transformedSubtitle')}
+              subtitle={t('virtualCasting.transformedSubtitle', {
+                character: 'Virtual Casting',
+              })}
               imageUrl={result.imageUrl}
               alt={t('virtualCasting.transformedImageAlt')}
               downloadFilename={

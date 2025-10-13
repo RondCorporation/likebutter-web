@@ -108,7 +108,7 @@ export default function FanmeetingStudioMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-studio-content pb-[200px]">
+    <div className="flex flex-col flex-1 bg-studio-content min-h-screen pb-[200px]">
       <div className="px-4 pt-6">
         <div className="text-studio-text-primary text-base font-pretendard-semibold mb-4">
           {t('fanmeeting.uploadImageTitle')}

@@ -94,7 +94,7 @@ export default function StylistMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-studio-content pb-[200px]">
+    <div className="flex flex-col flex-1 bg-studio-content min-h-screen pb-[200px]">
       {formData?.mode === 'image' &&
         formData.imageSettings &&
         getImageUploadSlots(formData).length > 0 && (

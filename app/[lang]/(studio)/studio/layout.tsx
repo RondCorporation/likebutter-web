@@ -63,60 +63,46 @@ export default function StudioLayout({ children, params }: Props) {
             duration: 3000,
             className: 'studio-toast',
             style: {
-              background: 'rgba(37, 40, 44, 0.95)',
+              background: '#1f2937',
               color: '#ffffff',
-              border: '1px solid #313131',
-              borderRadius: '12px',
-              padding: isDesktop ? '16px 20px' : '12px 16px',
+              border: '1px solid #374151',
+              borderRadius: '8px',
+              padding: isDesktop ? '12px 16px' : '10px 14px',
               fontSize: '14px',
-              fontWeight: '500',
-              boxShadow:
-                '0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
-              backdropFilter: 'blur(10px)',
-              maxWidth: isDesktop ? '420px' : 'calc(100vw - 32px)',
-              minHeight: isDesktop ? '60px' : '48px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
+              fontWeight: '400',
+              lineHeight: '1.5',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              maxWidth: isDesktop ? '480px' : '90%',
+              minWidth: isDesktop ? 'auto' : '280px',
+              width: 'auto',
+              wordBreak: 'break-word',
+              whiteSpace: 'pre-wrap',
             },
             success: {
               iconTheme: {
-                primary: '#4ade80',
-                secondary: '#25282c',
+                primary: '#10b981',
+                secondary: '#1f2937',
               },
               style: {
-                background:
-                  'linear-gradient(135deg, rgba(74, 222, 128, 0.15) 0%, rgba(37, 40, 44, 0.95) 100%)',
-                border: '1px solid rgba(74, 222, 128, 0.3)',
-                color: '#ffffff',
-                boxShadow:
-                  '0 20px 25px -5px rgba(74, 222, 128, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+                border: '1px solid #10b981',
               },
             },
             error: {
               iconTheme: {
                 primary: '#ef4444',
-                secondary: '#25282c',
+                secondary: '#1f2937',
               },
               style: {
-                background:
-                  'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(37, 40, 44, 0.95) 100%)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-                color: '#ffffff',
-                boxShadow:
-                  '0 20px 25px -5px rgba(239, 68, 68, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.2)',
+                border: '1px solid #ef4444',
               },
             },
             loading: {
               iconTheme: {
-                primary: '#ffd93b',
-                secondary: '#25282c',
+                primary: '#f59e0b',
+                secondary: '#1f2937',
               },
               style: {
-                background:
-                  'linear-gradient(135deg, rgba(255, 217, 59, 0.1) 0%, rgba(37, 40, 44, 0.95) 100%)',
-                border: '1px solid rgba(255, 217, 59, 0.3)',
-                color: '#ffffff',
+                border: '1px solid #f59e0b',
               },
             },
           }}

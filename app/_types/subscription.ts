@@ -52,28 +52,20 @@ export interface CreateSubscriptionResponse {
 }
 
 export interface SubscriptionPaymentDetails {
-  subscription: {
-    status: 'ACTIVE' | 'CANCELLED' | 'EXPIRED' | 'PAST_DUE';
-    startDate: string;
-    endDate: string;
-    nextPaymentDate?: string;
-    plan: {
-      planKey: string;
-      name: string;
-      description: string;
-      billingCycle: 'MONTHLY' | 'YEARLY';
-      monthlyCredits: number;
-      price: number;
-      currency: string;
-    };
+  id: number;
+  paymentId: string;
+  pgTxId: string;
+  paidAt: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  accountId: number;
+  plan: {
+    id: number;
+    planKey: string;
+    name: string;
+    description: string;
   };
-  payment: {
-    paymentId: number;
-    paymentKey: string;
-    amount: number;
-    currency: string;
-    status: PaymentStatus;
-    paidAt: string;
-    pgTxId: string;
-  };
+  createdAt: string;
+  updatedAt: string;
 }

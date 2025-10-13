@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
-import { SubscriptionPaymentDetails } from '@/app/_types/payment';
+import { SubscriptionPaymentDetails } from '@/app/_types/subscription';
 
 interface PaymentReceiptClientProps {
   lang: string;
@@ -35,9 +35,15 @@ export default function PaymentReceiptClient({
     return `${currency === 'KRW' ? '₩' : '$'}${amount.toLocaleString()}`;
   };
 
-  const { subscription, payment } = paymentData;
-  const subtotal = Math.floor(payment.amount / 1.1);
-  const vat = payment.amount - subtotal;
+  const subtotal = Math.floor(paymentData.amount / 1.1);
+  const vat = paymentData.amount - subtotal;
+
+  // Extract billing cycle from planKey (e.g., "CREATOR_YEARLY" -> "YEARLY")
+  const billingCycle = paymentData.plan.planKey.includes('MONTHLY')
+    ? 'MONTHLY'
+    : paymentData.plan.planKey.includes('YEARLY')
+    ? 'YEARLY'
+    : 'MONTHLY';
 
   const statusColors = {
     PAID: 'bg-butter-yellow/20 text-butter-yellow border-butter-yellow/40',
@@ -116,10 +122,10 @@ export default function PaymentReceiptClient({
                   </h2>
                   <span
                     className={`px-3 py-1 rounded text-xs font-semibold ${
-                      statusColors[payment.status]
+                      statusColors[paymentData.status]
                     }`}
                   >
-                    {statusText[payment.status]}
+                    {statusText[paymentData.status]}
                   </span>
                 </div>
               </div>
@@ -133,7 +139,7 @@ export default function PaymentReceiptClient({
                       {t('billing:receipt.plan')}
                     </span>
                     <span className="text-white font-medium">
-                      {subscription.plan.name}
+                      {paymentData.plan.name}
                     </span>
                   </div>
 
@@ -142,7 +148,7 @@ export default function PaymentReceiptClient({
                       {t('billing:receipt.billingCycle')}
                     </span>
                     <span className="text-white font-medium">
-                      {subscription.plan.billingCycle === 'MONTHLY'
+                      {billingCycle === 'MONTHLY'
                         ? t('billing:monthly')
                         : t('billing:yearly')}
                     </span>
@@ -153,7 +159,7 @@ export default function PaymentReceiptClient({
                       {t('billing:receipt.paidAt')}
                     </span>
                     <span className="text-white font-medium">
-                      {formatDate(payment.paidAt)}
+                      {formatDate(paymentData.paidAt)}
                     </span>
                   </div>
 
@@ -162,7 +168,7 @@ export default function PaymentReceiptClient({
                       {t('billing:receipt.transactionId')}
                     </span>
                     <span className="text-white font-medium text-sm break-all">
-                      {payment.pgTxId}
+                      {paymentData.pgTxId}
                     </span>
                   </div>
 
@@ -171,7 +177,7 @@ export default function PaymentReceiptClient({
                       {t('billing:receipt.orderId')}
                     </span>
                     <span className="text-white font-medium">
-                      {payment.paymentId}
+                      {paymentData.paymentId}
                     </span>
                   </div>
 
@@ -182,7 +188,7 @@ export default function PaymentReceiptClient({
                         {t('billing:plans.subtotal')}
                       </span>
                       <span className="text-white font-medium">
-                        {formatCurrency(subtotal, payment.currency)}
+                        {formatCurrency(subtotal, paymentData.currency)}
                       </span>
                     </div>
 
@@ -191,7 +197,7 @@ export default function PaymentReceiptClient({
                         {t('billing:vat')} (10%)
                       </span>
                       <span className="text-white font-medium">
-                        {formatCurrency(vat, payment.currency)}
+                        {formatCurrency(vat, paymentData.currency)}
                       </span>
                     </div>
 
@@ -200,7 +206,7 @@ export default function PaymentReceiptClient({
                         {t('billing:checkout.total')}
                       </span>
                       <span className="text-2xl font-bold text-butter-yellow">
-                        {formatCurrency(payment.amount, payment.currency)}
+                        {formatCurrency(paymentData.amount, paymentData.currency)}
                       </span>
                     </div>
                   </div>

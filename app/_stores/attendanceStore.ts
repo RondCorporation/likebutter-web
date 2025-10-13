@@ -24,26 +24,39 @@ interface AttendanceState {
   showAttendanceModal: () => void;
 }
 
+// 한국 시간(KST) 기준으로 현재 날짜를 YYYY-MM-DD 형식으로 반환
+const getKSTDateString = (): string => {
+  const now = new Date();
+  const kstOffset = 9 * 60; // KST는 UTC+9
+  const kstTime = new Date(now.getTime() + kstOffset * 60 * 1000);
+
+  const year = kstTime.getUTCFullYear();
+  const month = String(kstTime.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(kstTime.getUTCDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
+
 const checkModalShownToday = (): boolean => {
-  const today = new Date().toDateString();
-  const modalData = sessionStorage.getItem('attendanceModalShown');
+  const todayKST = getKSTDateString();
+  const modalData = localStorage.getItem('attendanceModalShown');
 
   if (!modalData) return false;
 
   try {
     const parsed = JSON.parse(modalData);
-    return parsed.date === today;
+    return parsed.date === todayKST;
   } catch {
-    sessionStorage.removeItem('attendanceModalShown');
+    localStorage.removeItem('attendanceModalShown');
     return false;
   }
 };
 
 const setModalShownToday = () => {
-  const today = new Date().toDateString();
-  sessionStorage.setItem(
+  const todayKST = getKSTDateString();
+  localStorage.setItem(
     'attendanceModalShown',
-    JSON.stringify({ date: today })
+    JSON.stringify({ date: todayKST })
   );
 };
 
@@ -94,7 +107,7 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
         set({
           todayStatus: response.data,
           isInitialized: true,
-          hasAttendedToday: response.data.hasAttended || false,
+          hasAttendedToday: response.data.hasCheckedToday || false,
         });
       }
     } catch (error) {
@@ -108,7 +121,7 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
     const { isInitialized, todayStatus } = get();
 
     if (isInitialized) {
-      if (todayStatus && !todayStatus.hasAttended) {
+      if (todayStatus && !todayStatus.hasCheckedToday) {
         const modalShownToday = checkModalShownToday();
         if (!modalShownToday) {
           set({ shouldShowModal: true });
@@ -124,10 +137,10 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
         set({
           todayStatus: response.data,
           isInitialized: true,
-          hasAttendedToday: response.data.hasAttended || false,
+          hasAttendedToday: response.data.hasCheckedToday || false,
         });
 
-        if (!response.data.hasAttended) {
+        if (!response.data.hasCheckedToday) {
           const modalShownToday = checkModalShownToday();
           if (!modalShownToday) {
             set({ shouldShowModal: true });
@@ -158,8 +171,8 @@ export const useAttendanceStore = create<AttendanceState>((set, get) => ({
           todayStatus: todayStatus
             ? {
                 ...todayStatus,
-                hasAttended: true,
-                creditGranted: response.data?.creditGranted ?? null,
+                hasCheckedToday: true,
+                consecutiveDays: todayStatus.consecutiveDays + 1,
               }
             : null,
           shouldShowModal: false,

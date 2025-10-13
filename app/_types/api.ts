@@ -78,7 +78,7 @@ export interface AttendanceCheckResponse {
 }
 
 export interface TodayAttendanceStatus {
-  date: string;
-  hasAttended: boolean;
-  creditGranted: number | null;
+  hasCheckedToday: boolean;
+  today: string;
+  consecutiveDays: number;
 }

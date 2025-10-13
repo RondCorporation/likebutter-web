@@ -144,9 +144,6 @@ export default function ModelSelectPopup({
                 <h3 className="font-bold text-studio-text-primary text-sm">
                   {t('studio:modelSelect.imageCreationTitle')}
                 </h3>
-                <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
-                  {t('studio:modelSelect.howToUse')}
-                </span>
               </div>
 
               <div
@@ -193,9 +190,6 @@ export default function ModelSelectPopup({
                 <h3 className="font-bold text-studio-text-primary text-sm">
                   {t('studio:modelSelect.idolVoiceAI')}
                 </h3>
-                <span className="font-semibold text-studio-text-secondary text-sm cursor-pointer">
-                  {t('studio:modelSelect.howToUse')}
-                </span>
               </div>
 
               <div

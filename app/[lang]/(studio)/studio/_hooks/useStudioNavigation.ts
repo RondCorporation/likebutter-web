@@ -150,14 +150,7 @@ export function useStudioNavigation(lang: string) {
         });
       }
 
-      setNavigationState((prev) => ({
-        ...prev,
-        currentTool: toolName,
-        isTransitioning: true,
-      }));
-
       setLastUsedTool(toolName);
-
       preloadTool(toolName);
 
       const targetPath =
@@ -171,17 +164,13 @@ export function useStudioNavigation(lang: string) {
         router.push(targetPath);
       }
 
-      setTimeout(() => {
-        setNavigationState((prev) => ({
-          ...prev,
-          isTransitioning: false,
-        }));
-
+      // Restore scroll position after navigation (use requestAnimationFrame for smoother transition)
+      requestAnimationFrame(() => {
         const toolState = getToolState(toolName);
         if (toolState?.scrollPosition) {
           window.scrollTo(0, toolState.scrollPosition);
         }
-      }, 200);
+      });
     },
     [
       getCurrentTool,

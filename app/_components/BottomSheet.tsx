@@ -66,7 +66,11 @@ export default function BottomSheet({
   }
 
   // On initial render, always start with minHeight to prevent flash
-  const targetHeight = initialRenderRef.current ? minHeight : (isOpen ? initialHeight : minHeight);
+  const targetHeight = initialRenderRef.current
+    ? minHeight
+    : isOpen
+      ? initialHeight
+      : minHeight;
   const actualHeight = Math.min((targetHeight / 100) * window.innerHeight, 500);
 
   // Bottom offset calculation:

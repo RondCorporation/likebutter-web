@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 import BottomSheet from '@/components/BottomSheet';
 
@@ -34,6 +34,14 @@ export default function StudioLayout({
   onBottomSheetToggle,
 }: StudioLayoutProps) {
   const isDesktop = useIsDesktop();
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Prevent initial flash by waiting for mount
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      setIsMounted(true);
+    });
+  }, []);
 
   if (isDesktop) {
     return (

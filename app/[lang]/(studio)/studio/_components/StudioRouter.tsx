@@ -22,8 +22,6 @@ function StudioToolSkeleton() {
 export default function StudioRouter({ lang }: StudioRouterProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [currentTool, setCurrentTool] = useState('dashboard');
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const { getToolComponent, preloadTool, isToolPreloaded } =
     useStudioNavigation(lang);
@@ -44,11 +42,11 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
     return searchParams.get('tool') || 'dashboard';
   }, [searchParams]);
 
+  const currentTool = getCurrentToolFromUrl();
+
   const navigateToTool = useCallback(
     (toolName: string) => {
       if (toolName === currentTool) return;
-
-      setIsTransitioning(true);
 
       if (!isToolPreloaded(toolName)) {
         preloadTool(toolName);
@@ -60,31 +58,16 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
           : `/${lang}/studio?tool=${toolName}`;
 
       router.replace(newUrl, { scroll: false });
-
-      setTimeout(() => {
-        setCurrentTool(toolName);
-        setIsTransitioning(false);
-      }, 100);
     },
     [currentTool, isToolPreloaded, preloadTool, router, lang]
   );
 
+  // Preload tool when URL changes
   useEffect(() => {
-    const toolFromUrl = getCurrentToolFromUrl();
-    if (toolFromUrl !== currentTool) {
-      setCurrentTool(toolFromUrl);
-
-      if (!isToolPreloaded(toolFromUrl)) {
-        preloadTool(toolFromUrl);
-      }
+    if (!isToolPreloaded(currentTool)) {
+      preloadTool(currentTool);
     }
-  }, [
-    searchParams,
-    currentTool,
-    getCurrentToolFromUrl,
-    isToolPreloaded,
-    preloadTool,
-  ]);
+  }, [currentTool, isToolPreloaded, preloadTool]);
 
   const ToolComponent = getToolComponent(currentTool);
 
@@ -100,10 +83,6 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
   useEffect(() => {
     memoizedCheckAttendance();
   }, [memoizedCheckAttendance]);
-
-  if (isTransitioning) {
-    return <StudioToolSkeleton />;
-  }
 
   return (
     <div className="h-full w-full bg-studio-main overflow-y-auto">

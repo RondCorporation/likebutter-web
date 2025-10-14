@@ -72,6 +72,17 @@ type Props = {
   params: Promise<{ lang: string }>;
 };
 
+export async function generateViewport() {
+  return {
+    width: 'device-width',
+    initialScale: 1.0,
+    maximumScale: 1.0,
+    minimumScale: 1.0,
+    userScalable: false,
+    viewportFit: 'cover',
+  };
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -84,14 +95,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     metadataBase: new URL(baseUrl),
     title,
     description,
-    viewport: {
-      width: 'device-width',
-      initialScale: 1.0,
-      maximumScale: 1.0,
-      minimumScale: 1.0,
-      userScalable: false,
-      viewportFit: 'cover',
-    },
     openGraph: {
       title,
       description,

@@ -35,8 +35,9 @@ export default function SelectCard({
           backgroundImage: backgroundImage
             ? `url(${backgroundImage})`
             : undefined,
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
         }}
         onClick={onClick}
         onMouseEnter={onMouseEnter}

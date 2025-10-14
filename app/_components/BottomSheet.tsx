@@ -27,13 +27,25 @@ export default function BottomSheet({
 }: BottomSheetProps) {
   const isMobile = useIsMobile();
   const [isAnimating, setIsAnimating] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
+  const initialRenderRef = useRef(true);
 
   // Only apply scroll lock on mobile when the bottom sheet is open
   useScrollLock(isMobile && isOpen);
 
+  // Mark as not initial render after mount
+  useEffect(() => {
+    // Use requestAnimationFrame to ensure this happens after paint
+    const rafId = requestAnimationFrame(() => {
+      initialRenderRef.current = false;
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
   const handleToolbarClick = useCallback(() => {
+    setHasInteracted(true);
     onToggle?.(!isOpen);
   }, [isOpen, onToggle]);
 
@@ -53,7 +65,8 @@ export default function BottomSheet({
     );
   }
 
-  const targetHeight = isOpen ? initialHeight : minHeight;
+  // On initial render, always start with minHeight to prevent flash
+  const targetHeight = initialRenderRef.current ? minHeight : (isOpen ? initialHeight : minHeight);
   const actualHeight = Math.min((targetHeight / 100) * window.innerHeight, 500);
 
   // Bottom offset calculation:
@@ -61,10 +74,13 @@ export default function BottomSheet({
   // - Without button: 88px (navigation only)
   const bottomOffset = hasBottomButton ? 'bottom-[160px]' : 'bottom-[88px]';
 
+  // Only apply transition after user has interacted or after initial render
+  const shouldTransition = !initialRenderRef.current || hasInteracted;
+
   return (
     <div
       ref={sheetRef}
-      className={`fixed inset-x-0 ${bottomOffset} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col transition-all duration-300 ease-out ${className}`}
+      className={`fixed inset-x-0 ${bottomOffset} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${shouldTransition ? 'transition-all duration-300 ease-out' : ''} ${className}`}
       style={{
         height: `${actualHeight}px`,
         maxHeight: '500px',

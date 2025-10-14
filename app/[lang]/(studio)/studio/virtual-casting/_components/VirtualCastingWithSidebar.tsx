@@ -57,10 +57,8 @@ export default function VirtualCastingWithSidebar() {
       const isProcessingOrPolling = state.isProcessing || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
 
-      // Show BottomSheet only when image is uploaded and not in result mode
-      setShowBottomSheet(
-        !!state.uploadedFile && !state.resultImage && !isProcessingOrPolling
-      );
+      // Show BottomSheet when not in result mode (always visible except during results/processing)
+      setShowBottomSheet(!state.resultImage && !isProcessingOrPolling);
 
       // Sync BottomSheet open state
       if (state.isBottomSheetOpen !== undefined) {

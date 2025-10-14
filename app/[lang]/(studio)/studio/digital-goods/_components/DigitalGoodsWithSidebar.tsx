@@ -52,11 +52,9 @@ export default function DigitalGoodsWithSidebar() {
       const isProcessing = state.isGenerating || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessing);
 
-      // Show BottomSheet only when image is uploaded and not in result mode
+      // Show BottomSheet when not in result mode (always visible except during results/processing)
       const isProcessingOrPolling = state.isGenerating || state.isPolling;
-      setShowBottomSheet(
-        !!state.uploadedFile && !state.resultImage && !isProcessingOrPolling
-      );
+      setShowBottomSheet(!state.resultImage && !isProcessingOrPolling);
 
       // Sync BottomSheet open state
       if (state.isBottomSheetOpen !== undefined) {

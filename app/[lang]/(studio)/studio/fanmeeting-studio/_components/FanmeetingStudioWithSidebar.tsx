@@ -53,11 +53,8 @@ export default function FanmeetingStudioWithSidebar() {
       const isProcessingOrPolling = state.isProcessing || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
 
-      // Show BottomSheet only when BOTH images are uploaded and not in result mode
-      const bothFilesUploaded = !!state.idolFile && !!state.userFile;
-      setShowBottomSheet(
-        bothFilesUploaded && !state.resultImage && !isProcessingOrPolling
-      );
+      // Show BottomSheet when not in result mode (always visible except during results/processing)
+      setShowBottomSheet(!state.resultImage && !isProcessingOrPolling);
 
       // Sync BottomSheet open state
       if (state.isBottomSheetOpen !== undefined) {

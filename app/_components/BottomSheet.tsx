@@ -56,15 +56,19 @@ export default function BottomSheet({
   const targetHeight = isOpen ? initialHeight : minHeight;
   const actualHeight = Math.min((targetHeight / 100) * window.innerHeight, 500);
 
-  const bottomOffset = hasBottomButton ? 'bottom-[140px]' : 'bottom-20';
+  // Bottom offset calculation:
+  // - With button: 88px (navigation) + 72px (button: 12+48+12) = 160px
+  // - Without button: 88px (navigation only)
+  const bottomOffset = hasBottomButton ? 'bottom-[160px]' : 'bottom-[88px]';
 
   return (
     <div
       ref={sheetRef}
-      className={`fixed inset-x-0 ${bottomOffset} z-40 bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col transition-all duration-300 ease-out ${className}`}
+      className={`fixed inset-x-0 ${bottomOffset} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col transition-all duration-300 ease-out ${className}`}
       style={{
         height: `${actualHeight}px`,
         maxHeight: '500px',
+        zIndex: 45,
       }}
     >
       {/* Toolbar - Click to toggle */}

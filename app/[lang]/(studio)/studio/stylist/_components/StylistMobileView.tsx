@@ -94,7 +94,7 @@ export default function StylistMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-studio-content min-h-screen pb-[200px]">
+    <div className="flex flex-col flex-1 bg-studio-content min-h-full">
       {formData?.mode === 'image' &&
         formData.imageSettings &&
         getImageUploadSlots(formData).length > 0 && (
@@ -160,7 +160,7 @@ export default function StylistMobileView({
         )}
 
       {/* 메인 이미지 업로드 영역 - 상단에 배치 */}
-      <div className="px-4 pt-6">
+      <div className="px-4 pt-6 pb-12">
         <div className="text-studio-text-primary text-base font-pretendard-semibold mb-4">
           {t('stylist.uploadImageTitle')}
         </div>

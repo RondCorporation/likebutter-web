@@ -27,7 +27,13 @@ export function useCredit() {
     return () => {
       window.removeEventListener('credit-updated', handleCreditUpdate);
     };
-  }, [creditBalance, fetchCreditBalance, refetchCredit, isAuthenticated, isInitialized]);
+  }, [
+    creditBalance,
+    fetchCreditBalance,
+    refetchCredit,
+    isAuthenticated,
+    isInitialized,
+  ]);
 
   return {
     creditBalance,

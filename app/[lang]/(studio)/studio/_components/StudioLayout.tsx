@@ -48,18 +48,23 @@ export default function StudioLayout({
 
   return (
     <div className="relative h-full w-full bg-studio-main">
+      {/* Main content area */}
       <div
         className="h-full overflow-y-auto"
         style={{
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
+          // Padding for navigation only (button is fixed and doesn't affect scroll area)
+          paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
         }}
       >
         {children}
       </div>
 
-      {/* Bottom sheet */}
+      {/* Bottom sheet - positioned above button (z-45)
+          Can expand/collapse over the content area
+      */}
       {!hideMobileBottomSheet && (
         <BottomSheet
           initialHeight={bottomSheetOptions.initialHeight}
@@ -75,17 +80,14 @@ export default function StudioLayout({
       )}
 
       {/* Fixed bottom button - above navigation (z-40)
-          paddingBottom calculation:
-          - MobileBottomNavigation height: ~88px (content) + safe-area-inset-bottom
-          - Margin for visual separation: 12px
-          - Total: 100px + safe-area-inset-bottom
-          This ensures the button doesn't overlap with MobileBottomNavigation (z-50)
+          Position: directly above MobileBottomNavigation
+          MobileBottomNavigation: z-50, height ~88px + safe-area-inset-bottom
       */}
       {mobileBottomButton && (
         <div
-          className="fixed inset-x-0 bottom-0 z-40 bg-studio-sidebar"
+          className="fixed inset-x-0 bottom-0 z-40 bg-studio-sidebar border-t border-studio-border"
           style={{
-            paddingBottom: 'calc(100px + env(safe-area-inset-bottom))',
+            paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
           }}
         >
           <div className="px-3 pt-3 pb-3">{mobileBottomButton}</div>

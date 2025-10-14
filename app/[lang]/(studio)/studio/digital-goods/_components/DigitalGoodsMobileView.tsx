@@ -84,8 +84,8 @@ export default function DigitalGoodsMobileView({
   };
 
   return (
-    <div className="flex flex-col flex-1 bg-studio-content min-h-screen pb-[200px]">
-      <div className="px-4 pt-6">
+    <div className="flex flex-col flex-1 bg-studio-content min-h-full">
+      <div className="px-4 pt-6 pb-12">
         <div className="text-studio-text-primary text-base font-pretendard-semibold mb-4">
           {t('digitalGoods.uploadImageTitle')}
         </div>

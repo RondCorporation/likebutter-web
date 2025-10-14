@@ -40,10 +40,14 @@ export default function StudioLayout({ children, params }: Props) {
           {/* Main content - 데스크톱: 사이드바 여백, 모바일: 하단 네비게이션 여백 */}
           <div
             className={`flex-1 overflow-y-auto ${isDesktop ? 'ml-20' : 'mb-[88px]'}`}
-            style={!isDesktop ? {
-              WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'contain',
-            } : undefined}
+            style={
+              !isDesktop
+                ? {
+                    WebkitOverflowScrolling: 'touch',
+                    overscrollBehavior: 'contain',
+                  }
+                : undefined
+            }
           >
             {children}
           </div>

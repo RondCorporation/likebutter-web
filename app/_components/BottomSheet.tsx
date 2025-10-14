@@ -74,9 +74,9 @@ export default function BottomSheet({
   const actualHeight = Math.min((targetHeight / 100) * window.innerHeight, 500);
 
   // Bottom offset calculation:
-  // - With button: 88px (navigation) + 72px (button: 12+48+12) = 160px
-  // - Without button: 88px (navigation only)
-  const bottomOffset = hasBottomButton ? 'bottom-[160px]' : 'bottom-[88px]';
+  // - With button: button container height (72px)
+  // - Without button: 0px (sits at bottom)
+  const bottomOffset = hasBottomButton ? 'bottom-[72px]' : 'bottom-0';
 
   // Only apply transition after user has interacted or after initial render
   const shouldTransition = !initialRenderRef.current || hasInteracted;
@@ -84,7 +84,7 @@ export default function BottomSheet({
   return (
     <div
       ref={sheetRef}
-      className={`fixed inset-x-0 ${bottomOffset} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${shouldTransition ? 'transition-all duration-300 ease-out' : ''} ${className}`}
+      className={`absolute inset-x-0 ${bottomOffset} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${shouldTransition ? 'transition-all duration-300 ease-out' : ''} ${className}`}
       style={{
         height: `${actualHeight}px`,
         maxHeight: '500px',

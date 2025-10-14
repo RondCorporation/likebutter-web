@@ -338,7 +338,9 @@
   "common": {
     "detailsNotAvailable": "Unable to load details",
     "executionTime": "Execution time: {{time}}s",
-    "fileSize": "File size: {{size}} MB"
+    "fileSize": "File size: {{size}} MB",
+    "goToArchive": "Go to Archive",
+    "goToHome": "Go to Home"
   },
   "completeSettings": "Complete settings in sidebar and press 'Start Casting'",
   "confirmReset": {

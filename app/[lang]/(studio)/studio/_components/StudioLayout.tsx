@@ -56,23 +56,38 @@ export default function StudioLayout({
 
   return (
     <div className="relative h-full w-full bg-studio-main">
-      {/* Main content area */}
+      {/* Scrollable content area - sits behind fixed bottom UI */}
       <div
-        className="h-full overflow-y-auto"
+        className="absolute inset-0 overflow-y-auto"
         style={{
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
-          // Padding for navigation only (button is fixed and doesn't affect scroll area)
-          paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
+          // Padding: button height (72px) + bottom sheet initial height (only if not hidden)
+          paddingBottom: hideMobileBottomSheet
+            ? mobileBottomButton
+              ? '72px'
+              : '0'
+            : mobileBottomButton
+              ? `calc(72px + ${bottomSheetOptions.minHeight}vh)`
+              : `${bottomSheetOptions.minHeight}vh`,
         }}
       >
         {children}
       </div>
 
-      {/* Bottom sheet - positioned above button (z-45)
-          Can expand/collapse over the content area
-      */}
+      {/* Background layer for bottom sheet area (minHeight) */}
+      {!hideMobileBottomSheet && (
+        <div
+          className="absolute inset-x-0 bg-studio-content z-30"
+          style={{
+            bottom: mobileBottomButton ? '72px' : '0',
+            height: `${bottomSheetOptions.minHeight}vh`,
+          }}
+        />
+      )}
+
+      {/* Bottom sheet - positioned above button, can expand upward */}
       {!hideMobileBottomSheet && (
         <BottomSheet
           initialHeight={bottomSheetOptions.initialHeight}
@@ -87,18 +102,10 @@ export default function StudioLayout({
         </BottomSheet>
       )}
 
-      {/* Fixed bottom button - above navigation (z-40)
-          Position: directly above MobileBottomNavigation
-          MobileBottomNavigation: z-50, height ~88px + safe-area-inset-bottom
-      */}
+      {/* Bottom button - sits at very bottom, seamlessly connected to bottom sheet */}
       {mobileBottomButton && (
-        <div
-          className="fixed inset-x-0 bottom-0 z-40 bg-studio-sidebar border-t border-studio-border"
-          style={{
-            paddingBottom: 'calc(88px + env(safe-area-inset-bottom))',
-          }}
-        >
-          <div className="px-3 pt-3 pb-3">{mobileBottomButton}</div>
+        <div className="absolute inset-x-0 bottom-0 z-40 bg-studio-sidebar">
+          <div className="px-3 py-3">{mobileBottomButton}</div>
         </div>
       )}
     </div>

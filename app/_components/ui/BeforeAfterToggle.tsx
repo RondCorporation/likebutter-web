@@ -71,7 +71,7 @@ export default function BeforeAfterToggle({
         style={{
           paddingBottom: isDesktop
             ? '16px'
-            : 'calc(100px + env(safe-area-inset-bottom, 0px) + 80px)',
+            : 'calc(env(safe-area-inset-bottom, 0px) + 80px)',
         }}
       >
         <img

@@ -23,11 +23,13 @@ export default function StudioLayout({ children, params }: Props) {
   return (
     <StudioAuthGuard>
       <div className="flex flex-col h-screen w-full overflow-hidden">
-        {/* Header */}
-        <Header variant="studio" params={params} />
+        {/* Fixed Header - 모바일과 데스크톱 모두 고정 */}
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <Header variant="studio" params={params} />
+        </div>
 
-        {/* Main content area - with top margin for desktop to account for fixed header */}
-        <div className="flex flex-1 w-full bg-studio-main overflow-hidden md:mt-16">
+        {/* Main content area */}
+        <div className="flex flex-1 w-full bg-studio-main overflow-hidden mt-16">
           {/* Sidebar displayed only on desktop - Fixed position */}
           {isDesktop && (
             <div className="fixed left-0 top-16 bottom-0 z-20">
@@ -35,11 +37,19 @@ export default function StudioLayout({ children, params }: Props) {
             </div>
           )}
 
-          {/* Main content - padding added for sidebar on desktop and bottom navigation on mobile */}
-          <div className={`flex-1 ${isDesktop ? 'ml-20' : ''}`}>{children}</div>
+          {/* Main content - 데스크톱: 사이드바 여백, 모바일: 하단 네비게이션 여백 */}
+          <div
+            className={`flex-1 overflow-y-auto ${isDesktop ? 'ml-20' : 'mb-[88px]'}`}
+            style={!isDesktop ? {
+              WebkitOverflowScrolling: 'touch',
+              overscrollBehavior: 'contain',
+            } : undefined}
+          >
+            {children}
+          </div>
         </div>
 
-        {/* Bottom navigation displayed only on mobile */}
+        {/* Fixed Bottom navigation - 모바일만 표시 */}
         {!isDesktop && <MobileBottomNavigation lang={lang} />}
 
         {/* Component preloader for better performance */}

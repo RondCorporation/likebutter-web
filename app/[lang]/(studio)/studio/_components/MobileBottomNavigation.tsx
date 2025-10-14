@@ -52,7 +52,7 @@ export default function MobileBottomNavigation({
     <>
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-studio-header border-t border-studio-border">
         <div
-          className="flex items-center justify-around px-4 py-2"
+          className="flex items-center justify-around px-4"
           style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}
         >
           {/* Home */}

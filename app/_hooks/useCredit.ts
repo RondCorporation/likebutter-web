@@ -2,20 +2,24 @@
 
 import { useEffect } from 'react';
 import { useCreditStore } from '@/app/_stores/creditStore';
+import { useAuth } from './useAuth';
 
 export function useCredit() {
   const { creditBalance, isLoading, error, fetchCreditBalance, refetchCredit } =
     useCreditStore();
+  const { isAuthenticated, isInitialized } = useAuth();
 
   useEffect(() => {
-    // Initial fetch
-    if (!creditBalance) {
+    // Only fetch credit balance if user is authenticated
+    if (isInitialized && isAuthenticated && !creditBalance) {
       fetchCreditBalance();
     }
 
     // Listen for credit-updated events (e.g., from attendance)
     const handleCreditUpdate = () => {
-      refetchCredit();
+      if (isAuthenticated) {
+        refetchCredit();
+      }
     };
 
     window.addEventListener('credit-updated', handleCreditUpdate);
@@ -23,7 +27,7 @@ export function useCredit() {
     return () => {
       window.removeEventListener('credit-updated', handleCreditUpdate);
     };
-  }, [creditBalance, fetchCreditBalance, refetchCredit]);
+  }, [creditBalance, fetchCreditBalance, refetchCredit, isAuthenticated, isInitialized]);
 
   return {
     creditBalance,

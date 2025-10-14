@@ -100,7 +100,7 @@ export default function HelpClient() {
 
   return (
     <div
-      className="w-full min-h-full bg-[#25282c] pb-28 md:pb-0"
+      className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0"
       style={{ wordBreak: 'keep-all' }}
     >
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
@@ -115,48 +115,64 @@ export default function HelpClient() {
         </div>
 
         {/* FAQ Content */}
-        <div className="max-w-4xl mx-auto space-y-6 md:space-y-8">
+        <div className="max-w-4xl mx-auto">
           {faqSections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="space-y-3 md:space-y-4">
-              <h2 className="text-xl md:text-2xl font-semibold text-white mb-4 md:mb-6 text-center">
-                {section.title}
-              </h2>
+            <div key={sectionIndex}>
+              <div className="space-y-3 md:space-y-4 py-6 md:py-8">
+                <h2 className="text-xl md:text-2xl font-semibold text-white mb-4 md:mb-6 text-center">
+                  {section.title}
+                </h2>
 
-              <div className="space-y-3">
-                {section.items.map((item, itemIndex) => {
-                  const itemId = `${sectionIndex}-${itemIndex}`;
-                  const isOpen = openItems.has(itemId);
+                <div className="space-y-3">
+                  {section.items.map((item, itemIndex) => {
+                    const itemId = `${sectionIndex}-${itemIndex}`;
+                    const isOpen = openItems.has(itemId);
 
-                  return (
-                    <div
-                      key={itemId}
-                      className="bg-[#202020] border border-[#4a4a4b] rounded-lg overflow-hidden"
-                    >
-                      <button
-                        onClick={() => toggleItem(itemId)}
-                        className="w-full px-4 md:px-6 py-3 md:py-4 text-left flex items-center justify-between hover:bg-[#323232] transition-colors"
+                    return (
+                      <div
+                        key={itemId}
+                        className="bg-[#202020] border border-[#4a4a4b] rounded-lg overflow-hidden transition-all duration-200 hover:border-[#5a5a5b]"
                       >
-                        <h3 className="font-semibold text-white pr-3 md:pr-4 text-sm md:text-base">
-                          {item.question}
-                        </h3>
-                        {isOpen ? (
-                          <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-[#a8a8aa] flex-shrink-0" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-[#a8a8aa] flex-shrink-0" />
-                        )}
-                      </button>
+                        <button
+                          onClick={() => toggleItem(itemId)}
+                          className="w-full px-4 md:px-6 py-3 md:py-4 text-left flex items-center justify-between hover:bg-[#2a2a2a] transition-colors"
+                        >
+                          <h3 className="font-semibold text-white pr-3 md:pr-4 text-sm md:text-base">
+                            {item.question}
+                          </h3>
+                          {isOpen ? (
+                            <ChevronUp className="w-4 h-4 md:w-5 md:h-5 text-[#a8a8aa] flex-shrink-0" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 md:w-5 md:h-5 text-[#a8a8aa] flex-shrink-0" />
+                          )}
+                        </button>
 
-                      {isOpen && (
-                        <div className="px-4 md:px-6 pb-3 md:pb-4 border-t border-[#4a4a4b]">
-                          <p className="text-[#c3c3c5] leading-relaxed mt-2 md:mt-3 text-sm md:text-base">
-                            {item.answer}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                        {isOpen && (
+                          <div className="px-4 md:px-6 pb-3 md:pb-4 border-t border-[#4a4a4b]">
+                            <p className="text-[#c3c3c5] leading-relaxed mt-2 md:mt-3 text-sm md:text-base whitespace-pre-line">
+                              {item.answer}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Section Divider */}
+              {sectionIndex < faqSections.length - 1 && (
+                <div className="relative my-6 md:my-8">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-[#3a3a3c]"></div>
+                  </div>
+                  <div className="relative flex justify-center">
+                    <span className="bg-[#25282c] px-4 text-[#6a6a6c] text-sm">
+                      •
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

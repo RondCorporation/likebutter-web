@@ -120,7 +120,7 @@ export default function CreditsClient() {
   }
 
   return (
-    <div className="w-full min-h-full bg-[#25282c] pb-28 md:pb-0">
+    <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0">
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
         <h1 className="text-white text-2xl md:text-3xl font-bold mb-4 md:mb-8">

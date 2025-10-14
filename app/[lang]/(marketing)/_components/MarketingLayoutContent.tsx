@@ -21,26 +21,52 @@ export default function MarketingLayoutContent({
   if (isLandingPage) {
     return (
       <ScrollContext.Provider value={{ sectionRefs }}>
-        <Header variant="marketing" />
-        <div className="bg-black text-white">
-          {children}
-          <MarketingFooter
-            ref={(el) => {
-              sectionRefs.current[4] = el;
+        <div className="flex flex-col h-screen w-full overflow-hidden">
+          {/* Fixed Header */}
+          <div className="fixed top-0 left-0 right-0 z-50">
+            <Header variant="marketing" />
+          </div>
+
+          {/* Scrollable Content */}
+          <div
+            className="flex-1 overflow-y-auto bg-black text-white pt-16"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              overscrollBehavior: 'contain',
             }}
-            data-section-index={4}
-            isSnapSection={true}
-          />
+          >
+            {children}
+            <MarketingFooter
+              ref={(el) => {
+                sectionRefs.current[4] = el;
+              }}
+              data-section-index={4}
+              isSnapSection={true}
+            />
+          </div>
         </div>
       </ScrollContext.Provider>
     );
   }
 
   return (
-    <div className="bg-black text-white">
-      <Header variant="marketing" />
-      <main>{children}</main>
-      <MarketingFooter />
+    <div className="flex flex-col h-screen w-full overflow-hidden">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Header variant="marketing" />
+      </div>
+
+      {/* Scrollable Content */}
+      <div
+        className="flex-1 overflow-y-auto bg-black text-white pt-16"
+        style={{
+          WebkitOverflowScrolling: 'touch',
+          overscrollBehavior: 'contain',
+        }}
+      >
+        <main>{children}</main>
+        <MarketingFooter />
+      </div>
     </div>
   );
 }

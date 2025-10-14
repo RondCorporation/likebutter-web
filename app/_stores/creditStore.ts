@@ -34,11 +34,17 @@ export const useCreditStore = create<CreditState>((set, get) => ({
         throw new Error('Failed to fetch credit balance');
       }
     } catch (err: any) {
+      // Don't log authentication errors (401) - these are expected for non-authenticated users
+      const isAuthError = err.message?.includes('Authentication failed');
+
       set({
         error: err.message || 'Failed to fetch credit balance',
         isLoading: false,
       });
-      console.error('Credit balance fetch error:', err);
+
+      if (!isAuthError) {
+        console.error('Credit balance fetch error:', err);
+      }
     }
   },
 

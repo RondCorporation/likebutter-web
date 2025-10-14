@@ -84,6 +84,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     metadataBase: new URL(baseUrl),
     title,
     description,
+    viewport: {
+      width: 'device-width',
+      initialScale: 1.0,
+      maximumScale: 1.0,
+      minimumScale: 1.0,
+      userScalable: false,
+      viewportFit: 'cover',
+    },
     openGraph: {
       title,
       description,

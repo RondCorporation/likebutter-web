@@ -9,7 +9,7 @@ interface TabItemProps {
 export default function TabItem({ state, text, className = '' }: TabItemProps) {
   return (
     <div
-      className={`inline-flex flex-col items-center gap-[15px] px-6 py-3 justify-center relative border-b border-solid ${
+      className={`flex w-full flex-col items-center gap-[15px] px-6 py-3 justify-center relative border-b border-solid ${
         state === 'default'
           ? 'border-[#4a4a4b] border-b'
           : 'border-[#ffd83b] border-b-2'

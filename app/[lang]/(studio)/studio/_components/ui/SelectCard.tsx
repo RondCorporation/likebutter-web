@@ -26,7 +26,7 @@ export default function SelectCard({
   return (
     <div className="flex flex-col items-center justify-center gap-4 relative w-full">
       <div
-        className={`border border-solid w-full h-[165px] flex flex-col items-center gap-2.5 p-6 rounded-md justify-center relative cursor-pointer transition-colors ${
+        className={`border border-solid w-full aspect-[16/9] flex flex-col items-center gap-2.5 p-6 rounded-md justify-center relative cursor-pointer transition-colors overflow-hidden ${
           state === 'selected'
             ? 'border-[#ffd83b] border-2'
             : 'border-[#4a4a4b] hover:border-[#6a6a6b]'
@@ -35,7 +35,7 @@ export default function SelectCard({
           backgroundImage: backgroundImage
             ? `url(${backgroundImage})`
             : undefined,
-          backgroundSize: 'contain',
+          backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
         }}

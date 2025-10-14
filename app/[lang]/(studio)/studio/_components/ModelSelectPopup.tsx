@@ -115,14 +115,14 @@ export default function ModelSelectPopup({
           </button>
         </div>
 
-        <div className="w-full border-b border-solid border-studio-border">
-          <button onClick={() => setActiveTab('image')}>
+        <div className="w-full border-b border-solid border-studio-border flex">
+          <button onClick={() => setActiveTab('image')} className="flex-1">
             <TabItem
               state={activeTab === 'image' ? 'selected' : 'default'}
               text={t('studio:modelSelect.imageGeneration')}
             />
           </button>
-          <button onClick={() => setActiveTab('audio')}>
+          <button onClick={() => setActiveTab('audio')} className="flex-1">
             <TabItem
               state={activeTab === 'audio' ? 'selected' : 'default'}
               text={t('studio:modelSelect.audioGeneration')}
@@ -131,7 +131,7 @@ export default function ModelSelectPopup({
         </div>
 
         <div
-          className="flex flex-col gap-4 flex-1 overflow-y-auto"
+          className="flex flex-col gap-3 flex-1 overflow-y-auto"
           style={{
             paddingBottom: isMobile ? '1rem' : '0',
             WebkitOverflowScrolling: 'touch',
@@ -140,7 +140,7 @@ export default function ModelSelectPopup({
         >
           {activeTab === 'image' ? (
             <>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-8">
                 <h3 className="font-bold text-studio-text-primary text-sm">
                   {t('studio:modelSelect.imageCreationTitle')}
                 </h3>
@@ -186,7 +186,7 @@ export default function ModelSelectPopup({
             </>
           ) : (
             <>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-8">
                 <h3 className="font-bold text-studio-text-primary text-sm">
                   {t('studio:modelSelect.idolVoiceAI')}
                 </h3>

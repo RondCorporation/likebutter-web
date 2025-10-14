@@ -262,8 +262,8 @@ export default function SettingsModal() {
   if (!isSettingsOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-      <div className="relative flex w-full flex-col overflow-hidden bg-[#0f1114] text-studio-text-primary shadow-2xl md:w-[700px] md:max-h-[600px] md:flex-row border border-white/[0.08] rounded-lg h-[calc(100vh-2rem)] max-h-[calc(100vh-2rem)]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+      <div className="relative flex w-full flex-col overflow-hidden bg-[#25282c] text-studio-text-primary shadow-2xl md:w-[700px] md:max-h-[600px] md:flex-row border border-white/10 rounded-2xl h-[calc(100vh-2rem)] max-h-[calc(100vh-2rem)]">
         <button
           onClick={closeSettings}
           className="absolute top-3 right-3 md:top-4 md:right-4 z-50 text-studio-text-secondary/60 hover:text-white transition-colors"
@@ -272,7 +272,7 @@ export default function SettingsModal() {
         </button>
 
         {/* Desktop Sidebar */}
-        <aside className="hidden w-48 flex-shrink-0 border-r border-white/[0.06] bg-[#0a0c0e] p-6 pt-8 md:flex md:flex-col">
+        <aside className="hidden w-48 flex-shrink-0 border-r border-white/[0.06] bg-[#1e2124] p-6 pt-8 md:flex md:flex-col">
           <h2 className="mb-6 text-xs font-medium tracking-wider text-white/40 uppercase">
             {t('settingsTitle')}
           </h2>
@@ -295,7 +295,7 @@ export default function SettingsModal() {
         </aside>
 
         {/* Mobile Tabs */}
-        <div className="border-b border-white/[0.06] bg-[#0a0c0e] p-4 pt-6 md:hidden">
+        <div className="border-b border-white/[0.06] bg-[#1e2124] p-4 pt-6 md:hidden">
           <h2 className="mb-4 text-center text-xs font-medium tracking-wider text-white/60 uppercase">
             {t('settingsTitle')}
           </h2>

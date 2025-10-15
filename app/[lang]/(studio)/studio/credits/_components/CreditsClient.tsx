@@ -71,7 +71,7 @@ export default function CreditsClient() {
   };
 
   const handlePurchaseCredits = () => {
-    router.push('/billing');
+    router.push(`/{billing}`);
   };
 
   const formatDate = (dateString: string) => {

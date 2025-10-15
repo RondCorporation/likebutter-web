@@ -7,7 +7,7 @@ import ArtistSelection from './ArtistSelection';
 import MusicUpload from './MusicUpload';
 import StudioButton from '@/app/[lang]/(studio)/studio/_components/ui/StudioButton';
 import { createButterCoverTask } from '@/app/_lib/apis/task.api';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useTaskPolling } from '@/app/_hooks/useTaskPolling';
 import { Download, Play, Pause, Volume2 } from 'lucide-react';
@@ -33,6 +33,9 @@ interface MusicData {
 export default function ButterCoverClient({}: ButterCoverClientProps) {
   const { t } = useTranslation(['studio']);
   const { deductCredit } = useCreditStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1];
   const [currentStep, setCurrentStep] = useState(1);
   const [artistData, setArtistData] = useState<ArtistData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +44,6 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
   );
-  const router = useRouter();
 
   const {
     taskData,
@@ -95,6 +97,8 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       if ((response as any).isInsufficientCredit) {
         setCurrentStep(2);
         setIsLoading(false);
+        router.push(`/${lang}/billing`);
+        // TODO: 플랜에 따라 이미 구독된 사람이면 크레딧 결제 쪽으로 이동하는 부분 고려하기
         return;
       }
 

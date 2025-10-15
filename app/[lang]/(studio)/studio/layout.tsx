@@ -93,7 +93,8 @@ export default function StudioLayout({ children, params }: Props) {
               maxWidth: isDesktop ? '480px' : '90%',
               minWidth: isDesktop ? 'auto' : '280px',
               width: 'auto',
-              wordBreak: 'break-word',
+              wordBreak: 'keep-all',
+              overflowWrap: 'break-word',
               whiteSpace: 'pre-wrap',
             },
             success: {

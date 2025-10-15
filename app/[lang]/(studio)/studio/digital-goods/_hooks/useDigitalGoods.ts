@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   createDigitalGoodsTask,
   DigitalGoodsRequest,
@@ -62,6 +63,9 @@ export interface UseDigitalGoodsReturn {
 export function useDigitalGoods(): UseDigitalGoodsReturn {
   const { t } = useTranslation(['studio', 'common']);
   const { deductCredit } = useCreditStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1];
 
   // File state
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -181,6 +185,8 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
 
         if ((response as any).isInsufficientCredit) {
           setIsGenerating(false);
+          router.push(`/${lang}/billing`);
+          // TODO: 플랜에 따라 이미 구독된 사람이면 크레딧 결제 쪽으로 이동하는 부분 고려하기
           return;
         }
 
@@ -242,6 +248,8 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
 
         if ((response as any).isInsufficientCredit) {
           setIsEditLoading(false);
+          router.push(`/${lang}/billing`);
+          // TODO: 플랜에 따라 이미 구독된 사람이면 크레딧 결제 쪽으로 이동하는 부분 고려하기
           return;
         }
 

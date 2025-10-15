@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { Plus, Home, FolderOpen, Users, MoreHorizontal } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Plus, Home, FolderOpen, Users, Crown } from 'lucide-react';
 import ModelSelectPopup from './ModelSelectPopup';
 import { useTranslation } from 'react-i18next';
 
@@ -15,18 +14,9 @@ export default function MobileBottomNavigation({
   lang,
 }: MobileBottomNavigationProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [showModelPopup, setShowModelPopup] = useState(false);
   const { t } = useTranslation(['studio', 'common']);
-
-  const handleComingSoon = () => {
-    toast(t('common:comingSoon'), {
-      icon: '🚧',
-      style: {
-        background: '#333',
-        color: '#fff',
-      },
-    });
-  };
 
   const navigateToTool = (toolName: string) => {
     if (typeof window !== 'undefined' && (window as any).studioNavigateToTool) {
@@ -43,6 +33,7 @@ export default function MobileBottomNavigation({
     if (currentTool === 'dashboard') return 'home';
     if (currentTool === 'archive') return 'vault';
     if (currentTool === 'help') return 'help';
+    if (currentTool === 'credits') return 'credits';
     return '';
   };
 
@@ -93,7 +84,7 @@ export default function MobileBottomNavigation({
             >
               <FolderOpen
                 className="w-6 h-6"
-                color={selectedMenu === 'vault' ? '#ffd93b' : '#C3C3C5'}
+                color={selectedMenu === 'vault' ? '#ffd93b' : '#A8A8AA'}
               />
             </div>
             <span
@@ -146,16 +137,29 @@ export default function MobileBottomNavigation({
             </span>
           </button>
 
-          {/* More */}
+          {/* Credits */}
           <button
-            onClick={handleComingSoon}
+            onClick={() => router.push(`/${lang}/studio?tool=credits`)}
             className="flex flex-col items-center py-2 px-3"
           >
-            <div className="p-2 rounded-lg transition-colors">
-              <MoreHorizontal className="w-6 h-6" color="#A8A8AA" />
+            <div
+              className={`p-2 rounded-lg transition-colors ${
+                selectedMenu === 'credits' ? 'bg-studio-main' : ''
+              }`}
+            >
+              <Crown
+                className="w-6 h-6"
+                color={selectedMenu === 'credits' ? '#ffd93b' : '#A8A8AA'}
+              />
             </div>
-            <span className="text-xs mt-1 font-pretendard text-studio-text-secondary">
-              {t('studio:navigation.showMore')}
+            <span
+              className={`text-xs mt-1 font-pretendard ${
+                selectedMenu === 'credits'
+                  ? 'text-studio-button-primary'
+                  : 'text-studio-text-secondary'
+              }`}
+            >
+              {t('studio:userDropdown.credits')}
             </span>
           </button>
         </div>

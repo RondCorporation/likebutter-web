@@ -11,7 +11,13 @@ interface DetailsModalProps {
   showEditButton?: boolean;
 }
 
-export default function DetailsModal({ children, title, onClose, onEdit, showEditButton }: DetailsModalProps) {
+export default function DetailsModal({
+  children,
+  title,
+  onClose,
+  onEdit,
+  showEditButton,
+}: DetailsModalProps) {
   const isMobile = useIsMobile();
   useScrollLock(true);
 

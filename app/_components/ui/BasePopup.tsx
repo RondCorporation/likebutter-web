@@ -32,7 +32,9 @@ export default function BasePopup({
     >
       <div
         className={`${
-          isMobile ? 'w-full max-w-[calc(100vw-2rem)] max-h-[80vh]' : 'w-[678px] max-h-[85vh]'
+          isMobile
+            ? 'w-full max-w-[calc(100vw-2rem)] max-h-[80vh]'
+            : 'w-[678px] max-h-[85vh]'
         } bg-studio-sidebar border border-solid border-studio-border rounded-xl ${
           isMobile ? 'p-6' : 'p-8'
         } flex flex-col gap-6 md:gap-8 ${className}`}
@@ -50,9 +52,7 @@ export default function BasePopup({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

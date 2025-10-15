@@ -15,7 +15,6 @@ import {
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
 import DeleteConfirmModal from '@/components/studio/archive/DeleteConfirmModal';
-import SwipeableArchiveCard from '@/components/studio/archive/SwipeableArchiveCard';
 import {
   deleteTask,
   deleteBatchTasks,
@@ -97,7 +96,6 @@ function Dropdown({
 function ArchiveTaskCard({
   task,
   onClick,
-  onDelete,
   isSelectionMode,
   isSelected,
   onToggleSelect,
@@ -105,7 +103,6 @@ function ArchiveTaskCard({
 }: {
   task: Task;
   onClick: () => void;
-  onDelete: (task: Task) => void;
   isSelectionMode: boolean;
   isSelected: boolean;
   onToggleSelect: (taskId: number) => void;
@@ -389,16 +386,7 @@ function ArchiveTaskCard({
     </div>
   );
 
-  return (
-    <>
-      <div className="md:hidden">
-        <SwipeableArchiveCard task={task} onDelete={onDelete}>
-          {cardContent}
-        </SwipeableArchiveCard>
-      </div>
-      <div className="hidden md:block">{cardContent}</div>
-    </>
-  );
+  return cardContent;
 }
 
 export default function ArchiveClient() {
@@ -416,23 +404,6 @@ export default function ArchiveClient() {
     refetch,
   } = useTaskArchive();
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-
-    return t('studio:archive.dateFormat', {
-      year,
-      month: month.toString().padStart(2, '0'),
-      day: day.toString().padStart(2, '0'),
-      hour: hour.toString().padStart(2, '0'),
-      minute: minute.toString().padStart(2, '0'),
-    });
-  };
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
@@ -455,7 +426,10 @@ export default function ArchiveClient() {
 
   const handleScrollToTop = () => {
     if (containerRef.current) {
-      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      containerRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -485,10 +459,6 @@ export default function ArchiveClient() {
 
   const handleCloseModal = () => {
     setSelectedTask(null);
-  };
-
-  const handleDeleteClick = (task: Task) => {
-    setTaskToDelete(task);
   };
 
   const handleDeleteConfirm = async () => {
@@ -673,7 +643,10 @@ export default function ArchiveClient() {
   }
 
   return (
-    <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0" ref={containerRef}>
+    <div
+      className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0"
+      ref={containerRef}
+    >
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
         <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">
@@ -806,7 +779,6 @@ export default function ArchiveClient() {
                     key={task.taskId}
                     task={task}
                     onClick={() => handleTaskClick(task)}
-                    onDelete={handleDeleteClick}
                     isSelectionMode={isSelectionMode}
                     isSelected={selectedTaskIds.has(task.taskId)}
                     onToggleSelect={toggleTaskSelection}

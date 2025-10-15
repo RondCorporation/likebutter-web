@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { X, Send, Loader2 } from 'lucide-react';
 import { Task, ActionType } from '@/types/task';
 import { editTask } from '@/lib/apis/task.api';
@@ -22,6 +23,9 @@ export default function EditTaskModal({
   onSuccess,
 }: Props) {
   const { t } = useTranslation('studio');
+  const router = useRouter();
+  const pathname = usePathname();
+  const lang = pathname.split('/')[1];
   const [editPrompt, setEditPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +47,14 @@ export default function EditTaskModal({
         task.actionType,
         editPrompt.trim()
       );
+
+      if ((response as any).isInsufficientCredit) {
+        handleClose();
+        router.push(`/${lang}/billing`);
+        // TODO: 플랜에 따라 이미 구독된 사람이면 크레딧 결제 쪽으로 이동하는 부분 고려하기
+        return;
+      }
+
       if (response.data) {
         onSuccess(response.data.taskId);
         handleClose();
@@ -100,7 +112,9 @@ export default function EditTaskModal({
       <div className="relative bg-[#25282c] border border-[#4a4a4b] rounded-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#4a4a4b]">
-          <h2 className="text-lg font-bold text-white">{t('editTaskModal.title')}</h2>
+          <h2 className="text-lg font-bold text-white">
+            {t('editTaskModal.title')}
+          </h2>
           <button
             onClick={handleClose}
             className="text-gray-400 hover:text-white transition-colors"
@@ -118,7 +132,9 @@ export default function EditTaskModal({
             task.editSequence !== null && (
               <div className="mb-4 p-3 bg-[#1a1d21] border border-[#4a4a4b] rounded-lg">
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-gray-400">{t('editTaskModal.editChain')}</span>
+                  <span className="text-gray-400">
+                    {t('editTaskModal.editChain')}
+                  </span>
                   <div className="flex items-center gap-1 text-white">
                     <span className="text-gray-500">#{task.parentTaskId}</span>
                     {Array.from({ length: task.editSequence }, (_, i) => (
@@ -129,7 +145,9 @@ export default function EditTaskModal({
                     <span className="text-[#e8fa07] font-medium">
                       #{task.taskId}
                     </span>
-                    <span className="text-gray-500">→ {t('editTaskModal.newEdit')}</span>
+                    <span className="text-gray-500">
+                      → {t('editTaskModal.newEdit')}
+                    </span>
                   </div>
                 </div>
               </div>

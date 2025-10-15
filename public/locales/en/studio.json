@@ -423,7 +423,7 @@
     "fileSizeLimit": "200MB limit per file (png, jpg, jpeg)",
     "generate": "Generate",
     "generating": "Generating...",
-    "generationFailed": "Generation failed",
+    "generationFailed": "Currently experiencing high traffic. Please try again in a moment.",
     "generationInProgress": "Digital goods generation in progress...",
     "messages": {
       "downloadComplete": "Image downloaded!",
@@ -552,7 +552,7 @@
       "editRequestFailed": "Edit request failed.",
       "editRequestSent": "Edit request sent!",
       "fanmeetingComplete": "Fan meeting has been completed!",
-      "fanmeetingFailed": "Fan meeting generation failed.",
+      "fanmeetingFailed": "Currently experiencing high traffic. Please try again in a moment.",
       "fileSizeExceeded": "File size exceeds 200MB.",
       "originalNotFound": "Cannot find original work.",
       "requestFailed": "Fan meeting generation request failed.",
@@ -747,7 +747,7 @@
       "requestFailed": "Styling generation request failed.",
       "requestSent": "Styling generation request sent!",
       "stylingComplete": "Styling has been completed!",
-      "stylingFailed": "Styling generation failed.",
+      "stylingFailed": "Currently experiencing high traffic. Please try again in a moment.",
       "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
       "workReset": "Work has been reset."
     },
@@ -863,7 +863,7 @@
     "uploadImageTitle": "Upload Image",
     "messages": {
       "castingComplete": "Virtual casting has been completed!",
-      "castingFailed": "Virtual casting generation failed.",
+      "castingFailed": "Currently experiencing high traffic. Please try again in a moment.",
       "downloadComplete": "Image downloaded!",
       "downloadFailed": "Download failed.",
       "editRequestFailed": "Edit request failed.",

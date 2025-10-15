@@ -423,7 +423,7 @@
     "fileSizeLimit": "파일당 200mb 제한 (png, jpg, jpeg)",
     "generate": "굿즈생성",
     "generating": "생성중...",
-    "generationFailed": "생성 실패",
+    "generationFailed": "현재 사용자가 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.",
     "generationInProgress": "디지털 굿즈 생성 중...",
     "messages": {
       "downloadComplete": "이미지가 다운로드되었습니다!",
@@ -552,7 +552,7 @@
       "editRequestFailed": "수정 요청에 실패했습니다.",
       "editRequestSent": "수정 요청이 전송되었습니다!",
       "fanmeetingComplete": "팬미팅 사진이 생성되었습니다!",
-      "fanmeetingFailed": "팬미팅 사진 생성에 실패했습니다.",
+      "fanmeetingFailed": "현재 사용자가 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.",
       "fileSizeExceeded": "파일 크기가 200MB를 초과합니다.",
       "originalNotFound": "원본 작업을 찾을 수 없습니다.",
       "requestFailed": "팬미팅 사진 생성 요청에 실패했습니다.",
@@ -747,7 +747,7 @@
       "requestFailed": "스타일링 생성 요청에 실패했습니다.",
       "requestSent": "스타일링 생성 요청이 전송되었습니다!",
       "stylingComplete": "스타일링이 완성되었습니다!",
-      "stylingFailed": "스타일링 생성에 실패했습니다.",
+      "stylingFailed": "현재 사용자가 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.",
       "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
       "workReset": "작업이 초기화되었습니다."
     },
@@ -864,7 +864,7 @@
     "uploadImageTitle": "이미지 업로드하기",
     "messages": {
       "castingComplete": "가상 캐스팅이 완성되었습니다!",
-      "castingFailed": "가상 캐스팅 생성에 실패했습니다.",
+      "castingFailed": "현재 사용자가 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.",
       "downloadComplete": "이미지가 다운로드되었습니다!",
       "downloadFailed": "다운로드에 실패했습니다.",
       "editRequestFailed": "수정 요청에 실패했습니다.",

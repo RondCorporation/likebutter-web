@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import '@/app/_lib/i18n-client';
 import { useParams, useRouter } from 'next/navigation';
 import { Eye } from 'lucide-react';
+import Pagination from '@/app/[lang]/(admin)/admin/_components/shared/Pagination';
 
 export default function PaymentHistoryPage() {
   const params = useParams();
@@ -17,12 +18,19 @@ export default function PaymentHistoryPage() {
   const [payments, setPayments] = useState<PaymentHistoryResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
 
   useEffect(() => {
-    getPaymentHistory()
+    setLoading(true);
+    setError(null);
+    getPaymentHistory(page, 20)
       .then((res) => {
         if (res.data) {
-          setPayments(res.data);
+          setPayments(res.data.content);
+          setTotalPages(res.data.totalPages);
+          setTotalElements(res.data.totalElements);
         }
       })
       .catch((err) => {
@@ -31,7 +39,7 @@ export default function PaymentHistoryPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [page]);
 
   const lang = params.lang;
 
@@ -189,6 +197,17 @@ export default function PaymentHistoryPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {!loading && payments.length > 0 && (
+            <div className="mt-6">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
             </div>
           )}
         </div>

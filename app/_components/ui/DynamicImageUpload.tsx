@@ -29,7 +29,7 @@ export default function DynamicImageUpload({
   const [dragOverSlot, setDragOverSlot] = useState<string | null>(null);
 
   const handleFileUpload = (file: File, slotId: string) => {
-    if (file.size > 200 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       alert(t('digitalGoods.messages.fileSizeExceeded'));
       return;
     }

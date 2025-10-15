@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import Image from 'next/image';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 
@@ -85,9 +86,11 @@ export default function DigitalGoodsStyleSidebar({
                     : 'border-transparent'
                 }`}
               >
-                <img
+                <Image
                   src={getStyleImage(preset.value)}
                   alt={preset.name}
+                  width={96}
+                  height={96}
                   className="w-full h-full object-cover"
                 />
               </div>

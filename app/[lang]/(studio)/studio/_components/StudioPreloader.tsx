@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react';
 import { useStudioNavigation } from '../_hooks/useStudioNavigation';
+import { usePathname } from 'next/navigation';
+import { useIsMobile } from '@/hooks/useMediaQuery';
 
 interface StudioPreloaderProps {
   lang: string;
@@ -9,67 +11,25 @@ interface StudioPreloaderProps {
 
 export default function StudioPreloader({ lang }: StudioPreloaderProps) {
   const { preloadTool, isToolPreloaded } = useStudioNavigation(lang);
+  const pathname = usePathname();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    const criticalTools = ['digital-goods', 'archive'];
-    criticalTools.forEach((tool) => {
-      if (!isToolPreloaded(tool)) {
-        preloadTool(tool);
-      }
-    });
-
-    const highPriorityTimer = setTimeout(() => {
-      const highPriorityTools = ['stylist', 'virtual-casting'];
-      highPriorityTools.forEach((tool) => {
-        if (!isToolPreloaded(tool)) {
-          preloadTool(tool);
-        }
-      });
-    }, 500);
-
-    const lowPriorityTimer = setTimeout(() => {
-      const remainingTools = ['butter-cover', 'fanmeeting-studio'];
-
+    // Only preload archive on desktop as it's frequently accessed
+    // Mobile users should load on-demand to save bandwidth
+    if (!isMobile && !isToolPreloaded('archive')) {
+      // Use requestIdleCallback to avoid blocking main thread
       if ('requestIdleCallback' in window) {
         (window as any).requestIdleCallback(() => {
-          remainingTools.forEach((tool) => {
-            if (!isToolPreloaded(tool)) {
-              preloadTool(tool);
-            }
-          });
+          preloadTool('archive');
         });
       } else {
         setTimeout(() => {
-          remainingTools.forEach((tool) => {
-            if (!isToolPreloaded(tool)) {
-              preloadTool(tool);
-            }
-          });
-        }, 100);
+          preloadTool('archive');
+        }, 2000);
       }
-    }, 1500);
-
-    const assetPreloadTimer = setTimeout(() => {
-      const imagesToPreload = [
-        '/studio/model-select/digital-goods.png',
-        '/studio/model-select/stylist.png',
-        '/studio/model-select/virtual_casting.png',
-        '/studio/model-select/fanmeeting-studio.png',
-        '/studio/model-select/butter-cover.png',
-      ];
-
-      imagesToPreload.forEach((imageSrc) => {
-        const img = new Image();
-        img.src = imageSrc;
-      });
-    }, 3000);
-
-    return () => {
-      clearTimeout(highPriorityTimer);
-      clearTimeout(lowPriorityTimer);
-      clearTimeout(assetPreloadTimer);
-    };
-  }, [preloadTool, isToolPreloaded]);
+    }
+  }, [preloadTool, isToolPreloaded, isMobile]);
 
   return null;
 }

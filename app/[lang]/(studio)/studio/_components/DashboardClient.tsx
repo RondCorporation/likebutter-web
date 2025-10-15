@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Music2 } from 'lucide-react';
+import { Image as ImageIcon, Music2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface ToolCard {
   id: string;
@@ -109,7 +110,7 @@ export default function DashboardClient() {
             }`}
             style={{ fontSize: '14px' }}
           >
-            <Image className="w-5 h-5 md:w-5 md:h-5" />
+            <ImageIcon className="w-5 h-5 md:w-5 md:h-5" />
             {t('studio:dashboard.imageGeneration')}
           </button>
           <button
@@ -150,10 +151,13 @@ export default function DashboardClient() {
                 }}
               >
                 {tool.preview && (
-                  <img
+                  <Image
                     src={tool.preview}
                     alt={tool.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    priority={false}
                   />
                 )}
               </div>

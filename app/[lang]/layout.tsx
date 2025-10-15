@@ -22,15 +22,21 @@ export async function generateStaticParams() {
   return i18n.locales.map((locale) => ({ lang: locale }));
 }
 
-const i18nNamespaces = [
-  'common',
-  'auth',
-  'marketing',
-  'billing',
-  'studio',
-  'admin',
-  'errors',
-];
+function getNamespacesForPath(pathname: string): string[] {
+  const baseNamespaces = ['common', 'errors'];
+
+  // Determine additional namespaces based on route
+  if (pathname.includes('/studio') || pathname.includes('/billing')) {
+    return [...baseNamespaces, 'studio', 'billing'];
+  } else if (pathname.includes('/admin')) {
+    return [...baseNamespaces, 'admin'];
+  } else if (pathname.includes('/login') || pathname.includes('/signup')) {
+    return [...baseNamespaces, 'auth'];
+  } else {
+    // Marketing pages
+    return [...baseNamespaces, 'marketing'];
+  }
+}
 
 export default async function RootLayout({
   children,
@@ -40,6 +46,11 @@ export default async function RootLayout({
   params: { lang: string };
 }>) {
   const { lang } = await params;
+
+  // Dynamically load only necessary namespaces
+  // Note: In actual implementation, we need pathname which is not available in layout
+  // So we load a minimal set and let each route group load its specific namespaces
+  const i18nNamespaces = ['common', 'errors'];
   const { resources } = await initTranslations(lang, i18nNamespaces);
 
   const preloadedUser = await getMeOnServer();

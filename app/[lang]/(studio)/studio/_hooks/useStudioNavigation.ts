@@ -189,33 +189,10 @@ export function useStudioNavigation(lang: string) {
   );
 
   useEffect(() => {
+    // Only preload dashboard component on mount
+    // Other tools will be loaded on-demand when navigating
     preloadTool('dashboard');
-
-    const preloadSchedule = [
-      { tools: ['digital-goods'], delay: 0 },
-      { tools: ['archive'], delay: 200 },
-      { tools: ['stylist'], delay: 500 },
-      { tools: ['virtual-casting'], delay: 1000 },
-      { tools: ['butter-cover', 'fanmeeting-studio'], delay: 2000 },
-    ];
-
-    const timeouts: NodeJS.Timeout[] = [];
-
-    preloadSchedule.forEach(({ tools, delay }) => {
-      const timeout = setTimeout(() => {
-        tools.forEach((tool) => {
-          if (!isToolPreloaded(tool)) {
-            preloadTool(tool);
-          }
-        });
-      }, delay);
-      timeouts.push(timeout);
-    });
-
-    return () => {
-      timeouts.forEach(clearTimeout);
-    };
-  }, [preloadTool, isToolPreloaded]);
+  }, [preloadTool]);
 
   useEffect(() => {
     const currentTool = getCurrentTool();

@@ -166,17 +166,11 @@ export function useTaskArchive() {
     fetchArchive(state.page, state.filters);
   }, [state.page, JSON.stringify(state.filters), fetchArchive]);
 
+  // Polling for in-progress tasks AND periodic refresh to catch new tasks
   useEffect(() => {
-    const tasksToCheck = state.tasks.filter(
-      (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
-    );
-
-    if (tasksToCheck.length === 0) return;
-
     let pollInterval = 10000;
     const maxInterval = 60000;
     let consecutiveNoChanges = 0;
-
     let timeoutId: NodeJS.Timeout;
 
     const poll = async () => {
@@ -188,54 +182,74 @@ export function useTaskArchive() {
           (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
         );
 
-        if (currentInProgressTasks.length === 0) {
-          dispatch({ type: 'POLLING_END' });
-          return;
-        }
+        // If there are in-progress tasks, poll their status
+        if (currentInProgressTasks.length > 0) {
+          const taskIds = currentInProgressTasks.map((t) => t.taskId);
+          const response = await getBatchTaskStatus(taskIds);
 
-        const taskIds = currentInProgressTasks.map((t) => t.taskId);
+          if (response.data && Array.isArray(response.data)) {
+            let hasChanges = false;
+            let hasCompletedTasks = false;
 
-        const response = await getBatchTaskStatus(taskIds);
+            response.data.forEach((apiTask: Task) => {
+              const existingTask = state.tasks.find(
+                (t) => t.taskId === apiTask.taskId
+              );
+              if (existingTask && existingTask.status !== apiTask.status) {
+                hasChanges = true;
+                // Check if task just became COMPLETED or FAILED
+                if (
+                  (existingTask.status === 'PENDING' ||
+                    existingTask.status === 'PROCESSING') &&
+                  (apiTask.status === 'COMPLETED' ||
+                    apiTask.status === 'FAILED')
+                ) {
+                  hasCompletedTasks = true;
+                }
+                dispatch({
+                  type: 'UPDATE_TASK_STATUS',
+                  payload: apiTask,
+                });
+              }
+            });
 
-        if (response.data && Array.isArray(response.data)) {
-          let hasChanges = false;
-
-          response.data.forEach((apiTask: Task) => {
-            const existingTask = state.tasks.find(
-              (t) => t.taskId === apiTask.taskId
-            );
-            if (existingTask && existingTask.status !== apiTask.status) {
-              hasChanges = true;
-              dispatch({
-                type: 'UPDATE_TASK_STATUS',
-                payload: apiTask,
-              });
+            // If any tasks completed, refetch the archive to get full task data with images
+            if (hasCompletedTasks) {
+              fetchArchive(state.page, state.filters);
             }
-          });
 
-          if (hasChanges) {
-            consecutiveNoChanges = 0;
-            pollInterval = 10000;
-          } else {
-            consecutiveNoChanges++;
+            if (hasChanges) {
+              consecutiveNoChanges = 0;
+              pollInterval = 10000;
+            } else {
+              consecutiveNoChanges++;
 
-            if (consecutiveNoChanges >= 3) {
-              pollInterval = Math.min(pollInterval * 1.3, maxInterval);
+              if (consecutiveNoChanges >= 3) {
+                pollInterval = Math.min(pollInterval * 1.3, maxInterval);
+              }
             }
           }
+        } else {
+          // No in-progress tasks in current view, but check for new tasks periodically
+          // This handles case where user creates task on another page and navigates to archive
+          const refreshResponse = await getTaskHistory(0, {
+            ...state.filters,
+            summary: true,
+          });
 
-          const stillInProgress = response.data.filter(
-            (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
-          );
+          if (refreshResponse.data && refreshResponse.data.content.length > 0) {
+            const hasNewInProgressTasks = refreshResponse.data.content.some(
+              (t: Task) => t.status === 'PENDING' || t.status === 'PROCESSING'
+            );
 
-          if (stillInProgress.length === 0) {
-            dispatch({ type: 'POLLING_END' });
-            return;
+            // If there are new in-progress tasks, refetch the full archive
+            if (hasNewInProgressTasks) {
+              fetchArchive(state.page, state.filters);
+            }
           }
         }
       } catch (error) {
         console.warn('Polling error:', error);
-
         pollInterval = Math.min(pollInterval * 1.5, maxInterval);
       } finally {
         dispatch({ type: 'POLLING_END' });
@@ -244,7 +258,10 @@ export function useTaskArchive() {
       timeoutId = setTimeout(poll, pollInterval);
     };
 
-    timeoutId = setTimeout(poll, 2000);
+    // Start polling after initial load
+    if (!state.isLoading) {
+      timeoutId = setTimeout(poll, 2000);
+    }
 
     return () => {
       if (timeoutId) {
@@ -257,6 +274,10 @@ export function useTaskArchive() {
       .filter((t) => t.status === 'PENDING' || t.status === 'PROCESSING')
       .map((t) => t.taskId)
       .join(','),
+    state.isLoading,
+    fetchArchive,
+    state.page,
+    state.filters,
   ]);
 
   const loadMore = () => {

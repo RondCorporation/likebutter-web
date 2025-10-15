@@ -3,6 +3,8 @@
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
+import { createPortal } from 'react-dom';
+import { useEffect, useState } from 'react';
 
 interface MobileLoadingOverlayProps {
   isVisible: boolean;
@@ -17,8 +19,14 @@ export default function MobileLoadingOverlay({
 }: MobileLoadingOverlayProps) {
   const { t } = useTranslation('studio');
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!isVisible || !mounted) return null;
 
   const finalTitle = title || t('digitalGoods.generationInProgress');
   const finalDescription = description || t('digitalGoods.pleaseWait');
@@ -33,8 +41,8 @@ export default function MobileLoadingOverlay({
     router.push(`/${currentLang}`);
   };
 
-  return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center md:hidden">
+  const overlayContent = (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[99999] flex items-center justify-center md:hidden">
       <div className="flex flex-col items-center justify-center gap-6 p-8">
         <Loader2 className="w-16 h-16 animate-spin text-studio-button-primary" />
         <div className="flex flex-col items-center gap-2 text-center">
@@ -68,4 +76,6 @@ export default function MobileLoadingOverlay({
       </div>
     </div>
   );
+
+  return createPortal(overlayContent, document.body);
 }

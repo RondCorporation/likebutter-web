@@ -248,17 +248,25 @@
       "workReset": "작업이 초기화되었습니다."
     },
     "musicUpload": {
-      "audioFormats": "MP3, WAV, M4A 등",
+      "audioFormats": "MP3, WAV (자동 최적화)",
+      "audioFormatsDetail": "WAV 파일은 자동으로 MP3로 변환되어 업로드됩니다",
       "audioOnlyError": "오디오 파일만 업로드 가능합니다.",
       "browseFile": "파일 찾아보기",
+      "converting": "MP3로 변환 중",
+      "decoding": "파일 분석 중",
+      "fileSelected": "파일이 선택되었습니다",
       "generateAudio": "음원생성",
       "highPitch": "높게 (+12)",
       "lowPitch": "낮게 (-12)",
+      "maxSize": "최대 30MB",
       "outputFormat": "저장 파일 형식",
       "previous": "이전",
+      "processing": "처리 중",
+      "reduced": "절감",
       "selectAudioFile": "음원 파일 선택",
       "selectAudioFileError": "음원 파일을 선택해주세요.",
-      "voicePitch": "목소리 높낮이"
+      "voicePitch": "목소리 높낮이",
+      "wavConverted": "WAV 파일이 MP3로 최적화되었습니다"
     },
     "notifications": {
       "checkHistory": "진행 상황은 히스토리에서 확인하세요",

@@ -248,17 +248,25 @@
       "workReset": "Work has been reset."
     },
     "musicUpload": {
-      "audioFormats": "MP3, WAV, M4A, etc.",
+      "audioFormats": "MP3, WAV (auto-optimized)",
+      "audioFormatsDetail": "WAV files are automatically converted to MP3 for upload",
       "audioOnlyError": "Only audio files can be uploaded.",
       "browseFile": "Browse File",
+      "converting": "Converting to MP3",
+      "decoding": "Analyzing file",
+      "fileSelected": "File selected",
       "generateAudio": "Generate Audio",
       "highPitch": "High (+12)",
       "lowPitch": "Low (-12)",
+      "maxSize": "Max 30MB",
       "outputFormat": "Output File Format",
       "previous": "Previous",
+      "processing": "Processing",
+      "reduced": "reduced",
       "selectAudioFile": "Select Audio File",
       "selectAudioFileError": "Please select an audio file.",
-      "voicePitch": "Voice Pitch"
+      "voicePitch": "Voice Pitch",
+      "wavConverted": "WAV file optimized to MP3"
     },
     "notifications": {
       "checkHistory": "Check progress in History",

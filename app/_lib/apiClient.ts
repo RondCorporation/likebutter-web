@@ -52,7 +52,7 @@ async function refreshToken(): Promise<boolean> {
 
 export async function apiFetch<T>(
   url: string,
-  opts: Omit<RequestInit, 'body'> & { body?: any } = {},
+  opts: Omit<RequestInit, 'body'> & { body?: any; timeout?: number } = {},
   withAuth = true
 ): Promise<ApiResponse<T>> {
   const method = opts.method || 'GET';
@@ -86,7 +86,24 @@ export async function apiFetch<T>(
       config.body = JSON.stringify(opts.body);
     }
 
-    return fetch(`${API_URL}${url}`, config);
+    // Set up timeout for large file uploads
+    const timeout = opts.timeout || (isMultipart ? 300000 : 30000); // 5 min for uploads, 30s for others
+    const controller = new AbortController();
+    config.signal = controller.signal;
+
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(`${API_URL}${url}`, config);
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Request timeout. Please try again.');
+      }
+      throw error;
+    }
   };
 
   const requestPromise = (async (): Promise<ApiResponse<T>> => {

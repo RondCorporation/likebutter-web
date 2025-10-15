@@ -6,6 +6,12 @@ import StudioSlider from '@/app/_components/shared/StudioSlider';
 import { Upload, Music } from 'lucide-react';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
+import {
+  processAudioFile,
+  formatFileSize,
+  ConversionProgress,
+} from '@/app/_lib/audioConverter';
 
 interface MusicUploadProps {
   onGenerate: (data: {
@@ -21,29 +27,65 @@ export default function MusicUpload({
   onPrevious,
 }: MusicUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [pitch, setPitch] = useState(0);
   const [format, setFormat] = useState<'mp3' | 'wav'>('mp3');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [conversionProgress, setConversionProgress] =
+    useState<ConversionProgress | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { t } = useTranslation(['studio']);
 
   const handleFileSelect = () => {
+    if (isProcessing) return;
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.type.startsWith('audio/')) {
-        setSelectedFile(file);
+    if (!file) return;
+
+    setIsProcessing(true);
+    setConversionProgress(null);
+
+    try {
+      // Process file (validate + convert if needed)
+      const { file: processedFile, wasConverted, originalSize } =
+        await processAudioFile(file, (progress) => {
+          setConversionProgress(progress);
+        });
+
+      setOriginalFile(file);
+      setSelectedFile(processedFile);
+
+      // Show conversion success message
+      if (wasConverted) {
+        toast.success(
+          `${t('butterCover.musicUpload.wavConverted')}: ${formatFileSize(originalSize)} → ${formatFileSize(processedFile.size)} (${Math.round((1 - processedFile.size / originalSize) * 100)}% ${t('butterCover.musicUpload.reduced')})`
+        );
       } else {
-        alert(t('butterCover.musicUpload.audioOnlyError'));
+        toast.success(t('butterCover.musicUpload.fileSelected'));
+      }
+    } catch (error: any) {
+      console.error('File processing error:', error);
+      toast.error(error.message || t('butterCover.musicUpload.audioOnlyError'));
+      setSelectedFile(null);
+      setOriginalFile(null);
+    } finally {
+      setIsProcessing(false);
+      setConversionProgress(null);
+      // Reset input so same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
     }
   };
 
   const handleGenerate = () => {
     if (!selectedFile) {
-      alert(t('butterCover.musicUpload.selectAudioFileError'));
+      toast.error(t('butterCover.musicUpload.selectAudioFileError'));
       return;
     }
 
@@ -65,14 +107,41 @@ export default function MusicUpload({
             </label>
             <div
               onClick={handleFileSelect}
-              className="flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed border-slate-600 rounded-xl cursor-pointer hover:border-slate-500 transition-colors bg-slate-800/30 hover:bg-slate-800/50"
+              className={`flex flex-col items-center justify-center w-full h-32 sm:h-40 border-2 border-dashed rounded-xl transition-colors ${
+                isProcessing
+                  ? 'border-butter-yellow bg-slate-800/50 cursor-wait'
+                  : 'border-slate-600 hover:border-slate-500 cursor-pointer bg-slate-800/30 hover:bg-slate-800/50'
+              }`}
             >
-              {selectedFile ? (
-                <div className="flex items-center gap-2 sm:gap-3 text-butter-yellow">
-                  <Music size={24} className="sm:w-7 sm:h-7" />
-                  <span className="text-sm sm:text-base font-medium max-w-48 sm:max-w-64 truncate">
-                    {selectedFile.name}
-                  </span>
+              {isProcessing ? (
+                <div className="flex flex-col items-center gap-3 text-butter-yellow">
+                  <div className="w-10 h-10 border-3 border-butter-yellow border-t-transparent rounded-full animate-spin" />
+                  <div className="text-center">
+                    <div className="text-sm sm:text-base font-medium">
+                      {conversionProgress?.stage === 'decoding'
+                        ? t('butterCover.musicUpload.decoding')
+                        : conversionProgress?.stage === 'encoding'
+                          ? t('butterCover.musicUpload.converting')
+                          : t('butterCover.musicUpload.processing')}
+                    </div>
+                    {conversionProgress && (
+                      <div className="text-xs sm:text-sm mt-1">
+                        {conversionProgress.progress}%
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : selectedFile ? (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="flex items-center gap-2 sm:gap-3 text-butter-yellow">
+                    <Music size={24} className="sm:w-7 sm:h-7" />
+                    <span className="text-sm sm:text-base font-medium max-w-48 sm:max-w-64 truncate">
+                      {originalFile?.name || selectedFile.name}
+                    </span>
+                  </div>
+                  <div className="text-xs text-slate-400">
+                    {formatFileSize(selectedFile.size)}
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-2 sm:gap-3 text-slate-400">
@@ -81,8 +150,14 @@ export default function MusicUpload({
                     <div className="text-sm sm:text-base font-medium text-white mb-1">
                       {t('butterCover.musicUpload.browseFile')}
                     </div>
-                    <div className="text-xs sm:text-sm">
+                    <div className="text-xs sm:text-sm text-butter-yellow">
                       {t('butterCover.musicUpload.audioFormats')}
+                    </div>
+                    <div className="text-xs text-slate-400 mt-1">
+                      {t('butterCover.musicUpload.audioFormatsDetail')}
+                    </div>
+                    <div className="text-xs text-slate-500 mt-1">
+                      {t('butterCover.musicUpload.maxSize')}
                     </div>
                   </div>
                 </div>
@@ -91,9 +166,10 @@ export default function MusicUpload({
             <input
               ref={fileInputRef}
               type="file"
-              accept="audio/*"
+              accept="audio/mpeg,audio/wav,audio/mp3,.mp3,.wav"
               onChange={handleFileChange}
               className="hidden"
+              disabled={isProcessing}
             />
           </div>
 
@@ -160,7 +236,8 @@ export default function MusicUpload({
             {onPrevious && (
               <button
                 onClick={onPrevious}
-                className="flex items-center justify-center px-5 py-3 h-12 rounded-md border-2 border-slate-600 text-slate-300 hover:border-slate-500 hover:text-white transition-colors bg-transparent sm:w-32"
+                disabled={isProcessing}
+                className="flex items-center justify-center px-5 py-3 h-12 rounded-md border-2 border-slate-600 text-slate-300 hover:border-slate-500 hover:text-white transition-colors bg-transparent sm:w-32 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t('butterCover.musicUpload.previous')}
               </button>
@@ -170,6 +247,7 @@ export default function MusicUpload({
               onClick={handleGenerate}
               className="flex-1"
               creditCost={CREDIT_COSTS.BUTTER_COVER}
+              disabled={isProcessing || !selectedFile}
             />
           </div>
         </div>

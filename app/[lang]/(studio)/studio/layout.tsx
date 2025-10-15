@@ -26,7 +26,13 @@ export default function StudioLayout({ children, params }: Props) {
 
   return (
     <StudioAuthGuard>
-      <div className="flex flex-col h-screen w-full overflow-hidden">
+      <div
+        className="flex flex-col w-full overflow-hidden"
+        style={{
+          height: '100dvh',
+          height: 'calc(var(--vh, 1vh) * 100)',
+        }}
+      >
         {/* Fixed Header - 모바일과 데스크톱 모두 고정 */}
         <div className="fixed top-0 left-0 right-0 z-50">
           <Header variant="studio" params={params} />

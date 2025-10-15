@@ -1,5 +1,5 @@
 import { Task, DigitalGoodsResponse } from '@/types/task';
-import { Palette } from 'lucide-react';
+import { Palette, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
@@ -8,12 +8,14 @@ interface Props {
   task?: Task & { actionType: 'DIGITAL_GOODS' | 'DIGITAL_GOODS_EDIT' };
   details?: DigitalGoodsResponse; // For backward compatibility
   onClose?: () => void;
+  onEdit?: () => void;
 }
 
 export default function DigitalGoodsDetailsView({
   task,
   details,
   onClose,
+  onEdit,
 }: Props) {
   const { t } = useTranslation(['studio']);
 
@@ -33,18 +35,6 @@ export default function DigitalGoodsDetailsView({
 
   const content = (
     <div className="text-studio-text-primary">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-studio-button-primary rounded-lg">
-            <Palette className="h-5 w-5 text-studio-header" />
-          </div>
-          <h3 className="text-xl font-semibold">
-            {t('digitalGoods.details.creationTitle')}
-          </h3>
-        </div>
-      </div>
-
       {/* Main Content */}
       {result && (
         <div className="grid grid-cols-1 gap-6">
@@ -133,7 +123,14 @@ export default function DigitalGoodsDetailsView({
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+    <DetailsModal
+      title={t('digitalGoods.details.creationTitle')}
+      onClose={onClose}
+      onEdit={onEdit}
+      showEditButton={!!result}
+    >
+      {content}
+    </DetailsModal>
   ) : (
     content
   );

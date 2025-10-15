@@ -1,5 +1,5 @@
 import { Task, VirtualCastingResponse } from '@/types/task';
-import { Wand2 } from 'lucide-react';
+import { Wand2, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
@@ -8,12 +8,14 @@ interface Props {
   task?: Task & { actionType: 'VIRTUAL_CASTING' | 'VIRTUAL_CASTING_EDIT' };
   details?: VirtualCastingResponse; // For backward compatibility
   onClose?: () => void;
+  onEdit?: () => void;
 }
 
 export default function VirtualCastingDetailsView({
   task,
   details,
   onClose,
+  onEdit,
 }: Props) {
   const { t } = useTranslation(['studio']);
 
@@ -33,16 +35,6 @@ export default function VirtualCastingDetailsView({
 
   const content = (
     <div className="text-studio-text-primary">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-studio-button-primary rounded-lg">
-            <Wand2 className="h-5 w-5 text-studio-header" />
-          </div>
-          <h3 className="text-xl font-semibold">{t('virtualCasting.title')}</h3>
-        </div>
-      </div>
-
       {/* Main Content */}
       {result && (
         <div className="grid grid-cols-1 gap-6">
@@ -131,7 +123,14 @@ export default function VirtualCastingDetailsView({
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+    <DetailsModal
+      title={t('virtualCasting.title')}
+      onClose={onClose}
+      onEdit={onEdit}
+      showEditButton={!!result}
+    >
+      {content}
+    </DetailsModal>
   ) : (
     content
   );

@@ -486,6 +486,18 @@
       "requestFailed": "수정 요청 중 오류가 발생했습니다."
     }
   },
+  "editTaskModal": {
+    "title": "이미지 수정하기",
+    "cancel": "취소",
+    "edit": "수정하기",
+    "editing": "수정 중...",
+    "currentResultImage": "현재 결과 이미지",
+    "editLabel": "수정할 내용을 설명해주세요",
+    "editPlaceholder": "예: 배경을 해변으로 변경, 의상을 정장으로 변경",
+    "imageLoadError": "이미지를 불러올 수 없습니다",
+    "editChain": "편집 체인:",
+    "newEdit": "새 편집"
+  },
   "fanmeeting": {
     "background": "배경",
     "backgroundPlaceholder": "어떤 배경에서 만나고 싶나요?",

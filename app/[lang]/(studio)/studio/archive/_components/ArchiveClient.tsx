@@ -415,6 +415,7 @@ export default function ArchiveClient() {
     goToNextPage,
     refetch,
   } = useTaskArchive();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -451,6 +452,14 @@ export default function ArchiveClient() {
   const [tasksToDelete, setTasksToDelete] = useState<number[] | null>(null);
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleScrollToTop = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const actionTypeOptions = [
     { label: t('studio:archive.filters.all'), value: 'all' },
@@ -668,7 +677,7 @@ export default function ArchiveClient() {
   }
 
   return (
-    <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0">
+    <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0" ref={containerRef}>
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
         <h1 className="text-white text-2xl md:text-3xl font-bold mb-6 md:mb-8">
@@ -932,6 +941,7 @@ export default function ArchiveClient() {
           task={selectedTask}
           onClose={handleCloseModal}
           onRefetch={refetch}
+          onScrollToTop={handleScrollToTop}
         />
       )}
 

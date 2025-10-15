@@ -1,5 +1,5 @@
 import { Task, StylistResponse } from '@/types/task';
-import { Scissors } from 'lucide-react';
+import { Scissors, Edit } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
@@ -8,9 +8,15 @@ interface Props {
   task?: Task & { actionType: 'STYLIST' | 'STYLIST_EDIT' };
   details?: StylistResponse; // For backward compatibility
   onClose?: () => void;
+  onEdit?: () => void;
 }
 
-export default function StylistDetailsView({ task, details, onClose }: Props) {
+export default function StylistDetailsView({
+  task,
+  details,
+  onClose,
+  onEdit,
+}: Props) {
   const { t } = useTranslation(['studio']);
 
   // Use the new task structure or fall back to old details prop
@@ -29,18 +35,6 @@ export default function StylistDetailsView({ task, details, onClose }: Props) {
 
   const content = (
     <div className="text-studio-text-primary">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-studio-button-primary rounded-lg">
-            <Scissors className="h-5 w-5 text-studio-header" />
-          </div>
-          <h3 className="text-xl font-semibold">
-            {t('stylist.details.creationTitle')}
-          </h3>
-        </div>
-      </div>
-
       {/* Main Content */}
       {result && (
         <div className="grid grid-cols-1 gap-6">
@@ -198,7 +192,14 @@ export default function StylistDetailsView({ task, details, onClose }: Props) {
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+    <DetailsModal
+      title={t('stylist.details.creationTitle')}
+      onClose={onClose}
+      onEdit={onEdit}
+      showEditButton={!!result}
+    >
+      {content}
+    </DetailsModal>
   ) : (
     content
   );

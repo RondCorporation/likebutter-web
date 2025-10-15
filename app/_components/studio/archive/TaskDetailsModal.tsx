@@ -6,22 +6,26 @@ import { X, LoaderCircle } from 'lucide-react';
 import TaskDetailsView from './TaskDetailsView';
 import { getTaskStatus } from '@/lib/apis/task.api';
 import { useTranslation } from 'react-i18next';
+import EditTaskModal from './EditTaskModal';
 
 interface Props {
   task: Task;
   onClose: () => void;
   onRefetch?: () => void;
+  onScrollToTop?: () => void;
 }
 
 export default function TaskDetailsModal({
   task: initialTask,
   onClose,
   onRefetch,
+  onScrollToTop,
 }: Props) {
   const { t } = useTranslation('studio');
   const [displayTask, setDisplayTask] = useState<Task | null>(initialTask);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     // Check if task has result data based on actionType
@@ -129,7 +133,55 @@ export default function TaskDetailsModal({
     );
   }
 
-  return displayTask ? (
-    <TaskDetailsView task={displayTask} onClose={onClose} />
-  ) : null;
+  const handleEditSuccess = (newTaskId: number) => {
+    // Close the details modal
+    onClose();
+
+    // Scroll to top of archive page
+    if (onScrollToTop) {
+      onScrollToTop();
+    }
+
+    // Refresh the archive list
+    if (onRefetch) {
+      onRefetch();
+    }
+  };
+
+  const handleEditClick = () => {
+    setIsEditModalOpen(true);
+  };
+
+  // Check if task can be edited (only completed image generation tasks)
+  const canEdit =
+    displayTask?.status === 'COMPLETED' &&
+    (displayTask.actionType === 'DIGITAL_GOODS' ||
+      displayTask.actionType === 'DIGITAL_GOODS_EDIT' ||
+      displayTask.actionType === 'FANMEETING_STUDIO' ||
+      displayTask.actionType === 'FANMEETING_STUDIO_EDIT' ||
+      displayTask.actionType === 'STYLIST' ||
+      displayTask.actionType === 'STYLIST_EDIT' ||
+      displayTask.actionType === 'VIRTUAL_CASTING' ||
+      displayTask.actionType === 'VIRTUAL_CASTING_EDIT');
+
+  return (
+    <>
+      {displayTask && (
+        <TaskDetailsView
+          task={displayTask}
+          onClose={onClose}
+          onEdit={canEdit ? handleEditClick : undefined}
+        />
+      )}
+
+      {displayTask && canEdit && (
+        <EditTaskModal
+          task={displayTask}
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
+    </>
+  );
 }

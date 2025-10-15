@@ -486,6 +486,18 @@
       "requestFailed": "An error occurred while processing the edit request."
     }
   },
+  "editTaskModal": {
+    "title": "Edit Image",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "editing": "Editing...",
+    "currentResultImage": "Current Result Image",
+    "editLabel": "Describe what you want to change",
+    "editPlaceholder": "e.g., Change background to beach, change outfit to suit",
+    "imageLoadError": "Cannot load image",
+    "editChain": "Edit Chain:",
+    "newEdit": "New Edit"
+  },
   "fanmeeting": {
     "background": "Background",
     "backgroundPlaceholder": "What background would you like to meet in?",

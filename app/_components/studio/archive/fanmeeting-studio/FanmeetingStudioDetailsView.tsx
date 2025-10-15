@@ -1,5 +1,5 @@
 import { Task, FanmeetingStudioResponse } from '@/types/task';
-import { Users } from 'lucide-react';
+import { Users, Edit } from 'lucide-react';
 import ImageDisplayCard from '../ui/ImageDisplayCard';
 import DetailsModal from '../ui/DetailsModal';
 import { useTranslation } from 'react-i18next';
@@ -8,12 +8,14 @@ interface Props {
   task?: Task & { actionType: 'FANMEETING_STUDIO' | 'FANMEETING_STUDIO_EDIT' };
   details?: FanmeetingStudioResponse; // For backward compatibility
   onClose?: () => void;
+  onEdit?: () => void;
 }
 
 export default function FanmeetingStudioDetailsView({
   task,
   details,
   onClose,
+  onEdit,
 }: Props) {
   const { t } = useTranslation(['studio']);
 
@@ -33,18 +35,6 @@ export default function FanmeetingStudioDetailsView({
 
   const content = (
     <div className="text-studio-text-primary">
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-studio-button-primary rounded-lg">
-            <Users className="h-5 w-5 text-studio-header" />
-          </div>
-          <h3 className="text-xl font-semibold">
-            {t('fanmeeting.details.title')}
-          </h3>
-        </div>
-      </div>
-
       {/* Main Content */}
       {result && (
         <div className="grid grid-cols-1 gap-6">
@@ -138,7 +128,14 @@ export default function FanmeetingStudioDetailsView({
   );
 
   return onClose ? (
-    <DetailsModal onClose={onClose}>{content}</DetailsModal>
+    <DetailsModal
+      title={t('fanmeeting.details.title')}
+      onClose={onClose}
+      onEdit={onEdit}
+      showEditButton={!!result}
+    >
+      {content}
+    </DetailsModal>
   ) : (
     content
   );

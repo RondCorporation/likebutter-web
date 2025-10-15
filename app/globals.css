@@ -159,6 +159,13 @@
     }
   }
 
+  /* Dynamic viewport height utility */
+  .h-dvh-fallback {
+    height: 100vh; /* fallback for old browsers */
+    height: 100dvh;
+    height: calc(var(--vh, 1vh) * 100);
+  }
+
   /* Studio2 Font System */
   .font-pretendard {
     font-family: 'Pretendard', 'Helvetica', sans-serif;

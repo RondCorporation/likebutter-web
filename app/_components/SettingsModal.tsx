@@ -263,7 +263,7 @@ export default function SettingsModal() {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-      <div className="relative flex w-full flex-col overflow-hidden bg-[#25282c] text-studio-text-primary shadow-2xl md:w-[700px] md:max-h-[600px] md:flex-row border border-white/10 rounded-2xl h-[calc(100vh-2rem)] max-h-[calc(100vh-2rem)]">
+      <div className="relative flex w-full flex-col overflow-hidden bg-[#25282c] text-studio-text-primary shadow-2xl md:w-[700px] md:flex-row border border-white/10 rounded-2xl h-[85vh] max-h-[600px]">
         <button
           onClick={closeSettings}
           className="absolute top-3 right-3 md:top-4 md:right-4 z-50 text-studio-text-secondary/60 hover:text-white transition-colors"

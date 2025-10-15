@@ -156,11 +156,7 @@ export async function convertWavToMp3(
       const sampleBlockSize = 1152;
 
       // Encode samples in chunks
-      for (
-        let i = 0;
-        i < samples[0].length;
-        i += sampleBlockSize
-      ) {
+      for (let i = 0; i < samples[0].length; i += sampleBlockSize) {
         const leftChunk = samples[0].subarray(i, i + sampleBlockSize);
         const rightChunk =
           channels > 1

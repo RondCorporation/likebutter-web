@@ -52,10 +52,13 @@ export default function MusicUpload({
 
     try {
       // Process file (validate + convert if needed)
-      const { file: processedFile, wasConverted, originalSize } =
-        await processAudioFile(file, (progress) => {
-          setConversionProgress(progress);
-        });
+      const {
+        file: processedFile,
+        wasConverted,
+        originalSize,
+      } = await processAudioFile(file, (progress) => {
+        setConversionProgress(progress);
+      });
 
       setOriginalFile(file);
       setSelectedFile(processedFile);

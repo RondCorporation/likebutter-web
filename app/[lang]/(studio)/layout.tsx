@@ -15,7 +15,7 @@ export default async function StudioLayout({
   const { lang } = await params;
 
   // Load studio-specific namespaces
-  const studioNamespaces = ['studio', 'billing'];
+  const studioNamespaces = ['common', 'errors', 'studio', 'billing'];
   const { resources } = await initTranslations(lang, studioNamespaces);
 
   return (

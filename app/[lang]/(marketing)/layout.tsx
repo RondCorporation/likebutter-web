@@ -16,7 +16,7 @@ export default async function MarketingLayout({
   const { lang } = await params;
 
   // Load marketing-specific namespaces
-  const marketingNamespaces = ['marketing'];
+  const marketingNamespaces = ['common', 'errors', 'marketing'];
   const { resources } = await initTranslations(lang, marketingNamespaces);
 
   return (

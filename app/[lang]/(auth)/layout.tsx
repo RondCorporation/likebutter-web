@@ -15,7 +15,7 @@ export default async function AuthLayout({
   const { lang } = await params;
 
   // Load auth-specific namespaces
-  const authNamespaces = ['auth'];
+  const authNamespaces = ['common', 'errors', 'auth'];
   const { resources } = await initTranslations(lang, authNamespaces);
 
   return (

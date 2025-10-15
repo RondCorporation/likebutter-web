@@ -69,9 +69,11 @@ export default function BeforeAfterToggle({
       <div
         className="flex items-center justify-center p-4"
         style={{
+          // 모바일: 하단 버튼(72px) + 안전 영역 + 여유 공간(16px)
+          // 데스크탑: 기본 패딩
           paddingBottom: isDesktop
             ? '16px'
-            : 'calc(env(safe-area-inset-bottom, 0px) + 80px)',
+            : 'calc(72px + env(safe-area-inset-bottom, 0px) + 16px)',
         }}
       >
         <img

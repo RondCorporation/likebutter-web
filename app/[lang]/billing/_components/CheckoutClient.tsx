@@ -170,7 +170,7 @@ export default function CheckoutClient({ lang, plan }: CheckoutClientProps) {
 
       <div
         className="flex items-center justify-center bg-slate-900 p-4 text-white"
-        style={{ minHeight: 'calc(100vh - 64px)' }}
+        style={{ minHeight: 'calc(100dvh - 64px)' }}
       >
         <div className="mx-auto w-full max-w-4xl">
           <div className="mb-10 text-center">

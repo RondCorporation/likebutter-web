@@ -6,6 +6,9 @@
   --background: #000000;
   --foreground: #ffffff;
   --accent: #ffd93b;
+
+  /* Mobile viewport height 변수 - JavaScript로 설정됨 */
+  --vh: 1vh;
 }
 
 @layer utilities {
@@ -22,7 +25,9 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    /* 모바일 viewport height 문제 해결 */
+    height: 100dvh;
+    height: calc(var(--vh, 1vh) * 100);
     z-index: -1;
   }
 
@@ -310,12 +315,18 @@ body {
     overflow: hidden;
     position: fixed;
     width: 100%;
+    /* 모바일 viewport height 고정 */
+    height: 100dvh;
+    height: calc(var(--vh, 1vh) * 100);
   }
 
   body {
     overflow: hidden;
     position: fixed;
     width: 100%;
+    /* 모바일 viewport height 고정 */
+    height: 100dvh;
+    height: calc(var(--vh, 1vh) * 100);
   }
 }
 

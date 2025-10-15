@@ -117,7 +117,7 @@ export default function DigitalGoodsDesktopView({
 
       {/* Main Content */}
       <div
-        className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100vh-180px)] md:overflow-hidden"
+        className="flex flex-col md:flex-row flex-1 items-start gap-4 md:gap-6 self-stretch w-full px-4 md:px-12 pt-4 md:pt-6 md:h-[calc(100dvh-180px)] md:overflow-hidden"
         style={{
           paddingBottom:
             'max(120px, calc(100px + env(safe-area-inset-bottom)))',
@@ -125,7 +125,7 @@ export default function DigitalGoodsDesktopView({
       >
         {/* Left Panel - Image Upload */}
         <div
-          className="flex flex-col w-full md:w-[330px] md:h-[calc(100vh-180px)] md:max-h-[calc(100vh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
+          className="flex flex-col w-full md:w-[330px] md:h-[calc(100dvh-180px)] md:max-h-[calc(100dvh-180px)] md:min-h-0 bg-transparent md:bg-studio-border rounded-[20px] p-[15px] gap-[18px] md:shadow-sm md:overflow-y-auto"
           style={{
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain',
@@ -220,7 +220,7 @@ export default function DigitalGoodsDesktopView({
 
         {/* Right Panel - Result area (PC only) */}
         <div
-          className="relative w-full md:flex-1 md:h-[calc(100vh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
+          className="relative w-full md:flex-1 md:h-[calc(100dvh-180px)] md:flex-shrink-0 bg-studio-border rounded-[20px] min-h-[300px] md:min-h-0 shadow-sm md:overflow-hidden hidden md:block"
           style={{
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain',

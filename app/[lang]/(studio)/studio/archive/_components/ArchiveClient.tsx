@@ -640,10 +640,6 @@ export default function ArchiveClient() {
     }
   }, [pageSizeDropdownOpen]);
 
-  const totalResults = tasks.length;
-  const startResult = Math.min(page * pageSize + 1, totalResults);
-  const endResult = Math.min((page + 1) * pageSize, totalResults);
-
   const generatePageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
@@ -822,8 +818,8 @@ export default function ArchiveClient() {
               {/* Pagination */}
               <div className="flex items-center justify-between mt-8">
                 {/* Left side - Show and page size selector */}
-                <div className="flex items-center gap-4">
-                  <span className="text-white text-sm">
+                <div className="flex items-center gap-2 md:gap-4">
+                  <span className="text-white text-sm whitespace-nowrap">
                     {t('studio:archive.pagination.display')}
                   </span>
                   <div className="relative" ref={pageSizeDropdownRef}>
@@ -831,7 +827,7 @@ export default function ArchiveClient() {
                       onClick={() =>
                         setPageSizeDropdownOpen(!pageSizeDropdownOpen)
                       }
-                      className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
+                      className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors whitespace-nowrap"
                     >
                       <span>
                         {pageSize} {t('studio:archive.pagination.perPage')}
@@ -863,72 +859,58 @@ export default function ArchiveClient() {
                   </div>
                 </div>
 
-                {/* Right side - Results info and page navigation */}
-                <div className="flex items-center gap-6">
-                  {/* Results info */}
-                  <span className="text-white text-sm">
-                    {totalResults > 0
-                      ? t('studio:archive.messages.resultsCount', {
-                          start: startResult.toString(),
-                          end: endResult.toString(),
-                          total: totalResults.toString(),
-                        })
-                      : t('studio:archive.pagination.noResults')}
-                  </span>
+                {/* Right side - Page navigation only */}
+                {totalPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    {/* Previous button */}
+                    <button
+                      onClick={goToPreviousPage}
+                      disabled={page === 0 || isLoading}
+                      className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
 
-                  {/* Page navigation */}
-                  {totalPages > 1 && (
-                    <div className="flex items-center gap-1">
-                      {/* Previous button */}
+                    {/* Page numbers */}
+                    {generatePageNumbers().map((pageNum) => (
                       <button
-                        onClick={goToPreviousPage}
-                        disabled={page === 0 || isLoading}
-                        className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        key={pageNum}
+                        onClick={() => goToPage(pageNum)}
+                        disabled={isLoading}
+                        className={`px-3 py-1 text-sm rounded transition-colors disabled:opacity-50 ${
+                          pageNum === page
+                            ? 'bg-[#ffd93b] text-black'
+                            : 'text-white hover:bg-[#4a4a4b]'
+                        }`}
                       >
-                        <ChevronLeft className="w-4 h-4" />
+                        {pageNum + 1}
                       </button>
+                    ))}
 
-                      {/* Page numbers */}
-                      {generatePageNumbers().map((pageNum) => (
+                    {/* Show dots if there are more pages */}
+                    {totalPages > 6 && page < totalPages - 4 && (
+                      <>
+                        <span className="text-white px-2">...</span>
                         <button
-                          key={pageNum}
-                          onClick={() => goToPage(pageNum)}
+                          onClick={() => goToPage(totalPages - 1)}
                           disabled={isLoading}
-                          className={`px-3 py-1 text-sm rounded transition-colors disabled:opacity-50 ${
-                            pageNum === page
-                              ? 'bg-[#ffd93b] text-black'
-                              : 'text-white hover:bg-[#4a4a4b]'
-                          }`}
+                          className="px-3 py-1 text-sm text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50"
                         >
-                          {pageNum + 1}
+                          {totalPages}
                         </button>
-                      ))}
+                      </>
+                    )}
 
-                      {/* Show dots if there are more pages */}
-                      {totalPages > 6 && page < totalPages - 4 && (
-                        <>
-                          <span className="text-white px-2">...</span>
-                          <button
-                            onClick={() => goToPage(totalPages - 1)}
-                            disabled={isLoading}
-                            className="px-3 py-1 text-sm text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50"
-                          >
-                            {totalPages}
-                          </button>
-                        </>
-                      )}
-
-                      {/* Next button */}
-                      <button
-                        onClick={goToNextPage}
-                        disabled={page >= totalPages - 1 || isLoading}
-                        className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    {/* Next button */}
+                    <button
+                      onClick={goToNextPage}
+                      disabled={page >= totalPages - 1 || isLoading}
+                      className="p-1 text-white hover:bg-[#4a4a4b] rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           );

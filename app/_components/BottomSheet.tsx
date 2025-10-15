@@ -3,11 +3,11 @@
 import { useState, useEffect, useRef, ReactNode, useCallback } from 'react';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { useScrollLock } from '@/hooks/useScrollLock';
+import { useViewportHeightValue } from '@/app/_hooks/useViewportHeight';
 
 interface BottomSheetProps {
   children: ReactNode;
   initialHeight?: number;
-  maxHeight?: number;
   minHeight?: number;
   className?: string;
   hasBottomButton?: boolean;
@@ -18,7 +18,6 @@ interface BottomSheetProps {
 export default function BottomSheet({
   children,
   initialHeight = 40,
-  maxHeight = 85,
   minHeight = 20,
   className = '',
   hasBottomButton = false,
@@ -26,7 +25,7 @@ export default function BottomSheet({
   onToggle,
 }: BottomSheetProps) {
   const isMobile = useIsMobile();
-  const [isAnimating, setIsAnimating] = useState(false);
+  const viewportHeight = useViewportHeightValue();
   const [hasInteracted, setHasInteracted] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
@@ -71,7 +70,8 @@ export default function BottomSheet({
     : isOpen
       ? initialHeight
       : minHeight;
-  const actualHeight = Math.min((targetHeight / 100) * window.innerHeight, 500);
+  // visualViewport 기반의 정확한 높이 계산
+  const actualHeight = Math.min((targetHeight / 100) * viewportHeight, 500);
 
   // Bottom offset calculation:
   // - With button: button container height (72px)

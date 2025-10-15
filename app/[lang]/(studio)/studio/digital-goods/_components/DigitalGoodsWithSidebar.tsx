@@ -161,7 +161,6 @@ export default function DigitalGoodsWithSidebar() {
         sidebar={<DigitalGoodsStyleSidebar onFormChange={handleFormChange} />}
         bottomSheetOptions={{
           initialHeight: 60,
-          maxHeight: 90,
           minHeight: 8,
         }}
         mobileBottomButton={getMobileButton()}

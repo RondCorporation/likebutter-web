@@ -165,7 +165,6 @@ export default function VirtualCastingWithSidebar() {
         sidebar={<VirtualCastingSidebar onFormChange={handleFormChange} />}
         bottomSheetOptions={{
           initialHeight: 60,
-          maxHeight: 90,
           minHeight: 8,
         }}
         mobileBottomButton={getMobileButton()}

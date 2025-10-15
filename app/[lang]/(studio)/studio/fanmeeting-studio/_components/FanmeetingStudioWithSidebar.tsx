@@ -166,7 +166,6 @@ export default function FanmeetingStudioWithSidebar() {
         sidebar={<FanmeetingStudioSidebar onFormChange={handleFormChange} />}
         bottomSheetOptions={{
           initialHeight: 60,
-          maxHeight: 90,
           minHeight: 8,
         }}
         mobileBottomButton={getMobileButton()}

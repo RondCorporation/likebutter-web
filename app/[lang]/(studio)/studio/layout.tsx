@@ -9,6 +9,7 @@ import StudioSidebar from './_components/StudioSidebar';
 import MobileBottomNavigation from './_components/MobileBottomNavigation';
 import StudioPreloader from './_components/StudioPreloader';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
+import { useViewportHeight } from '@/app/_hooks/useViewportHeight';
 
 type Props = {
   children: ReactNode;
@@ -19,6 +20,9 @@ export default function StudioLayout({ children, params }: Props) {
   const { lang } = use(params);
   const { t } = useTranslation(['studio', 'common']);
   const isDesktop = useIsDesktop();
+
+  // 모바일 viewport height 문제 해결을 위한 훅
+  useViewportHeight();
 
   return (
     <StudioAuthGuard>

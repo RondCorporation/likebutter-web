@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import { ReactNode } from 'react';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 import BottomSheet from '@/components/BottomSheet';
 
@@ -9,7 +9,6 @@ interface StudioLayoutProps {
   children: ReactNode;
   bottomSheetOptions?: {
     initialHeight?: number;
-    maxHeight?: number;
     minHeight?: number;
   };
   mobileBottomButton?: ReactNode;
@@ -24,7 +23,6 @@ export default function StudioLayout({
   children,
   bottomSheetOptions = {
     initialHeight: 40,
-    maxHeight: 85,
     minHeight: 20,
   },
   mobileBottomButton,
@@ -34,14 +32,6 @@ export default function StudioLayout({
   onBottomSheetToggle,
 }: StudioLayoutProps) {
   const isDesktop = useIsDesktop();
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Prevent initial flash by waiting for mount
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      setIsMounted(true);
-    });
-  }, []);
 
   if (isDesktop) {
     return (
@@ -64,13 +54,14 @@ export default function StudioLayout({
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
           // Padding: button height (72px) + bottom sheet initial height (only if not hidden)
+          // dvh 사용으로 모바일 주소창 문제 해결
           paddingBottom: hideMobileBottomSheet
             ? mobileBottomButton
               ? '72px'
               : '0'
             : mobileBottomButton
-              ? `calc(72px + ${bottomSheetOptions.minHeight}vh)`
-              : `${bottomSheetOptions.minHeight}vh`,
+              ? `calc(72px + ${bottomSheetOptions.minHeight}dvh)`
+              : `${bottomSheetOptions.minHeight}dvh`,
         }}
       >
         {children}
@@ -82,7 +73,8 @@ export default function StudioLayout({
           className="absolute inset-x-0 bg-studio-content z-30"
           style={{
             bottom: mobileBottomButton ? '72px' : '0',
-            height: `${bottomSheetOptions.minHeight}vh`,
+            // dvh 사용으로 모바일 주소창 문제 해결
+            height: `${bottomSheetOptions.minHeight}dvh`,
           }}
         />
       )}
@@ -91,7 +83,6 @@ export default function StudioLayout({
       {!hideMobileBottomSheet && (
         <BottomSheet
           initialHeight={bottomSheetOptions.initialHeight}
-          maxHeight={bottomSheetOptions.maxHeight}
           minHeight={bottomSheetOptions.minHeight}
           className="bg-studio-sidebar"
           hasBottomButton={!!mobileBottomButton}

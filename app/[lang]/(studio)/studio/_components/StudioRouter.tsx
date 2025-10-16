@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useStudioNavigation } from '../_hooks/useStudioNavigation';
 import { useAttendanceStore } from '@/app/_stores/attendanceStore';
@@ -22,6 +22,7 @@ function StudioToolSkeleton() {
 export default function StudioRouter({ lang }: StudioRouterProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { getToolComponent, preloadTool, isToolPreloaded } =
     useStudioNavigation(lang);
@@ -61,6 +62,9 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
 
       // Always scroll to top when navigating to a different tool
       requestAnimationFrame(() => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollTop = 0;
+        }
         window.scrollTo(0, 0);
       });
     },
@@ -90,7 +94,10 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
   }, [memoizedCheckAttendance]);
 
   return (
-    <div className="h-full w-full bg-studio-main overflow-y-auto">
+    <div
+      ref={scrollContainerRef}
+      className="h-full w-full bg-studio-main overflow-y-auto"
+    >
       <Suspense fallback={<StudioToolSkeleton />}>
         {ToolComponent && <ToolComponent />}
       </Suspense>

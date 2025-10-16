@@ -11,6 +11,7 @@ import initTranslations from '../_lib/i18n-server';
 import TranslationsProvider from '../_components/TranslationsProvider';
 import { getMeOnServer } from '../_lib/apiServer';
 import GoogleAnalytics from '../_components/GoogleAnalytics';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const archivoBlack = Archivo_Black({
   subsets: ['latin'],
@@ -73,6 +74,7 @@ export default async function RootLayout({
           {/* 가져온 사용자 정보를 preloadedUser prop으로 전달합니다 */}
           <LayoutClient preloadedUser={preloadedUser}>{children}</LayoutClient>
         </TranslationsProvider>
+        <SpeedInsights />
       </body>
     </html>
   );

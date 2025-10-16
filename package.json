@@ -17,6 +17,7 @@
     "@portone/browser-sdk": "^0.0.24",
     "@types/canvas-confetti": "^1.9.0",
     "@types/cookie": "^0.6.0",
+    "@vercel/speed-insights": "^1.2.0",
     "canvas-confetti": "^1.9.3",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",

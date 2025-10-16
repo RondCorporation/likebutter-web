@@ -168,14 +168,7 @@ export function useStudioNavigation(lang: string) {
         window.scrollTo(0, 0);
       });
     },
-    [
-      getCurrentTool,
-      lang,
-      preloadTool,
-      router,
-      setToolState,
-      setLastUsedTool,
-    ]
+    [getCurrentTool, lang, preloadTool, router, setToolState, setLastUsedTool]
   );
 
   const isToolPreloaded = useCallback(

@@ -115,7 +115,7 @@ export default function EditTaskModal({
 
   const modalContent = (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="relative bg-[#25282c] border border-[#4a4a4b] rounded-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="relative bg-[#25282c] border border-[#4a4a4b] rounded-xl w-full max-w-xl max-h-[65vh] md:max-h-[85vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#4a4a4b]">
           <h2 className="text-lg font-bold text-white">

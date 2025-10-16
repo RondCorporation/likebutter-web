@@ -139,7 +139,7 @@ export default function MobileBottomNavigation({
 
           {/* Credits */}
           <button
-            onClick={() => router.push(`/${lang}/studio?tool=credits`)}
+            onClick={() => navigateToTool('credits')}
             className="flex flex-col items-center py-2 px-3"
           >
             <div

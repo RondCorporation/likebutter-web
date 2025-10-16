@@ -58,6 +58,11 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
           : `/${lang}/studio?tool=${toolName}`;
 
       router.replace(newUrl, { scroll: false });
+
+      // Always scroll to top when navigating to a different tool
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0);
+      });
     },
     [currentTool, isToolPreloaded, preloadTool, router, lang]
   );

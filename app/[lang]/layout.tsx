@@ -62,10 +62,8 @@ export default async function RootLayout({
       dir={dir(lang)}
       className={`${GeistSans.variable} ${GeistMono.variable} ${archivoBlack.variable}`}
     >
-      <head>
-        <GoogleAnalytics />
-      </head>
       <body>
+        <GoogleAnalytics />
         <TranslationsProvider
           namespaces={i18nNamespaces}
           locale={lang}

@@ -242,7 +242,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'LikeButter',
-    url: 'https://www.likebutter.dev',
+    url: 'https://likebutter.io',
   };
 
   return (

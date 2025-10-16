@@ -96,7 +96,7 @@ export async function generateViewport() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://likebutter.io';
   const title = 'likebutter';
   const description =
     'AI-powered fan content creation platform. Transform your fan love into art, music, and virtual content with Butter Studio.';
@@ -117,6 +117,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           width: 1200,
           height: 630,
           alt: title,
+          type: 'image/png',
         },
       ],
       siteName: 'likebutter',
@@ -145,6 +146,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'msapplication-TileColor': '#000000',
       'apple-mobile-web-app-title': 'likebutter',
       'application-name': 'likebutter',
+      // 카카오톡 공유를 위한 추가 설정
+      'og:image:secure_url': ogImage,
+      'og:image:type': 'image/png',
+      'og:image:width': '1200',
+      'og:image:height': '630',
     },
   };
 }

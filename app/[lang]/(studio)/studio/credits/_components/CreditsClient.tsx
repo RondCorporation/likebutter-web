@@ -11,6 +11,7 @@ import {
   CreditHistoryPage,
 } from '@/app/_lib/apis/credit.api';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function CreditsClient() {
   const { t } = useTranslation(['studio', 'common']);
@@ -71,7 +72,14 @@ export default function CreditsClient() {
   };
 
   const handlePurchaseCredits = () => {
-    router.push(`/{billing}`);
+    toast(t('studio:comingSoon'), {
+      icon: '⏳',
+      style: {
+        background: '#292c31',
+        color: '#fff',
+        border: '1px solid #4a4a4b',
+      },
+    });
   };
 
   const formatDate = (dateString: string) => {

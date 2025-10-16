@@ -147,7 +147,7 @@ export default function VirtualCastingMobileView({
               >
                 {isDragOver
                   ? t('virtualCasting.dropFile')
-                  : t('virtualCasting.dragFileHere')}
+                  : t('virtualCasting.tapToSelect')}
               </div>
               <div className="text-studio-text-muted text-xs font-pretendard">
                 {t('virtualCasting.fileSizeLimit')}

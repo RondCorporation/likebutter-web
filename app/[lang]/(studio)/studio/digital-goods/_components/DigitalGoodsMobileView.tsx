@@ -146,7 +146,7 @@ export default function DigitalGoodsMobileView({
               >
                 {isDragOver
                   ? t('digitalGoods.dropFile')
-                  : t('digitalGoods.dragAndDrop')}
+                  : t('digitalGoods.tapToUpload')}
               </div>
               <div className="text-studio-text-muted text-xs font-pretendard">
                 {t('digitalGoods.fileSizeLimit')}

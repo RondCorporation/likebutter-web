@@ -426,6 +426,7 @@
       "uploadedImage": "업로드한 원본 이미지"
     },
     "dragAndDrop": "파일을 여기다 끌어다 놓으세요",
+    "tapToUpload": "탭하여 파일 선택",
     "edit": "수정하기",
     "editingInProgress": "수정중...",
     "fileSizeLimit": "파일당 10MB 제한 (png, jpg, jpeg)",
@@ -732,6 +733,7 @@
       "processing": "처리 중..."
     },
     "dragFileHere": "파일을 여기다 끌어다 놓으세요",
+    "tapToSelect": "탭하여 선택",
     "dropFile": "파일을 놓아주세요",
     "edit": "수정하기",
     "editing": "수정중...",
@@ -859,6 +861,7 @@
     "completeSettings": "사이드바에서 설정을 완료하고 '캐스팅생성'을 눌러주세요",
     "download": "다운로드",
     "dragFileHere": "파일을 여기다 끌어다 놓으세요",
+    "tapToSelect": "탭하여 선택",
     "dropFile": "파일을 놓아주세요",
     "edit": "수정하기",
     "editing": "수정중...",

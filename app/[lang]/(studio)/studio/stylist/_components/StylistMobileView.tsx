@@ -216,7 +216,7 @@ export default function StylistMobileView({
                     : 'text-studio-text-secondary'
                 }`}
               >
-                {isDragOver ? t('stylist.dropFile') : t('stylist.dragFileHere')}
+                {isDragOver ? t('stylist.dropFile') : t('stylist.tapToSelect')}
               </div>
               <div className="text-studio-text-muted text-xs font-pretendard">
                 {t('stylist.fileSizeLimit')}

@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import Image from 'next/image';
@@ -18,10 +20,15 @@ export default function DailyAttendanceModal({
   isLoading = false,
 }: Props) {
   const { t } = useTranslation(['studio', 'common']);
+  const [mounted, setMounted] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  return (
+  if (!isOpen || !mounted) return null;
+
+  const modalContent = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div className="w-full max-w-2xl mx-4 bg-[#25282c] border border-white/10 rounded-2xl p-6">
         {/* Header with title and close button */}
@@ -81,4 +88,6 @@ export default function DailyAttendanceModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

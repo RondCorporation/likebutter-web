@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Edit } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useMediaQuery';
 import { useScrollLock } from '@/hooks/useScrollLock';
@@ -19,9 +20,17 @@ export default function DetailsModal({
   showEditButton,
 }: DetailsModalProps) {
   const isMobile = useIsMobile();
+  const [mounted, setMounted] = useState(false);
+
   useScrollLock(true);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const modalContent = (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
       onClick={onClose}
@@ -86,4 +95,6 @@ export default function DetailsModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

@@ -1,30 +1,29 @@
 import { ReactNode } from 'react';
-import AdminLayoutClient from './_components/AdminLayoutClient';
 import initTranslations from '@/app/_lib/i18n-server';
 import TranslationsProvider from '@/app/_components/TranslationsProvider';
 
-interface AdminLayoutProps {
+interface BillingLayoutProps {
   children: ReactNode;
   params: Promise<{ lang: string }>;
 }
 
-export default async function AdminLayout({
+export default async function BillingLayout({
   children,
   params,
-}: AdminLayoutProps) {
+}: BillingLayoutProps) {
   const { lang } = await params;
 
-  // Load admin-specific namespaces
-  const adminNamespaces = ['admin'];
-  const { resources } = await initTranslations(lang, adminNamespaces);
+  // Load billing-specific namespaces
+  const billingNamespaces = ['billing'];
+  const { resources } = await initTranslations(lang, billingNamespaces);
 
   return (
     <TranslationsProvider
-      namespaces={adminNamespaces}
+      namespaces={billingNamespaces}
       locale={lang}
       resources={resources}
     >
-      <AdminLayoutClient>{children}</AdminLayoutClient>
+      {children}
     </TranslationsProvider>
   );
 }

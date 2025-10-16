@@ -29,7 +29,7 @@ export default function DetailsModal({
       <div
         className={`${
           isMobile
-            ? 'w-full max-w-[calc(100vw-2rem)] max-h-[80vh]'
+            ? 'w-full max-w-[calc(100vw-2rem)] max-h-[65vh]'
             : 'w-full max-w-4xl max-h-[85vh]'
         } bg-studio-sidebar border border-studio-border rounded-xl relative flex flex-col`}
         onClick={(e) => e.stopPropagation()}
@@ -63,9 +63,9 @@ export default function DetailsModal({
 
         {/* Content */}
         <div
-          className={`flex-1 overflow-y-auto p-6 ${title ? '' : 'pt-16'}`}
+          className={`flex-1 overflow-y-auto ${isMobile ? 'p-4' : 'p-6'} ${title ? '' : 'pt-16'}`}
           style={{
-            paddingBottom: showEditButton && onEdit ? '5rem' : '1.5rem',
+            paddingBottom: showEditButton && onEdit ? (isMobile ? '6rem' : '5rem') : '1.5rem',
           }}
         >
           {children}
@@ -73,13 +73,13 @@ export default function DetailsModal({
 
         {/* Floating Edit Button - Fixed at bottom */}
         {showEditButton && onEdit && (
-          <div className="absolute bottom-0 left-0 right-0 flex justify-center p-4 bg-gradient-to-t from-studio-sidebar via-studio-sidebar to-transparent pointer-events-none">
+          <div className={`absolute bottom-0 left-0 right-0 flex justify-center ${isMobile ? 'p-3' : 'p-4'} bg-gradient-to-t from-studio-sidebar ${isMobile ? 'via-studio-sidebar/95' : 'via-studio-sidebar'} to-studio-sidebar/0 pointer-events-none`}>
             <button
               onClick={onEdit}
-              className="flex items-center gap-2 px-6 py-3 bg-studio-button-primary text-studio-header rounded-lg hover:opacity-90 transition-all shadow-2xl hover:shadow-studio-button-primary/50 hover:scale-105 active:scale-95 pointer-events-auto"
+              className={`flex items-center gap-2 ${isMobile ? 'px-5 py-2.5' : 'px-6 py-3'} bg-studio-button-primary text-studio-header rounded-lg hover:opacity-90 transition-all shadow-2xl hover:shadow-studio-button-primary/50 hover:scale-105 active:scale-95 pointer-events-auto`}
             >
-              <Edit className="h-4 w-4" />
-              <span className="font-semibold">수정하기</span>
+              <Edit className={`${isMobile ? 'h-3.5 w-3.5' : 'h-4 w-4'}`} />
+              <span className={`font-semibold ${isMobile ? 'text-sm' : ''}`}>수정하기</span>
             </button>
           </div>
         )}

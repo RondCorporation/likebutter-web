@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter, usePathname } from 'next/navigation';
 import { X, Send, Loader2 } from 'lucide-react';
 import { Task, ActionType } from '@/types/task';
@@ -29,8 +30,13 @@ export default function EditTaskModal({
   const [editPrompt, setEditPrompt] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useScrollLock(isOpen);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = async () => {
     if (!editPrompt.trim()) {
@@ -103,12 +109,12 @@ export default function EditTaskModal({
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const imageUrl = getResultImageUrl(task);
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+  const modalContent = (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
       <div className="relative bg-[#25282c] border border-[#4a4a4b] rounded-xl w-full max-w-xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#4a4a4b]">
@@ -241,4 +247,6 @@ export default function EditTaskModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

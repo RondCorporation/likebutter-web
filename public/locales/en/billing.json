@@ -136,12 +136,12 @@
     "cancelAnytime": "Cancel anytime",
     "choosePlan": "Choose Plan",
     "creator": {
-      "attendanceCredit": "10 credits for daily check-in",
+      "attendanceCredit": "2 credits for daily check-in",
       "basicDesc": "Basic plan for creators",
       "desc": "Basic plan for creators",
       "extraCredits": "Additional 100 credits monthly",
       "features": {
-        "attendance": "Additional 10 credits for daily check-in",
+        "attendance": "Additional 2 credits for daily check-in",
         "credits": "4,000 credits provided monthly",
         "extraCredits": "Additional 100 credits monthly"
       },
@@ -154,11 +154,11 @@
     "expiryDate": "Expiry Date",
     "featureCategoryCore": "Core Features",
     "free": {
-      "attendanceCredit": "10 credits for daily check-in",
+      "attendanceCredit": "2 credits for daily check-in",
       "desc": "Start for free",
       "features": {
-        "attendance": "10 credits for daily check-in",
-        "credits": "10 credits for daily check-in",
+        "attendance": "2 credits for daily check-in",
+        "credits": "2 credits for daily check-in",
         "signup": "300 credits provided upon first signup"
       },
       "name": "Free Start"
@@ -177,7 +177,7 @@
     "processing": "Processing...",
     "professional": {
       "advancedDesc": "Advanced plan for professionals",
-      "attendanceCredit": "10 credits for daily check-in",
+      "attendanceCredit": "2 credits for daily check-in",
       "desc": "Advanced plan for professionals",
       "extraCredits": "Additional 300 credits monthly",
       "features": {

@@ -47,11 +47,7 @@ export default async function RootLayout({
   params: { lang: string };
 }>) {
   const { lang } = await params;
-
-  // Dynamically load only necessary namespaces
-  // Note: In actual implementation, we need pathname which is not available in layout
-  // So we load a minimal set and let each route group load its specific namespaces
-  const i18nNamespaces = ['common', 'errors'];
+  const i18nNamespaces = ['common', 'errors', 'studio'];
   const { resources } = await initTranslations(lang, i18nNamespaces);
 
   const preloadedUser = await getMeOnServer();

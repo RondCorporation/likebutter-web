@@ -136,12 +136,12 @@
     "cancelAnytime": "언제든 취소 가능",
     "choosePlan": "요금제 선택",
     "creator": {
-      "attendanceCredit": "매일 출석체크 시 10크레딧",
+      "attendanceCredit": "매일 출석체크 시 2크레딧",
       "basicDesc": "크리에이터를 위한 기본 플랜",
       "desc": "크리에이터를 위한 기본 플랜",
       "extraCredits": "매달 추가 100크레딧",
       "features": {
-        "attendance": "매일 출석체크 시 추가 10크레딧",
+        "attendance": "매일 출석체크 시 추가 2크레딧",
         "credits": "매달 4,000 크레딧 제공",
         "extraCredits": "매달 추가 100크레딧"
       },
@@ -154,11 +154,11 @@
     "expiryDate": "만료일",
     "featureCategoryCore": "핵심 기능",
     "free": {
-      "attendanceCredit": "매일 출석체크 시 10크레딧",
+      "attendanceCredit": "매일 출석체크 시 2크레딧",
       "desc": "처음이라면 가볍게 시작해보세요!",
       "features": {
-        "attendance": "매일 출석체크 시 10크레딧",
-        "credits": "매일 출석체크 시 10크레딧",
+        "attendance": "매일 출석체크 시 2크레딧",
+        "credits": "매일 출석체크 시 2크레딧",
         "signup": "첫 가입시 300 크레딧 제공"
       },
       "name": "무료 플랜"
@@ -177,7 +177,7 @@
     "processing": "처리 중...",
     "professional": {
       "advancedDesc": "프로페셔널을 위한 고급 플랜",
-      "attendanceCredit": "매일 출석체크 시 10크레딧",
+      "attendanceCredit": "매일 출석체크 시 2크레딧",
       "desc": "프로페셔널을 위한 고급 플랜",
       "extraCredits": "매달 추가 300크레딧",
       "features": {

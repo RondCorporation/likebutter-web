@@ -291,10 +291,10 @@ export default function BillingDashboard({
   return (
     <>
       <div
-        className="min-h-screen h-dvh-fallback md:h-auto overflow-y-auto"
+        className="min-h-screen overflow-y-auto pb-safe"
         style={{ backgroundColor: '#202020' }}
       >
-        <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-4 py-8 sm:py-12 md:py-16 pb-16">
           {/* Back to Studio Button - Mobile: separate row, Desktop: absolute */}
           <div className="mb-6 md:mb-0">
             <button

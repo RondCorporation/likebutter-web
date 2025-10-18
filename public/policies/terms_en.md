@@ -34,9 +34,9 @@ These Terms of Service (the "Terms") set forth the rights, obligations, and resp
 ### **5.1 Pricing Plans and Payment**
 
 1. The Company provides the following pricing plans:
-   - **Free Plan**: 10 credits provided upon daily check-in
-   - **Creator Plan**: Monthly subscription (100 credits per month, 10 credits provided upon daily check-in)
-   - **Professional Plan**: Monthly subscription (300 credits per month, 10 credits provided upon daily check-in)
+   - **Free Plan**: 2 credits provided upon daily check-in
+   - **Creator Plan**: Monthly subscription (100 credits per month, 2 credits provided upon daily check-in)
+   - **Professional Plan**: Monthly subscription (300 credits per month, 2 credits provided upon daily check-in)
 2. The fees for Paid Services are separately determined for each service, and such fees are displayed on the Service screen.
 3. Payment can be made through credit cards, debit cards, or other payment methods designated by the Company.
 

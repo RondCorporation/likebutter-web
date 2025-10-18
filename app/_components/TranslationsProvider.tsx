@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { ReactNode, useEffect, useState } from 'react';
 import initTranslations from '@/app/_lib/i18n-server';
 import { createInstance } from 'i18next';
+import i18nClient from '@/app/_lib/i18n-client';
 
 export default function TranslationsProvider({
   children,
@@ -16,9 +17,26 @@ export default function TranslationsProvider({
   namespaces: string[];
   resources: any;
 }) {
-  const i18n = createInstance();
+  const [i18nInstance] = useState(() => {
+    // Use the global client instance for better compatibility
+    const instance = i18nClient;
 
-  initTranslations(locale, namespaces, i18n, resources);
+    // Add server-loaded resources to the client instance
+    if (resources) {
+      Object.keys(resources).forEach((lng) => {
+        Object.keys(resources[lng]).forEach((ns) => {
+          instance.addResourceBundle(lng, ns, resources[lng][ns], true, true);
+        });
+      });
+    }
 
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+    // Change language if needed
+    if (instance.language !== locale) {
+      instance.changeLanguage(locale);
+    }
+
+    return instance;
+  });
+
+  return <I18nextProvider i18n={i18nInstance}>{children}</I18nextProvider>;
 }

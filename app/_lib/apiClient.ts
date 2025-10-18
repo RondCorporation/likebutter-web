@@ -132,12 +132,16 @@ export async function apiFetch<T>(
         : { status: response.status, msg: response.statusText };
 
       if (!response.ok) {
-        if (json.msg === 'INSUFFICIENT_CREDIT') {
+        if (
+          response.status === 400 &&
+          (json.msg === 'INSUFFICIENT_CREDIT' ||
+            json.msg?.includes('크레딧이 부족합니다'))
+        ) {
           toast.error(i18n.t('common:insufficientCredits'));
 
           return {
             status: response.status,
-            msg: 'INSUFFICIENT_CREDIT',
+            msg: json.msg,
             data: null,
             isInsufficientCredit: true,
           } as any;

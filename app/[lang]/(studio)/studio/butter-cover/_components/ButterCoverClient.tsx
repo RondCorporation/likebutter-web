@@ -103,11 +103,8 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
       }
 
       if (response.status === 200 && response.data) {
-        // Deduct credit immediately for instant UI update
         deductCredit(CREDIT_COSTS.BUTTER_COVER);
-
         toast.success(t('butterCover.messages.requestSent'));
-
         startPolling(response.data.taskId);
       } else {
         throw new Error(response.msg || t('butterCover.generationFailed'));

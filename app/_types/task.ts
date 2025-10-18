@@ -1,4 +1,3 @@
-// Success Response Entity wrapper (new API spec)
 export interface SuccessResponseEntity<T> {
   success: boolean;
   data: T;
@@ -30,14 +29,13 @@ export type ActionType =
   | 'STYLIST_EDIT'
   | 'VIRTUAL_CASTING_EDIT';
 
-// ActionType별 응답 필드 타입 (새 API 명세 기준)
 export interface DigitalGoodsResponse {
   imageUrl: string;
   filename: string;
   fileSize: number;
   executionTime: number;
-  requestImageUrl?: string; // 원본 요청 이미지 URL
-  style?: string; // 사용된 스타일
+  requestImageUrl?: string;
+  style?: string;
 }
 
 export interface VirtualCastingResponse {
@@ -45,7 +43,7 @@ export interface VirtualCastingResponse {
   filename: string;
   fileSize: number;
   executionTime: number;
-  requestImageUrl?: string; // 원본 요청 이미지 URL
+  requestImageUrl?: string;
 }
 
 export interface StylistResponse {
@@ -53,12 +51,12 @@ export interface StylistResponse {
   filename: string;
   fileSize: number;
   executionTime: number;
-  requestImageUrl?: string; // 메인 아이돌 이미지 URL
-  hairStyleImageUrl?: string; // 헤어 스타일 참조 이미지 URL
-  outfitImageUrl?: string; // 의상 참조 이미지 URL
-  backgroundImageUrl?: string; // 배경 참조 이미지 URL
-  accessoryImageUrl?: string; // 액세서리 참조 이미지 URL
-  moodImageUrl?: string; // 무드/분위기 참조 이미지 URL
+  requestImageUrl?: string;
+  hairStyleImageUrl?: string;
+  outfitImageUrl?: string;
+  backgroundImageUrl?: string;
+  accessoryImageUrl?: string;
+  moodImageUrl?: string;
 }
 
 export interface FanmeetingStudioResponse {
@@ -66,8 +64,8 @@ export interface FanmeetingStudioResponse {
   filename: string;
   fileSize: number;
   executionTime: number;
-  requestImage1Url?: string; // 첫 번째 인물 이미지 URL
-  requestImage2Url?: string; // 두 번째 인물 이미지 URL
+  requestImage1Url?: string;
+  requestImage2Url?: string;
 }
 
 export interface ButterCoverResponse {
@@ -77,7 +75,6 @@ export interface ButterCoverResponse {
   executionTime: number;
 }
 
-// ActionType별 매핑 (새 API 명세 기준)
 type ActionMap = {
   BUTTER_COVER: {
     butterCover?: ButterCoverResponse;
@@ -117,7 +114,6 @@ type ActionMap = {
   };
 };
 
-// Task 타입 (새 API 명세 기준)
 export type Task = {
   taskId: number;
   status: GenerationStatus;

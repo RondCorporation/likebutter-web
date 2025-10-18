@@ -71,14 +71,24 @@ export interface User {
 }
 
 export interface AttendanceCheckResponse {
+  attendanceId: number;
   attendanceDate: string;
   creditGranted: number;
-  message: string;
+  consecutiveDays: number;
   isFirstTimeToday: boolean;
+  checkedAt: string;
+  message: string;
 }
 
 export interface TodayAttendanceStatus {
   hasCheckedToday: boolean;
   today: string;
   consecutiveDays: number;
+}
+
+export interface AttendanceSummary {
+  month: string;
+  totalDays: number;
+  consecutiveDays: number;
+  attendanceDates: string[];
 }

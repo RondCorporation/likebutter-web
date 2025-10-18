@@ -66,7 +66,6 @@ export interface BatchTaskResponse {
   editSequence?: number | null;
   isOriginal?: boolean;
   isEditTask?: boolean;
-  // ActionType별 응답 필드
   digitalGoods?: any;
   virtualCasting?: any;
   stylist?: any;
@@ -398,7 +397,6 @@ export const getOriginalActionType = (
   return mapping[editActionType] || editActionType;
 };
 
-// Helper function to extract result URL from Task based on ActionType
 export const getTaskResultUrl = (task: Task): string | null => {
   switch (task.actionType) {
     case 'DIGITAL_GOODS':

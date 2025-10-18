@@ -316,18 +316,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 모바일에서 전체 페이지 스크롤 방지 - 지정된 영역에서만 스크롤 */
+/* 모바일에서 스튜디오 페이지만 전체 스크롤 방지 */
 @media (max-width: 768px) {
-  html {
-    overflow: hidden;
-    position: fixed;
-    width: 100%;
-    /* 모바일 viewport height 고정 */
-    height: 100dvh;
-    height: calc(var(--vh, 1vh) * 100);
-  }
-
-  body {
+  /* Studio 페이지에서만 적용 - 클래스 기반으로 변경 */
+  .studio-layout html,
+  .studio-layout body {
     overflow: hidden;
     position: fixed;
     width: 100%;

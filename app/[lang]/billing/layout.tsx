@@ -13,8 +13,8 @@ export default async function BillingLayout({
 }: BillingLayoutProps) {
   const { lang } = await params;
 
-  // Load billing-specific namespaces
-  const billingNamespaces = ['billing'];
+  // Load billing-specific namespaces (include studio for Header component)
+  const billingNamespaces = ['billing', 'studio', 'common'];
   const { resources } = await initTranslations(lang, billingNamespaces);
 
   return (

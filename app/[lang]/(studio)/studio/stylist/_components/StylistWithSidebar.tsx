@@ -85,12 +85,40 @@ export default function StylistWithSidebar() {
       if (!formData.textPrompt || formData.textPrompt.trim().length < 5)
         return false;
     } else if (formData.mode === 'image') {
-      const hasUploadedFiles =
-        formData.uploadedFiles &&
-        Object.values(formData.uploadedFiles).some(
-          (file) => file instanceof File
-        );
-      if (!hasUploadedFiles) return false;
+      // Check if imageSettings exists and at least one checkbox is enabled
+      if (!formData.imageSettings) return false;
+
+      const enabledSettings = Object.entries(formData.imageSettings).filter(
+        ([_, isEnabled]) => isEnabled
+      );
+
+      // At least one checkbox must be enabled
+      if (enabledSettings.length === 0) return false;
+
+      // Check if all enabled settings have corresponding uploaded files
+      const hookUploadedFiles = clientRef.current?.uploadedFiles;
+      if (!hookUploadedFiles) return false;
+
+      const settingToFileMap: {
+        [key: string]: keyof typeof hookUploadedFiles;
+      } = {
+        hairstyle: 'hairStyleImage',
+        costume: 'outfitImage',
+        background: 'backgroundImage',
+        accessory: 'accessoryImage',
+        atmosphere: 'moodImage',
+      };
+
+      // Verify each enabled setting has a corresponding uploaded file
+      for (const [setting, isEnabled] of enabledSettings) {
+        if (isEnabled) {
+          const fileKey = settingToFileMap[setting];
+          const file = hookUploadedFiles[fileKey];
+          if (!file || !(file instanceof File)) {
+            return false;
+          }
+        }
+      }
     }
 
     return true;

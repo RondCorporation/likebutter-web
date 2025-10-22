@@ -65,6 +65,13 @@ export interface UseStylistReturn {
 
   // Additional image state
   additionalImagePreviews: { [key: string]: string };
+  uploadedFiles: {
+    hairStyleImage?: File;
+    outfitImage?: File;
+    backgroundImage?: File;
+    accessoryImage?: File;
+    moodImage?: File;
+  };
   handleAdditionalFileUpload: (
     slotId: string,
     file: File,
@@ -121,6 +128,13 @@ export function useStylist(): UseStylistReturn {
   // Additional image state
   const [additionalImagePreviews, setAdditionalImagePreviews] = useState<{
     [key: string]: string;
+  }>({});
+  const [uploadedFiles, setUploadedFiles] = useState<{
+    hairStyleImage?: File;
+    outfitImage?: File;
+    backgroundImage?: File;
+    accessoryImage?: File;
+    moodImage?: File;
   }>({});
 
   const {
@@ -211,10 +225,11 @@ export function useStylist(): UseStylistReturn {
         [slotId]: url,
       }));
 
-      if (formData?.uploadedFiles) {
-        const fileKey = slotId as keyof typeof formData.uploadedFiles;
-        (formData.uploadedFiles as any)[fileKey] = file;
-      }
+      // Update the uploadedFiles state
+      setUploadedFiles((prev) => ({
+        ...prev,
+        [slotId]: file,
+      }));
     },
     []
   );
@@ -227,10 +242,12 @@ export function useStylist(): UseStylistReturn {
         return newPreviews;
       });
 
-      if (formData?.uploadedFiles) {
-        const fileKey = slotId as keyof typeof formData.uploadedFiles;
-        delete (formData.uploadedFiles as any)[fileKey];
-      }
+      // Update the uploadedFiles state
+      setUploadedFiles((prev) => {
+        const newFiles = { ...prev };
+        delete (newFiles as any)[slotId];
+        return newFiles;
+      });
     },
     []
   );
@@ -302,21 +319,21 @@ export function useStylist(): UseStylistReturn {
             formData.mode === 'image' ? formData.imagePrompt : undefined,
         };
 
-        if (formData.mode === 'image' && formData.uploadedFiles) {
-          if (formData.uploadedFiles.hairStyleImage) {
-            request.hairStyleImage = formData.uploadedFiles.hairStyleImage;
+        if (formData.mode === 'image') {
+          if (uploadedFiles.hairStyleImage) {
+            request.hairStyleImage = uploadedFiles.hairStyleImage;
           }
-          if (formData.uploadedFiles.outfitImage) {
-            request.outfitImage = formData.uploadedFiles.outfitImage;
+          if (uploadedFiles.outfitImage) {
+            request.outfitImage = uploadedFiles.outfitImage;
           }
-          if (formData.uploadedFiles.backgroundImage) {
-            request.backgroundImage = formData.uploadedFiles.backgroundImage;
+          if (uploadedFiles.backgroundImage) {
+            request.backgroundImage = uploadedFiles.backgroundImage;
           }
-          if (formData.uploadedFiles.accessoryImage) {
-            request.accessoryImage = formData.uploadedFiles.accessoryImage;
+          if (uploadedFiles.accessoryImage) {
+            request.accessoryImage = uploadedFiles.accessoryImage;
           }
-          if (formData.uploadedFiles.moodImage) {
-            request.moodImage = formData.uploadedFiles.moodImage;
+          if (uploadedFiles.moodImage) {
+            request.moodImage = uploadedFiles.moodImage;
           }
         }
 
@@ -342,7 +359,7 @@ export function useStylist(): UseStylistReturn {
         setIsProcessing(false);
       }
     },
-    [uploadedFile, deductCredit, t, startPolling]
+    [uploadedFile, uploadedFiles, deductCredit, t, startPolling]
   );
 
   const handleDownload = useCallback(async () => {
@@ -419,6 +436,7 @@ export function useStylist(): UseStylistReturn {
     setIsResetPopupOpen(false);
     setIsBottomSheetOpen(false);
     setAdditionalImagePreviews({});
+    setUploadedFiles({});
 
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
@@ -440,17 +458,41 @@ export function useStylist(): UseStylistReturn {
         if (!formData.textPrompt || formData.textPrompt.trim().length < 5)
           return false;
       } else if (formData.mode === 'image') {
-        const hasUploadedFiles =
-          formData.uploadedFiles &&
-          Object.values(formData.uploadedFiles).some(
-            (file) => file instanceof File
-          );
-        if (!hasUploadedFiles) return false;
+        // Check if imageSettings exists and at least one checkbox is enabled
+        if (!formData.imageSettings) return false;
+
+        const enabledSettings = Object.entries(formData.imageSettings).filter(
+          ([_, isEnabled]) => isEnabled
+        );
+
+        // At least one checkbox must be enabled
+        if (enabledSettings.length === 0) return false;
+
+        const settingToFileMap: {
+          [key: string]: keyof typeof uploadedFiles;
+        } = {
+          hairstyle: 'hairStyleImage',
+          costume: 'outfitImage',
+          background: 'backgroundImage',
+          accessory: 'accessoryImage',
+          atmosphere: 'moodImage',
+        };
+
+        // Verify each enabled setting has a corresponding uploaded file
+        for (const [setting, isEnabled] of enabledSettings) {
+          if (isEnabled) {
+            const fileKey = settingToFileMap[setting];
+            const file = uploadedFiles[fileKey];
+            if (!file || !(file instanceof File)) {
+              return false;
+            }
+          }
+        }
       }
 
       return true;
     },
-    [uploadedFile]
+    [uploadedFile, uploadedFiles]
   );
 
   return {
@@ -487,6 +529,7 @@ export function useStylist(): UseStylistReturn {
 
     // Additional image state
     additionalImagePreviews,
+    uploadedFiles,
     handleAdditionalFileUpload,
     handleAdditionalFileRemove,
     getImageUploadSlots,

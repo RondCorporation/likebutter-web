@@ -28,6 +28,13 @@ export interface StylistClientRef {
   isBackgroundProcessing: boolean;
   resultImage: string | null;
   uploadedFile: File | null;
+  uploadedFiles: {
+    hairStyleImage?: File;
+    outfitImage?: File;
+    backgroundImage?: File;
+    accessoryImage?: File;
+    moodImage?: File;
+  };
   showMobileResult: boolean;
   isEditLoading: boolean;
   checkTaskStatus: (taskId: number) => Promise<void>;
@@ -42,6 +49,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
 
     const {
       uploadedFile,
+      uploadedFiles,
       isProcessing,
       isPolling,
       resultImage,
@@ -105,6 +113,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         isBackgroundProcessing,
         resultImage,
         uploadedFile,
+        uploadedFiles,
         showMobileResult,
         isEditLoading,
         checkTaskStatus,
@@ -121,6 +130,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         isBackgroundProcessing,
         resultImage,
         uploadedFile,
+        uploadedFiles,
         showMobileResult,
         isEditLoading,
         checkTaskStatus,

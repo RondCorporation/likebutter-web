@@ -226,6 +226,15 @@
     "button": "커버 생성",
     "checkStatus": "상태 확인",
     "coverCompleteTitle": "🎵 AI 커버가 완성되었습니다!",
+    "details": {
+      "title": "AI 커버 음원",
+      "generatedAudio": "생성된 음원",
+      "generatedAudioSubtitle": "AI로 생성된 커버 음원",
+      "detailsNotAvailable": "상세 정보를 불러올 수 없습니다",
+      "download": "다운로드",
+      "processing": "처리 중...",
+      "generationFailed": "음원 생성에 실패했습니다"
+    },
     "downloadAudio": "음원 다운로드",
     "generatingCover": "AI 커버를 생성하고 있습니다...",
     "generatingCoverListen": "생성이 완료되면 이 화면에서 바로 들으실 수 있습니다.",

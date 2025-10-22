@@ -226,6 +226,15 @@
     "button": "Generate Cover",
     "checkStatus": "Check Status",
     "coverCompleteTitle": "🎵 AI cover is complete!",
+    "details": {
+      "title": "AI Cover Audio",
+      "generatedAudio": "Generated Audio",
+      "generatedAudioSubtitle": "AI-generated cover audio",
+      "detailsNotAvailable": "Unable to load details",
+      "download": "Download",
+      "processing": "Processing...",
+      "generationFailed": "Audio generation failed"
+    },
     "downloadAudio": "Download Audio",
     "generatingCover": "Generating AI cover...",
     "generatingCoverListen": "You can listen to it on this screen when it's complete.",

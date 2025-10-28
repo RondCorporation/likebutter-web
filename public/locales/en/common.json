@@ -169,6 +169,11 @@
   "select": "Select",
   "selectPlaceholder": "Please select",
   "send": "Send",
+  "serverError": {
+    "title": "Server Error",
+    "message": "A temporary server error has occurred. Please try again later.",
+    "retry": "Retry"
+  },
   "settings": "Settings",
   "settingsAccountEmail": "Email:",
   "settingsAccountInfo": "Account Information",

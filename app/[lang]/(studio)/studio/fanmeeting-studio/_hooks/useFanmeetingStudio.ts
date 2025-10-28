@@ -143,14 +143,21 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
         setIdolFile(file);
         const url = URL.createObjectURL(file);
         setIdolPreviewUrl(url);
+
+        if (userFile) {
+          setIsBottomSheetOpen(true);
+        }
       } else {
         setUserFile(file);
         const url = URL.createObjectURL(file);
         setUserPreviewUrl(url);
+
+        if (idolFile) {
+          setIsBottomSheetOpen(true);
+        }
       }
-      setIsBottomSheetOpen(true); // Open BottomSheet after successful upload
     },
-    [t]
+    [t, idolFile, userFile]
   );
 
   const handleDragOver = useCallback(

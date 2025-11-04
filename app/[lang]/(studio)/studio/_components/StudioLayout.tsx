@@ -102,7 +102,17 @@ export default function StudioLayout({
 
           {/* Bottom button - sits at very bottom, seamlessly connected to bottom sheet */}
           {mobileBottomButton && (
-            <div className="relative w-full bg-studio-sidebar">
+            <div
+              className="relative w-full bg-studio-sidebar"
+              style={{
+                // Prevent touch events on button from propagating to Content Area below
+                touchAction: 'none',
+              }}
+              onTouchMove={(e) => {
+                // Stop touch events from bubbling to parent/underlying layers
+                e.stopPropagation();
+              }}
+            >
               <div className="px-3 py-3">{mobileBottomButton}</div>
             </div>
           )}

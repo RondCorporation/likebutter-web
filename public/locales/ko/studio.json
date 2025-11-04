@@ -32,7 +32,7 @@
       "selectOption": "옵션 선택",
       "selected": "개 선택됨"
     },
-    "processingFailed": "처리 실패",
+    "processingFailed": "완료하지 못했어요",
     "tabs": {
       "audioGeneration": "음원 생성",
       "imageGeneration": "이미지 생성"

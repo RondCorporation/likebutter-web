@@ -15,6 +15,13 @@ interface StylistClientProps {
     isPolling?: boolean;
     uploadedFile?: File | null;
     isBottomSheetOpen?: boolean;
+    uploadedFiles?: {
+      hairStyleImage?: File;
+      outfitImage?: File;
+      backgroundImage?: File;
+      accessoryImage?: File;
+      moodImage?: File;
+    };
   }) => void;
 }
 
@@ -85,6 +92,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
         isPolling,
         uploadedFile,
         isBottomSheetOpen,
+        uploadedFiles,
       });
     }, [
       showMobileResult,
@@ -93,6 +101,7 @@ const StylistClient = forwardRef<StylistClientRef, StylistClientProps>(
       isPolling,
       uploadedFile,
       isBottomSheetOpen,
+      uploadedFiles,
       onStateChange,
     ]);
 

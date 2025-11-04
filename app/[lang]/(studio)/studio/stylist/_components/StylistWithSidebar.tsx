@@ -41,6 +41,7 @@ export default function StylistWithSidebar() {
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
 
   const setClientRefCallback = useCallback((ref: any) => {
     clientRef.current = ref;
@@ -58,6 +59,7 @@ export default function StylistWithSidebar() {
       isPolling?: boolean;
       uploadedFile?: File | null;
       isBottomSheetOpen?: boolean;
+      uploadedFiles?: any;
     }) => {
       if (state.showMobileResult !== undefined) {
         setShowMobileResult(state.showMobileResult);
@@ -71,6 +73,14 @@ export default function StylistWithSidebar() {
       // Sync BottomSheet open state
       if (state.isBottomSheetOpen !== undefined) {
         setIsBottomSheetOpen(state.isBottomSheetOpen);
+      }
+
+      // Track uploaded files changes to trigger re-render for button validation
+      if (state.uploadedFiles !== undefined) {
+        const count = Object.values(state.uploadedFiles).filter(
+          (file) => file instanceof File
+        ).length;
+        setUploadedFilesCount(count);
       }
     },
     []

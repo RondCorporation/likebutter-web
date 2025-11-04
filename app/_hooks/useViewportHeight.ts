@@ -53,6 +53,8 @@ export function useViewportHeight() {
 /**
  * 현재 viewport height를 반환하는 훅
  * 리액트 상태로 관리되므로 컴포넌트가 리렌더링됩니다.
+ *
+ * Throttle이 적용되어 과도한 리렌더링을 방지합니다.
  */
 export function useViewportHeightValue(): number {
   const [height, setHeight] = useState(
@@ -62,6 +64,10 @@ export function useViewportHeightValue(): number {
   );
 
   useEffect(() => {
+    let rafId: number | null = null;
+    let lastUpdateTime = 0;
+    const THROTTLE_MS = 16; // ~60fps
+
     const updateHeight = () => {
       const newHeight = window.visualViewport
         ? window.visualViewport.height
@@ -69,23 +75,50 @@ export function useViewportHeightValue(): number {
       setHeight(newHeight);
     };
 
+    const throttledUpdate = () => {
+      const now = Date.now();
+
+      // Cancel any pending update
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+
+      // Throttle: only update if enough time has passed
+      if (now - lastUpdateTime >= THROTTLE_MS) {
+        lastUpdateTime = now;
+        updateHeight();
+      } else {
+        // Schedule update for later
+        rafId = requestAnimationFrame(() => {
+          lastUpdateTime = Date.now();
+          updateHeight();
+          rafId = null;
+        });
+      }
+    };
+
+    // Initial update
     updateHeight();
 
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', updateHeight);
-      window.visualViewport.addEventListener('scroll', updateHeight);
+      window.visualViewport.addEventListener('resize', throttledUpdate);
+      window.visualViewport.addEventListener('scroll', throttledUpdate);
     } else {
-      window.addEventListener('resize', updateHeight);
+      window.addEventListener('resize', throttledUpdate);
     }
 
     window.addEventListener('orientationchange', updateHeight);
 
     return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', updateHeight);
-        window.visualViewport.removeEventListener('scroll', updateHeight);
+        window.visualViewport.removeEventListener('resize', throttledUpdate);
+        window.visualViewport.removeEventListener('scroll', throttledUpdate);
       } else {
-        window.removeEventListener('resize', updateHeight);
+        window.removeEventListener('resize', throttledUpdate);
       }
       window.removeEventListener('orientationchange', updateHeight);
     };

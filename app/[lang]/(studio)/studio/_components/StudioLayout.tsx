@@ -67,36 +67,35 @@ export default function StudioLayout({
         {children}
       </div>
 
-      {/* Background layer for bottom sheet area (minHeight) */}
-      {!hideMobileBottomSheet && (
+      {/* Unified bottom container - combines BottomSheet and Button to prevent layer crossing */}
+      {(!hideMobileBottomSheet || mobileBottomButton) && (
         <div
-          className="absolute inset-x-0 bg-studio-content z-30"
+          className="absolute inset-x-0 bottom-0 z-40"
           style={{
-            bottom: mobileBottomButton ? '72px' : '0',
-            // dvh 사용으로 모바일 주소창 문제 해결
-            height: `${bottomSheetOptions.minHeight}dvh`,
+            // Prevent touch events from interfering with scroll
+            pointerEvents: 'auto',
           }}
-        />
-      )}
-
-      {/* Bottom sheet - positioned above button, can expand upward */}
-      {!hideMobileBottomSheet && (
-        <BottomSheet
-          initialHeight={bottomSheetOptions.initialHeight}
-          minHeight={bottomSheetOptions.minHeight}
-          className="bg-studio-sidebar"
-          hasBottomButton={!!mobileBottomButton}
-          isOpen={isBottomSheetOpen}
-          onToggle={onBottomSheetToggle}
         >
-          {sidebar}
-        </BottomSheet>
-      )}
+          {/* Bottom sheet - positioned above button, can expand upward */}
+          {!hideMobileBottomSheet && (
+            <BottomSheet
+              initialHeight={bottomSheetOptions.initialHeight}
+              minHeight={bottomSheetOptions.minHeight}
+              className="bg-studio-sidebar"
+              hasBottomButton={!!mobileBottomButton}
+              isOpen={isBottomSheetOpen}
+              onToggle={onBottomSheetToggle}
+            >
+              {sidebar}
+            </BottomSheet>
+          )}
 
-      {/* Bottom button - sits at very bottom, seamlessly connected to bottom sheet */}
-      {mobileBottomButton && (
-        <div className="absolute inset-x-0 bottom-0 z-40 bg-studio-sidebar">
-          <div className="px-3 py-3">{mobileBottomButton}</div>
+          {/* Bottom button - sits at very bottom, seamlessly connected to bottom sheet */}
+          {mobileBottomButton && (
+            <div className="relative w-full bg-studio-sidebar">
+              <div className="px-3 py-3">{mobileBottomButton}</div>
+            </div>
+          )}
         </div>
       )}
     </div>

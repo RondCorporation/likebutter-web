@@ -27,6 +27,7 @@ export default function BottomSheet({
   const isMobile = useIsMobile();
   const viewportHeight = useViewportHeightValue();
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isTouching, setIsTouching] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>(0);
   const initialRenderRef = useRef(true);
@@ -43,10 +44,19 @@ export default function BottomSheet({
     return () => cancelAnimationFrame(rafId);
   }, []);
 
+  // Touch event handlers - must be before early return to maintain hook order
   const handleToolbarClick = useCallback(() => {
     setHasInteracted(true);
     onToggle?.(!isOpen);
   }, [isOpen, onToggle]);
+
+  const handleTouchStart = useCallback(() => {
+    setIsTouching(true);
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    setIsTouching(false);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -74,9 +84,10 @@ export default function BottomSheet({
   const actualHeight = Math.min((targetHeight / 100) * viewportHeight, 500);
 
   // Bottom offset calculation:
-  // - With button: button container height (72px)
-  // - Without button: 0px (sits at bottom)
-  const bottomOffset = hasBottomButton ? 'bottom-[72px]' : 'bottom-0';
+  // - With button: relative positioning (stacked above button in unified container)
+  // - Without button: absolute at bottom
+  const positionClass = hasBottomButton ? 'relative' : 'absolute';
+  const bottomClass = hasBottomButton ? '' : 'bottom-0';
 
   // Only apply transition after user has interacted or after initial render
   const shouldTransition = !initialRenderRef.current || hasInteracted;
@@ -84,12 +95,17 @@ export default function BottomSheet({
   return (
     <div
       ref={sheetRef}
-      className={`absolute inset-x-0 ${bottomOffset} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${shouldTransition ? 'transition-all duration-300 ease-out' : ''} ${className}`}
+      className={`${positionClass} inset-x-0 ${bottomClass} bg-studio-sidebar border-t border-studio-border rounded-t-xl shadow-xl flex flex-col ${shouldTransition && !isTouching ? 'transition-all duration-300 ease-out' : ''} ${className}`}
       style={{
         height: `${actualHeight}px`,
         maxHeight: '500px',
-        zIndex: 45,
+        // Remove z-index as it's now controlled by parent unified container
+        // Disable transitions during touch to prevent layout shift visibility
+        willChange: isTouching ? 'height' : 'auto',
       }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
     >
       {/* Toolbar - Click to toggle */}
       <div

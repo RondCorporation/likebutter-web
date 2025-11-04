@@ -19,99 +19,88 @@ function isIOS(): boolean {
 }
 
 /**
- * 이미지를 Canvas를 통해 다운로드 (iOS용)
+ * 이미지를 iOS에서 다운로드 (fetch + base64 방식)
  */
-async function downloadImageViaCanvas(
+async function downloadImageForiOS(
   url: string,
   filename: string
 ): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
+  try {
+    // 이미지를 fetch로 가져오기
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Failed to fetch image');
+    }
 
-    img.onload = () => {
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+    const blob = await response.blob();
 
-        const ctx = canvas.getContext('2d');
-        if (!ctx) {
-          throw new Error('Failed to get canvas context');
-        }
+    // Blob을 base64로 변환
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result as string;
 
-        ctx.drawImage(img, 0, 0);
+      // 새 탭에서 이미지 열기
+      const newWindow = window.open('', '_blank');
 
-        // Canvas를 Blob으로 변환
-        canvas.toBlob((blob) => {
-          if (!blob) {
-            reject(new Error('Failed to create blob from canvas'));
-            return;
-          }
+      if (newWindow) {
+        // HTML 컨텐츠를 작성
+        const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${filename}</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1">
+              <style>
+                body {
+                  margin: 0;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  min-height: 100vh;
+                  background: #000;
+                }
+                img {
+                  max-width: 100%;
+                  height: auto;
+                }
+                .instructions {
+                  color: white;
+                  padding: 20px;
+                  text-align: center;
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                  font-size: 14px;
+                }
+                .instructions p {
+                  margin: 5px 0;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="instructions">
+                <p>📥 이미지를 길게 눌러서 저장하세요</p>
+                <p>📥 Long press the image to save</p>
+              </div>
+              <img src="${base64data}" alt="${filename}" />
+            </body>
+          </html>
+        `;
 
-          // iOS에서는 새 탭에서 이미지를 열어서 사용자가 직접 저장하도록 함
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const base64data = reader.result as string;
-            const newWindow = window.open();
-
-            if (newWindow) {
-              // HTML 컨텐츠를 작성
-              const htmlContent = `
-                <html>
-                  <head>
-                    <title>${filename}</title>
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <style>
-                      body {
-                        margin: 0;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        min-height: 100vh;
-                        background: #000;
-                      }
-                      img {
-                        max-width: 100%;
-                        height: auto;
-                      }
-                      .instructions {
-                        color: white;
-                        padding: 20px;
-                        text-align: center;
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <div class="instructions">
-                      <p>이미지를 길게 눌러서 저장하세요</p>
-                      <p>Long press the image to save</p>
-                    </div>
-                    <img src="${base64data}" alt="${filename}" />
-                  </body>
-                </html>
-              `;
-
-              // @ts-ignore - document.write는 deprecated지만 새 창에 컨텐츠를 쓰는데 필요
-              newWindow.document.write(htmlContent);
-              newWindow.document.close();
-            }
-
-            resolve();
-          };
-          reader.onerror = () => reject(new Error('Failed to read blob'));
-          reader.readAsDataURL(blob);
-        }, 'image/png');
-      } catch (error) {
-        reject(error);
+        // @ts-ignore - document.write는 deprecated지만 새 창에 컨텐츠를 쓰는데 필요
+        newWindow.document.write(htmlContent);
+        newWindow.document.close();
+      } else {
+        throw new Error('Failed to open new window. Please allow popups.');
       }
     };
-
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = url;
-  });
+    reader.onerror = () => {
+      throw new Error('Failed to read blob');
+    };
+    reader.readAsDataURL(blob);
+  } catch (error) {
+    console.error('iOS image download failed:', error);
+    throw error;
+  }
 }
 
 /**
@@ -146,8 +135,8 @@ export async function downloadFile(
     // iOS 기기인 경우 특수 처리
     if (isIOSDevice) {
       if (isImage) {
-        // 이미지는 Canvas를 통해 처리
-        await downloadImageViaCanvas(url, filename);
+        // 이미지는 fetch + base64 방식으로 처리
+        await downloadImageForiOS(url, filename);
         return;
       } else if (isAudio) {
         // 오디오는 새 탭에서 열기

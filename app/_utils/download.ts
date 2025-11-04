@@ -7,41 +7,68 @@ export async function downloadFile(
   filename: string
 ): Promise<void> {
   try {
-    // 방법 1: 직접 다운로드 시도 (가장 깔끔한 방법)
-    // 대부분의 최신 브라우저에서 작동 (iOS Safari 제외)
+    console.log('[Download] Starting download:', { url, filename });
+
+    // 먼저 fetch로 파일을 가져와서 blob으로 변환
+    // S3 CORS가 설정되어 있으면 이 방법이 가장 안정적
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch file: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    console.log('[Download] Blob created:', {
+      size: blob.size,
+      type: blob.type,
+    });
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    // blob URL로 다운로드 (페이지 이동 없음)
     const link = document.createElement('a');
-    link.href = url;
+    link.href = blobUrl;
     link.download = filename;
     link.style.display = 'none';
 
+    // 링크를 DOM에 추가하고 클릭
     document.body.appendChild(link);
 
-    // 클릭 이벤트 트리거
+    // 클릭 이벤트 트리거 - 이게 실제 다운로드를 시작함
     link.click();
+
+    console.log('[Download] Download triggered successfully');
 
     // 클린업
     setTimeout(() => {
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
     }, 100);
 
-    // iOS Safari나 다른 브라우저에서 download 속성이 무시될 수 있음
-    // 이 경우 브라우저는 파일을 새 탭에서 열거나 다운로드 매니저를 사용함
-
   } catch (error) {
-    console.error('Download failed:', error);
+    console.error('[Download] Fetch download failed:', error);
 
-    // 방법 2: 실패 시 현재 탭에서 URL 열기
-    // iOS Safari는 이 방법으로 다운로드 매니저를 트리거함
+    // fetch 실패 시 직접 URL 다운로드 시도 (모바일에서 유용)
     try {
-      window.location.href = url;
+      console.log('[Download] Trying direct download fallback');
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.style.display = 'none';
+      link.target = '_blank'; // 새 탭에서 열기 (페이지 이동 방지)
+
+      document.body.appendChild(link);
+      link.click();
+
+      setTimeout(() => {
+        document.body.removeChild(link);
+      }, 100);
+
+      console.log('[Download] Fallback download triggered');
     } catch (fallbackError) {
-      // 방법 3: 최후의 수단 - 새 탭에서 열기
-      const newWindow = window.open(url, '_blank');
-      if (!newWindow) {
-        throw new Error(
-          'Download failed. Please check your popup blocker settings.'
-        );
-      }
+      console.error('[Download] Direct download failed:', fallbackError);
+      throw new Error('Download failed. Please try again.');
     }
   }
 }

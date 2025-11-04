@@ -1,176 +1,78 @@
 /**
- * iOS 기기 감지
- */
-function isIOS(): boolean {
-  if (typeof window === 'undefined') return false;
-
-  // iPad, iPhone, iPod 감지
-  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-    return true;
-  }
-
-  // iPad Pro (iPadOS 13+)는 MacIntel로 표시됨
-  // @ts-ignore - platform은 deprecated지만 iOS 감지에 여전히 필요
-  if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) {
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * 이미지를 iOS에서 다운로드 (fetch + base64 방식)
- */
-async function downloadImageForiOS(
-  url: string,
-  filename: string
-): Promise<void> {
-  try {
-    // 이미지를 fetch로 가져오기
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch image');
-    }
-
-    const blob = await response.blob();
-
-    // Blob을 base64로 변환
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64data = reader.result as string;
-
-      // 새 탭에서 이미지 열기
-      const newWindow = window.open('', '_blank');
-
-      if (newWindow) {
-        // HTML 컨텐츠를 작성
-        const htmlContent = `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>${filename}</title>
-              <meta name="viewport" content="width=device-width, initial-scale=1">
-              <style>
-                body {
-                  margin: 0;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                  min-height: 100vh;
-                  background: #000;
-                }
-                img {
-                  max-width: 100%;
-                  height: auto;
-                }
-                .instructions {
-                  color: white;
-                  padding: 20px;
-                  text-align: center;
-                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                  font-size: 14px;
-                }
-                .instructions p {
-                  margin: 5px 0;
-                }
-              </style>
-            </head>
-            <body>
-              <div class="instructions">
-                <p>📥 이미지를 길게 눌러서 저장하세요</p>
-                <p>📥 Long press the image to save</p>
-              </div>
-              <img src="${base64data}" alt="${filename}" />
-            </body>
-          </html>
-        `;
-
-        // @ts-ignore - document.write는 deprecated지만 새 창에 컨텐츠를 쓰는데 필요
-        newWindow.document.write(htmlContent);
-        newWindow.document.close();
-      } else {
-        throw new Error('Failed to open new window. Please allow popups.');
-      }
-    };
-    reader.onerror = () => {
-      throw new Error('Failed to read blob');
-    };
-    reader.readAsDataURL(blob);
-  } catch (error) {
-    console.error('iOS image download failed:', error);
-    throw error;
-  }
-}
-
-/**
- * 오디오 파일을 새 탭에서 열기 (iOS용)
- */
-async function downloadAudioForiOS(url: string): Promise<void> {
-  // iOS에서는 오디오를 새 탭에서 열어서 사용자가 직접 다운로드하도록 함
-  const newWindow = window.open(url, '_blank');
-
-  if (!newWindow) {
-    throw new Error('Failed to open new window. Please allow popups.');
-  }
-}
-
-/**
  * 파일을 다운로드하는 유틸리티 함수
+ * 모든 플랫폼(PC, Mobile, iOS)에서 작동하는 통합된 다운로드 방식
  */
 export async function downloadFile(
   url: string,
   filename: string
 ): Promise<void> {
   try {
-    const isIOSDevice = isIOS();
-
-    // 파일 확장자 확인
-    const extension = filename.split('.').pop()?.toLowerCase();
-    const isImage = ['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(
-      extension || ''
-    );
-    const isAudio = ['mp3', 'wav', 'ogg', 'm4a'].includes(extension || '');
-
-    // iOS 기기인 경우 특수 처리
-    if (isIOSDevice) {
-      if (isImage) {
-        // 이미지는 fetch + base64 방식으로 처리
-        await downloadImageForiOS(url, filename);
-        return;
-      } else if (isAudio) {
-        // 오디오는 새 탭에서 열기
-        await downloadAudioForiOS(url);
-        return;
-      }
-    }
-
-    // 일반적인 다운로드 방식 (데스크톱, Android)
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error('Failed to fetch file');
-    }
-
-    const blob = await response.blob();
-    const downloadUrl = window.URL.createObjectURL(blob);
+    // 방법 1: 직접 다운로드 시도 (가장 깔끔한 방법)
+    // 대부분의 최신 브라우저에서 작동 (iOS Safari 제외)
     const link = document.createElement('a');
-    link.href = downloadUrl;
+    link.href = url;
     link.download = filename;
+    link.style.display = 'none';
 
-    // Safari를 위한 timeout 추가
     document.body.appendChild(link);
 
-    // setTimeout을 사용하여 Safari의 비동기 처리 지원
-    setTimeout(() => {
-      link.click();
+    // 클릭 이벤트 트리거
+    link.click();
 
-      setTimeout(() => {
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(downloadUrl);
-      }, 100);
-    }, 0);
+    // 클린업
+    setTimeout(() => {
+      document.body.removeChild(link);
+    }, 100);
+
+    // iOS Safari나 다른 브라우저에서 download 속성이 무시될 수 있음
+    // 이 경우 브라우저는 파일을 새 탭에서 열거나 다운로드 매니저를 사용함
+
   } catch (error) {
     console.error('Download failed:', error);
-    throw error;
+
+    // 방법 2: 실패 시 현재 탭에서 URL 열기
+    // iOS Safari는 이 방법으로 다운로드 매니저를 트리거함
+    try {
+      window.location.href = url;
+    } catch (fallbackError) {
+      // 방법 3: 최후의 수단 - 새 탭에서 열기
+      const newWindow = window.open(url, '_blank');
+      if (!newWindow) {
+        throw new Error(
+          'Download failed. Please check your popup blocker settings.'
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Blob 데이터를 파일로 다운로드하는 함수
+ * API 응답에서 받은 blob을 다운로드할 때 사용
+ */
+export async function downloadBlob(
+  blob: Blob,
+  filename: string
+): Promise<void> {
+  try {
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+
+    // 클린업
+    setTimeout(() => {
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+
+  } catch (error) {
+    console.error('Blob download failed:', error);
+    throw new Error('Failed to download file');
   }
 }

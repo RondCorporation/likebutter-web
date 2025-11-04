@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { useIsDesktop } from '@/hooks/useMediaQuery';
 import BottomSheet from '@/components/BottomSheet';
+import { useViewportHeightValue } from '@/app/_hooks/useViewportHeight';
 
 interface StudioLayoutProps {
   sidebar: ReactNode;
@@ -32,6 +33,7 @@ export default function StudioLayout({
   onBottomSheetToggle,
 }: StudioLayoutProps) {
   const isDesktop = useIsDesktop();
+  const viewportHeight = useViewportHeightValue();
 
   if (isDesktop) {
     return (
@@ -44,6 +46,14 @@ export default function StudioLayout({
     );
   }
 
+  // Calculate bottom sheet minimum height in pixels (same calculation as BottomSheet component)
+  const minHeight = bottomSheetOptions.minHeight ?? 20;
+  const bottomSheetMinHeightPx = Math.min(
+    (minHeight / 100) * viewportHeight,
+    500
+  );
+  const buttonHeightPx = 72;
+
   return (
     <div className="relative h-full w-full bg-studio-main">
       {/* Scrollable content area - sits behind fixed bottom UI */}
@@ -53,15 +63,15 @@ export default function StudioLayout({
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
-          // Padding: button height (72px) + bottom sheet initial height (only if not hidden)
-          // dvh 사용으로 모바일 주소창 문제 해결
+          // Padding: button height (72px) + bottom sheet minimum height (calculated in px)
+          // Using same JavaScript calculation as BottomSheet to prevent mismatch
           paddingBottom: hideMobileBottomSheet
             ? mobileBottomButton
-              ? '72px'
+              ? `${buttonHeightPx}px`
               : '0'
             : mobileBottomButton
-              ? `calc(72px + ${bottomSheetOptions.minHeight}dvh)`
-              : `${bottomSheetOptions.minHeight}dvh`,
+              ? `${buttonHeightPx + bottomSheetMinHeightPx}px`
+              : `${bottomSheetMinHeightPx}px`,
         }}
       >
         {children}

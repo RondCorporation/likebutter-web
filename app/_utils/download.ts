@@ -56,7 +56,7 @@ export async function downloadFile(
       link.href = url;
       link.download = filename;
       link.style.display = 'none';
-      link.target = '_blank'; // 새 탭에서 열기 (페이지 이동 방지)
+      // target="_blank" 제거 - 모바일에서 페이지 이동을 유발함
 
       document.body.appendChild(link);
       link.click();

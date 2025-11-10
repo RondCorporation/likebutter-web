@@ -57,6 +57,7 @@ export default function DigitalGoodsDetailsView({
                   style: result.style || 'Unknown',
                 })}
                 imageUrl={result.imageUrl}
+                downloadUrl={result.downloadUrl}
                 alt={t('digitalGoods.details.generatedGoods')}
                 downloadFilename={
                   result.filename || `digital-goods-${Date.now()}.png`
@@ -71,6 +72,7 @@ export default function DigitalGoodsDetailsView({
                 style: result.style || 'Unknown',
               })}
               imageUrl={result.imageUrl}
+              downloadUrl={result.downloadUrl}
               alt={t('digitalGoods.details.generatedGoods')}
               downloadFilename={
                 result.filename || `digital-goods-${Date.now()}.png`

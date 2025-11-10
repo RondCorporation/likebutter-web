@@ -76,6 +76,7 @@ export default function FanmeetingStudioDetailsView({
               title={t('fanmeeting.details.generatedScene')}
               subtitle={t('fanmeeting.details.generatedSceneSubtitle')}
               imageUrl={result.imageUrl}
+              downloadUrl={result.downloadUrl}
               alt={t('fanmeeting.details.generatedSceneAlt')}
               downloadFilename={
                 result.filename || `fanmeeting-${Date.now()}.png`

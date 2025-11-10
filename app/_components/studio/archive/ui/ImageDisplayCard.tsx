@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 interface ImageDisplayCardProps {
   title: string;
   imageUrl: string;
+  downloadUrl?: string; // 다운로드용 URL (제공되지 않으면 imageUrl 사용)
   alt: string;
   subtitle?: string;
   className?: string;
@@ -17,6 +18,7 @@ interface ImageDisplayCardProps {
 export default function ImageDisplayCard({
   title,
   imageUrl,
+  downloadUrl,
   alt,
   subtitle,
   className = '',
@@ -34,7 +36,8 @@ export default function ImageDisplayCard({
     setIsDownloading(true);
     try {
       const filename = downloadFilename || `image-${Date.now()}.png`;
-      await downloadFile(imageUrl, filename);
+      // downloadUrl이 제공되면 사용, 아니면 imageUrl 사용
+      await downloadFile(downloadUrl || imageUrl, filename);
     } catch (error) {
       console.error('Download failed:', error);
     } finally {

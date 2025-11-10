@@ -503,27 +503,27 @@ export default function ArchiveClient() {
         case 'DIGITAL_GOODS':
         case 'DIGITAL_GOODS_EDIT':
           downloadUrl =
-            'digitalGoods' in task ? task.digitalGoods?.imageUrl : undefined;
+            'digitalGoods' in task ? task.digitalGoods?.downloadUrl : undefined;
           fileName = `digital-goods-${task.taskId}-${Date.now()}.png`;
           break;
         case 'FANMEETING_STUDIO':
         case 'FANMEETING_STUDIO_EDIT':
           downloadUrl =
             'fanmeetingStudio' in task
-              ? task.fanmeetingStudio?.imageUrl
+              ? task.fanmeetingStudio?.downloadUrl
               : undefined;
           fileName = `fanmeeting-studio-${task.taskId}-${Date.now()}.png`;
           break;
         case 'STYLIST':
         case 'STYLIST_EDIT':
-          downloadUrl = 'stylist' in task ? task.stylist?.imageUrl : undefined;
+          downloadUrl = 'stylist' in task ? task.stylist?.downloadUrl : undefined;
           fileName = `stylist-${task.taskId}-${Date.now()}.png`;
           break;
         case 'VIRTUAL_CASTING':
         case 'VIRTUAL_CASTING_EDIT':
           downloadUrl =
             'virtualCasting' in task
-              ? task.virtualCasting?.imageUrl
+              ? task.virtualCasting?.downloadUrl
               : undefined;
           fileName = `virtual-casting-${task.taskId}-${Date.now()}.png`;
           break;

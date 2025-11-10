@@ -55,6 +55,7 @@ export default function StylistDetailsView({
                 title={t('stylist.details.generatedResult')}
                 subtitle={t('stylist.details.styledResult')}
                 imageUrl={result.imageUrl}
+                downloadUrl={result.downloadUrl}
                 alt={t('stylist.details.styledResult')}
                 downloadFilename={
                   result.filename || `stylist-${Date.now()}.png`
@@ -67,6 +68,7 @@ export default function StylistDetailsView({
               title={t('stylist.details.generatedResult')}
               subtitle={t('stylist.details.styledResult')}
               imageUrl={result.imageUrl}
+              downloadUrl={result.downloadUrl}
               alt={t('stylist.details.styledResult')}
               downloadFilename={result.filename || `stylist-${Date.now()}.png`}
             />

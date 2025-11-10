@@ -31,6 +31,7 @@ export type ActionType =
 
 export interface DigitalGoodsResponse {
   imageUrl: string;
+  downloadUrl: string;
   filename: string;
   fileSize: number;
   executionTime: number;
@@ -40,6 +41,7 @@ export interface DigitalGoodsResponse {
 
 export interface VirtualCastingResponse {
   imageUrl: string;
+  downloadUrl: string;
   filename: string;
   fileSize: number;
   executionTime: number;
@@ -48,6 +50,7 @@ export interface VirtualCastingResponse {
 
 export interface StylistResponse {
   imageUrl: string;
+  downloadUrl: string;
   filename: string;
   fileSize: number;
   executionTime: number;
@@ -61,6 +64,7 @@ export interface StylistResponse {
 
 export interface FanmeetingStudioResponse {
   imageUrl: string;
+  downloadUrl: string;
   filename: string;
   fileSize: number;
   executionTime: number;

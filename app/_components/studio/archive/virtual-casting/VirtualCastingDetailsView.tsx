@@ -57,6 +57,7 @@ export default function VirtualCastingDetailsView({
                   character: 'Virtual Casting',
                 })}
                 imageUrl={result.imageUrl}
+                downloadUrl={result.downloadUrl}
                 alt={t('virtualCasting.transformedImageAlt')}
                 downloadFilename={
                   result.filename || `virtual-casting-${Date.now()}.png`
@@ -71,6 +72,7 @@ export default function VirtualCastingDetailsView({
                 character: 'Virtual Casting',
               })}
               imageUrl={result.imageUrl}
+              downloadUrl={result.downloadUrl}
               alt={t('virtualCasting.transformedImageAlt')}
               downloadFilename={
                 result.filename || `virtual-casting-${Date.now()}.png`

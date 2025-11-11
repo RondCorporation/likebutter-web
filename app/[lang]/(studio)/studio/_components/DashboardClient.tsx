@@ -112,11 +112,11 @@ export default function DashboardClient() {
       : t('studio:dashboard.audioGeneration');
 
   return (
-    <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0">
+    <div className="w-full min-h-full bg-studio-content-home pb-12 md:pb-16">
       {/* Banner Section */}
       <div className="relative w-full">
         {/* Desktop Banner - Full Width */}
-        <div className="hidden md:block relative w-full overflow-hidden bg-[#25282c]">
+        <div className="hidden md:block relative w-full overflow-hidden bg-studio-content-home">
           <div className="relative w-full" style={{ aspectRatio: '2720/870' }}>
             {bannerImages.map((banner, index) => (
               <div

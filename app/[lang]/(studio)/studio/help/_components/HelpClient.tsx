@@ -100,7 +100,7 @@ export default function HelpClient() {
 
   return (
     <div
-      className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0"
+      className="w-full min-h-full bg-studio-content pb-12 md:pb-0"
       style={{ wordBreak: 'keep-all' }}
     >
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8">
@@ -167,7 +167,7 @@ export default function HelpClient() {
                     <div className="w-full border-t border-[#3a3a3c]"></div>
                   </div>
                   <div className="relative flex justify-center">
-                    <span className="bg-[#25282c] px-4 text-[#6a6a6c] text-sm">
+                    <span className="bg-studio-content px-4 text-[#6a6a6c] text-sm">
                       •
                     </span>
                   </div>

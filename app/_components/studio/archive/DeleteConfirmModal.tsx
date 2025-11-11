@@ -23,7 +23,7 @@ export default function DeleteConfirmModal({
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-lg mx-4 bg-[#25282c] border border-white/10 rounded-2xl p-8">
+      <div className="w-full max-w-lg mx-4 bg-studio-content border border-white/10 rounded-2xl p-8">
         {/* Close button */}
         <div className="flex justify-end mb-4">
           <button

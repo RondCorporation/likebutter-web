@@ -79,6 +79,7 @@ export default {
           header: '#202020',
           main: '#323232',
           content: '#25282c',
+          'content-home': '#191919',
           sidebar: '#202020',
           'sidebar-dark': '#1a1a1a',
           border: '#313131',

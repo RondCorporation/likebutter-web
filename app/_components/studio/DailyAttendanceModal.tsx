@@ -30,7 +30,7 @@ export default function DailyAttendanceModal({
 
   const modalContent = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="w-full max-w-2xl mx-4 bg-[#25282c] border border-white/10 rounded-2xl p-6">
+      <div className="w-full max-w-2xl mx-4 bg-studio-content border border-white/10 rounded-2xl p-6">
         {/* Header with title and close button */}
         <div className="relative flex items-center justify-center mb-6">
           <h2 className="text-xl font-semibold text-white">

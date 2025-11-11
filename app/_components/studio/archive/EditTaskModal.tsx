@@ -115,7 +115,7 @@ export default function EditTaskModal({
 
   const modalContent = (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="relative bg-[#25282c] border border-[#4a4a4b] rounded-xl w-full max-w-xl max-h-[65vh] md:max-h-[85vh] overflow-hidden flex flex-col">
+      <div className="relative bg-studio-content border border-[#4a4a4b] rounded-xl w-full max-w-xl max-h-[65vh] md:max-h-[85vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#4a4a4b]">
           <h2 className="text-lg font-bold text-white">
@@ -214,7 +214,7 @@ export default function EditTaskModal({
         </div>
 
         {/* Floating Button at Bottom */}
-        <div className="px-6 py-4 border-t border-[#4a4a4b] bg-[#25282c]">
+        <div className="px-6 py-4 border-t border-[#4a4a4b] bg-studio-content">
           <button
             onClick={handleSubmit}
             disabled={!editPrompt.trim() || isSubmitting}

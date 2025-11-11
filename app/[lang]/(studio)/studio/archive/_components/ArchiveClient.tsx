@@ -62,7 +62,7 @@ function Dropdown({
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={onToggle}
-        className="flex items-center gap-2 px-4 py-2 bg-[#25282c] border border-[#4a4a4b] text-white rounded-lg hover:border-[#5a5a5b] transition-colors text-sm"
+        className="flex items-center gap-2 px-4 py-2 bg-studio-content border border-[#4a4a4b] text-white rounded-lg hover:border-[#5a5a5b] transition-colors text-sm"
       >
         <span>{placeholder}</span>
         <ChevronDown
@@ -72,7 +72,7 @@ function Dropdown({
 
       {isOpen && (
         <div
-          className={`absolute left-0 bg-[#25282c] border border-[#4a4a4b] rounded-lg py-1 min-w-[200px] z-10 ${
+          className={`absolute left-0 bg-studio-content border border-[#4a4a4b] rounded-lg py-1 min-w-[200px] z-10 ${
             dropdownPosition === 'top' ? 'bottom-full mb-1' : 'top-full mt-1'
           }`}
         >
@@ -645,7 +645,7 @@ export default function ArchiveClient() {
 
   return (
     <div
-      className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0"
+      className="w-full min-h-full bg-studio-content pb-12 md:pb-0"
       ref={containerRef}
     >
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
@@ -809,7 +809,7 @@ export default function ArchiveClient() {
                       onClick={() =>
                         setPageSizeDropdownOpen(!pageSizeDropdownOpen)
                       }
-                      className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors whitespace-nowrap"
+                      className="flex items-center gap-2 px-3 py-1 bg-studio-content border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors whitespace-nowrap"
                     >
                       <span>
                         {pageSize} {t('studio:archive.pagination.perPage')}
@@ -821,7 +821,7 @@ export default function ArchiveClient() {
 
                     {pageSizeDropdownOpen && (
                       <div
-                        className={`absolute left-0 bg-[#25282c] border border-[#4a4a4b] rounded py-1 min-w-[80px] z-10 ${
+                        className={`absolute left-0 bg-studio-content border border-[#4a4a4b] rounded py-1 min-w-[80px] z-10 ${
                           pageSizeDropdownPosition === 'top'
                             ? 'bottom-full mb-1'
                             : 'top-full mt-1'

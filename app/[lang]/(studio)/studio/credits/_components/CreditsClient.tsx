@@ -128,7 +128,7 @@ export default function CreditsClient() {
   }
 
   return (
-    <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0">
+    <div className="w-full min-h-full bg-studio-content pb-12 md:pb-0">
       <div className="px-4 md:px-[90px] py-4 md:py-[44px]">
         {/* Header */}
         <h1 className="text-white text-2xl md:text-3xl font-bold mb-4 md:mb-8">
@@ -186,7 +186,7 @@ export default function CreditsClient() {
               <div className="relative">
                 <button
                   onClick={() => setPageSizeDropdownOpen(!pageSizeDropdownOpen)}
-                  className="flex items-center gap-2 px-3 py-1 bg-[#25282c] border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
+                  className="flex items-center gap-2 px-3 py-1 bg-studio-content border border-[#4a4a4b] text-white rounded text-sm hover:border-[#5a5a5b] transition-colors"
                 >
                   <span>
                     {pageSize}
@@ -198,7 +198,7 @@ export default function CreditsClient() {
                 </button>
 
                 {pageSizeDropdownOpen && (
-                  <div className="absolute left-0 top-full mt-1 bg-[#25282c] border border-[#4a4a4b] rounded py-1 min-w-[80px] z-10">
+                  <div className="absolute left-0 top-full mt-1 bg-studio-content border border-[#4a4a4b] rounded py-1 min-w-[80px] z-10">
                     {pageSizeOptions.map((option) => (
                       <button
                         key={option.value}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useReducer, useCallback } from 'react';
+import { useEffect, useReducer, useCallback, useRef } from 'react';
 import { Task } from '@/types/task';
 import {
   getTaskHistory,
@@ -131,6 +131,7 @@ function archiveReducer(
 }
 export function useTaskArchive() {
   const [state, dispatch] = useReducer(archiveReducer, initialState);
+  const lastRefetchTime = useRef<number>(0);
 
   const fetchArchive = useCallback(
     async (pageToFetch: number, filters: TaskFilters) => {
@@ -166,7 +167,7 @@ export function useTaskArchive() {
     fetchArchive(state.page, state.filters);
   }, [state.page, JSON.stringify(state.filters), fetchArchive]);
 
-  // Polling for in-progress tasks AND periodic refresh to catch new tasks
+  // 진행중인 태스크 상태 폴링
   useEffect(() => {
     let pollInterval = 10000;
     const maxInterval = 60000;
@@ -182,7 +183,6 @@ export function useTaskArchive() {
           (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
         );
 
-        // If there are in-progress tasks, poll their status
         if (currentInProgressTasks.length > 0) {
           const taskIds = currentInProgressTasks.map((t) => t.taskId);
           const response = await getBatchTaskStatus(taskIds);
@@ -197,7 +197,6 @@ export function useTaskArchive() {
               );
               if (existingTask && existingTask.status !== apiTask.status) {
                 hasChanges = true;
-                // Check if task just became COMPLETED or FAILED
                 if (
                   (existingTask.status === 'PENDING' ||
                     existingTask.status === 'PROCESSING') &&
@@ -213,7 +212,7 @@ export function useTaskArchive() {
               }
             });
 
-            // If any tasks completed, refetch the archive to get full task data with images
+            // 완료된 태스크가 있으면 이미지 포함 전체 데이터 재조회
             if (hasCompletedTasks) {
               fetchArchive(state.page, state.filters);
             }
@@ -228,37 +227,25 @@ export function useTaskArchive() {
                 pollInterval = Math.min(pollInterval * 1.3, maxInterval);
               }
             }
-          }
-        } else {
-          // No in-progress tasks in current view, but check for new tasks periodically
-          // This handles case where user creates task on another page and navigates to archive
-          const refreshResponse = await getTaskHistory(0, {
-            ...state.filters,
-            summary: true,
-          });
 
-          if (refreshResponse.data && refreshResponse.data.content.length > 0) {
-            const hasNewInProgressTasks = refreshResponse.data.content.some(
-              (t: Task) => t.status === 'PENDING' || t.status === 'PROCESSING'
-            );
-
-            // If there are new in-progress tasks, refetch the full archive
-            if (hasNewInProgressTasks) {
-              fetchArchive(state.page, state.filters);
-            }
+            timeoutId = setTimeout(poll, pollInterval);
           }
         }
+        // 진행중인 태스크가 없으면 폴링 중지
       } catch (error) {
         console.warn('Polling error:', error);
-        pollInterval = Math.min(pollInterval * 1.5, maxInterval);
+        const hadInProgressTasks = state.tasks.some(
+          (t) => t.status === 'PENDING' || t.status === 'PROCESSING'
+        );
+        if (hadInProgressTasks) {
+          pollInterval = Math.min(pollInterval * 1.5, maxInterval);
+          timeoutId = setTimeout(poll, pollInterval);
+        }
       } finally {
         dispatch({ type: 'POLLING_END' });
       }
-
-      timeoutId = setTimeout(poll, pollInterval);
     };
 
-    // Start polling after initial load
     if (!state.isLoading) {
       timeoutId = setTimeout(poll, 2000);
     }
@@ -338,6 +325,15 @@ export function useTaskArchive() {
   };
 
   const refetch = useCallback(() => {
+    const now = Date.now();
+    const timeSinceLastRefetch = now - lastRefetchTime.current;
+    const THROTTLE_MS = 2000;
+
+    if (timeSinceLastRefetch < THROTTLE_MS) {
+      return;
+    }
+
+    lastRefetchTime.current = now;
     fetchArchive(state.page, state.filters);
   }, [fetchArchive, state.page, state.filters]);
 

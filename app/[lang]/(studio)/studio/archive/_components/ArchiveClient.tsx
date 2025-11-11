@@ -11,6 +11,7 @@ import {
   ChevronRight,
   MoreHorizontal,
   Download,
+  RefreshCw,
 } from 'lucide-react';
 import { useTaskArchive } from '@/hooks/useTaskArchive';
 import TaskDetailsModal from '@/components/studio/archive/TaskDetailsModal';
@@ -709,6 +710,12 @@ export default function ArchiveClient() {
                 onSelect={handleFilterSelect}
               />
             )}
+            <button
+              onClick={refetch}
+              className="flex items-center gap-2 px-4 py-2 bg-[#25282c] border border-[#4a4a4b] text-white rounded-lg hover:border-[#5a5a5b] transition-colors text-sm"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
           </div>
 
           {/* Selection Mode Controls */}

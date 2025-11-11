@@ -40,3 +40,93 @@ Look for these sections in the locale files:
 - `fanmeeting.title` / `fanmeetingStudio.title`
 - `modelSelect.tools.*`
 - `tools.*`
+
+---
+
+## Adding New Feature Presets (Enum Naming Guide)
+
+When adding new styles, characters, or presets to existing features, follow these conventions:
+
+### 1. Enum Naming Convention
+
+**Pattern: SCREAMING_SNAKE_CASE**
+
+All enum values should use uppercase letters with underscores separating words.
+
+**Examples:**
+```typescript
+// Virtual Casting Styles
+KPOP_DEMON_HUNTERS: 'KPOP_DEMON_HUNTERS'
+FROZEN: 'FROZEN'
+HARRY_POTTER: 'HARRY_POTTER'
+
+// Fanmeeting Image Prompts
+WINTER_SAPPORO: 'WINTER_SAPPORO'
+POLAROID: 'POLAROID'
+```
+
+**Location:** `app/_lib/apis/task.api.ts`
+
+**Template:**
+```typescript
+export const FEATURE_STYLES = {
+  NEW_STYLE: 'NEW_STYLE',
+} as const;
+
+export type FeatureStyle =
+  (typeof FEATURE_STYLES)[keyof typeof FEATURE_STYLES];
+```
+
+### 2. Image File Naming
+
+**Pattern: Korean names with extension**
+
+Store images in `public/studio/{feature}/` with Korean names.
+
+**Examples:**
+```
+public/studio/virtual-casting/sidebar-menu-image/케이팝데몬헌터스.png
+public/studio/fanmeeting/겨울삿포로.png
+public/studio/digital-goods/지브리.png
+```
+
+### 3. Translation Keys
+
+Add translations in both `ko/studio.json` and `en/studio.json`:
+
+```json
+{
+  "virtualCasting": {
+    "styles": {
+      "KPOP_DEMON_HUNTERS": "케이팝데몬헌터스 스타일"
+    }
+  },
+  "fanmeeting": {
+    "imagePrompts": {
+      "WINTER_SAPPORO": "겨울 삿포로"
+    }
+  }
+}
+```
+
+### 4. Component Integration
+
+```typescript
+const items = [
+  {
+    name: t('feature.styles.NEW_STYLE'),
+    image: '한글이름.png',
+    style: FEATURE_STYLES.NEW_STYLE,
+  },
+];
+```
+
+### Quick Checklist
+
+When adding a new preset:
+- [ ] Add enum to `task.api.ts` (SCREAMING_SNAKE_CASE)
+- [ ] Add image to `public/studio/{feature}/` (Korean filename)
+- [ ] Add translation to `ko/studio.json`
+- [ ] Add translation to `en/studio.json`
+- [ ] Add entry to component array
+- [ ] Test in both locales

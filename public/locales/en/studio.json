@@ -522,6 +522,18 @@
     "backgroundProcessing": "Processing in background",
     "checkStatus": "Check Status",
     "completeSettings": "Complete settings in sidebar and press 'Start Fanmeeting'",
+    "mode": {
+      "label": "Prompt Mode",
+      "text": "Text Prompt",
+      "image": "Image Prompt"
+    },
+    "imagePrompt": {
+      "label": "Select Image Prompt"
+    },
+    "imagePrompts": {
+      "WINTER_SAPPORO": "Winter Sapporo",
+      "POLAROID": "Polaroid"
+    },
     "details": {
       "composedResult": "Composed Result",
       "detailsNotAvailable": "Details unavailable",
@@ -919,6 +931,7 @@
       "JUJUTSU_KAISEN": "Jujutsu Kaisen Style",
       "KENGAN_ASHURA": "Kengan Ashura Style",
       "KIMI_NI_TODOKE": "Kimi ni Todoke Style",
+      "KPOP_DEMON_HUNTERS": "K-Pop Demon Hunters Style",
       "LOOKISM": "Lookism Style",
       "LORD_OF_THE_RINGS": "Lord of the Rings Style",
       "MINIONS": "Minions Style",

@@ -221,6 +221,7 @@ export const VIRTUAL_CASTING_STYLES = {
   ITAEWON_CLASS: 'ITAEWON_CLASS',
   SQUID_GAME: 'SQUID_GAME',
   VOLCANO_RETURNS: 'VOLCANO_RETURNS',
+  KPOP_DEMON_HUNTERS: 'KPOP_DEMON_HUNTERS',
 
   CRAYON_SHIN_CHAN: 'CRAYON_SHIN_CHAN',
   FRIEREN: 'FRIEREN',
@@ -260,10 +261,19 @@ export const createVirtualCastingTask = async (
   });
 };
 
+export const FANMEETING_IMAGE_PROMPT_STYLES = {
+  WINTER_SAPPORO: 'WINTER_SAPPORO',
+  POLAROID: 'POLAROID',
+} as const;
+
+export type FanmeetingImagePromptStyle =
+  (typeof FANMEETING_IMAGE_PROMPT_STYLES)[keyof typeof FANMEETING_IMAGE_PROMPT_STYLES];
+
 export interface FanmeetingStudioRequest {
-  situationPrompt: string;
-  backgroundPrompt: string;
-  customPrompt?: string;
+  mode?: 'text' | 'image';
+  situationPrompt?: string;
+  backgroundPrompt?: string;
+  imagePromptStyle?: FanmeetingImagePromptStyle;
 }
 
 export const createFanmeetingStudioTask = async (
@@ -276,11 +286,15 @@ export const createFanmeetingStudioTask = async (
   formData.append('image1', fanImage);
   formData.append('image2', idolImage);
 
-  formData.append('situationPrompt', request.situationPrompt);
-  formData.append('backgroundPrompt', request.backgroundPrompt);
-
-  if (request.customPrompt) {
-    formData.append('customPrompt', request.customPrompt);
+  if (request.mode === 'image' && request.imagePromptStyle) {
+    formData.append('imagePromptStyle', request.imagePromptStyle);
+  } else {
+    if (request.situationPrompt) {
+      formData.append('situationPrompt', request.situationPrompt);
+    }
+    if (request.backgroundPrompt) {
+      formData.append('backgroundPrompt', request.backgroundPrompt);
+    }
   }
 
   return await apiFetch<TaskCreationResponse>(

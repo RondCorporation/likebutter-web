@@ -107,12 +107,11 @@ export default function VirtualCastingSidebar({
       image: '슬램덩크.jpg',
       style: VIRTUAL_CASTING_STYLES.SLAM_DUNK,
     },
-    // 이전에 없는데 지금 새로 생긴거(임의더미 enum)
-    // {
-    //   name: 'Game of Thrones',
-    //   image: '게임오브쓰론.jpg',
-    //   style: 'GAME_OF_THRONES' as VirtualCastingStyle,
-    // },
+    {
+      name: t('virtualCasting.styles.KPOP_DEMON_HUNTERS'),
+      image: '케이팝데몬헌터스.png',
+      style: VIRTUAL_CASTING_STYLES.KPOP_DEMON_HUNTERS,
+    },
   ];
 
   const handleCharacterSelect = (character: Character) => {

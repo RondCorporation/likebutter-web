@@ -522,6 +522,18 @@
     "backgroundProcessing": "백그라운드에서 처리 중",
     "checkStatus": "상태 확인",
     "completeSettings": "사이드바에서 설정을 완료하고 '팬미팅생성'을 눌러주세요",
+    "mode": {
+      "label": "프롬프트 모드",
+      "text": "텍스트 프롬프트",
+      "image": "이미지 프롬프트"
+    },
+    "imagePrompt": {
+      "label": "이미지 프롬프트 선택"
+    },
+    "imagePrompts": {
+      "WINTER_SAPPORO": "겨울 삿포로",
+      "POLAROID": "폴라로이드"
+    },
     "details": {
       "composedResult": "합성된 결과",
       "detailsNotAvailable": "상세 정보를 불러올 수 없습니다",
@@ -919,6 +931,7 @@
       "JUJUTSU_KAISEN": "주술회전 스타일",
       "KENGAN_ASHURA": "케이건 아슈라 스타일",
       "KIMI_NI_TODOKE": "너에게 닿기를 스타일",
+      "KPOP_DEMON_HUNTERS": "케이팝데몬헌터스 스타일",
       "LOOKISM": "외모지상주의 스타일",
       "LORD_OF_THE_RINGS": "반지의제왕 스타일",
       "MINIONS": "미니언즈 스타일",

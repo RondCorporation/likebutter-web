@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   createFanmeetingStudioTask,
   FanmeetingStudioRequest,
+  FanmeetingImagePromptStyle,
   editTask,
 } from '@/app/_lib/apis/task.api';
 import { useTaskPolling } from '@/hooks/useTaskPolling';
@@ -12,8 +13,10 @@ import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
 
 export interface FanmeetingFormData {
-  backgroundPrompt: string;
-  situationPrompt: string;
+  mode: 'text' | 'image';
+  backgroundPrompt?: string;
+  situationPrompt?: string;
+  imagePromptStyle?: FanmeetingImagePromptStyle;
 }
 
 export interface UseFanmeetingStudioReturn {
@@ -209,9 +212,15 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
 
       try {
         const request: FanmeetingStudioRequest = {
-          situationPrompt: formData.situationPrompt,
-          backgroundPrompt: formData.backgroundPrompt,
+          mode: formData.mode,
         };
+
+        if (formData.mode === 'text') {
+          request.situationPrompt = formData.situationPrompt;
+          request.backgroundPrompt = formData.backgroundPrompt;
+        } else {
+          request.imagePromptStyle = formData.imagePromptStyle;
+        }
 
         const response = await createFanmeetingStudioTask(
           userFile,
@@ -222,7 +231,6 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
         if ((response as any).isInsufficientCredit) {
           setIsProcessing(false);
           router.push(`/${lang}/billing`);
-          // TODO: 플랜에 따라 이미 구독된 사람이면 크레딧 결제 쪽으로 이동하는 부분 고려하기
           return;
         }
 
@@ -239,7 +247,7 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
         setIsProcessing(false);
       }
     },
-    [idolFile, userFile, deductCredit, t, startPolling]
+    [idolFile, userFile, deductCredit, t, startPolling, router, lang]
   );
 
   const handleDownload = useCallback(async () => {
@@ -332,16 +340,22 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
     (formData: FanmeetingFormData) => {
       if (!idolFile || !userFile) return false;
       if (!formData) return false;
-      if (
-        !formData.backgroundPrompt ||
-        formData.backgroundPrompt.trim().length < 2
-      )
-        return false;
-      if (
-        !formData.situationPrompt ||
-        formData.situationPrompt.trim().length < 2
-      )
-        return false;
+
+      if (formData.mode === 'text') {
+        if (
+          !formData.backgroundPrompt ||
+          formData.backgroundPrompt.trim().length < 2
+        )
+          return false;
+        if (
+          !formData.situationPrompt ||
+          formData.situationPrompt.trim().length < 2
+        )
+          return false;
+      } else {
+        if (!formData.imagePromptStyle) return false;
+      }
+
       return true;
     },
     [idolFile, userFile]

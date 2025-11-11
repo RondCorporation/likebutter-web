@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image as ImageIcon, Music2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,30 @@ export default function DashboardClient() {
   const { t } = useTranslation(['studio', 'common']);
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState<'image' | 'audio'>('image');
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  const bannerImages = [
+    '/studio/main_banner/메인배너1.png',
+    '/studio/main_banner/메인배너2.png',
+    '/studio/main_banner/메인베너3.png',
+    '/studio/main_banner/메인베너4.png',
+  ];
+
+  const bannerImagesMobile = [
+    '/studio/main_banner_mobile/메인배너1.png',
+    '/studio/main_banner_mobile/메인배너2.png',
+    '/studio/main_banner_mobile/메인배너3.png',
+    '/studio/main_banner_mobile/메인배너4.png',
+  ];
+
+  // Auto-slide banner every 6 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % bannerImages.length);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
 
   const imageToolCards: ToolCard[] = [
     {
@@ -89,17 +113,85 @@ export default function DashboardClient() {
 
   return (
     <div className="w-full min-h-full bg-[#25282c] pb-12 md:pb-0">
-      {/* Hero Section */}
-      <div className="relative w-full pt-2 md:pt-7 px-0 md:px-[90px]">
-        <div className="relative w-full h-[140px] md:h-[150px] rounded-none md:rounded-2xl bg-gradient-to-r from-[#ffd83b] via-[#f2eb1e] to-[#e5ff00] flex items-center justify-center">
-          <h1 className="text-black text-xl md:text-3xl font-bold text-center px-4">
-            {t('studio:dashboard.heroTitle')}
-          </h1>
+      {/* Banner Section */}
+      <div className="relative w-full">
+        {/* Desktop Banner - Full Width */}
+        <div className="hidden md:block relative w-full overflow-hidden bg-[#25282c]">
+          <div className="relative w-full" style={{ aspectRatio: '2720/870' }}>
+            {bannerImages.map((banner, index) => (
+              <div
+                key={index}
+                className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                style={{
+                  opacity: currentBannerIndex === index ? 1 : 0,
+                  zIndex: currentBannerIndex === index ? 1 : 0,
+                }}
+              >
+                <Image
+                  src={banner}
+                  alt={`Banner ${index + 1}`}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority={index === 0}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Page Indicator */}
+          <div
+            className="absolute top-6 right-6 px-4 py-2 font-semibold text-xs shadow-lg z-10"
+            style={{
+              borderRadius: '100px',
+              backgroundColor: '#F8F9FB',
+              opacity: 0.9,
+              color: '#6B7280'
+            }}
+          >
+            {currentBannerIndex + 1} / {bannerImages.length}
+          </div>
+        </div>
+
+        {/* Mobile Banner - Square with padding */}
+        <div className="block md:hidden relative w-full px-4">
+          <div className="relative w-full aspect-square rounded-2xl overflow-hidden">
+            {bannerImagesMobile.map((banner, index) => (
+              <div
+                key={index}
+                className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+                style={{
+                  opacity: currentBannerIndex === index ? 1 : 0,
+                  zIndex: currentBannerIndex === index ? 1 : 0,
+                }}
+              >
+                <Image
+                  src={banner}
+                  alt={`Banner ${index + 1}`}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority={index === 0}
+                />
+              </div>
+            ))}
+            {/* Page Indicator */}
+            <div
+              className="absolute top-4 right-4 px-3 py-1.5 font-semibold text-xs shadow-lg z-10"
+              style={{
+                borderRadius: '100px',
+                backgroundColor: '#F8F9FB',
+                opacity: 0.9,
+                color: '#6B7280'
+              }}
+            >
+              {currentBannerIndex + 1} / {bannerImagesMobile.length}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Tab Switcher */}
-      <div className="relative w-full flex justify-center -mt-6 md:-mt-6 z-10">
+      <div className="relative w-full flex justify-center -mt-6 md:-mt-5 z-10">
         <div className="flex bg-[#292c31] rounded-full p-1">
           <button
             onClick={() => setSelectedTab('image')}

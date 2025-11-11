@@ -7,7 +7,7 @@ import { useAuthStore } from '@/app/_stores/authStore';
  * 단순하고 신뢰할 수 있는 authStore 기반
  */
 export function useAuth() {
-  const { user, isAuthenticated, isLoading, isInitialized } = useAuthStore();
+  const { user, isAuthenticated, isLoading, isInitialized, hasTokenFromServer } = useAuthStore();
 
   const userId = user?.accountId?.toString();
   const userEmail = user?.email;
@@ -21,6 +21,7 @@ export function useAuth() {
     isAuthenticated,
     isLoading,
     isInitialized,
+    hasTokenFromServer,
 
     userId,
     userEmail,

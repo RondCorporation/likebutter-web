@@ -13,11 +13,13 @@ interface AuthState {
   isInitialized: boolean;
   isLoading: boolean;
   isAuthenticated: boolean;
+  hasTokenFromServer: boolean;
   setLoading: (isLoading: boolean) => void;
   initialize: (force?: boolean) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
   hydrate: (preloadedUser: User) => void;
+  setHasTokenFromServer: (hasToken: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -25,10 +27,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isInitialized: false,
   isLoading: true,
   isAuthenticated: false,
+  hasTokenFromServer: false,
 
   setLoading: (isLoading) => set({ isLoading }),
 
   setUser: (user) => set({ user }),
+
+  setHasTokenFromServer: (hasToken) => set({ hasTokenFromServer: hasToken }),
 
   hydrate: (preloadedUser) => {
     set({

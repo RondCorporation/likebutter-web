@@ -22,7 +22,8 @@ export default function Header({ variant, params }: HeaderProps) {
   const lang = pathname.split('/')[1];
   const { t } = useTranslation(['studio', 'common']);
   const router = useRouter();
-  const { user, isAuthenticated, isInitialized } = useAuth();
+  const { user, isAuthenticated, isInitialized, hasTokenFromServer } =
+    useAuth();
   const { currentBalance, isLoading: isCreditLoading } = useCredit();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -43,16 +44,13 @@ export default function Header({ variant, params }: HeaderProps) {
   if (variant === 'marketing') {
     return (
       <div className="fixed top-0 left-0 right-0 flex h-16 items-center justify-between px-4 md:px-8 py-5 w-full bg-studio-header border-b border-solid border-studio-border z-50">
-        {/* Logo - Left */}
         <div className="flex-shrink-0">
           <Logo className="mt-[-3.00px] mb-[-1.00px] tracking-[0] scale-90 sm:scale-100" />
         </div>
 
-        {/* Right Menu */}
         <div className="inline-flex items-center justify-end gap-3 sm:gap-4 relative flex-[0_0_auto]">
           {isInitialized && isAuthenticated ? (
             <>
-              {/* 스튜디오 이동 버튼 */}
               <Link
                 href={`/${lang}/studio`}
                 className="inline-flex items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-[6px] border border-yellow-400 hover:bg-yellow-50 transition-colors min-h-[32px] sm:min-h-[36px]"
@@ -66,9 +64,10 @@ export default function Header({ variant, params }: HeaderProps) {
                 <StudioUserDropdown />
               </div>
             </>
+          ) : !isInitialized && hasTokenFromServer ? (
+            <div className="w-[200px] sm:w-[240px] h-[36px]" />
           ) : (
             <>
-              {/* 회원가입 */}
               <Link
                 href={`/${lang}/signup`}
                 className="text-studio-text-secondary hover:text-studio-text-primary text-[13px] sm:text-[15px] transition-colors font-semibold"
@@ -76,7 +75,6 @@ export default function Header({ variant, params }: HeaderProps) {
                 {t('common:signUp')}
               </Link>
 
-              {/* 로그인 */}
               <Link
                 href={`/${lang}/login`}
                 className="inline-flex items-center justify-center rounded-[6px] bg-transparent border border-[#FFD93B] px-3 sm:px-4 py-1.5 sm:py-2 text-[13px] sm:text-[15px] font-semibold text-[#FFD93B] transition-all duration-300 hover:bg-[#FFD93B] hover:text-black min-h-[32px] sm:min-h-[36px]"

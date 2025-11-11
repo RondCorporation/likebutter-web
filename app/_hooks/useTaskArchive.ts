@@ -327,7 +327,7 @@ export function useTaskArchive() {
   const refetch = useCallback(() => {
     const now = Date.now();
     const timeSinceLastRefetch = now - lastRefetchTime.current;
-    const THROTTLE_MS = 2000;
+    const THROTTLE_MS = 5000;
 
     if (timeSinceLastRefetch < THROTTLE_MS) {
       return;

@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { cookies } from 'next/headers';
 import { MarketingLayoutClient } from './_components/MarketingLayoutClient';
 import MarketingLayoutContent from './_components/MarketingLayoutContent';
 import initTranslations from '@/app/_lib/i18n-server';
@@ -15,9 +16,11 @@ export default async function MarketingLayout({
 }: MarketingLayoutProps) {
   const { lang } = await params;
 
-  // Load marketing-specific namespaces
   const marketingNamespaces = ['common', 'errors', 'marketing'];
   const { resources } = await initTranslations(lang, marketingNamespaces);
+
+  const cookieStore = await cookies();
+  const hasToken = cookieStore.get('accessToken') !== undefined;
 
   return (
     <TranslationsProvider
@@ -25,7 +28,7 @@ export default async function MarketingLayout({
       locale={lang}
       resources={resources}
     >
-      <MarketingLayoutClient>
+      <MarketingLayoutClient hasToken={hasToken}>
         <MarketingLayoutContent>{children}</MarketingLayoutContent>
       </MarketingLayoutClient>
     </TranslationsProvider>

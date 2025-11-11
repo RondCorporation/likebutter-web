@@ -10,6 +10,7 @@ interface AuthInitializerProps {
   preloadedUser: User | null;
   skipInitialization?: boolean;
   showLoader?: boolean;
+  hasTokenFromServer?: boolean;
 }
 
 export default function AuthInitializer({
@@ -17,6 +18,7 @@ export default function AuthInitializer({
   preloadedUser,
   skipInitialization = false,
   showLoader = true,
+  hasTokenFromServer = false,
 }: AuthInitializerProps) {
   const isInitialized = useAuthStore((s) => s.isInitialized);
   const { initialize, logout, hydrate } = useAuthStore.getState();

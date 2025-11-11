@@ -710,12 +710,6 @@ export default function ArchiveClient() {
                 onSelect={handleFilterSelect}
               />
             )}
-            <button
-              onClick={refetch}
-              className="flex items-center gap-2 px-4 py-2 bg-[#25282c] border border-[#4a4a4b] text-white rounded-lg hover:border-[#5a5a5b] transition-colors text-sm"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Selection Mode Controls */}
@@ -743,13 +737,22 @@ export default function ArchiveClient() {
             )}
 
             {!isSelectionMode && (
-              <button
-                onClick={toggleSelectionMode}
-                className="p-2 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg transition-colors"
-                title={t('studio:archive.batchDelete')}
-              >
-                <Trash2 className="w-5 h-5" />
-              </button>
+              <>
+                <button
+                  onClick={refetch}
+                  className="p-2 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg transition-colors"
+                  title={t('studio:archive.refresh')}
+                >
+                  <RefreshCw className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={toggleSelectionMode}
+                  className="p-2 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg transition-colors"
+                  title={t('studio:archive.batchDelete')}
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+              </>
             )}
           </div>
         </div>

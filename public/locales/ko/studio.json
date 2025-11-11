@@ -38,11 +38,11 @@
       "imageGeneration": "이미지 생성"
     },
     "taskTypes": {
-      "digitalGoodsEdit": "디지털 굿즈 (수정)",
+      "digitalGoodsEdit": "최애 AI스타일 (수정)",
       "dreamConti": "드림 컨티",
-      "fanmeetingStudioEdit": "팬미팅 스튜디오 (수정)",
-      "stylistEdit": "AI 스타일리스트 (수정)",
-      "virtualCastingEdit": "가상 캠스팅 (수정)"
+      "fanmeetingStudioEdit": "AI 팬미팅 (수정)",
+      "stylistEdit": "최애의 스타일리스트 (수정)",
+      "virtualCastingEdit": "가상 캐스팅 (수정)"
     },
     "title": "내 보관함"
   },
@@ -422,8 +422,8 @@
     "uploadImageTitle": "이미지 업로드하기",
     "details": {
       "cannotLoadDetails": "상세 정보를 불러올 수 없습니다",
-      "creationTitle": "디지털 굿즈 생성",
-      "generatedGoods": "생성된 디지털 굿즈",
+      "creationTitle": "최애 AI스타일 생성",
+      "generatedGoods": "생성된 최애 AI스타일",
       "generatedResult": "생성된 결과",
       "generatedResultSubtitle": "{{style}} 스타일로 변환",
       "generationFailed": "생성 실패",
@@ -442,7 +442,7 @@
     "generate": "굿즈생성",
     "generating": "생성중...",
     "generationFailed": "현재 사용자가 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.",
-    "generationInProgress": "디지털 굿즈 생성 중...",
+    "generationInProgress": "최애 AI스타일 생성 중...",
     "messages": {
       "downloadComplete": "이미지가 다운로드되었습니다!",
       "downloadFailed": "다운로드에 실패했습니다.",
@@ -450,10 +450,10 @@
       "editRequestFailed": "수정 요청에 실패했습니다.",
       "editRequestSent": "수정 요청이 전송되었습니다!",
       "fileSizeExceeded": "파일 크기가 10MB를 초과합니다.",
-      "generationComplete": "디지털 굿즈가 생성되었습니다!",
+      "generationComplete": "최애 AI스타일이 생성되었습니다!",
       "imageLoadFailed": "이미지 로드에 실패했습니다.",
       "originalNotFound": "원본 작업을 찾을 수 없습니다.",
-      "requestSent": "디지털 굿즈 생성 요청이 전송되었습니다!",
+      "requestSent": "최애 AI스타일 생성 요청이 전송되었습니다!",
       "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
       "workReset": "작업이 초기화되었습니다."
     },
@@ -477,7 +477,7 @@
       "fanAndIdolImages": "팬 & 아이돌 이미지",
       "sceneGenerationComplete": "팬미팅 장면 생성 완료"
     },
-    "title": "디지털 굿즈",
+    "title": "최애 AI스타일",
     "uploadFile": "파일 찾아보기"
   },
   "dropdown": {
@@ -649,15 +649,15 @@
     "tools": {
       "digitalGoods": {
         "subtitle": "내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.",
-        "title": "디지털 굿즈"
+        "title": "최애 AI스타일"
       },
       "fanmeeting": {
         "subtitle": "아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요.",
-        "title": "온라인 팬미팅"
+        "title": "AI 팬미팅"
       },
       "stylist": {
         "subtitle": "헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.",
-        "title": "스타일리스트"
+        "title": "최애의 스타일리스트"
       },
       "virtualCasting": {
         "subtitle": "아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.",
@@ -721,7 +721,7 @@
       "accessory": "액세서리 참고",
       "background": "배경 참고",
       "cannotLoadDetails": "상세 정보를 불러올 수 없습니다",
-      "creationTitle": "AI 스타일리스트",
+      "creationTitle": "최애의 스타일리스트",
       "generatedResult": "생성된 결과",
       "generationFailed": "생성 실패",
       "hairstyle": "헤어스타일 참고",
@@ -797,9 +797,9 @@
       "outfit": "의상",
       "styleReferences": "스타일 참고 {{count}}개"
     },
-    "title": "스타일리스트"
+    "title": "최애의 스타일리스트"
   },
-  "title": "온라인 팬미팅",
+  "title": "AI 팬미팅",
   "titles": {
     "butterBrush": "ButterBrush",
     "butterCover": "ButterCover",
@@ -825,15 +825,15 @@
     "butterTest": "ButterTest",
     "digitalGoods": {
       "description": "내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.",
-      "title": "디지털 굿즈"
+      "title": "최애 AI스타일"
     },
     "fanmeetingStudio": {
       "description": "아이돌과 함께 찍은 듯한 팬미팅 컷을 만들어보세요.",
-      "title": "온라인 팬미팅"
+      "title": "AI 팬미팅"
     },
     "stylist": {
       "description": "헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.",
-      "title": "스타일리스트"
+      "title": "최애의 스타일리스트"
     },
     "virtualCasting": {
       "description": "아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.",
@@ -963,11 +963,11 @@
       "title": "이미지 생성",
       "whatIsImageGeneration": {
         "question": "이미지 생성이란 어떤 작업인가요?",
-        "answer": "AI가 사진을 다양한 스타일로 변환하거나 팬과 아이돌이 함께 찍은 듯한 합성 사진을 만들어주는 서비스입니다. 디지털 굿즈, 스타일 변경, 온라인 팬미팅 합성, 가상 캐스팅 등 다양한 기능을 제공합니다."
+        "answer": "AI가 사진을 다양한 스타일로 변환하거나 팬과 아이돌이 함께 찍은 듯한 합성 사진을 만들어주는 서비스입니다. 최애 AI스타일, 최애의 스타일리스트, AI 팬미팅, 가상 캐스팅 등 다양한 기능을 제공합니다."
       },
       "availableStyles": {
         "question": "어떤 스타일로 변환할 수 있나요?",
-        "answer": "디지털 굿즈(스케치, 카툰, 일러스트, 픽셀아트, 스티커 등), 스타일리스트(헤어, 의상, 배경, 메이크업 변경), 온라인 팬미팅(셀카 합성, 팬-아이돌 사진 생성), 가상 캐스팅(영화, 드라마, 게임 캐릭터 스타일 적용) 등이 가능합니다."
+        "answer": "최애 AI스타일(스케치, 카툰, 일러스트, 픽셀아트, 스티커 등), 최애의 스타일리스트(헤어, 의상, 배경, 메이크업 변경), AI 팬미팅(셀카 합성, 팬-아이돌 사진 생성), 가상 캐스팅(영화, 드라마, 게임 캐릭터 스타일 적용) 등이 가능합니다."
       },
       "uploadConditions": {
         "question": "업로드 가능한 이미지 조건은 무엇인가요?",

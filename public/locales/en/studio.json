@@ -38,10 +38,10 @@
       "imageGeneration": "Image Generation"
     },
     "taskTypes": {
-      "digitalGoodsEdit": "Digital Goods (Edit)",
+      "digitalGoodsEdit": "My Bias AI Style (Edit)",
       "dreamConti": "Dream Conti",
-      "fanmeetingStudioEdit": "Online Fan Meeting (Edit)",
-      "stylistEdit": "Stylist (Edit)",
+      "fanmeetingStudioEdit": "AI Fan Meeting (Edit)",
+      "stylistEdit": "My Bias's Stylist (Edit)",
       "virtualCastingEdit": "Virtual Casting (Edit)"
     },
     "title": "My Archive"
@@ -422,8 +422,8 @@
     "uploadImageTitle": "Upload Image",
     "details": {
       "cannotLoadDetails": "Cannot load detailed information",
-      "creationTitle": "Digital Goods Creation",
-      "generatedGoods": "Generated Digital Goods",
+      "creationTitle": "My Bias AI Style Creation",
+      "generatedGoods": "Generated My Bias AI Style",
       "generatedResult": "Generated Result",
       "generatedResultSubtitle": "Converted to {{style}} style",
       "generationFailed": "Generation Failed",
@@ -442,7 +442,7 @@
     "generate": "Generate",
     "generating": "Generating...",
     "generationFailed": "Currently experiencing high traffic. Please try again in a moment.",
-    "generationInProgress": "Digital goods generation in progress...",
+    "generationInProgress": "My Bias AI Style generation in progress...",
     "messages": {
       "downloadComplete": "Image downloaded!",
       "downloadFailed": "Download failed.",
@@ -450,10 +450,10 @@
       "editRequestFailed": "Edit request failed.",
       "editRequestSent": "Edit request sent!",
       "fileSizeExceeded": "File size exceeds 10MB.",
-      "generationComplete": "Digital goods has been generated!",
+      "generationComplete": "My Bias AI Style has been generated!",
       "imageLoadFailed": "Failed to load image.",
       "originalNotFound": "Cannot find original work.",
-      "requestSent": "Digital goods generation request sent!",
+      "requestSent": "My Bias AI Style generation request sent!",
       "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
       "workReset": "Work has been reset."
     },
@@ -477,7 +477,7 @@
       "fanAndIdolImages": "Fan & Idol Images",
       "sceneGenerationComplete": "Fanmeeting scene generation complete"
     },
-    "title": "Digital Goods",
+    "title": "My Bias AI Style",
     "uploadFile": "Browse File"
   },
   "dropdown": {
@@ -649,15 +649,15 @@
     "tools": {
       "digitalGoods": {
         "subtitle": "Transform your favorite idol photos into artwork for merchandise.",
-        "title": "Digital Goods"
+        "title": "My Bias AI Style"
       },
       "fanmeeting": {
         "subtitle": "Create fan meeting photos as if taken with your idol.",
-        "title": "Online Fan Meeting"
+        "title": "AI Fan Meeting"
       },
       "stylist": {
         "subtitle": "Style hair, outfits, accessories, and backgrounds to your taste.",
-        "title": "Stylist"
+        "title": "My Bias's Stylist"
       },
       "virtualCasting": {
         "subtitle": "Cast your idol as the main character in movies or dramas.",
@@ -721,7 +721,7 @@
       "accessory": "Accessory Reference",
       "background": "Background Reference",
       "cannotLoadDetails": "Cannot load details",
-      "creationTitle": "AI Stylist",
+      "creationTitle": "My Bias's Stylist",
       "generatedResult": "Generated Result",
       "generationFailed": "Generation Failed",
       "hairstyle": "Hairstyle Reference",
@@ -797,9 +797,9 @@
       "outfit": "Outfit",
       "styleReferences": "{{count}} style reference(s)"
     },
-    "title": "Stylist"
+    "title": "My Bias's Stylist"
   },
-  "title": "Stylist",
+  "title": "AI Fan Meeting",
   "titles": {
     "butterBrush": "ButterBrush",
     "butterCover": "ButterCover",
@@ -825,15 +825,15 @@
     "butterTest": "ButterTest",
     "digitalGoods": {
       "description": "Transform your favorite idol photos into artwork for merchandise.",
-      "title": "Digital Goods"
+      "title": "My Bias AI Style"
     },
     "fanmeetingStudio": {
       "description": "Create fan meeting photos as if taken with your idol.",
-      "title": "Online Fan Meeting"
+      "title": "AI Fan Meeting"
     },
     "stylist": {
       "description": "Style hair, outfits, accessories, and backgrounds to your taste.",
-      "title": "Stylist"
+      "title": "My Bias's Stylist"
     },
     "virtualCasting": {
       "description": "Cast your idol as the main character in movies or dramas.",
@@ -963,11 +963,11 @@
       "title": "Image Generation",
       "whatIsImageGeneration": {
         "question": "What is image generation?",
-        "answer": "It's a service where AI transforms photos into various styles or creates composite photos that look like they were taken with fans and idols. We offer various features such as digital goods, style changes, online fan meeting synthesis, and virtual casting."
+        "answer": "It's a service where AI transforms photos into various styles or creates composite photos that look like they were taken with fans and idols. We offer various features such as My Bias AI Style, My Bias's Stylist, AI Fan Meeting, and Virtual Casting."
       },
       "availableStyles": {
         "question": "What styles can I transform to?",
-        "answer": "Digital goods (sketch, cartoon, illustration, pixel art, stickers, etc.), stylist (hair, outfit, background, makeup changes), online fan meetings (selfie synthesis, fan-idol photo generation), virtual casting (movie, drama, game character style application) are all possible."
+        "answer": "My Bias AI Style (sketch, cartoon, illustration, pixel art, stickers, etc.), My Bias's Stylist (hair, outfit, background, makeup changes), AI Fan Meeting (selfie synthesis, fan-idol photo generation), Virtual Casting (movie, drama, game character style application) are all possible."
       },
       "uploadConditions": {
         "question": "What are the image upload requirements?",

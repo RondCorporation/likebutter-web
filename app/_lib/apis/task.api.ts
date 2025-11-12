@@ -286,7 +286,10 @@ export const createFanmeetingStudioTask = async (
   formData.append('image1', fanImage);
   formData.append('image2', idolImage);
 
-  if (request.mode === 'image' && request.imagePromptStyle) {
+  const mode = request.mode || 'text';
+  formData.append('mode', mode);
+
+  if (mode === 'image' && request.imagePromptStyle) {
     formData.append('imagePromptStyle', request.imagePromptStyle);
   } else {
     if (request.situationPrompt) {

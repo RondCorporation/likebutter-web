@@ -43,23 +43,33 @@ export default function FeatureCardCarousel({
     <div className="flex flex-col md:pt-4">
       <div className="h-[28px] mb-1 md:block hidden" />
       <div className="relative">
-        <div
-          className="relative w-full rounded-xl overflow-hidden cursor-pointer group"
-          onClick={() => handleCardClick(currentCard.route)}
-          style={{
-            background:
-              currentCard.gradient || currentCard.bgColor || '#f5f5f5',
-            aspectRatio: '283/165',
-          }}
-        >
-          <Image
-            src={currentCard.preview}
-            alt={currentCard.title}
-            fill
-            className="object-cover transition-transform group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, 40vw"
-          />
-        </div>
+        {cards.map((card, index) => (
+          <div
+            key={card.id}
+            className={`transition-all duration-500 ease-in-out ${
+              index === currentIndex
+                ? 'opacity-100 relative'
+                : 'opacity-0 absolute inset-0 pointer-events-none'
+            }`}
+          >
+            <div
+              className="relative w-full rounded-xl overflow-hidden cursor-pointer group"
+              onClick={() => handleCardClick(card.route)}
+              style={{
+                background: card.gradient || card.bgColor || '#f5f5f5',
+                aspectRatio: '283/165',
+              }}
+            >
+              <Image
+                src={card.preview}
+                alt={card.title}
+                fill
+                className="object-cover transition-transform group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 40vw"
+              />
+            </div>
+          </div>
+        ))}
 
         <button
           onClick={(e) => {

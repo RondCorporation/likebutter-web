@@ -103,9 +103,9 @@ export default function NewAIStylesSection({
         {showLeftArrow && (
           <button
             onClick={() => handleScroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all z-10 opacity-0 group-hover:opacity-100"
+            className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 border border-white rounded-full flex items-center justify-center hover:bg-white/10 transition-colors z-10"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-800" />
+            <ChevronLeft className="w-5 h-5 text-white stroke-[2.5]" />
           </button>
         )}
 
@@ -140,9 +140,9 @@ export default function NewAIStylesSection({
         {showRightArrow && (
           <button
             onClick={() => handleScroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all z-10 opacity-0 group-hover:opacity-100"
+            className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 border border-white rounded-full flex items-center justify-center hover:bg-white/10 transition-colors z-10"
           >
-            <ChevronRight className="w-5 h-5 text-gray-800" />
+            <ChevronRight className="w-5 h-5 text-white stroke-[2.5]" />
           </button>
         )}
       </div>

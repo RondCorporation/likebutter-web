@@ -29,8 +29,16 @@ export default function AuthLayoutClient({ children }: AuthLayoutClientProps) {
         <ServerErrorDisplay />
         <ConditionalSettingsModal />
         <AuthWithRedirect>
-          <div className="flex min-h-screen flex-col">
-            <main className="flex-grow">{children}</main>
+          <div className="flex flex-col h-screen w-full overflow-hidden">
+            <div
+              className="flex-1 overflow-y-auto bg-black text-white"
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                overscrollBehavior: 'contain',
+              }}
+            >
+              {children}
+            </div>
           </div>
         </AuthWithRedirect>
       </>

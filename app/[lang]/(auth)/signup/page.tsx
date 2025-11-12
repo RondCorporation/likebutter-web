@@ -141,13 +141,13 @@ export default function Signup() {
     'w-full rounded-xl border-2 border-slate-700 bg-slate-800/50 p-3 sm:p-4 text-base sm:text-lg text-white transition-colors duration-300 placeholder:text-slate-400 focus:border-butter-yellow focus:outline-none focus:ring-0';
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-full bg-black text-white">
       <header className="absolute top-0 left-0 p-4 sm:p-6 md:p-8">
         <Link href={`/${lang}`}>
           <Logo />
         </Link>
       </header>
-      <main className="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:py-16">
+      <main className="flex min-h-full flex-col items-center justify-center px-4 py-12 sm:py-16">
         <div className="w-full max-w-md">
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">

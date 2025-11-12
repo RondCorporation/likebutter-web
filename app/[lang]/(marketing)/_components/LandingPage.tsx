@@ -158,12 +158,12 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
     return () => window.removeEventListener('resize', setVh);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  useEffect(() => {
+    cards.forEach((card) => {
+      const img = document.createElement('img');
+      img.src = `/${card.src}`;
+    });
+  }, [lang]);
 
   const handleContactSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -315,6 +315,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                                 height={418}
                                 className="w-[240px] h-[320px] rounded-2xl shadow-lg object-cover"
                                 style={{ clipPath: 'inset(0 50% 0 0)' }}
+                                priority
+                                loading="eager"
                               />
                             </motion.div>
                           </div>
@@ -340,6 +342,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                               height={418}
                               className="w-[220px] h-[294px] sm:w-[240px] sm:h-[320px] md:w-[260px] md:h-[347px] rounded-2xl shadow-2xl object-cover"
                               priority
+                              loading="eager"
                             />
                           </motion.div>
 
@@ -359,6 +362,8 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                                 height={418}
                                 className="w-[240px] h-[320px] rounded-2xl shadow-lg object-cover"
                                 style={{ clipPath: 'inset(0 0 0 50%)' }}
+                                priority
+                                loading="eager"
                               />
                             </motion.div>
                           </div>

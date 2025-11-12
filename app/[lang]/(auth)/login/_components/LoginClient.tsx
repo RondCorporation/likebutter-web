@@ -72,7 +72,7 @@ function LoginClientContent({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-full bg-black text-white flex items-center justify-center py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow mx-auto mb-4"></div>
           <p className="text-slate-400">Logging in...</p>
@@ -82,13 +82,13 @@ function LoginClientContent({
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-full bg-black text-white">
       <header className="absolute top-0 left-0 p-4 sm:p-6 md:p-8">
         <Link href={`/${lang}`}>
           <Logo />
         </Link>
       </header>
-      <main className="flex min-h-screen flex-col items-center justify-center px-4">
+      <main className="flex min-h-full flex-col items-center justify-center px-4 py-12 sm:py-16">
         <div className="w-full max-w-md">
           <div className="text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
@@ -197,7 +197,7 @@ export default function LoginClient({
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="min-h-full bg-black text-white flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-butter-yellow"></div>
         </div>
       }

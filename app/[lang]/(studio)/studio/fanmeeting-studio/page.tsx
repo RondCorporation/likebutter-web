@@ -1,16 +1,25 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-
-export const metadata: Metadata = {
-  title: 'Fanmeeting Studio - LikeButter Studio',
-  description:
-    'Create magical fanmeeting moments with AI-powered studio experiences',
-};
+import initTranslations from '@/app/_lib/i18n-server';
+import { generateLocalizedMetadata } from '@/lib/seo/metadata';
 
 type Props = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  const { t } = await initTranslations(lang, ['seo']);
+
+  return generateLocalizedMetadata({
+    lang,
+    title: t('fanmeetingStudio.title'),
+    description: t('fanmeetingStudio.description'),
+    keywords: t('fanmeetingStudio.keywords'),
+    path: '/studio?tool=fanmeeting-studio',
+  });
+}
 
 export default async function FanmeetingStudioPage({
   params,

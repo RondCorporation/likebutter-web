@@ -154,7 +154,13 @@ const FanmeetingStudioClient = forwardRef<
   return (
     <FanmeetingStudioDesktopView
       hook={hook}
-      formData={formData || { backgroundPrompt: '', situationPrompt: '' }}
+      formData={
+        formData || {
+          mode: 'text',
+          backgroundPrompt: '',
+          situationPrompt: '',
+        }
+      }
     />
   );
 });

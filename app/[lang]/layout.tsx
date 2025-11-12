@@ -52,12 +52,52 @@ export default async function RootLayout({
 
   const preloadedUser = await getMeOnServer();
 
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'likebutter',
+    url: 'https://likebutter.io',
+    logo: 'https://likebutter.io/og-image.png',
+    description:
+      lang === 'ko'
+        ? 'AI 기반 팬 콘텐츠 제작 플랫폼'
+        : 'AI-powered fan content creation platform',
+    sameAs: ['https://twitter.com/likebutter'],
+  };
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'likebutter',
+    url: 'https://likebutter.io',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `https://likebutter.io/${lang}/studio?search={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   return (
     <html
       lang={lang}
       dir={dir(lang)}
       className={`${GeistSans.variable} ${GeistMono.variable} ${archivoBlack.variable}`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body>
         <GoogleAnalytics />
         <TranslationsProvider
@@ -65,7 +105,6 @@ export default async function RootLayout({
           locale={lang}
           resources={resources}
         >
-          {/* 가져온 사용자 정보를 preloadedUser prop으로 전달합니다 */}
           <LayoutClient preloadedUser={preloadedUser}>{children}</LayoutClient>
         </TranslationsProvider>
         <SpeedInsights />
@@ -92,16 +131,18 @@ export async function generateViewport() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
+  const { t } = await initTranslations(lang, ['seo']);
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://likebutter.io';
-  const title = 'likebutter';
-  const description =
-    'AI-powered fan content creation platform. Transform your fan love into art, music, and virtual content with Butter Studio.';
+  const title = t('default.title');
+  const description = t('default.description');
+  const keywords = t('default.keywords');
   const ogImage = `${baseUrl}/og-image.png`;
 
   return {
     metadataBase: new URL(baseUrl),
     title,
     description,
+    keywords,
     openGraph: {
       title,
       description,
@@ -137,12 +178,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     robots: {
       index: true,
       follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
     },
     other: {
       'msapplication-TileColor': '#000000',
       'apple-mobile-web-app-title': 'likebutter',
       'application-name': 'likebutter',
-      // 카카오톡 공유를 위한 추가 설정
       'og:image:secure_url': ogImage,
       'og:image:type': 'image/png',
       'og:image:width': '1200',

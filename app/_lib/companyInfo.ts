@@ -33,7 +33,7 @@ export const COMPANY_INFO = {
 
   service: {
     name: 'LikeButter',
-    domain: 'likebutter.ai',
+    domain: 'likebutter.io',
   },
 } as const;
 

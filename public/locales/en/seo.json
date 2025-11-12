@@ -1,0 +1,67 @@
+{
+  "default": {
+    "title": "likebutter - AI-Powered Fan Content Creation Platform",
+    "description": "Transform your fan love into art, music, and virtual content with Butter Studio. Create AI fan art, covers, videos, and digital goods with cutting-edge AI technology.",
+    "keywords": "AI fan content, fan art creator, AI music cover, virtual idol, digital goods, fanmeeting, AI image generation, fan content platform"
+  },
+  "home": {
+    "title": "likebutter - Create AI-Powered Fan Content in Minutes",
+    "description": "The ultimate AI platform for fans. Generate stunning fan art, create music covers, design digital merchandise, and bring your fandom to life with professional-quality AI tools.",
+    "keywords": "AI fan art generator, AI music cover maker, fan content creator, digital fan merchandise, AI video editor, fandom platform, K-pop fan content, anime fan art"
+  },
+  "studio": {
+    "title": "Butter Studio - All-in-One AI Creative Suite",
+    "description": "Access powerful AI creative tools in one place. Create images, music, videos, and digital products with professional-grade AI technology designed for creators and fans.",
+    "keywords": "AI creative studio, content creation tools, AI image generator, AI music maker, digital content studio, creative AI platform"
+  },
+  "virtualCasting": {
+    "title": "Virtual Casting - AI Character Image Generator | Butter Studio",
+    "description": "Generate stunning AI character images with virtual casting. Create custom fan art, virtual idols, and character designs with advanced AI image generation technology.",
+    "keywords": "AI character generator, virtual casting, AI portrait maker, character design AI, virtual idol creator, AI fan art"
+  },
+  "butterCover": {
+    "title": "ButterCover - AI Music & Voice Cover Generator | Butter Studio",
+    "description": "Create unique AI music covers and fan songs with your favorite artist's voice. Generate high-quality vocal covers and original music using advanced AI technology.",
+    "keywords": "AI music cover, AI voice generator, fan song creator, vocal cover AI, music generation, AI singing voice, cover song maker"
+  },
+  "fanmeetingStudio": {
+    "title": "Fanmeeting Studio - Create AI Virtual Fan Meetings | Butter Studio",
+    "description": "Experience virtual fanmeetings with AI-generated content. Create personalized fan interactions, virtual meet-and-greets, and memorable moments with your favorite artists.",
+    "keywords": "virtual fanmeeting, AI fan interaction, virtual meet and greet, fan experience, AI celebrity interaction, online fanmeeting"
+  },
+  "digitalGoods": {
+    "title": "Digital Goods Creator - Design AI Fan Merchandise | Butter Studio",
+    "description": "Design and create stunning digital merchandise for fans. Generate custom wallpapers, photo cards, stickers, and digital collectibles with AI-powered tools.",
+    "keywords": "digital merchandise, fan goods creator, AI wallpaper maker, digital collectibles, photo card designer, fan merchandise"
+  },
+  "stylist": {
+    "title": "AI Stylist - Virtual Fashion & Outfit Designer | Butter Studio",
+    "description": "Style your favorite characters with AI-powered virtual fashion. Create unique outfits, experiment with different looks, and design custom fashion concepts.",
+    "keywords": "AI fashion designer, virtual stylist, outfit generator, AI clothing design, fashion AI, character styling"
+  },
+  "archive": {
+    "title": "My Archive - Manage Your AI Creations | Butter Studio",
+    "description": "Store and manage all your AI-generated content in one place. Access your fan art, music covers, videos, and digital creations anytime.",
+    "keywords": "content archive, creation manager, AI content storage, portfolio, fan content library"
+  },
+  "login": {
+    "title": "Log In to likebutter - Access Your AI Creative Studio",
+    "description": "Log in to likebutter to access your AI creative tools, saved projects, and fan content library. Continue creating amazing fan content.",
+    "keywords": "likebutter login, sign in, user account, access studio"
+  },
+  "signup": {
+    "title": "Sign Up for likebutter - Start Creating AI Fan Content",
+    "description": "Join likebutter and start creating professional-quality fan content with AI. Sign up for free and access powerful creative tools for fans and creators.",
+    "keywords": "likebutter signup, create account, register, join platform, free AI tools"
+  },
+  "privacy": {
+    "title": "Privacy Policy - likebutter",
+    "description": "Read likebutter's privacy policy to understand how we collect, use, and protect your personal information.",
+    "keywords": "privacy policy, data protection, user privacy, personal information"
+  },
+  "terms": {
+    "title": "Terms of Service - likebutter",
+    "description": "Review likebutter's terms of service and user agreement for using our AI-powered fan content creation platform.",
+    "keywords": "terms of service, user agreement, terms and conditions, service terms"
+  }
+}

@@ -18,7 +18,7 @@ const variables = {
   '{{COMPANY_CONTACT_EMAIL}}': 'info@rondcorp.com',
   '{{COMPANY_CONTACT_PHONE}}': '+82 10-5231-1263',
   '{{SERVICE_NAME}}': 'LikeButter',
-  '{{SERVICE_URL}}': 'https://likebutter.ai',
+  '{{SERVICE_URL}}': 'https://likebutter.io',
   '{{REFUND_PERIOD}}': '14일',
   '{{CANCELLATION_PERIOD}}': '서비스 제공 7일 전',
 };

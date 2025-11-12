@@ -9,15 +9,12 @@ import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
 import { Edit, RotateCcw } from 'lucide-react';
-
-interface FanmeetingFormData {
-  backgroundPrompt: string;
-  situationPrompt: string;
-}
+import { FanmeetingFormData } from '../_hooks/useFanmeetingStudio';
 
 export default function FanmeetingStudioWithSidebar() {
   const { t } = useTranslation(['studio']);
   const [formData, setFormData] = useState<FanmeetingFormData>({
+    mode: 'text',
     backgroundPrompt: '',
     situationPrompt: '',
   });

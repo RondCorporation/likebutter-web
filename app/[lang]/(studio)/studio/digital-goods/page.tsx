@@ -1,16 +1,25 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-
-export const metadata: Metadata = {
-  title: 'Digital Goods Creator - LikeButter Studio',
-  description:
-    'Create stunning digital merchandise and product designs with AI',
-};
+import initTranslations from '@/app/_lib/i18n-server';
+import { generateLocalizedMetadata } from '@/lib/seo/metadata';
 
 type Props = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  const { t } = await initTranslations(lang, ['seo']);
+
+  return generateLocalizedMetadata({
+    lang,
+    title: t('digitalGoods.title'),
+    description: t('digitalGoods.description'),
+    keywords: t('digitalGoods.keywords'),
+    path: '/studio?tool=digital-goods',
+  });
+}
 
 export default async function DigitalGoodsPage({
   params,

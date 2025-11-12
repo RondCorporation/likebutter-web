@@ -9,10 +9,22 @@ export const metadata: Metadata = {
 
 type Props = {
   params: Promise<{ lang: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function DigitalGoodsPage({ params }: Props) {
+export default async function DigitalGoodsPage({
+  params,
+  searchParams,
+}: Props) {
   const { lang } = await params;
+  const search = await searchParams;
 
-  redirect(`/${lang}/studio?tool=digital-goods`);
+  const queryString = new URLSearchParams();
+  queryString.set('tool', 'digital-goods');
+
+  if (search.style && typeof search.style === 'string') {
+    queryString.set('style', search.style);
+  }
+
+  redirect(`/${lang}/studio?${queryString.toString()}`);
 }

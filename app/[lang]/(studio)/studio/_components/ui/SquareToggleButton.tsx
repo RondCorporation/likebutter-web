@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface SquareToggleButtonProps {
   leftLabel: string;
   rightLabel: string;
   onToggle: (value: 'left' | 'right') => void;
   initialValue?: 'left' | 'right';
+  value?: 'left' | 'right';
   className?: string;
 }
 
@@ -15,9 +16,16 @@ export default function SquareToggleButton({
   rightLabel,
   onToggle,
   initialValue = 'left',
+  value,
   className = '',
 }: SquareToggleButtonProps) {
   const [selected, setSelected] = useState<'left' | 'right'>(initialValue);
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setSelected(value);
+    }
+  }, [value]);
 
   const handleToggle = (value: 'left' | 'right') => {
     setSelected(value);

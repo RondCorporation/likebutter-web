@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { Image as ImageIcon, Music2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import TopThreeStylesSection from './TopThreeStylesSection';
+import FeatureCardCarousel from './FeatureCardCarousel';
+import NewAIStylesSection from './NewAIStylesSection';
 
 interface ToolCard {
   id: string;
@@ -23,17 +26,17 @@ export default function DashboardClient() {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
   const bannerImages = [
-    '/studio/main_banner/메인배너1.png',
-    '/studio/main_banner/메인배너2.png',
-    '/studio/main_banner/메인베너3.png',
-    '/studio/main_banner/메인베너4.png',
+    '/studio/main_banner/main-banner-1.png',
+    '/studio/main_banner/main-banner-2.png',
+    '/studio/main_banner/main-banner-3.png',
+    '/studio/main_banner/main-banner-4.png',
   ];
 
   const bannerImagesMobile = [
-    '/studio/main_banner_mobile/메인배너1.png',
-    '/studio/main_banner_mobile/메인배너2.png',
-    '/studio/main_banner_mobile/메인배너3.png',
-    '/studio/main_banner_mobile/메인배너4.png',
+    '/studio/main_banner_mobile/main-banner-1.png',
+    '/studio/main_banner_mobile/main-banner-2.png',
+    '/studio/main_banner_mobile/main-banner-3.png',
+    '/studio/main_banner_mobile/main-banner-4.png',
   ];
 
   // Auto-slide banner every 6 seconds
@@ -94,6 +97,72 @@ export default function DashboardClient() {
     },
   ];
 
+  const topThreeStyles = [
+    {
+      rank: 1,
+      title: '폴라로이드',
+      description: '요즘 유행하는 바로 그거',
+      image: '/studio/fanmeeting/polaroid.png',
+      route: '/studio/fanmeeting-studio',
+      styleParam: 'POLAROID',
+    },
+    {
+      rank: 2,
+      title: '겨울 삿포로',
+      description: '요즘 유행하는 바로 그거',
+      image: '/studio/fanmeeting/winter-sapporo.png',
+      route: '/studio/fanmeeting-studio',
+      styleParam: 'WINTER_SAPPORO',
+    },
+    {
+      rank: 3,
+      title: '스케치 스타일',
+      description: '요즘 유행하는 바로 그거',
+      image: '/studio/digital-goods/sketch.png',
+      route: '/studio/digital-goods',
+      styleParam: 'SKETCH',
+    },
+  ];
+
+  const newAIStyles = [
+    {
+      id: 'polaroid',
+      title: '폴라로이드',
+      image: '/studio/fanmeeting/polaroid.png',
+      route: '/studio/fanmeeting-studio',
+      styleParam: 'POLAROID',
+    },
+    {
+      id: 'winter-sapporo',
+      title: '겨울 삿포로',
+      image: '/studio/fanmeeting/winter-sapporo.png',
+      route: '/studio/fanmeeting-studio',
+      styleParam: 'WINTER_SAPPORO',
+    },
+    {
+      id: 'graduation',
+      title: '졸업앨범 스타일',
+      image: '/studio/digital-goods/graduation-photo.png',
+      route: '/studio/digital-goods',
+      styleParam: 'GRADUATION_PHOTO',
+    },
+    {
+      id: 'zootopia',
+      title: '주토피아 스타일',
+      image: '/studio/virtual-casting/sidebar-menu-image/zootopia.jpg',
+      route: '/studio/virtual-casting',
+      styleParam: 'ZOOTOPIA',
+    },
+    {
+      id: 'kpop-demon-hunters',
+      title: '케데헌 스타일',
+      image:
+        '/studio/virtual-casting/sidebar-menu-image/kpop-demon-hunters.png',
+      route: '/studio/virtual-casting',
+      styleParam: 'KPOP_DEMON_HUNTERS',
+    },
+  ];
+
   const handleToolClick = (route: string) => {
     const toolName = route.split('/').pop() || 'dashboard';
 
@@ -145,7 +214,7 @@ export default function DashboardClient() {
               borderRadius: '100px',
               backgroundColor: '#F8F9FB',
               opacity: 0.9,
-              color: '#6B7280'
+              color: '#6B7280',
             }}
           >
             {currentBannerIndex + 1} / {bannerImages.length}
@@ -181,7 +250,7 @@ export default function DashboardClient() {
                 borderRadius: '100px',
                 backgroundColor: '#F8F9FB',
                 opacity: 0.9,
-                color: '#6B7280'
+                color: '#6B7280',
               }}
             >
               {currentBannerIndex + 1} / {bannerImagesMobile.length}
@@ -222,50 +291,109 @@ export default function DashboardClient() {
 
       {/* Content Section */}
       <div className="px-4 md:px-[90px] mt-20 md:mt-[100px]">
-        {/* Section Title */}
-        <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#ffcc00] to-[#e8fa07] bg-clip-text text-transparent mb-8 md:mb-7">
-          {currentSectionTitle}
-        </h2>
-
-        {/* Tool Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-4">
-          {currentToolCards.map((tool) => (
-            <div
-              key={tool.id}
-              className="flex flex-col cursor-pointer group max-w-full"
-              onClick={() => handleToolClick(tool.route)}
-            >
-              {/* Card Preview */}
-              <div
-                className="relative w-full rounded-xl md:rounded-2xl overflow-hidden transition-transform group-hover:scale-105 mb-4 aspect-[283/165] h-[200px] md:h-auto"
-                style={{
-                  background: tool.gradient || tool.bgColor || '#f5f5f5',
-                }}
-              >
-                {tool.preview && (
-                  <Image
-                    src={tool.preview}
-                    alt={tool.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    priority={false}
-                  />
-                )}
+        {selectedTab === 'image' ? (
+          <>
+            {/* Desktop Layout - 2 Rows */}
+            <div className="hidden md:block space-y-12">
+              {/* First Row - 3:2 Grid */}
+              <div className="grid grid-cols-5 gap-6">
+                <div className="col-span-3">
+                  <TopThreeStylesSection styles={topThreeStyles} />
+                </div>
+                <div className="col-span-2">
+                  <FeatureCardCarousel cards={imageToolCards} />
+                </div>
               </div>
 
-              {/* Card Info */}
-              <div className="w-full text-left pl-2">
-                <h3 className="text-white font-medium mb-2 text-lg md:text-lg">
-                  {tool.title}
-                </h3>
-                <p className="text-[#a8a8aa] leading-relaxed text-sm md:text-sm">
-                  {tool.description}
-                </p>
+              {/* Second Row - New AI Styles */}
+              <NewAIStylesSection styles={newAIStyles} />
+            </div>
+
+            {/* Mobile Layout - 3 Sections Stacked */}
+            <div className="block md:hidden space-y-8">
+              <NewAIStylesSection styles={newAIStyles} />
+              <TopThreeStylesSection styles={topThreeStyles} />
+
+              {/* 4 Feature Cards - Vertical List */}
+              <div className="flex flex-col gap-8">
+                {imageToolCards.map((tool) => (
+                  <div
+                    key={tool.id}
+                    className="flex flex-col cursor-pointer group"
+                    onClick={() => handleToolClick(tool.route)}
+                  >
+                    <div
+                      className="relative w-full rounded-xl overflow-hidden transition-transform group-hover:scale-105 mb-4 aspect-[283/165] h-[200px]"
+                      style={{
+                        background: tool.gradient || tool.bgColor || '#f5f5f5',
+                      }}
+                    >
+                      {tool.preview && (
+                        <Image
+                          src={tool.preview}
+                          alt={tool.title}
+                          fill
+                          className="object-cover"
+                          sizes="100vw"
+                          priority={false}
+                        />
+                      )}
+                    </div>
+                    <div className="w-full text-left pl-2">
+                      <h3 className="text-white font-medium mb-2 text-lg">
+                        {tool.title}
+                      </h3>
+                      <p className="text-[#a8a8aa] leading-relaxed text-sm">
+                        {tool.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#ffcc00] to-[#e8fa07] bg-clip-text text-transparent mb-8 md:mb-7">
+              {currentSectionTitle}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-4">
+              {currentToolCards.map((tool) => (
+                <div
+                  key={tool.id}
+                  className="flex flex-col cursor-pointer group max-w-full"
+                  onClick={() => handleToolClick(tool.route)}
+                >
+                  <div
+                    className="relative w-full rounded-xl md:rounded-2xl overflow-hidden transition-transform group-hover:scale-105 mb-4 aspect-[283/165] h-[200px] md:h-auto"
+                    style={{
+                      background: tool.gradient || tool.bgColor || '#f5f5f5',
+                    }}
+                  >
+                    {tool.preview && (
+                      <Image
+                        src={tool.preview}
+                        alt={tool.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        priority={false}
+                      />
+                    )}
+                  </div>
+                  <div className="w-full text-left pl-2">
+                    <h3 className="text-white font-medium mb-2 text-lg md:text-lg">
+                      {tool.title}
+                    </h3>
+                    <p className="text-[#a8a8aa] leading-relaxed text-sm md:text-sm">
+                      {tool.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

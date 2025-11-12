@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import SquareToggleButton from '../../_components/ui/SquareToggleButton';
@@ -23,22 +24,26 @@ export default function FanmeetingStudioSidebar({
   onFormChange,
 }: FanmeetingStudioSidebarProps = {}) {
   const { t } = useTranslation(['studio']);
+  const searchParams = useSearchParams();
+  const styleParam = searchParams.get('style');
+
   const [mode, setMode] = useState<'text' | 'image'>('text');
   const [backgroundPrompt, setBackgroundPrompt] = useState('');
   const [situationPrompt, setSituationPrompt] = useState('');
   const [selectedImagePrompt, setSelectedImagePrompt] =
     useState<FanmeetingImagePromptStyle | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const imagePromptOptions = [
     {
       style: FANMEETING_IMAGE_PROMPT_STYLES.WINTER_SAPPORO,
       name: t('fanmeeting.imagePrompts.WINTER_SAPPORO'),
-      image: '/studio/fanmeeting/겨울삿포로.png',
+      image: '/studio/fanmeeting/winter-sapporo.png',
     },
     {
       style: FANMEETING_IMAGE_PROMPT_STYLES.POLAROID,
       name: t('fanmeeting.imagePrompts.POLAROID'),
-      image: '/studio/fanmeeting/폴라로이드.png',
+      image: '/studio/fanmeeting/polaroid.png',
     },
   ];
 
@@ -60,6 +65,20 @@ export default function FanmeetingStudioSidebar({
     t('fanmeeting.poses.patHead'),
     t('fanmeeting.poses.facingEachOther'),
   ];
+
+  useEffect(() => {
+    if (styleParam && !hasInitialized) {
+      const matchedStyle = Object.values(FANMEETING_IMAGE_PROMPT_STYLES).find(
+        (style) => style === styleParam
+      );
+
+      if (matchedStyle) {
+        setMode('image');
+        setSelectedImagePrompt(matchedStyle as FanmeetingImagePromptStyle);
+        setHasInitialized(true);
+      }
+    }
+  }, [styleParam, hasInitialized]);
 
   const updateFormData = () => {
     if (mode === 'text') {
@@ -122,7 +141,7 @@ export default function FanmeetingStudioSidebar({
           leftLabel={t('fanmeeting.mode.text')}
           rightLabel={t('fanmeeting.mode.image')}
           onToggle={handleModeToggle}
-          initialValue="left"
+          value={mode === 'text' ? 'left' : 'right'}
         />
       </div>
 

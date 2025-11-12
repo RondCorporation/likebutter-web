@@ -8,12 +8,12 @@ The internal code structure uses the original feature names for consistency and 
 
 ## Feature Name Mappings
 
-| Internal Code Name | Display Name (Korean) | Display Name (English) | Code Keys |
-|-------------------|-----------------------|------------------------|-----------|
-| `digitalGoods` | 최애 AI스타일 | My Bias AI Style | Internal: digitalGoods, digital-goods |
-| `stylist` | 최애의 스타일리스트 | My Bias's Stylist | Internal: stylist |
-| `fanmeetingStudio` | AI 팬미팅 | AI Fan Meeting | Internal: fanmeetingStudio, fanmeeting |
-| `virtualCasting` | 가상 캐스팅 | Virtual Casting | Internal: virtualCasting, virtual-casting |
+| Internal Code Name | Display Name (Korean) | Display Name (English) | Code Keys                                 |
+| ------------------ | --------------------- | ---------------------- | ----------------------------------------- |
+| `digitalGoods`     | 최애 AI스타일         | My Bias AI Style       | Internal: digitalGoods, digital-goods     |
+| `stylist`          | 최애의 스타일리스트   | My Bias's Stylist      | Internal: stylist                         |
+| `fanmeetingStudio` | AI 팬미팅             | AI Fan Meeting         | Internal: fanmeetingStudio, fanmeeting    |
+| `virtualCasting`   | 가상 캐스팅           | Virtual Casting        | Internal: virtualCasting, virtual-casting |
 
 ## Important Notes
 
@@ -30,10 +30,12 @@ The internal code structure uses the original feature names for consistency and 
 ## Files Updated
 
 User-facing text has been updated in:
+
 - `/public/locales/ko/studio.json`
 - `/public/locales/en/studio.json`
 
 Look for these sections in the locale files:
+
 - `archive.taskTypes.*Edit`
 - `digitalGoods.title`, `digitalGoods.details.creationTitle`, `digitalGoods.messages.*`
 - `stylist.title`, `stylist.details.creationTitle`
@@ -54,27 +56,28 @@ When adding new styles, characters, or presets to existing features, follow thes
 All enum values should use uppercase letters with underscores separating words.
 
 **Examples:**
+
 ```typescript
 // Virtual Casting Styles
-KPOP_DEMON_HUNTERS: 'KPOP_DEMON_HUNTERS'
-FROZEN: 'FROZEN'
-HARRY_POTTER: 'HARRY_POTTER'
+KPOP_DEMON_HUNTERS: 'KPOP_DEMON_HUNTERS';
+FROZEN: 'FROZEN';
+HARRY_POTTER: 'HARRY_POTTER';
 
 // Fanmeeting Image Prompts
-WINTER_SAPPORO: 'WINTER_SAPPORO'
-POLAROID: 'POLAROID'
+WINTER_SAPPORO: 'WINTER_SAPPORO';
+POLAROID: 'POLAROID';
 ```
 
 **Location:** `app/_lib/apis/task.api.ts`
 
 **Template:**
+
 ```typescript
 export const FEATURE_STYLES = {
   NEW_STYLE: 'NEW_STYLE',
 } as const;
 
-export type FeatureStyle =
-  (typeof FEATURE_STYLES)[keyof typeof FEATURE_STYLES];
+export type FeatureStyle = (typeof FEATURE_STYLES)[keyof typeof FEATURE_STYLES];
 ```
 
 ### 2. Image File Naming
@@ -84,6 +87,7 @@ export type FeatureStyle =
 Store images in `public/studio/{feature}/` with Korean names.
 
 **Examples:**
+
 ```
 public/studio/virtual-casting/sidebar-menu-image/케이팝데몬헌터스.png
 public/studio/fanmeeting/겨울삿포로.png
@@ -124,6 +128,7 @@ const items = [
 ### Quick Checklist
 
 When adding a new preset:
+
 - [ ] Add enum to `task.api.ts` (SCREAMING_SNAKE_CASE)
 - [ ] Add image to `public/studio/{feature}/` (Korean filename)
 - [ ] Add translation to `ko/studio.json`

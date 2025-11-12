@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { DigitalGoodsStyle } from '@/app/_lib/apis/task.api';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
@@ -14,21 +15,24 @@ export default function DigitalGoodsStyleSidebar({
   onFormChange,
 }: DigitalGoodsStyleSidebarProps = {}) {
   const { t } = useTranslation(['studio']);
+  const searchParams = useSearchParams();
+  const styleParam = searchParams.get('style');
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const getStyleImage = (style: string) => {
     const styleImageMap: Record<string, string> = {
-      GHIBLI: '/studio/digital-goods/지브리.png',
-      PIXEL_ART: '/studio/digital-goods/픽셀아트.png',
-      ANIMATION: '/studio/digital-goods/애니.png',
-      CARTOON: '/studio/digital-goods/카툰.png',
-      SKETCH: '/studio/digital-goods/스캐치.png',
-      GRADUATION_PHOTO: '/studio/digital-goods/졸업사진.png',
-      LEGO: '/studio/digital-goods/레고.png',
-      STICKER: '/studio/digital-goods/스티커.png',
-      FIGURE: '/studio/digital-goods/피규어.png',
+      GHIBLI: '/studio/digital-goods/ghibli.png',
+      PIXEL_ART: '/studio/digital-goods/pixel-art.png',
+      ANIMATION: '/studio/digital-goods/animation.png',
+      CARTOON: '/studio/digital-goods/cartoon.png',
+      SKETCH: '/studio/digital-goods/sketch.png',
+      GRADUATION_PHOTO: '/studio/digital-goods/graduation-photo.png',
+      LEGO: '/studio/digital-goods/lego.png',
+      STICKER: '/studio/digital-goods/sticker.png',
+      FIGURE: '/studio/digital-goods/figure.png',
     };
-    return styleImageMap[style] || '/studio/digital-goods/지브리.png';
+    return styleImageMap[style] || '/studio/digital-goods/ghibli.png';
   };
 
   const stylePresets = [
@@ -45,6 +49,19 @@ export default function DigitalGoodsStyleSidebar({
     { name: t('digitalGoods.styles.STICKER'), value: 'STICKER' },
     { name: t('digitalGoods.styles.FIGURE'), value: 'FIGURE' },
   ];
+
+  useEffect(() => {
+    if (styleParam && !hasInitialized) {
+      const matchedPreset = stylePresets.find(
+        (preset) => preset.value === styleParam
+      );
+
+      if (matchedPreset) {
+        setSelectedPreset(matchedPreset.name);
+        setHasInitialized(true);
+      }
+    }
+  }, [styleParam, hasInitialized, stylePresets]);
 
   useEffect(() => {
     if (!selectedPreset) {

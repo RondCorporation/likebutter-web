@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import StudioSidebarBase from '../../_components/StudioSidebarBase';
 import {
@@ -29,87 +30,89 @@ export default function VirtualCastingSidebar({
   onFormChange,
 }: VirtualCastingSidebarProps = {}) {
   const { t } = useTranslation(['studio']);
+  const searchParams = useSearchParams();
+  const styleParam = searchParams.get('style');
   const [selectedCharacter, setSelectedCharacter] = useState<{
     name: string;
     image: string;
     style: VirtualCastingStyle;
   } | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const characters: Character[] = [
-    // 이전에 있고 지금도 있고
     {
       name: t('virtualCasting.styles.FROZEN'),
-      image: '겨울왕국.jpg',
+      image: 'frozen.jpg',
       style: VIRTUAL_CASTING_STYLES.FROZEN,
     },
     {
       name: t('virtualCasting.styles.ALADDIN'),
-      image: '알라딘.jpg',
+      image: 'aladdin.jpg',
       style: VIRTUAL_CASTING_STYLES.ALADDIN,
     },
     {
       name: t('virtualCasting.styles.INSIDE_OUT'),
-      image: '인사이드아웃.jpg',
+      image: 'inside-out.jpg',
       style: VIRTUAL_CASTING_STYLES.INSIDE_OUT,
     },
     {
       name: t('virtualCasting.styles.ZOOTOPIA'),
-      image: '주토피아.jpg',
+      image: 'zootopia.jpg',
       style: VIRTUAL_CASTING_STYLES.ZOOTOPIA,
     },
     {
       name: t('virtualCasting.styles.TOY_STORY'),
-      image: '토이스토리.jpg',
+      image: 'toy-story.jpg',
       style: VIRTUAL_CASTING_STYLES.TOY_STORY,
     },
     {
       name: t('virtualCasting.styles.LORD_OF_THE_RINGS'),
-      image: '반지의제왕.jpg',
+      image: 'lord-of-the-rings.jpg',
       style: VIRTUAL_CASTING_STYLES.LORD_OF_THE_RINGS,
     },
     {
       name: t('virtualCasting.styles.STAR_WARS'),
-      image: '스타워즈.jpg',
+      image: 'star-wars.jpg',
       style: VIRTUAL_CASTING_STYLES.STAR_WARS,
     },
     {
       name: t('virtualCasting.styles.AVENGERS'),
-      image: '어벤져스.jpg',
+      image: 'avengers.jpg',
       style: VIRTUAL_CASTING_STYLES.AVENGERS,
     },
     {
       name: t('virtualCasting.styles.TWILIGHT'),
-      image: '트와일라잇.jpg',
+      image: 'twilight.jpg',
       style: VIRTUAL_CASTING_STYLES.TWILIGHT,
     },
     {
       name: t('virtualCasting.styles.HARRY_POTTER'),
-      image: '해리포터.jpg',
+      image: 'harry-potter.jpg',
       style: VIRTUAL_CASTING_STYLES.HARRY_POTTER,
     },
     {
       name: t('virtualCasting.styles.SQUID_GAME'),
-      image: '오징어 게임.jpg',
+      image: 'squid-game.jpg',
       style: VIRTUAL_CASTING_STYLES.SQUID_GAME,
     },
     {
       name: t('virtualCasting.styles.ITAEWON_CLASS'),
-      image: '이태원클라쓰.jpg',
+      image: 'itaewon-class.jpg',
       style: VIRTUAL_CASTING_STYLES.ITAEWON_CLASS,
     },
     {
       name: t('virtualCasting.styles.DETECTIVE_CONAN'),
-      image: '코난.jpg',
+      image: 'detective-conan.jpg',
       style: VIRTUAL_CASTING_STYLES.DETECTIVE_CONAN,
     },
     {
       name: t('virtualCasting.styles.SLAM_DUNK'),
-      image: '슬램덩크.jpg',
+      image: 'slam-dunk.jpg',
       style: VIRTUAL_CASTING_STYLES.SLAM_DUNK,
     },
     {
       name: t('virtualCasting.styles.KPOP_DEMON_HUNTERS'),
-      image: '케이팝데몬헌터스.png',
+      image: 'kpop-demon-hunters.png',
       style: VIRTUAL_CASTING_STYLES.KPOP_DEMON_HUNTERS,
     },
   ];
@@ -126,6 +129,19 @@ export default function VirtualCastingSidebar({
       selectedCharacter: newSelection,
     });
   };
+
+  useEffect(() => {
+    if (styleParam && !hasInitialized) {
+      const matchedCharacter = characters.find(
+        (char) => char.style === styleParam
+      );
+
+      if (matchedCharacter) {
+        handleCharacterSelect(matchedCharacter);
+        setHasInitialized(true);
+      }
+    }
+  }, [styleParam, hasInitialized, characters]);
 
   return (
     <StudioSidebarBase>

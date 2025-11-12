@@ -517,7 +517,8 @@ export default function ArchiveClient() {
           break;
         case 'STYLIST':
         case 'STYLIST_EDIT':
-          downloadUrl = 'stylist' in task ? task.stylist?.downloadUrl : undefined;
+          downloadUrl =
+            'stylist' in task ? task.stylist?.downloadUrl : undefined;
           fileName = `stylist-${task.taskId}-${Date.now()}.png`;
           break;
         case 'VIRTUAL_CASTING':

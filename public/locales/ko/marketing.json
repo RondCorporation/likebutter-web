@@ -37,23 +37,11 @@
   },
   "fandomParadigm": "팬덤 활동의 새로운 패러다임",
   "features": {
-    "butterBrush": {
-      "desc": "마음속에 떠오른 이미지를 텍스트로 입력하거나 그림을 업로드하여 AI 팬아트를 완성할 수 있어요.",
-      "title": "ButterBrush"
-    },
     "butterCover": {
       "desc": "나의 감정을 담아 세상에 하나뿐인 팬송을 만들거나, 최애의 목소리로 커버곡을 만들어보세요.",
       "title": "ButterCover"
     },
-    "butterCuts": {
-      "desc": "생성된 이미지와 음악, 나의 영상들을 조합하여 감각적인 팬메이드 비디오를 손쉽게 편집해보세요.",
-      "title": "ButterCuts"
-    },
-    "butterTalks": {
-      "desc": "최애와 나누고 싶은 이야기를 AI와 함께 나눠보세요. 감정을 쏟아내는 것만으로 시작돼요.",
-      "title": "ButterTalks"
-    },
-    "subtitle": "LikeButter의 AI 요정 '버터'가 당신의 팬심을 다채로운 콘텐츠로 녹여낼 수 있도록 안내할게요.",
+    "subtitle": "LikeButter의 AI 요정 '버터'가 음악 커버, 디지털 굿즈, 가상캐스팅, 팬미팅, 스타일링 등 AI 기반 팬 콘텐츠 제작을 안내할게요.",
     "title": "당신의 모든 감정이 작품이 되는 곳"
   },
   "footer": {

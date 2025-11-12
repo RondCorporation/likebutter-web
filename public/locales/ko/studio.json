@@ -813,11 +813,8 @@
   },
   "title": "AI 팬미팅",
   "titles": {
-    "butterBrush": "ButterBrush",
     "butterCover": "ButterCover",
-    "butterCuts": "ButterCuts",
     "butterGen": "ButterGen",
-    "butterTalks": "ButterTalks",
     "butterTest": "ButterTest",
     "history": "내 보관함",
     "home": "스튜디오 홈",
@@ -825,15 +822,12 @@
   },
   "tool": "도구",
   "tools": {
-    "butterBrush": "ButterBrush",
     "butterCover": "ButterCover",
     "butterCoverTool": {
       "description": "좋아하는 곡을 내 목소리로 커버해보세요",
       "title": "버터 커버"
     },
-    "butterCuts": "ButterCuts",
     "butterGen": "ButterGen",
-    "butterTalks": "ButterTalks",
     "butterTest": "ButterTest",
     "digitalGoods": {
       "description": "내가 좋아하는 아이돌 사진을 굿즈용 아트워크로 변환해보세요.",

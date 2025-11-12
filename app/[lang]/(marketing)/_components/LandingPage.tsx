@@ -213,19 +213,19 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
     {
       id: 1,
       src: `card_1_${lang}.png`,
-      alt: 'Butter Talks',
+      alt: 'Feature Card 1',
       delay: 0.2,
     },
     {
       id: 2,
       src: `card_2_${lang}.png`,
-      alt: 'Butter Cover',
+      alt: 'Feature Card 2',
       delay: 0.3,
     },
     {
       id: 3,
       src: `card_3_${lang}.png`,
-      alt: 'Butter Brush',
+      alt: 'Feature Card 3',
       delay: 0.4,
     },
   ];
@@ -394,7 +394,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
 
                   {/* Desktop: Original layout */}
                   <div className="hidden md:flex justify-center md:justify-end items-center md:items-end gap-4 md:gap-6 lg:gap-8">
-                    {/* Card 1 - Butter Talks */}
+                    {/* Card 1 */}
                     <AnimatedElement direction="up" delay={0.2} duration={0.4}>
                       <motion.div
                         className="transform transition-transform duration-300 hover:scale-105"
@@ -407,7 +407,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       >
                         <Image
                           src={`/card_1_${lang}.png`}
-                          alt="Butter Talks"
+                          alt="Feature Card 1"
                           width={302}
                           height={418}
                           className="w-[280px] h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
@@ -416,7 +416,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       </motion.div>
                     </AnimatedElement>
 
-                    {/* Card 2 - Butter Cover */}
+                    {/* Card 2 */}
                     <AnimatedElement direction="up" delay={0.3} duration={0.4}>
                       <motion.div
                         className="transform transition-transform duration-300 hover:scale-105 -translate-y-8"
@@ -429,7 +429,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       >
                         <Image
                           src={`/card_2_${lang}.png`}
-                          alt="Butter Cover"
+                          alt="Feature Card 2"
                           width={302}
                           height={418}
                           className="w-[280px] h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"
@@ -438,7 +438,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       </motion.div>
                     </AnimatedElement>
 
-                    {/* Card 3 - Butter Brush */}
+                    {/* Card 3 */}
                     <AnimatedElement direction="up" delay={0.4} duration={0.4}>
                       <motion.div
                         className="transform transition-transform duration-300 hover:scale-105"
@@ -451,7 +451,7 @@ export default function LandingPage({ lang, plans }: LandingPageProps) {
                       >
                         <Image
                           src={`/card_3_${lang}.png`}
-                          alt="Butter Brush"
+                          alt="Feature Card 3"
                           width={302}
                           height={418}
                           className="w-[280px] h-[380px] lg:w-[302px] lg:h-[418px] rounded-2xl shadow-2xl object-cover"

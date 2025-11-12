@@ -37,23 +37,11 @@
   },
   "fandomParadigm": "New Fandom Paradigm",
   "features": {
-    "butterBrush": {
-      "desc": "Complete your AI fan art by entering the image that comes to your mind as text or by uploading a picture.",
-      "title": "ButterBrush"
-    },
     "butterCover": {
       "desc": "Create a one-of-a-kind fan song with your emotions, or create a cover song with your favorite artist's voice.",
       "title": "ButterCover"
     },
-    "butterCuts": {
-      "desc": "Easily edit a sensational fan-made video by combining generated images, music, and your own videos.",
-      "title": "ButterCuts"
-    },
-    "butterTalks": {
-      "desc": "Share the stories you want to share with your favorite artist with our AI. It all starts with pouring out your feelings.",
-      "title": "ButterTalks"
-    },
-    "subtitle": "LikeButter's AI fairy 'Butter' will guide you to melt your fandom into diverse content.",
+    "subtitle": "LikeButter's AI fairy 'Butter' will guide you to create AI-powered fan content including music covers, digital goods, virtual casting, fanmeetings, and styling.",
     "title": "Where all your emotions become a masterpiece"
   },
   "footer": {

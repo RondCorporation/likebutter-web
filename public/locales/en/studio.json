@@ -813,11 +813,8 @@
   },
   "title": "AI Fan Meeting",
   "titles": {
-    "butterBrush": "ButterBrush",
     "butterCover": "ButterCover",
-    "butterCuts": "ButterCuts",
     "butterGen": "ButterGen",
-    "butterTalks": "ButterTalks",
     "butterTest": "ButterTest",
     "history": "My Archive",
     "home": "Studio Home",
@@ -825,15 +822,12 @@
   },
   "tool": "Tool",
   "tools": {
-    "butterBrush": "ButterBrush",
     "butterCover": "ButterCover",
     "butterCoverTool": {
       "description": "Cover your favorite songs with your own voice",
       "title": "Butter Cover"
     },
-    "butterCuts": "ButterCuts",
     "butterGen": "ButterGen",
-    "butterTalks": "ButterTalks",
     "butterTest": "ButterTest",
     "digitalGoods": {
       "description": "Transform your favorite idol photos into artwork for merchandise.",

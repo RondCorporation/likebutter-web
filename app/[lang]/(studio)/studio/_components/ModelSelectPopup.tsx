@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import TabItem from './ui/TabItem';
@@ -23,8 +24,13 @@ export default function ModelSelectPopup({
   const router = useRouter();
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
+  const [mounted, setMounted] = useState(false);
 
   useScrollLock(true);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     router.prefetch(`/${lang}/studio/digital-goods`);
@@ -78,11 +84,13 @@ export default function ModelSelectPopup({
     }, 100);
   };
 
-  return (
+  if (!mounted) return null;
+
+  const modalContent = (
     <div
-      className={`fixed inset-0 z-50 flex ${
+      className={`fixed inset-0 z-[100] flex ${
         isMobile ? 'items-end' : 'items-center justify-center'
-      } bg-black/70 backdrop-blur-sm`}
+      } bg-black/50 backdrop-blur-sm`}
       onClick={onClose}
       style={{
         paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : '0',
@@ -223,4 +231,6 @@ export default function ModelSelectPopup({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/studio?tool=fanmeeting-studio',
     '/studio?tool=digital-goods',
     '/studio?tool=stylist',
-    '/studio/archive',
+    '/studio?tool=archive',
     '/login',
     '/signup',
     '/privacy',

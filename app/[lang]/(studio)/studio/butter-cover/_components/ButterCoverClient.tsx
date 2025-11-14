@@ -275,7 +275,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
                 )}
                 <StudioButton
                   text={t('butterCover.goToArchive')}
-                  onClick={() => router.push('/studio/archive')}
+                  onClick={() => router.push('/studio?tool=archive')}
                   className="w-full h-12"
                 />
               </div>

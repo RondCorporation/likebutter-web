@@ -32,13 +32,13 @@ export default function MobileLoadingOverlay({
   const finalDescription = description || t('digitalGoods.pleaseWait');
 
   const handleGoToArchive = () => {
-    const currentLang = window.location.pathname.split('/')[1] || 'ko';
-    router.push(`/${currentLang}/studio/archive`);
+    const lang = window.location.pathname.split('/')[1] || 'ko';
+    router.push(`/${lang}/studio?tool=archive`);
   };
 
   const handleGoToHome = () => {
-    const currentLang = window.location.pathname.split('/')[1] || 'ko';
-    router.push(`/${currentLang}`);
+    const lang = window.location.pathname.split('/')[1] || 'ko';
+    router.push(`/${lang}/studio`);
   };
 
   const overlayContent = (

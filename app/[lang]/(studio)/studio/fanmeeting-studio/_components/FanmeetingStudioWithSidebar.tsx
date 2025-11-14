@@ -24,6 +24,8 @@ export default function FanmeetingStudioWithSidebar() {
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [idolFile, setIdolFile] = useState<File | null>(null);
+  const [userFile, setUserFile] = useState<File | null>(null);
 
   const setClientRefCallback = useCallback((ref: any) => {
     clientRef.current = ref;
@@ -50,6 +52,13 @@ export default function FanmeetingStudioWithSidebar() {
       const isProcessingOrPolling = state.isProcessing || state.isPolling;
       setHidePCSidebar(!!state.resultImage || !!isProcessingOrPolling);
 
+      if (state.idolFile !== undefined) {
+        setIdolFile(state.idolFile);
+      }
+      if (state.userFile !== undefined) {
+        setUserFile(state.userFile);
+      }
+
       // Show BottomSheet when not in result mode (always visible except during results/processing)
       setShowBottomSheet(!state.resultImage && !isProcessingOrPolling);
 
@@ -63,15 +72,20 @@ export default function FanmeetingStudioWithSidebar() {
 
   const isFormValid = () => {
     if (!formData) return false;
-    if (
-      !formData.backgroundPrompt ||
-      formData.backgroundPrompt.trim().length < 2
-    )
-      return false;
-    if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2)
-      return false;
-    if (!clientRef.current?.idolFile || !clientRef.current?.userFile)
-      return false;
+    if (!idolFile || !userFile) return false;
+
+    if (formData.mode === 'text') {
+      if (
+        !formData.backgroundPrompt ||
+        formData.backgroundPrompt.trim().length < 2
+      )
+        return false;
+      if (!formData.situationPrompt || formData.situationPrompt.trim().length < 2)
+        return false;
+    } else {
+      if (!formData.imagePromptStyle) return false;
+    }
+
     return true;
   };
 

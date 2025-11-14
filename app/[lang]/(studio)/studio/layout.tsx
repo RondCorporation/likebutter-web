@@ -27,40 +27,37 @@ export default function StudioLayout({ children, params }: Props) {
   return (
     <StudioAuthGuard>
       <div className="flex flex-col w-full overflow-hidden h-dvh-fallback">
-        {/* Fixed Header - 모바일과 데스크톱 모두 고정 */}
+        {/* Header */}
         <div className="fixed top-0 left-0 right-0 z-50">
           <Header variant="studio" params={params} />
         </div>
 
         {/* Main content area */}
         <div className="flex flex-1 w-full bg-studio-main overflow-hidden mt-16">
-          {/* Sidebar displayed only on desktop - Fixed position */}
           {isDesktop && (
             <div className="fixed left-0 top-16 bottom-0 z-20">
               <StudioSidebar lang={lang} />
             </div>
           )}
 
-          {/* Main content - 데스크톱: 사이드바 여백, 모바일: 하단 네비게이션 여백 */}
+          {/* Main content */}
           <div
-            className={`flex-1 overflow-y-auto ${isDesktop ? 'ml-20' : 'mb-[88px]'}`}
+            className={`flex-1 ${isDesktop ? 'overflow-y-auto ml-20' : 'overflow-hidden mb-[88px]'}`}
             style={
-              !isDesktop
-                ? {
-                    WebkitOverflowScrolling: 'touch',
-                    overscrollBehavior: 'contain',
+              isDesktop
+                ? undefined
+                : {
+                    touchAction: 'none',
                   }
-                : undefined
             }
           >
             {children}
           </div>
         </div>
 
-        {/* Fixed Bottom navigation - 모바일만 표시 */}
+        {/* Fixed Bottom navigation */}
         {!isDesktop && <MobileBottomNavigation lang={lang} />}
 
-        {/* Component preloader for better performance */}
         <StudioPreloader lang={lang} />
 
         <Toaster

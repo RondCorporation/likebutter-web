@@ -61,10 +61,10 @@ export default function StudioLayout({
         className="absolute inset-0 overflow-y-auto"
         style={{
           WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
+          overscrollBehavior: 'none',
+          overscrollBehaviorY: 'none',
           touchAction: 'pan-y',
-          // Padding: button height (72px) + bottom sheet minimum height (calculated in px)
-          // Using same JavaScript calculation as BottomSheet to prevent mismatch
+
           paddingBottom: hideMobileBottomSheet
             ? mobileBottomButton
               ? `${buttonHeightPx}px`
@@ -73,11 +73,38 @@ export default function StudioLayout({
               ? `${buttonHeightPx + bottomSheetMinHeightPx}px`
               : `${bottomSheetMinHeightPx}px`,
         }}
+        onTouchStart={(e) => {
+          const target = e.currentTarget;
+          const isAtTop = target.scrollTop === 0;
+          const isAtBottom =
+            target.scrollHeight - target.scrollTop === target.clientHeight;
+
+          if ((isAtTop || isAtBottom) && e.touches.length === 1) {
+            const touchStartY = e.touches[0].clientY;
+            const handleTouchMove = (moveEvent: TouchEvent) => {
+              const touchY = moveEvent.touches[0].clientY;
+              const deltaY = touchY - touchStartY;
+
+              if ((isAtTop && deltaY > 0) || (isAtBottom && deltaY < 0)) {
+                moveEvent.preventDefault();
+              }
+            };
+
+            const handleTouchEnd = () => {
+              target.removeEventListener('touchmove', handleTouchMove);
+              target.removeEventListener('touchend', handleTouchEnd);
+            };
+
+            target.addEventListener('touchmove', handleTouchMove, {
+              passive: false,
+            });
+            target.addEventListener('touchend', handleTouchEnd);
+          }
+        }}
       >
         {children}
       </div>
 
-      {/* Unified bottom container - combines BottomSheet and Button to prevent layer crossing */}
       {(!hideMobileBottomSheet || mobileBottomButton) && (
         <div
           className="absolute inset-x-0 bottom-0 z-40"
@@ -86,7 +113,6 @@ export default function StudioLayout({
             pointerEvents: 'auto',
           }}
         >
-          {/* Bottom sheet - positioned above button, can expand upward */}
           {!hideMobileBottomSheet && (
             <BottomSheet
               initialHeight={bottomSheetOptions.initialHeight}
@@ -100,16 +126,13 @@ export default function StudioLayout({
             </BottomSheet>
           )}
 
-          {/* Bottom button - sits at very bottom, seamlessly connected to bottom sheet */}
           {mobileBottomButton && (
             <div
               className="relative w-full bg-studio-sidebar"
               style={{
-                // Prevent touch events on button from propagating to Content Area below
                 touchAction: 'none',
               }}
               onTouchMove={(e) => {
-                // Stop touch events from bubbling to parent/underlying layers
                 e.stopPropagation();
               }}
             >

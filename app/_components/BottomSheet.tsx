@@ -130,10 +130,39 @@ export default function BottomSheet({
         style={{
           touchAction: 'pan-y',
           WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
+          overscrollBehavior: 'none',
+          overscrollBehaviorY: 'none',
           paddingBottom: hasBottomButton
             ? 'calc(0.75rem + 20px)'
             : 'calc(0.75rem + 20px)',
+        }}
+        onTouchStart={(e) => {
+          const target = e.currentTarget;
+          const isAtTop = target.scrollTop === 0;
+          const isAtBottom =
+            target.scrollHeight - target.scrollTop === target.clientHeight;
+
+          if ((isAtTop || isAtBottom) && e.touches.length === 1) {
+            const touchStartY = e.touches[0].clientY;
+            const handleTouchMove = (moveEvent: TouchEvent) => {
+              const touchY = moveEvent.touches[0].clientY;
+              const deltaY = touchY - touchStartY;
+
+              if ((isAtTop && deltaY > 0) || (isAtBottom && deltaY < 0)) {
+                moveEvent.preventDefault();
+              }
+            };
+
+            const handleTouchEnd = () => {
+              target.removeEventListener('touchmove', handleTouchMove);
+              target.removeEventListener('touchend', handleTouchEnd);
+            };
+
+            target.addEventListener('touchmove', handleTouchMove, {
+              passive: false,
+            });
+            target.addEventListener('touchend', handleTouchEnd);
+          }
         }}
       >
         {children}

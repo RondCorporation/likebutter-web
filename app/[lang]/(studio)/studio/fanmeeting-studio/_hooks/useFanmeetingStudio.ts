@@ -104,6 +104,8 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
     isPolling,
     isBackgroundProcessing,
     startPolling,
+    stopPolling,
+    stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
   } = useTaskPolling({
@@ -315,26 +317,36 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
   );
 
   const handleReset = useCallback(() => {
+    // 1. Stop all polling first
+    stopPolling();
+    stopBackgroundProcessing();
+
+    // 2. Reset processing states
+    setIsProcessing(false);
+    setIsEditLoading(false);
+
+    // 3. Clear result and file states
+    setResultImage(null);
     setIdolFile(null);
     setUserFile(null);
-    setIdolPreviewUrl('');
-    setUserPreviewUrl('');
-    setResultImage(null);
-    setIsProcessing(false);
-    setIsEditPopupOpen(false);
-    setIsEditLoading(false);
-    setIsResetPopupOpen(false);
-    setIsBottomSheetOpen(false);
-
     if (idolPreviewUrl) {
       URL.revokeObjectURL(idolPreviewUrl);
     }
     if (userPreviewUrl) {
       URL.revokeObjectURL(userPreviewUrl);
     }
+    setIdolPreviewUrl('');
+    setUserPreviewUrl('');
 
-    toast.success(t('fanmeeting.messages.workReset'));
-  }, [idolPreviewUrl, userPreviewUrl, t]);
+    // 4. Close all popups
+    setIsEditPopupOpen(false);
+    setIsResetPopupOpen(false);
+
+    // 5. Reset UI states
+    setIsBottomSheetOpen(false);
+    setIsDragOverIdol(false);
+    setIsDragOverUser(false);
+  }, [idolPreviewUrl, userPreviewUrl, stopPolling, stopBackgroundProcessing]);
 
   const isFormValid = useCallback(
     (formData: FanmeetingFormData) => {

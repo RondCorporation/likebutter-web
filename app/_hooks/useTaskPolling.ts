@@ -18,6 +18,7 @@ interface UseTaskPollingReturn {
   error: string | null;
   startPolling: (taskId: number) => Promise<void>;
   stopPolling: () => void;
+  stopBackgroundProcessing: () => void;
   checkTaskStatus: (taskId: number) => Promise<void>;
   currentTaskId: number | null;
 }
@@ -233,6 +234,7 @@ export function useTaskPolling(
     error,
     startPolling,
     stopPolling,
+    stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
   };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import StudioLayout from '../../_components/StudioLayout';
 import StylistClient from './StylistClient';
@@ -8,6 +8,7 @@ import StylistSidebar from './StylistSidebar';
 import StudioButton from '../../_components/ui/StudioButton';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import ConfirmResetPopup from '@/app/_components/ui/ConfirmResetPopup';
+import ConfirmNavigationPopup from '@/app/_components/ui/ConfirmNavigationPopup';
 import { Edit, RotateCcw } from 'lucide-react';
 
 interface StylistFormData {
@@ -39,9 +40,13 @@ export default function StylistWithSidebar() {
   const [showMobileResult, setShowMobileResult] = useState(false);
   const [hidePCSidebar, setHidePCSidebar] = useState(false);
   const [isResetPopupOpen, setIsResetPopupOpen] = useState(false);
+  const [isNavigationPopupOpen, setIsNavigationPopupOpen] = useState(false);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [uploadedFilesCount, setUploadedFilesCount] = useState(0);
+  const pendingNavigationResolveRef = useRef<((value: boolean) => void) | null>(
+    null
+  );
 
   const setClientRefCallback = useCallback((ref: any) => {
     clientRef.current = ref;
@@ -164,6 +169,73 @@ export default function StylistWithSidebar() {
     }
   }, []);
 
+  const isProcessing = () => {
+    const isProcessingState = clientRef.current?.isProcessing || false;
+    const isPolling = clientRef.current?.isPolling || false;
+    const isBackgroundProcessing =
+      clientRef.current?.isBackgroundProcessing || false;
+    return isProcessingState || isPolling || isBackgroundProcessing;
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isProcessing()) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  useEffect(() => {
+    const navigationGuard = async (targetTool: string): Promise<boolean> => {
+      if (!isProcessing()) {
+        return true;
+      }
+
+      return new Promise((resolve) => {
+        pendingNavigationResolveRef.current = resolve;
+        setIsNavigationPopupOpen(true);
+      });
+    };
+
+    const resetCurrentTool = () => {
+      if (clientRef.current?.handleReset) {
+        clientRef.current.handleReset();
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      (window as any).studioNavigationGuard = navigationGuard;
+      (window as any).studioResetCurrentTool = resetCurrentTool;
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as any).studioNavigationGuard;
+        delete (window as any).studioResetCurrentTool;
+      }
+    };
+  }, []);
+
+  const handleConfirmNavigation = () => {
+    setIsNavigationPopupOpen(false);
+    if (pendingNavigationResolveRef.current) {
+      pendingNavigationResolveRef.current(true);
+      pendingNavigationResolveRef.current = null;
+    }
+  };
+
+  const handleCancelNavigation = () => {
+    setIsNavigationPopupOpen(false);
+    if (pendingNavigationResolveRef.current) {
+      pendingNavigationResolveRef.current(false);
+      pendingNavigationResolveRef.current = null;
+    }
+  };
+
   const getMobileButton = () => {
     const isProcessing = clientRef.current?.isProcessing || false;
     const isPolling = clientRef.current?.isPolling || false;
@@ -239,6 +311,12 @@ export default function StylistWithSidebar() {
         isOpen={isResetPopupOpen}
         onClose={() => setIsResetPopupOpen(false)}
         onConfirm={handleConfirmReset}
+      />
+
+      <ConfirmNavigationPopup
+        isOpen={isNavigationPopupOpen}
+        onClose={handleCancelNavigation}
+        onConfirm={handleConfirmNavigation}
       />
     </>
   );

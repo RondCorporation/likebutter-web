@@ -91,6 +91,8 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
     isPolling,
     isBackgroundProcessing,
     startPolling,
+    stopPolling,
+    stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
   } = useTaskPolling({
@@ -271,21 +273,30 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
   );
 
   const handleReset = useCallback(() => {
-    setUploadedFile(null);
-    setPreviewUrl('');
-    setResultImage(null);
-    setIsGenerating(false);
-    setIsEditPopupOpen(false);
-    setIsEditLoading(false);
-    setIsResetPopupOpen(false);
-    setIsBottomSheetOpen(false);
+    // 1. Stop all polling first (prevents race conditions)
+    stopPolling();
+    stopBackgroundProcessing();
 
+    // 2. Reset processing states
+    setIsGenerating(false);
+    setIsEditLoading(false);
+
+    // 3. Clear result and file states
+    setResultImage(null);
+    setUploadedFile(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
     }
+    setPreviewUrl('');
 
-    toast.success(t('studio:digitalGoods.messages.workReset'));
-  }, [previewUrl, t]);
+    // 4. Close all popups
+    setIsEditPopupOpen(false);
+    setIsResetPopupOpen(false);
+
+    // 5. Reset UI states
+    setIsBottomSheetOpen(false);
+    setIsDragOver(false);
+  }, [previewUrl, stopPolling, stopBackgroundProcessing]);
 
   const isFormValid = useCallback(
     (formData: DigitalGoodsFormData) => {

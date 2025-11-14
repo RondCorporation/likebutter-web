@@ -4,19 +4,19 @@ import { X } from 'lucide-react';
 import StudioButton from '@/app/[lang]/(studio)/studio/_components/ui/StudioButton';
 import { useTranslation } from 'react-i18next';
 
-interface ConfirmResetPopupProps {
+interface ConfirmNavigationPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   isLoading?: boolean;
 }
 
-export default function ConfirmResetPopup({
+export default function ConfirmNavigationPopup({
   isOpen,
   onClose,
   onConfirm,
   isLoading = false,
-}: ConfirmResetPopupProps) {
+}: ConfirmNavigationPopupProps) {
   const { t } = useTranslation('studio');
 
   if (!isOpen) return null;
@@ -32,7 +32,7 @@ export default function ConfirmResetPopup({
       >
         <div className="flex items-center justify-between w-full">
           <div className="flex-1 text-center font-bold text-studio-text-primary text-lg">
-            {t('confirmReset.title')}
+            {t('confirmNavigation.title')}
           </div>
           <button
             onClick={onClose}
@@ -43,7 +43,7 @@ export default function ConfirmResetPopup({
         </div>
 
         <div className="text-center text-studio-text-primary whitespace-pre-line">
-          {t('confirmReset.message')}
+          {t('confirmNavigation.message')}
         </div>
 
         <div className="flex gap-3">
@@ -52,10 +52,10 @@ export default function ConfirmResetPopup({
             disabled={isLoading}
             className="flex-1 h-12 border border-studio-border rounded-xl text-studio-text-primary hover:bg-studio-border/50 transition-colors duration-200 disabled:opacity-50"
           >
-            {t('confirmReset.cancel')}
+            {t('confirmNavigation.cancel')}
           </button>
           <StudioButton
-            text={t('confirmReset.confirm')}
+            text={t('confirmNavigation.confirm')}
             onClick={onConfirm}
             disabled={isLoading}
             loading={isLoading}

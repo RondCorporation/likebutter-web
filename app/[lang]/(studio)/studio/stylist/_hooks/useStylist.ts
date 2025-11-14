@@ -142,6 +142,8 @@ export function useStylist(): UseStylistReturn {
     isPolling,
     isBackgroundProcessing,
     startPolling,
+    stopPolling,
+    stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
   } = useTaskPolling({
@@ -427,26 +429,42 @@ export function useStylist(): UseStylistReturn {
   );
 
   const handleReset = useCallback(() => {
-    setUploadedFile(null);
-    setPreviewUrl('');
-    setResultImage(null);
-    setIsProcessing(false);
-    setIsEditPopupOpen(false);
-    setIsEditLoading(false);
-    setIsResetPopupOpen(false);
-    setIsBottomSheetOpen(false);
-    setAdditionalImagePreviews({});
-    setUploadedFiles({});
+    // 1. Stop all polling first
+    stopPolling();
+    stopBackgroundProcessing();
 
+    // 2. Reset processing states
+    setIsProcessing(false);
+    setIsEditLoading(false);
+
+    // 3. Clear result and file states
+    setResultImage(null);
+    setUploadedFile(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
     }
+    setPreviewUrl('');
+
+    // Clear additional images
     Object.values(additionalImagePreviews).forEach((url) => {
       URL.revokeObjectURL(url);
     });
+    setAdditionalImagePreviews({});
+    setUploadedFiles({});
 
-    toast.success(t('stylist.messages.workReset'));
-  }, [previewUrl, additionalImagePreviews, t]);
+    // 4. Close all popups
+    setIsEditPopupOpen(false);
+    setIsResetPopupOpen(false);
+
+    // 5. Reset UI states
+    setIsBottomSheetOpen(false);
+    setIsDragOver(false);
+  }, [
+    previewUrl,
+    additionalImagePreviews,
+    stopPolling,
+    stopBackgroundProcessing,
+  ]);
 
   const isFormValid = useCallback(
     (formData: StylistFormData) => {

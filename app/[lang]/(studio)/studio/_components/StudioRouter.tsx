@@ -46,8 +46,30 @@ export default function StudioRouter({ lang }: StudioRouterProps) {
   const currentTool = getCurrentToolFromUrl();
 
   const navigateToTool = useCallback(
-    (toolName: string) => {
-      if (toolName === currentTool) return;
+    async (toolName: string) => {
+      const isSameTool = toolName === currentTool;
+
+      // Check if there's a navigation guard
+      if (
+        typeof window !== 'undefined' &&
+        (window as any).studioNavigationGuard
+      ) {
+        const canNavigate = await (window as any).studioNavigationGuard(
+          toolName
+        );
+        if (!canNavigate) {
+          return; // Navigation blocked by guard
+        }
+
+        // If same tool and guard returned true, reset the current tool
+        if (isSameTool && (window as any).studioResetCurrentTool) {
+          (window as any).studioResetCurrentTool();
+          return;
+        }
+      }
+
+      // If same tool and no guard, do nothing
+      if (isSameTool) return;
 
       if (!isToolPreloaded(toolName)) {
         preloadTool(toolName);

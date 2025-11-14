@@ -363,10 +363,14 @@
   "confirmReset": {
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "messageLine1": "Starting over will reset",
-    "messageLine2": "your current work.",
-    "messageLine3": "Do you want to continue?",
-    "title": "Start Over"
+    "message": "Reset your work?\nImages being generated can be found in Archive",
+    "title": "Reset Work"
+  },
+  "confirmNavigation": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "message": "Reset your work?\nImages being generated can be found in Archive",
+    "title": "Reset Work"
   },
   "credits": {
     "errors": {

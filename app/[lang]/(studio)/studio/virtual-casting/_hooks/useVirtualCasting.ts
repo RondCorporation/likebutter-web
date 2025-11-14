@@ -95,6 +95,8 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
     isPolling,
     isBackgroundProcessing,
     startPolling,
+    stopPolling,
+    stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
   } = useTaskPolling({
@@ -272,21 +274,30 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
   );
 
   const handleReset = useCallback(() => {
-    setUploadedFile(null);
-    setPreviewUrl('');
-    setResultImage(null);
-    setIsProcessing(false);
-    setIsEditPopupOpen(false);
-    setIsEditLoading(false);
-    setIsResetPopupOpen(false);
-    setIsBottomSheetOpen(false);
+    // 1. Stop all polling first
+    stopPolling();
+    stopBackgroundProcessing();
 
+    // 2. Reset processing states
+    setIsProcessing(false);
+    setIsEditLoading(false);
+
+    // 3. Clear result and file states
+    setResultImage(null);
+    setUploadedFile(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
     }
+    setPreviewUrl('');
 
-    toast.success(t('virtualCasting.messages.workReset'));
-  }, [previewUrl, t]);
+    // 4. Close all popups
+    setIsEditPopupOpen(false);
+    setIsResetPopupOpen(false);
+
+    // 5. Reset UI states
+    setIsBottomSheetOpen(false);
+    setIsDragOver(false);
+  }, [previewUrl, stopPolling, stopBackgroundProcessing]);
 
   const isFormValid = useCallback(
     (formData: VirtualCastingFormData) => {

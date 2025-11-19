@@ -10,6 +10,7 @@ import {
 import { useTaskSSE } from '@/hooks/useTaskSSE';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
+import { downloadFile } from '@/app/_utils/download';
 
 export interface StylistFormData {
   mode: 'text' | 'image';
@@ -116,6 +117,7 @@ export function useStylist(): UseStylistReturn {
   // Processing state
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isEditLoading, setIsEditLoading] = useState(false);
 
   // Popup state
@@ -148,17 +150,18 @@ export function useStylist(): UseStylistReturn {
     currentTaskId,
   } = useTaskSSE({
     onCompleted: (result) => {
-      // Check for both STYLIST and STYLIST_EDIT
-      const imageUrl =
-        (result.actionType === 'STYLIST' ||
-          result.actionType === 'STYLIST_EDIT') &&
-        result.stylist?.imageUrl
-          ? result.stylist.imageUrl
-          : null;
+      if (
+        result.actionType === 'STYLIST' ||
+        result.actionType === 'STYLIST_EDIT'
+      ) {
+        const imageUrl = result.stylist?.imageUrl || null;
+        const downloadUrlFromTask = result.stylist?.downloadUrl || null;
 
-      if (imageUrl) {
-        setResultImage(imageUrl);
-        toast.success(t('stylist.messages.stylingComplete'));
+        if (imageUrl) {
+          setResultImage(imageUrl);
+          setDownloadUrl(downloadUrlFromTask);
+          toast.success(t('stylist.messages.stylingComplete'));
+        }
       }
       setIsProcessing(false);
       setIsEditLoading(false);
@@ -365,27 +368,17 @@ export function useStylist(): UseStylistReturn {
   );
 
   const handleDownload = useCallback(async () => {
-    if (!resultImage) return;
+    const urlToDownload = downloadUrl || resultImage;
+    if (!urlToDownload) return;
 
     try {
-      const response = await fetch(resultImage);
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `stylist-result-${Date.now()}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
+      await downloadFile(urlToDownload, `stylist-result-${Date.now()}.png`);
       toast.success(t('stylist.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
       toast.error(t('stylist.messages.downloadFailed'));
     }
-  }, [resultImage, t]);
+  }, [downloadUrl, resultImage, t]);
 
   const handleEditRequest = useCallback(
     async (editRequest: string) => {
@@ -439,6 +432,7 @@ export function useStylist(): UseStylistReturn {
 
     // 3. Clear result and file states
     setResultImage(null);
+    setDownloadUrl(null);
     setUploadedFile(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);

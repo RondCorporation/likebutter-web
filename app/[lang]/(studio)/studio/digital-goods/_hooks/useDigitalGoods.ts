@@ -11,6 +11,7 @@ import {
 import { useTaskSSE } from '@/hooks/useTaskSSE';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
+import { downloadFile } from '@/app/_utils/download';
 
 export interface DigitalGoodsFormData {
   style?: DigitalGoodsStyle;
@@ -77,6 +78,7 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
   // Processing state
   const [isGenerating, setIsGenerating] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isEditLoading, setIsEditLoading] = useState(false);
 
   // Popup state
@@ -97,17 +99,18 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
     currentTaskId,
   } = useTaskSSE({
     onCompleted: (result) => {
-      // Check for both DIGITAL_GOODS and DIGITAL_GOODS_EDIT
-      const imageUrl =
-        (result.actionType === 'DIGITAL_GOODS' ||
-          result.actionType === 'DIGITAL_GOODS_EDIT') &&
-        result.digitalGoods?.imageUrl
-          ? result.digitalGoods.imageUrl
-          : null;
+      if (
+        result.actionType === 'DIGITAL_GOODS' ||
+        result.actionType === 'DIGITAL_GOODS_EDIT'
+      ) {
+        const imageUrl = result.digitalGoods?.imageUrl || null;
+        const downloadUrlFromTask = result.digitalGoods?.downloadUrl || null;
 
-      if (imageUrl) {
-        setResultImage(imageUrl);
-        toast.success(t('studio:digitalGoods.messages.generationComplete'));
+        if (imageUrl) {
+          setResultImage(imageUrl);
+          setDownloadUrl(downloadUrlFromTask);
+          toast.success(t('studio:digitalGoods.messages.generationComplete'));
+        }
       }
       setIsGenerating(false);
       setIsEditLoading(false);
@@ -209,27 +212,17 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
   );
 
   const handleDownload = useCallback(async () => {
-    if (!resultImage) return;
+    const urlToDownload = downloadUrl || resultImage;
+    if (!urlToDownload) return;
 
     try {
-      const response = await fetch(resultImage);
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `digital-goods-${Date.now()}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
+      await downloadFile(urlToDownload, `digital-goods-${Date.now()}.png`);
       toast.success(t('studio:digitalGoods.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
       toast.error(t('studio:digitalGoods.messages.downloadFailed'));
     }
-  }, [resultImage, t]);
+  }, [downloadUrl, resultImage, t]);
 
   const handleEditRequest = useCallback(
     async (editRequest: string) => {
@@ -283,6 +276,7 @@ export function useDigitalGoods(): UseDigitalGoodsReturn {
 
     // 3. Clear result and file states
     setResultImage(null);
+    setDownloadUrl(null);
     setUploadedFile(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);

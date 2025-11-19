@@ -13,6 +13,7 @@ import { useTaskSSE } from '@/app/_hooks/useTaskSSE';
 import { Download, Play, Pause, Volume2 } from 'lucide-react';
 import { useCreditStore } from '@/app/_stores/creditStore';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
+import { downloadFile } from '@/app/_utils/download';
 
 interface ButterCoverClientProps {
   dictionary?: any;
@@ -40,6 +41,7 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   const [artistData, setArtistData] = useState<ArtistData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [resultAudioUrl, setResultAudioUrl] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
@@ -57,8 +59,11 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
     onCompleted: (result) => {
       if (result.actionType === 'BUTTER_COVER' && 'butterCover' in result) {
         const audioUrl = result.butterCover?.audioUrl;
+        const downloadUrlFromTask = result.butterCover?.downloadUrl;
+
         if (audioUrl) {
           setResultAudioUrl(audioUrl);
+          setDownloadUrl(downloadUrlFromTask || null);
           toast.success(t('butterCover.messages.coverComplete'));
         } else {
           toast.error(t('butterCover.messages.coverFailed'));
@@ -149,21 +154,11 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
   };
 
   const handleDownload = async () => {
-    if (!resultAudioUrl) return;
+    const urlToDownload = downloadUrl || resultAudioUrl;
+    if (!urlToDownload) return;
 
     try {
-      const response = await fetch(resultAudioUrl);
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `butter-cover-${Date.now()}.mp3`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
+      await downloadFile(urlToDownload, `butter-cover-${Date.now()}.mp3`);
       toast.success(t('butterCover.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);

@@ -1,5 +1,6 @@
 /**
- * 파일을 다운로드하는 유틸리티 함수
+ * Download file from URL using server's Content-Disposition header
+ * Works on desktop and mobile browsers without opening blank tabs
  */
 export async function downloadFile(
   url: string,
@@ -8,12 +9,10 @@ export async function downloadFile(
   try {
     console.log('[Download] Starting download:', { url, filename });
 
-    // 링크 생성 및 클릭
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
     link.rel = 'noopener';
-    link.target = '_blank'; // 새 탭에서 열기 (iOS Safari에서 더 안정적)
     link.style.display = 'none';
 
     document.body.appendChild(link);
@@ -21,7 +20,6 @@ export async function downloadFile(
 
     console.log('[Download] Download triggered successfully');
 
-    // 클린업
     setTimeout(() => {
       document.body.removeChild(link);
     }, 100);
@@ -32,8 +30,8 @@ export async function downloadFile(
 }
 
 /**
- * Blob 데이터를 파일로 다운로드하는 함수
- * API 응답에서 받은 blob을 다운로드할 때 사용
+ * Download blob data as a file
+ * Use when you already have blob data (e.g., from API response)
  */
 export async function downloadBlob(
   blob: Blob,
@@ -50,13 +48,39 @@ export async function downloadBlob(
     document.body.appendChild(link);
     link.click();
 
-    // 클린업
     setTimeout(() => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     }, 100);
   } catch (error) {
     console.error('Blob download failed:', error);
+    throw new Error('Failed to download file');
+  }
+}
+
+/**
+ * Fetch URL and download as blob (advanced use case)
+ * Use only when you need download progress tracking or file validation
+ * For simple downloads, prefer downloadFile() which uses server headers
+ */
+export async function downloadFromUrl(
+  url: string,
+  filename: string
+): Promise<void> {
+  try {
+    console.log('[Download] Fetching file:', { url, filename });
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Download failed: ${response.statusText}`);
+    }
+
+    const blob = await response.blob();
+    await downloadBlob(blob, filename);
+
+    console.log('[Download] File downloaded successfully');
+  } catch (error) {
+    console.error('[Download] Fetch download failed:', error);
     throw new Error('Failed to download file');
   }
 }

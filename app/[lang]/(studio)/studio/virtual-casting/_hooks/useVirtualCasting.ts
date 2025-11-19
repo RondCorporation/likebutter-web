@@ -11,6 +11,7 @@ import {
 import { useTaskSSE } from '@/hooks/useTaskSSE';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
+import { downloadFile } from '@/app/_utils/download';
 
 export interface VirtualCastingFormData {
   selectedCharacter: {
@@ -81,6 +82,7 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
   // Processing state
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [isEditLoading, setIsEditLoading] = useState(false);
 
   // Popup state
@@ -101,17 +103,18 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
     currentTaskId,
   } = useTaskSSE({
     onCompleted: (result) => {
-      // Check for both VIRTUAL_CASTING and VIRTUAL_CASTING_EDIT
-      const imageUrl =
-        (result.actionType === 'VIRTUAL_CASTING' ||
-          result.actionType === 'VIRTUAL_CASTING_EDIT') &&
-        result.virtualCasting?.imageUrl
-          ? result.virtualCasting.imageUrl
-          : null;
+      if (
+        result.actionType === 'VIRTUAL_CASTING' ||
+        result.actionType === 'VIRTUAL_CASTING_EDIT'
+      ) {
+        const imageUrl = result.virtualCasting?.imageUrl || null;
+        const downloadUrlFromTask = result.virtualCasting?.downloadUrl || null;
 
-      if (imageUrl) {
-        setResultImage(imageUrl);
-        toast.success(t('virtualCasting.messages.castingComplete'));
+        if (imageUrl) {
+          setResultImage(imageUrl);
+          setDownloadUrl(downloadUrlFromTask);
+          toast.success(t('virtualCasting.messages.castingComplete'));
+        }
       }
       setIsProcessing(false);
       setIsEditLoading(false);
@@ -210,27 +213,20 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
   );
 
   const handleDownload = useCallback(async () => {
-    if (!resultImage) return;
+    const urlToDownload = downloadUrl || resultImage;
+    if (!urlToDownload) return;
 
     try {
-      const response = await fetch(resultImage);
-      const blob = await response.blob();
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `virtual-casting-result-${Date.now()}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
+      await downloadFile(
+        urlToDownload,
+        `virtual-casting-result-${Date.now()}.png`
+      );
       toast.success(t('virtualCasting.messages.downloadComplete'));
     } catch (error) {
       console.error('Download failed:', error);
       toast.error(t('virtualCasting.messages.downloadFailed'));
     }
-  }, [resultImage, t]);
+  }, [downloadUrl, resultImage, t]);
 
   const handleEditRequest = useCallback(
     async (editRequest: string) => {
@@ -284,6 +280,7 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
 
     // 3. Clear result and file states
     setResultImage(null);
+    setDownloadUrl(null);
     setUploadedFile(null);
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);

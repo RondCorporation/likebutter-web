@@ -74,6 +74,7 @@ export interface FanmeetingStudioResponse {
 
 export interface ButterCoverResponse {
   audioUrl: string;
+  downloadUrl: string;
   filename: string;
   fileSize: number;
   executionTime: number;

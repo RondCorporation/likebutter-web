@@ -8,7 +8,7 @@ import {
   FanmeetingImagePromptStyle,
   editTask,
 } from '@/app/_lib/apis/task.api';
-import { useTaskPolling } from '@/hooks/useTaskPolling';
+import { useTaskSSE } from '@/hooks/useTaskSSE';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
 
@@ -108,7 +108,7 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
     stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
-  } = useTaskPolling({
+  } = useTaskSSE({
     onCompleted: (result) => {
       // Check for both FANMEETING_STUDIO and FANMEETING_STUDIO_EDIT
       const imageUrl =

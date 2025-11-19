@@ -8,7 +8,7 @@ import {
   VirtualCastingStyle,
   editTask,
 } from '@/app/_lib/apis/task.api';
-import { useTaskPolling } from '@/hooks/useTaskPolling';
+import { useTaskSSE } from '@/hooks/useTaskSSE';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
 
@@ -99,7 +99,7 @@ export function useVirtualCasting(): UseVirtualCastingReturn {
     stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
-  } = useTaskPolling({
+  } = useTaskSSE({
     onCompleted: (result) => {
       // Check for both VIRTUAL_CASTING and VIRTUAL_CASTING_EDIT
       const imageUrl =

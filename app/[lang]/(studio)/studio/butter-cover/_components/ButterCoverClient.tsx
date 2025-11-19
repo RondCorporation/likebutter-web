@@ -9,7 +9,7 @@ import StudioButton from '@/app/[lang]/(studio)/studio/_components/ui/StudioButt
 import { createButterCoverTask } from '@/app/_lib/apis/task.api';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'react-hot-toast';
-import { useTaskPolling } from '@/app/_hooks/useTaskPolling';
+import { useTaskSSE } from '@/app/_hooks/useTaskSSE';
 import { Download, Play, Pause, Volume2 } from 'lucide-react';
 import { useCreditStore } from '@/app/_stores/creditStore';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
@@ -53,13 +53,16 @@ export default function ButterCoverClient({}: ButterCoverClientProps) {
     startPolling,
     checkTaskStatus,
     currentTaskId,
-  } = useTaskPolling({
+  } = useTaskSSE({
     onCompleted: (result) => {
       if (result.actionType === 'BUTTER_COVER' && 'butterCover' in result) {
         const audioUrl = result.butterCover?.audioUrl;
         if (audioUrl) {
           setResultAudioUrl(audioUrl);
           toast.success(t('butterCover.messages.coverComplete'));
+        } else {
+          toast.error(t('butterCover.messages.coverFailed'));
+          console.error('Task completed but no audioUrl in result:', result);
         }
       }
       setIsLoading(false);

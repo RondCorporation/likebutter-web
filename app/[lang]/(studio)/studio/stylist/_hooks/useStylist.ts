@@ -7,7 +7,7 @@ import {
   StylistRequest,
   editTask,
 } from '@/app/_lib/apis/task.api';
-import { useTaskPolling } from '@/hooks/useTaskPolling';
+import { useTaskSSE } from '@/hooks/useTaskSSE';
 import { CREDIT_COSTS } from '@/app/_lib/apis/credit.api';
 import { useCreditStore } from '@/app/_stores/creditStore';
 
@@ -146,7 +146,7 @@ export function useStylist(): UseStylistReturn {
     stopBackgroundProcessing,
     checkTaskStatus,
     currentTaskId,
-  } = useTaskPolling({
+  } = useTaskSSE({
     onCompleted: (result) => {
       // Check for both STYLIST and STYLIST_EDIT
       const imageUrl =

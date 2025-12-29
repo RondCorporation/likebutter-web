@@ -96,6 +96,7 @@ export default function FanmeetingStudioMobileView({
     if (file) {
       handleFileUpload(file, 'idol');
     }
+    event.target.value = '';
   };
 
   const handleUserInputChange = (
@@ -105,6 +106,7 @@ export default function FanmeetingStudioMobileView({
     if (file) {
       handleFileUpload(file, 'user');
     }
+    event.target.value = '';
   };
 
   return (

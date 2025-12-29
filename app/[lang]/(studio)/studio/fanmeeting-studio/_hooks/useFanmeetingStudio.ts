@@ -296,6 +296,7 @@ export function useFanmeetingStudio(): UseFanmeetingStudioReturn {
         if (response.data) {
           deductCredit(CREDIT_COSTS.IMAGE_EDIT);
           toast.success(t('fanmeeting.messages.editRequestSent'));
+          setResultImage(null);
           startPolling(response.data.taskId);
         } else {
           toast.error(t('fanmeeting.messages.editRequestFailed'));

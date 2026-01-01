@@ -1,6 +1,7 @@
 {
   "archive": {
     "audioGenComplete": "Audio generation complete",
+    "videoGenComplete": "Video generation complete",
     "batchDelete": "Batch Delete",
     "dateFormat": "{{year}}/{{month}}/{{day}} {{hour}}:{{minute}}",
     "delete": "Delete",
@@ -19,6 +20,7 @@
       "loading": "Loading...",
       "loadingDetails": "Loading details...",
       "noAudioGenerated": "No audio generated",
+      "noVideoGenerated": "No videos generated",
       "noTasksGenerated": "No tasks generated yet",
       "processingEdit": "Processing edit...",
       "resultsCount": "{{start}} ~ {{end}} / Total {{total}}",
@@ -35,7 +37,8 @@
     "processingFailed": "Unable to complete",
     "tabs": {
       "audioGeneration": "Audio Generation",
-      "imageGeneration": "Image Generation"
+      "imageGeneration": "Image Generation",
+      "videoGeneration": "Video Generation"
     },
     "taskTypes": {
       "digitalGoodsEdit": "My Bias AI Style (Edit)",
@@ -661,6 +664,8 @@
     "idolVoiceAI": "Idol Voice AI",
     "imageCreationTitle": "Create Images",
     "imageGeneration": "Image Generation",
+    "videoGeneration": "Video Generation",
+    "videoCreationTitle": "Create Videos",
     "title": "Let's Create",
     "tools": {
       "digitalGoods": {
@@ -678,6 +683,10 @@
       "virtualCasting": {
         "subtitle": "Cast your idol as the main character in movies or dramas.",
         "title": "Virtual Casting"
+      },
+      "videoGeneration": {
+        "subtitle": "Create moving videos from a single photo.",
+        "title": "Video Generation"
       }
     }
   },
@@ -961,6 +970,45 @@
     "transformedResult": "Transformed Result",
     "transformedSubtitle": "Transformed into {{character}} character",
     "uploadedImage": "Uploaded Image"
+  },
+  "videoGeneration": {
+    "title": "Video Generation",
+    "uploadImageTitle": "Upload Image",
+    "dragAndDrop": "Drag files here or click to browse",
+    "tapToUpload": "Tap to select file",
+    "dropFile": "Drop file here",
+    "fileSizeLimit": "10MB limit per file (png, jpg, jpeg)",
+    "uploadFile": "Browse File",
+    "duration": "Video Duration",
+    "duration5s": "5 seconds",
+    "duration10s": "10 seconds",
+    "prompt": "Prompt",
+    "promptPlaceholder": "What motion do you want in the video? (optional)",
+    "negativePrompt": "Negative Prompt",
+    "negativePromptPlaceholder": "Enter elements you don't want (optional)",
+    "generate": "Generate Video",
+    "generating": "Generating...",
+    "generationInProgress": "Video generation in progress...",
+    "pleaseWait": "Please wait for the result",
+    "estimatedTime": "Estimated time: 2-5 minutes",
+    "resultVideo": "Result Video",
+    "completeSettings": "Complete settings in sidebar and click 'Generate Video'",
+    "generatedVideo": "Generated Video",
+    "download": "Download",
+    "resetWork": "Start Over",
+    "generationFailed": "Currently experiencing high traffic. Please try again in a moment.",
+    "backgroundProcessing": "Processing in background",
+    "takingLong": "The task is taking longer. Processing in background.",
+    "checkStatus": "Check Status",
+    "messages": {
+      "generationComplete": "Video has been generated!",
+      "requestSent": "Video generation request sent!",
+      "downloadComplete": "Video downloaded!",
+      "downloadFailed": "Download failed.",
+      "fileSizeExceeded": "File size exceeds 10MB.",
+      "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
+      "workReset": "Work has been reset."
+    }
   },
   "voiceModel": {
     "iu": "IU",

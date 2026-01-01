@@ -224,6 +224,46 @@ function ArchiveTaskCard({
               </div>
             </div>
           );
+        case 'VIDEO_GENERATION':
+          const videoUrl =
+            'videoGeneration' in task ? task.videoGeneration?.videoUrl : null;
+          if (videoUrl) {
+            return (
+              <video
+                src={videoUrl}
+                className="w-full h-full object-contain"
+                muted
+                playsInline
+                onMouseEnter={(e) => e.currentTarget.play()}
+                onMouseLeave={(e) => {
+                  e.currentTarget.pause();
+                  e.currentTarget.currentTime = 0;
+                }}
+              />
+            );
+          }
+          return (
+            <div className="w-full h-full flex items-center justify-center text-purple-400">
+              <div className="text-center">
+                <svg
+                  className="w-8 h-8 mx-auto mb-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  />
+                </svg>
+                <div className="text-sm font-medium">
+                  {t('studio:archive.videoGenComplete')}
+                </div>
+              </div>
+            </div>
+          );
         default:
           break;
       }
@@ -284,6 +324,7 @@ function ArchiveTaskCard({
       FANMEETING_STUDIO: t('studio:tools.fanmeetingStudio.title'),
       STYLIST: t('studio:tools.stylist.title'),
       VIRTUAL_CASTING: t('studio:tools.virtualCasting.title'),
+      VIDEO_GENERATION: t('studio:tools.videoGeneration.title'),
       DIGITAL_GOODS_EDIT: t('studio:archive.taskTypes.digitalGoodsEdit'),
       FANMEETING_STUDIO_EDIT: t(
         'studio:archive.taskTypes.fanmeetingStudioEdit'
@@ -416,7 +457,7 @@ export default function ArchiveClient() {
   const [pageSizeDropdownPosition, setPageSizeDropdownPosition] = useState<
     'bottom' | 'top'
   >('bottom');
-  const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
+  const [activeTab, setActiveTab] = useState<'image' | 'audio' | 'video'>('image');
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedTaskIds, setSelectedTaskIds] = useState<Set<number>>(
     new Set()
@@ -529,6 +570,13 @@ export default function ArchiveClient() {
               : undefined;
           fileName = `virtual-casting-${task.taskId}-${Date.now()}.png`;
           break;
+        case 'VIDEO_GENERATION':
+          downloadUrl =
+            'videoGeneration' in task
+              ? task.videoGeneration?.downloadUrl
+              : undefined;
+          fileName = `video-generation-${task.taskId}-${Date.now()}.mp4`;
+          break;
         default:
           console.warn(
             'Unsupported action type for download:',
@@ -575,18 +623,31 @@ export default function ArchiveClient() {
     setTasksToDelete(Array.from(selectedTaskIds));
   };
 
+  const getCategoryFromTab = () => {
+    switch (activeTab) {
+      case 'image':
+        return 'IMAGE';
+      case 'audio':
+        return 'AUDIO';
+      case 'video':
+        return 'VIDEO';
+      default:
+        return 'IMAGE';
+    }
+  };
+
   const handleFilterSelect = (value: string) => {
     setSelectedFilter(value);
 
     if (value === 'all') {
       setFilters({
-        category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
+        category: getCategoryFromTab(),
         actionType: '',
         actionTypes: [],
       });
     } else {
       setFilters({
-        category: activeTab === 'image' ? 'IMAGE' : 'AUDIO',
+        category: getCategoryFromTab(),
         actionType: '',
         actionTypes: [value],
       });
@@ -693,6 +754,24 @@ export default function ArchiveClient() {
           >
             {t('studio:archive.tabs.audioGeneration')}
           </button>
+          <button
+            onClick={() => {
+              setActiveTab('video');
+              setSelectedFilter('all');
+              setFilters({
+                category: 'VIDEO',
+                actionType: '',
+                actionTypes: [],
+              });
+            }}
+            className={`text-sm md:text-base font-medium pb-2 border-b-2 transition-colors ${
+              activeTab === 'video'
+                ? 'text-yellow-400 border-yellow-400'
+                : 'text-gray-400 border-transparent hover:text-white'
+            }`}
+          >
+            {t('studio:archive.tabs.videoGeneration')}
+          </button>
         </div>
 
         {/* Controls */}
@@ -774,7 +853,9 @@ export default function ArchiveClient() {
                 <h3 className="text-lg font-semibold mb-2">
                   {activeTab === 'audio'
                     ? t('studio:archive.messages.noAudioGenerated')
-                    : t('studio:archive.messages.noTasksGenerated')}
+                    : activeTab === 'video'
+                      ? t('studio:archive.messages.noVideoGenerated')
+                      : t('studio:archive.messages.noTasksGenerated')}
                 </h3>
                 <p className="text-sm">
                   {t('studio:archive.messages.startFirstTask')}

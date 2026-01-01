@@ -24,6 +24,7 @@ export type ActionType =
   | 'FANMEETING_STUDIO'
   | 'STYLIST'
   | 'VIRTUAL_CASTING'
+  | 'VIDEO_GENERATION'
   | 'DIGITAL_GOODS_EDIT'
   | 'FANMEETING_STUDIO_EDIT'
   | 'STYLIST_EDIT'
@@ -80,6 +81,16 @@ export interface ButterCoverResponse {
   executionTime: number;
 }
 
+export interface VideoGenerationResponse {
+  videoUrl: string;
+  downloadUrl: string;
+  filename: string;
+  fileSize: number;
+  executionTime: number;
+  requestImageUrl?: string;
+  duration?: number;
+}
+
 type ActionMap = {
   BUTTER_COVER: {
     butterCover?: ButterCoverResponse;
@@ -99,6 +110,10 @@ type ActionMap = {
   };
   VIRTUAL_CASTING: {
     virtualCasting?: VirtualCastingResponse;
+    error?: string | null;
+  };
+  VIDEO_GENERATION: {
+    videoGeneration?: VideoGenerationResponse;
     error?: string | null;
   };
   DIGITAL_GOODS_EDIT: {

@@ -1,6 +1,7 @@
 {
   "archive": {
     "audioGenComplete": "음성 생성 완료",
+    "videoGenComplete": "동영상 생성 완료",
     "batchDelete": "일괄 삭제",
     "dateFormat": "{{year}}년 {{month}}월 {{day}}일 {{hour}}시 {{minute}}분",
     "delete": "삭제",
@@ -19,6 +20,7 @@
       "loading": "로딩 중...",
       "loadingDetails": "상세 정보를 불러오는 중...",
       "noAudioGenerated": "생성된 음원이 없습니다",
+      "noVideoGenerated": "생성된 동영상이 없습니다",
       "noTasksGenerated": "아직 생성된 작업이 없습니다",
       "processingEdit": "수정 중입니다...",
       "resultsCount": "{{start}} ~ {{end}}개 / 총 {{total}}개",
@@ -35,7 +37,8 @@
     "processingFailed": "완료하지 못했어요",
     "tabs": {
       "audioGeneration": "음원 생성",
-      "imageGeneration": "이미지 생성"
+      "imageGeneration": "이미지 생성",
+      "videoGeneration": "동영상 생성"
     },
     "taskTypes": {
       "digitalGoodsEdit": "최애 AI스타일 (수정)",
@@ -661,6 +664,8 @@
     "idolVoiceAI": "아이돌 보이스 AI",
     "imageCreationTitle": "이미지 생성하기",
     "imageGeneration": "이미지 생성",
+    "videoGeneration": "동영상 생성",
+    "videoCreationTitle": "동영상 생성하기",
     "title": "만들어보기",
     "tools": {
       "digitalGoods": {
@@ -678,6 +683,10 @@
       "virtualCasting": {
         "subtitle": "아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.",
         "title": "가상 캐스팅"
+      },
+      "videoGeneration": {
+        "subtitle": "사진 한 장으로 움직이는 동영상을 만들어보세요.",
+        "title": "동영상 생성"
       }
     }
   },
@@ -961,6 +970,45 @@
     "transformedResult": "변환된 결과",
     "transformedSubtitle": "{{character}} 캐릭터로 변환",
     "uploadedImage": "업로드한 이미지"
+  },
+  "videoGeneration": {
+    "title": "동영상 생성",
+    "uploadImageTitle": "이미지 업로드하기",
+    "dragAndDrop": "파일을 여기다 끌어다 놓으세요",
+    "tapToUpload": "탭하여 파일 선택",
+    "dropFile": "파일을 놓아주세요",
+    "fileSizeLimit": "파일당 10MB 제한 (png, jpg, jpeg)",
+    "uploadFile": "파일 찾아보기",
+    "duration": "동영상 길이",
+    "duration5s": "5초",
+    "duration10s": "10초",
+    "prompt": "프롬프트",
+    "promptPlaceholder": "동영상에서 어떤 움직임을 원하시나요? (선택)",
+    "negativePrompt": "네거티브 프롬프트",
+    "negativePromptPlaceholder": "원하지 않는 요소를 입력하세요 (선택)",
+    "generate": "동영상 생성",
+    "generating": "생성중...",
+    "generationInProgress": "동영상 생성 중...",
+    "pleaseWait": "잠시 기다리시면 결과가 나옵니다",
+    "estimatedTime": "예상 소요 시간: 2-5분",
+    "resultVideo": "결과 동영상",
+    "completeSettings": "사이드바에서 설정을 완료하고 '동영상 생성'을 눌러주세요",
+    "generatedVideo": "생성된 동영상",
+    "download": "다운로드",
+    "resetWork": "다시 만들기",
+    "generationFailed": "현재 사용자가 많아 처리가 지연되고 있습니다. 잠시 후 다시 시도해주세요.",
+    "backgroundProcessing": "백그라운드에서 처리 중",
+    "takingLong": "작업이 오래 걸리고 있어요. 백그라운드에서 처리 중입니다.",
+    "checkStatus": "상태 확인",
+    "messages": {
+      "generationComplete": "동영상이 생성되었습니다!",
+      "requestSent": "동영상 생성 요청이 전송되었습니다!",
+      "downloadComplete": "동영상이 다운로드되었습니다!",
+      "downloadFailed": "다운로드에 실패했습니다.",
+      "fileSizeExceeded": "파일 크기가 10MB를 초과합니다.",
+      "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
+      "workReset": "작업이 초기화되었습니다."
+    }
   },
   "voiceModel": {
     "iu": "아이유",

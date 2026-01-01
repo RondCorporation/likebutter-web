@@ -20,6 +20,9 @@ const StylistWithSidebar = dynamic(
 const VirtualCastingWithSidebar = dynamic(
   () => import('../virtual-casting/_components/VirtualCastingWithSidebar')
 );
+const VideoGenerationWithSidebar = dynamic(
+  () => import('../video-generation/_components/VideoGenerationWithSidebar')
+);
 const ArchiveClient = dynamic(
   () => import('../archive/_components/ArchiveClient')
 );
@@ -64,6 +67,10 @@ const STUDIO_TOOLS: Record<string, StudioToolConfig> = {
   },
   'fanmeeting-studio': {
     component: FanmeetingStudioWithSidebar,
+    preloaded: false,
+  },
+  'video-generation': {
+    component: VideoGenerationWithSidebar,
     preloaded: false,
   },
   archive: {

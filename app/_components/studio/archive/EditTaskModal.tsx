@@ -103,6 +103,9 @@ export default function EditTaskModal({
       case 'BUTTER_COVER':
         // ButterCover has audio, not image
         return null;
+      case 'VIDEO_GENERATION':
+        // VideoGeneration has video, not image - and no edit support
+        return null;
       default:
         const exhaustiveCheck: never = task;
         return null;

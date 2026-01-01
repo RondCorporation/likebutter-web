@@ -23,7 +23,7 @@ export default function ModelSelectPopup({
   const { t } = useTranslation(['studio', 'common']);
   const router = useRouter();
   const isMobile = useIsMobile();
-  const [activeTab, setActiveTab] = useState<'image' | 'audio'>('image');
+  const [activeTab, setActiveTab] = useState<'image' | 'video' | 'audio'>('image');
   const [mounted, setMounted] = useState(false);
 
   useScrollLock(true);
@@ -38,6 +38,7 @@ export default function ModelSelectPopup({
     router.prefetch(`/${lang}/studio/virtual-casting`);
     router.prefetch(`/${lang}/studio/fanmeeting-studio`);
     router.prefetch(`/${lang}/studio/butter-cover`);
+    router.prefetch(`/${lang}/studio/video-generation`);
   }, [router, lang]);
 
   const navigateToTool = (toolType: string) => {
@@ -64,6 +65,10 @@ export default function ModelSelectPopup({
       case 'butter-cover':
         targetPath = `/${lang}/studio/butter-cover`;
         toolName = 'butter-cover';
+        break;
+      case 'video-generation':
+        targetPath = `/${lang}/studio/video-generation`;
+        toolName = 'video-generation';
         break;
       default:
         console.warn('Unknown tool type:', toolType);
@@ -130,6 +135,12 @@ export default function ModelSelectPopup({
               text={t('studio:modelSelect.imageGeneration')}
             />
           </button>
+          <button onClick={() => setActiveTab('video')} className="flex-1">
+            <TabItem
+              state={activeTab === 'video' ? 'selected' : 'default'}
+              text={t('studio:modelSelect.videoGeneration')}
+            />
+          </button>
           <button onClick={() => setActiveTab('audio')} className="flex-1">
             <TabItem
               state={activeTab === 'audio' ? 'selected' : 'default'}
@@ -190,6 +201,40 @@ export default function ModelSelectPopup({
                   backgroundImage="/studio/model-select/virtual_casting.png"
                   onClick={() => navigateToTool('virtual-casting')}
                 />
+              </div>
+            </>
+          ) : activeTab === 'video' ? (
+            <>
+              <div className="flex items-center justify-between mt-8">
+                <h3 className="font-bold text-studio-text-primary text-sm">
+                  {t('studio:modelSelect.videoCreationTitle')}
+                </h3>
+              </div>
+
+              <div
+                className={`border border-solid w-full ${isMobile ? 'h-[300px]' : 'h-[400px]'} rounded-md cursor-pointer mb-4 transition-colors relative border-[#4a4a4b] hover:border-[#6a6a6b]`}
+                onClick={() => navigateToTool('video-generation')}
+              >
+                <div
+                  className="w-full h-full bg-cover bg-center relative rounded-md overflow-hidden"
+                  style={{
+                    backgroundImage:
+                      'url(/studio/model-select/video-generation.png)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }}
+                >
+                  <div className="absolute inset-0 bg-black/20"></div>
+
+                  <div className="absolute bottom-6 left-6 text-white z-10">
+                    <h2 className="text-2xl font-bold mb-1">
+                      {t('studio:modelSelect.tools.videoGeneration.title')}
+                    </h2>
+                    <p className="text-sm font-light opacity-90">
+                      {t('studio:modelSelect.tools.videoGeneration.subtitle')}
+                    </p>
+                  </div>
+                </div>
               </div>
             </>
           ) : (

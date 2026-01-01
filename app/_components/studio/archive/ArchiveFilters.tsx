@@ -21,6 +21,9 @@ export default function ArchiveFilters({ onFilterChange }: Props) {
     { label: 'Butter Cover', value: 'BUTTER_COVER' },
     { label: 'Digital Goods', value: 'DIGITAL_GOODS' },
     { label: 'Fanmeeting Studio', value: 'FANMEETING_STUDIO' },
+    { label: 'Stylist', value: 'STYLIST' },
+    { label: 'Virtual Casting', value: 'VIRTUAL_CASTING' },
+    { label: 'Video Generation', value: 'VIDEO_GENERATION' },
   ];
 
   return (

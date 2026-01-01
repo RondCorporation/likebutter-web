@@ -16,7 +16,7 @@ interface TaskCreationResponse {
   createdAt: string;
 }
 
-export type TaskCategory = 'IMAGE' | 'AUDIO';
+export type TaskCategory = 'IMAGE' | 'AUDIO' | 'VIDEO';
 
 export interface TaskFilters {
   status?: string;
@@ -309,6 +309,36 @@ export const createFanmeetingStudioTask = async (
   );
 };
 
+export interface VideoGenerationRequest {
+  prompt?: string;
+  negativePrompt?: string;
+  duration?: 5 | 10;
+}
+
+export const createVideoGenerationTask = async (
+  image: File,
+  request: VideoGenerationRequest = {}
+): Promise<ApiResponse<TaskCreationResponse>> => {
+  const formData = new FormData();
+
+  formData.append('image', image);
+
+  if (request.prompt) {
+    formData.append('prompt', request.prompt);
+  }
+  if (request.negativePrompt) {
+    formData.append('negativePrompt', request.negativePrompt);
+  }
+  if (request.duration) {
+    formData.append('duration', request.duration.toString());
+  }
+
+  return await apiFetch<TaskCreationResponse>('/api/v1/tasks/video-generation', {
+    method: 'POST',
+    body: formData,
+  });
+};
+
 export const deleteTask = async (taskId: number): Promise<void> => {
   await apiFetch<null>(`/api/v1/tasks/${taskId}`, {
     method: 'DELETE',
@@ -430,6 +460,8 @@ export const getTaskResultUrl = (task: Task): string | null => {
       return task.fanmeetingStudio?.imageUrl || null;
     case 'BUTTER_COVER':
       return task.butterCover?.audioUrl || null;
+    case 'VIDEO_GENERATION':
+      return task.videoGeneration?.videoUrl || null;
     default:
       return null;
   }

@@ -4,6 +4,7 @@ import DigitalGoodsDetailsView from './digital-goods/DigitalGoodsDetailsView';
 import FanmeetingStudioDetailsView from './fanmeeting-studio/FanmeetingStudioDetailsView';
 import StylistDetailsView from './stylist/StylistDetailsView';
 import VirtualCastingDetailsView from './virtual-casting/VirtualCastingDetailsView';
+import VideoGenerationDetailsView from './video-generation/VideoGenerationDetailsView';
 
 export default function TaskDetailsView({
   task,
@@ -53,6 +54,8 @@ export default function TaskDetailsView({
           onEdit={onEdit}
         />
       );
+    case 'VIDEO_GENERATION':
+      return <VideoGenerationDetailsView task={task as any} onClose={onClose} />;
     default:
       const exhaustiveCheck: never = task;
       return <p>Details for this task type are not available.</p>;

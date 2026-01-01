@@ -4,6 +4,7 @@ import ButterCoverTaskCard from './butter-cover/ButterCoverTaskCard';
 import DigitalGoodsTaskCard from './digital-goods/DigitalGoodsTaskCard';
 import FanmeetingStudioTaskCard from './fanmeeting-studio/FanmeetingStudioTaskCard';
 import StylistTaskCard from './stylist/StylistTaskCard';
+import VideoGenerationTaskCard from './video-generation/VideoGenerationTaskCard';
 import VirtualCastingTaskCard from './virtual-casting/VirtualCastingTaskCard';
 
 interface Props {
@@ -28,6 +29,8 @@ const TaskCard = memo(
       case 'VIRTUAL_CASTING':
       case 'VIRTUAL_CASTING_EDIT':
         return <VirtualCastingTaskCard task={task} onClick={onClick} />;
+      case 'VIDEO_GENERATION':
+        return <VideoGenerationTaskCard task={task} onClick={onClick} />;
       default:
         return (
           <div className="rounded-lg border border-white/10 bg-white/5 p-4">
@@ -86,6 +89,15 @@ const TaskCard = memo(
             ? prevProps.task.butterCover
             : null) ===
           ('butterCover' in nextProps.task ? nextProps.task.butterCover : null)
+        );
+      case 'VIDEO_GENERATION':
+        return (
+          ('videoGeneration' in prevProps.task
+            ? prevProps.task.videoGeneration
+            : null) ===
+          ('videoGeneration' in nextProps.task
+            ? nextProps.task.videoGeneration
+            : null)
         );
       default:
         return true;

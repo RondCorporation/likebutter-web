@@ -51,6 +51,7 @@ export interface CreditHistoryPage {
 
 export const CREDIT_COSTS = {
   BUTTER_COVER: 25,
+  VIDEO_GENERATION: 10,
   DIGITAL_GOODS: 4,
   VIRTUAL_CASTING: 4,
   FANMEETING_STUDIO: 4,

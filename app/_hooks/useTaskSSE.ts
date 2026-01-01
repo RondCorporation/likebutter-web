@@ -62,6 +62,9 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
   const callbackExecutedRef = useRef(false);
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 3;
+  const lastDataReceivedRef = useRef<number>(Date.now());
+  const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const idleTimeoutMs = 60_000; // 60 seconds idle timeout
 
   const stopPolling = useCallback(() => {
     if (abortControllerRef.current) {
@@ -72,6 +75,10 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
       clearInterval(pollingIntervalRef.current);
       pollingIntervalRef.current = null;
     }
+    if (idleTimeoutRef.current) {
+      clearTimeout(idleTimeoutRef.current);
+      idleTimeoutRef.current = null;
+    }
     setIsConnected(false);
     setIsPolling(false);
     setIsBackgroundProcessing(false);
@@ -79,10 +86,16 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
   }, []);
 
   const fetchFullTaskData = useCallback(
-    async (taskId: number, status: string) => {
+    async (taskId: number, status: string, retryCount = 0) => {
+      const maxRetries = 3;
+      const retryDelay = 1000;
+
       try {
+        console.log(`[SSE] Fetching full task data - taskId=${taskId}, status=${status}, retry=${retryCount}`);
         const response = await getTaskStatus(taskId);
+
         if (response.status === 200 && response.data) {
+          console.log('[SSE] Full task data fetched successfully:', response.data.status);
           setTaskData(response.data);
 
           if (!callbackExecutedRef.current) {
@@ -98,9 +111,29 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
           }
 
           stopPolling();
+        } else {
+          console.warn('[SSE] Unexpected API response:', response.status);
+          if (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+            return fetchFullTaskData(taskId, status, retryCount + 1);
+          }
+          stopPolling();
+          if (!callbackExecutedRef.current) {
+            callbackExecutedRef.current = true;
+            onFailed?.('Failed to fetch task data');
+          }
         }
       } catch (err) {
-        console.error('Failed to fetch full task data:', err);
+        console.error(`[SSE] Failed to fetch full task data (retry ${retryCount}):`, err);
+        if (retryCount < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
+          return fetchFullTaskData(taskId, status, retryCount + 1);
+        }
+        stopPolling();
+        if (!callbackExecutedRef.current) {
+          callbackExecutedRef.current = true;
+          onFailed?.('Failed to fetch task data after retries');
+        }
       }
     },
     [onCompleted, onFailed, stopPolling]
@@ -195,7 +228,25 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
         setIsConnected(true);
         setConnectionType('sse');
         reconnectAttemptsRef.current = 0;
+        lastDataReceivedRef.current = Date.now();
         console.log('[SSE] Connected successfully');
+
+        // Idle timeout checker - falls back to polling if no data for 60 seconds
+        const startIdleTimeoutChecker = () => {
+          if (idleTimeoutRef.current) {
+            clearTimeout(idleTimeoutRef.current);
+          }
+          idleTimeoutRef.current = setTimeout(() => {
+            const idleTime = Date.now() - lastDataReceivedRef.current;
+            if (idleTime >= idleTimeoutMs && !callbackExecutedRef.current) {
+              console.warn(`[SSE] No data received for ${idleTime}ms, falling back to polling`);
+              controller.abort();
+              startPollingFallback(taskId);
+            }
+          }, idleTimeoutMs);
+        };
+
+        startIdleTimeoutChecker();
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -206,20 +257,27 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
             if (line.startsWith('data:')) {
               try {
                 const data = line.substring(5).trim();
+                if (!data) {
+                  console.log('[SSE] Empty data line, skipping');
+                  continue;
+                }
                 const summary: TaskSummaryResponse = JSON.parse(data);
 
-                console.log('[SSE] Received status:', summary.status);
+                console.log('[SSE] Received status:', summary.status, 'taskId:', summary.taskId);
                 onStatusUpdate?.(summary);
 
                 if (
                   summary.status === 'COMPLETED' ||
                   summary.status === 'FAILED'
                 ) {
+                  console.log('[SSE] Terminal status received, will fetch full data');
                   return summary;
                 }
               } catch (err) {
-                console.error('[SSE] Failed to parse data:', err);
+                console.error('[SSE] Failed to parse data:', err, 'line:', line);
               }
+            } else if (line.startsWith('event:')) {
+              console.log('[SSE] Event type:', line.substring(6).trim());
             }
           }
           return null;
@@ -230,6 +288,10 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
             const { done, value } = await reader.read();
 
             if (value) {
+              // Reset idle timer on any data received
+              lastDataReceivedRef.current = Date.now();
+              startIdleTimeoutChecker();
+
               const decoded = decoder.decode(value, { stream: true });
               buffer += decoded;
 
@@ -254,6 +316,27 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
                 }
               }
               console.log('[SSE] Stream closed by server');
+
+              // SSE가 끊어졌는데 콜백이 실행되지 않았으면 한 번 더 상태 확인
+              if (!callbackExecutedRef.current) {
+                console.log('[SSE] Callback not executed, checking task status...');
+                try {
+                  const response = await getTaskStatus(taskId);
+                  if (response.status === 200 && response.data) {
+                    const status = response.data.status;
+                    if (status === 'COMPLETED' || status === 'FAILED') {
+                      await fetchFullTaskData(taskId, status);
+                    } else {
+                      // 아직 완료되지 않았으면 폴링 시작
+                      console.log('[SSE] Task not completed, starting polling fallback');
+                      startPollingFallback(taskId);
+                    }
+                  }
+                } catch (err) {
+                  console.error('[SSE] Failed to check task status after stream close:', err);
+                  startPollingFallback(taskId);
+                }
+              }
               break;
             }
           }
@@ -346,6 +429,9 @@ export function useTaskSSE(options: UseTaskSSEOptions = {}): UseTaskSSEReturn {
       }
       if (pollingIntervalRef.current) {
         clearInterval(pollingIntervalRef.current);
+      }
+      if (idleTimeoutRef.current) {
+        clearTimeout(idleTimeoutRef.current);
       }
     };
   }, []);

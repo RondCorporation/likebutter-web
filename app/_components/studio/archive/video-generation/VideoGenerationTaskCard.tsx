@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function VideoGenerationTaskCard({ task, onClick }: Props) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('studio');
   const result = task.videoGeneration;
 
   return (
@@ -20,7 +20,9 @@ export default function VideoGenerationTaskCard({ task, onClick }: Props) {
       <div className="mb-3 flex items-start justify-between">
         <div className="flex items-center gap-2">
           <Video className="h-5 w-5 text-accent" />
-          <h4 className="text-sm font-semibold text-white">Video Generation</h4>
+          <h4 className="text-sm font-semibold text-white">
+            {t('tools.videoGeneration.title')}
+          </h4>
         </div>
         <StatusBadge status={task.status} />
       </div>
@@ -29,11 +31,11 @@ export default function VideoGenerationTaskCard({ task, onClick }: Props) {
         <div className="mt-3">
           <div className="flex items-center gap-2 text-sm text-green-400">
             <Film className="h-4 w-4" />
-            <span>Video created successfully</span>
+            <span>{t('videoGeneration.archive.createdSuccess')}</span>
           </div>
           {result.duration && (
             <div className="mt-2 text-xs text-slate-400">
-              Duration: {result.duration}s
+              {t('videoGeneration.archive.duration', { seconds: result.duration })}
             </div>
           )}
           {result.filename && (

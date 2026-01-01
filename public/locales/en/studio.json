@@ -854,6 +854,10 @@
       "description": "Style hair, outfits, accessories, and backgrounds to your taste.",
       "title": "My Bias's Stylist"
     },
+    "videoGeneration": {
+      "description": "Transform your images into videos.",
+      "title": "Video Generation"
+    },
     "virtualCasting": {
       "description": "Cast your idol as the main character in movies or dramas.",
       "title": "Virtual Casting"
@@ -1008,6 +1012,19 @@
       "fileSizeExceeded": "File size exceeds 10MB.",
       "unsupportedFormat": "Unsupported file format. (Only png, jpg, jpeg supported)",
       "workReset": "Work has been reset."
+    },
+    "archive": {
+      "createdSuccess": "Video created successfully",
+      "duration": "Duration: {{seconds}}s"
+    },
+    "details": {
+      "title": "Video Generation",
+      "originalImage": "Original Image",
+      "generatedVideo": "Generated Video",
+      "duration": "Duration",
+      "processing": "Video is being generated...",
+      "generationFailed": "Generation Failed",
+      "cannotLoadDetails": "Cannot load details"
     }
   },
   "voiceModel": {

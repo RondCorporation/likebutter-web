@@ -854,6 +854,10 @@
       "description": "헤어·의상은 물론 악세사리와 배경까지, 내 취향대로 스타일링해보세요.",
       "title": "최애의 스타일리스트"
     },
+    "videoGeneration": {
+      "description": "이미지를 동영상으로 변환해보세요.",
+      "title": "동영상 생성"
+    },
     "virtualCasting": {
       "description": "아이돌을 영화나 드라마 속 주인공으로 캐스팅해보세요.",
       "title": "가상 캐스팅"
@@ -1008,6 +1012,19 @@
       "fileSizeExceeded": "파일 크기가 10MB를 초과합니다.",
       "unsupportedFormat": "지원하지 않는 파일 형식입니다. (png, jpg, jpeg만 지원)",
       "workReset": "작업이 초기화되었습니다."
+    },
+    "archive": {
+      "createdSuccess": "동영상이 생성되었습니다",
+      "duration": "길이: {{seconds}}초"
+    },
+    "details": {
+      "title": "동영상 생성",
+      "originalImage": "원본 이미지",
+      "generatedVideo": "생성된 동영상",
+      "duration": "길이",
+      "processing": "동영상을 생성하고 있습니다...",
+      "generationFailed": "생성 실패",
+      "cannotLoadDetails": "상세 정보를 불러올 수 없습니다"
     }
   },
   "voiceModel": {
